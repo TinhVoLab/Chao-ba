@@ -6,8 +6,12 @@ Prototype for the Future Health Digital Innovation Challenge 2026.
 Út Thương, a warm Southern-Vietnamese AI companion, calls an older adult each morning over the web (prototype) or an ordinary phone (production path). From the conversation's **text and pause timings only (no audio is stored)** it tracks speech rate, pauses, filler words, vocabulary diversity, recall of yesterday's story, and self-reported symptoms and mood. After a 21-day **personal baseline**, an EWMA control chart turns these into a daily **green / yellow / red** light with a plain explanation for the adult children. A DMAIC care loop then checks whether the family's or doctor's action worked. Chào Bà reports **change relative to the person's own baseline**. It does not diagnose.
 
 > All seeded data and all evaluation numbers are **simulated** ("Dữ liệu mô phỏng / Simulated data").
-> On a simulated cohort of 200 elders: 92.0 % of injected declines flagged, median 19 days after onset,
-> 0.29 false alarms per person-month. With a population norm instead of a personal baseline, sensitivity is 76.1 %. These are not clinical results.
+> On a held-out simulated cohort of 400 elders (alert threshold chosen on a separate development cohort):
+> **64.9 % chance-corrected sensitivity** (95 % CI 57.1–72.5) for clinical-type declines. That is 79.8 % flagged by a
+> matching rule within 45 days of onset, minus a 15.0 % chance rate measured on stable elders. The speech/recall
+> control chart alone adds 42.7 % (33.0–51.7) beyond chance. False alarms: 0.19 (0.16–0.22) per person-month. With a population norm
+> instead of a personal baseline, chance-corrected sensitivity falls to 40.1 % (30.4–49.4). An earlier "92 %" figure
+> counted any alarm after onset and was inflated by chance; see [data/eval/report.md](data/eval/report.md). These are not clinical results.
 
 ## Quickstart
 
@@ -21,19 +25,34 @@ cd web && npm install && npm run dev                      # family app (second t
 
 - Elder call (hands-free simulation): http://localhost:8000/call?elder=hanh&sim=1, then press **Nghe**
 - Elder call (speak Vietnamese yourself): http://localhost:8000/call?elder=hanh
-- Family app: http://localhost:3000/?elder=hanh (Today · Trends · Alerts · DMAIC · Privacy · `/screen`)
+- Family app: http://localhost:3000/?elder=hanh (Today · Trends · Alerts · DMAIC · Privacy; `/screen` is a phase-2 concept mockup of a home display)
 - Health check: `curl localhost:8000/api/health` → `{"ok":true,"llm":"fallback"}`
 
 Seeded dates are anchored at startup: day 90 = yesterday, so a live call is day 91 today (`CHAOBA_END_DATE=YYYY-MM-DD` pins them).
 
-**No API key needed.** Every LLM step has a deterministic fallback. Set `ANTHROPIC_API_KEY` before starting uvicorn to use Claude (conversation, post-call analysis, wording). Reset demo data with `rm data/runtime/chaoba.db` (re-seeded on start).
+**No API key needed.** Every LLM step has a deterministic fallback. Reset demo data with `rm data/runtime/chaoba.db` (re-seeded on start).
+
+**Claude mode is tested only with a fake client.** No API key was available while building, so the Claude conversation, post-call analysis and rewording paths are covered by unit tests with a fake client and have never run against the live API. To run a keyed session (one command), then make a call and check that `/api/health` says `"llm":"claude"` and the call record's `engine` is `claude`, not a fallback:
+
+```bash
+ANTHROPIC_API_KEY=sk-ant-... .venv/bin/uvicorn chaoba.server.app:app --port 8000
+```
+
+### With Docker
+
+```bash
+docker compose up --build    # API :8000, family app :3000, Postgres loading the production schema (chaoba/server/schema.sql)
+docker compose exec -T postgres psql -U chaoba -d chaoba -v ON_ERROR_STOP=1 -f /deploy/rls_test.sql   # RLS smoke test -> RLS OK
+```
+
+Environment: `CHAOBA_CORS_ORIGINS` (origins the API accepts), `NEXT_PUBLIC_API_BASE` (API address for the browser, build time), `CHAOBA_API_INTERNAL` (API address for the Next server), `ANTHROPIC_API_KEY` (optional). The API still stores data in SQLite; Postgres is the production schema target, loaded so its Row Level Security can be inspected and tested. The compose stack was validated with `docker compose config` but not started in the build environment (Docker daemon off).
 
 ## Tests and data
 
 ```bash
-.venv/bin/pytest -q                        # 119 tests
+.venv/bin/pytest -q                        # all tests (tests/deploy skips without Docker)
 .venv/bin/python scripts/gen_synth.py      # regenerate data/synth/{hanh,tu,control}.json (simulated personas)
-.venv/bin/python scripts/run_eval.py       # regenerate data/eval/report.{json,md} (simulated cohort, < 1 s)
+.venv/bin/python scripts/run_eval.py       # regenerate data/eval/ (report, operating curve; simulated dev + held-out cohorts, ~20 s)
 ```
 
 ## Repository map
@@ -43,16 +62,17 @@ Seeded dates are anchored at startup: day 90 = yesterday, so a live call is day 
 | `chaoba/core/` | metrics (M1–M3), personal-baseline control chart and light rules, VI/EN explanations, DMAIC cycle, synthetic data, evaluation |
 | `chaoba/agent/` | Út Thương persona and prompts, call orchestrator (scripted + Claude engines), emergency spotter, guardrails, post-call analysis, demo elder simulator, LiveKit SIP adapter (untested sketch) |
 | `chaoba/server/` | FastAPI app, SQLite store, Postgres/Supabase production schema with RLS (`schema.sql`), static elder call page (`static/call.html`) |
-| `web/` | Next.js family app (PWA) and 9:16 standing-screen mockup; offline fixtures in `web/fixtures/` (`node web/scripts/snapshot-fixtures.mjs` against a fresh API) |
+| `web/` | Next.js family app (PWA) and a 9:16 standing-screen mockup (phase-2 concept); offline fixtures in `web/fixtures/` (`node web/scripts/snapshot-fixtures.mjs` against a fresh API) |
+| `Dockerfile`, `web/Dockerfile`, `docker-compose.yml`, `deploy/` | containers (API, standalone Next app, Postgres with the production schema), RLS smoke test `deploy/rls_test.sql`, per-call cost model `deploy/cost_model.py` |
 | `docs/screenshots/` | app screenshots: `app-*.png` = first screen (390×844 @2x), `full/app-*.png` = full page |
 | `data/synth/`, `data/eval/` | generated simulated personas and evaluation report |
 | `scripts/` | data generation and evaluation |
-| `tests/` | pytest suites for core, agent, server |
+| `tests/` | pytest suites for core, agent, server; `tests/deploy/` runs the RLS test on a throwaway Postgres container (skipped without Docker) |
 | `CONTRACT.md` | internal build contract (types, REST API) |
 
 ## Documentation
 
-- [docs/TECHNICAL_DOCUMENTATION.md](docs/TECHNICAL_DOCUMENTATION.md): architecture, signal definitions, control-chart method, DMAIC example, evaluation, responsible AI and data governance, deployment, commercial model, **Assumptions**, **Limitations**
+- [docs/TECHNICAL_DOCUMENTATION.md](docs/TECHNICAL_DOCUMENTATION.md): architecture, signal definitions, control-chart method, DMAIC example, evaluation, responsible AI and data governance, deployment (containers, RLS test), per-call cost model and unit economics, **Assumptions**, **Limitations**
 - [docs/DEMO_GUIDE.md](docs/DEMO_GUIDE.md): how to run it, plus a 3-minute demo script mapped to the judging criteria
-- [docs/CHALLENGE_FIT.md](docs/CHALLENGE_FIT.md): judging criteria → evidence; focus-area fit
+- [docs/CHALLENGE_FIT.md](docs/CHALLENGE_FIT.md): judging criteria → evidence; focus-area fit; checklist for mapping the chosen challenge statement
 - [data/eval/report.md](data/eval/report.md): full simulated evaluation report

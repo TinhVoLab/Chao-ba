@@ -39,6 +39,12 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
   const noteList = normNotes(notes.data, records);
   const lights = (timeline.data.lights ?? []).slice(-14);
   const rec = records.find((r) => r.day === t.day) ?? records.at(-1);
+  // Is the latest record this morning's call? Prefer the API's flag; otherwise compare with today's date in Vietnam.
+  const todayVn = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Ho_Chi_Minh" }).format(new Date());
+  const isToday = typeof t.is_today === "boolean" ? t.is_today : t.date === todayVn;
+  const callLabel = isToday
+    ? { vi: t.label_vi || "Cuộc gọi sáng nay với Út Thương", en: t.label_en || "This morning's call with Út Thương" }
+    : { vi: t.label_vi || `Cuộc gọi gần nhất với Út Thương · ${date.vi}`, en: t.label_en || `Latest call with Út Thương · ${date.en}` };
   const symptoms = Object.entries(rec?.symptoms ?? {}).filter(([, v]) => v > 0).map(([s]) => SYMPTOM_WORD[s] ?? { vi: s, en: s });
 
   return (
@@ -77,7 +83,7 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
       <section aria-labelledby="call-h" className="flex flex-col gap-2">
         <h2 id="call-h" className="flex flex-wrap items-center gap-2 text-sm font-bold uppercase tracking-wide text-ink-3">
           <MessageCircle size={16} aria-hidden />
-          <T vi="Cuộc gọi sáng nay với Út Thương" en="This morning's call with Út Thương" />
+          <T vi={callLabel.vi} en={callLabel.en} />
           {t.simulated === false && (
             <span className="rounded-full bg-accent-tint px-2 py-0.5 text-xs font-semibold normal-case tracking-normal text-accent">
               <T vi={`Cuộc gọi thật · ngày ${t.day}`} en={`Live call · day ${t.day}`} />
@@ -117,7 +123,11 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
           </>
         ) : (
           <p className="text-lg font-medium">
-            <T vi={`${k.vi[0].toUpperCase()}${k.vi.slice(1)} chưa bắt máy sáng nay. Út Thương sẽ gọi lại.`} en={`${k.en} hasn't picked up this morning. Út Thương will try again.`} />
+            {isToday ? (
+              <T vi={`${k.vi[0].toUpperCase()}${k.vi.slice(1)} chưa bắt máy sáng nay. Út Thương sẽ gọi lại.`} en={`${k.en} hasn't picked up this morning. Út Thương will try again.`} />
+            ) : (
+              <T vi={`${k.vi[0].toUpperCase()}${k.vi.slice(1)} không bắt máy cuộc gọi ${date.vi}.`} en={`${k.en} didn't pick up the call on ${date.en}.`} />
+            )}
           </p>
         )}
       </section>
@@ -131,7 +141,6 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
         author={primary?.name ?? "Gia đình"}
         initialNotes={noteList}
         contact={t.contact ?? null}
-        live={live}
         todayDate={t.date}
         todayDay={t.day}
       />
@@ -161,7 +170,7 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
           </ol>
           <div className="flex justify-between text-xs text-ink-3 tnum">
             <span>{shortDate(lights[0].date)}</span>
-            <span><T vi="hôm nay" en="today" /></span>
+            <span>{isToday && lights.at(-1)?.date === t.date ? <T vi="hôm nay" en="today" /> : shortDate(lights.at(-1)?.date ?? "")}</span>
           </div>
         </section>
       )}

@@ -41,6 +41,11 @@ def test_hanh_timeline(personas):
     assert days["medication_change"] == 30 and days["doctor_visit"] == 44 and days["rebaseline"] == 77
     assert sum(r["symptoms"].get("dizziness", 0) for r in p["records"] if 33 <= r["day"] <= 45) == 4
     assert p["dmaic"]["effect"]["speech_rate_sps"]["change_pct"] > 0
+    # a scripted persona's pre/post effect is labelled illustrative, in the fields and in the summary
+    assert p["dmaic"]["effect_illustrative"] is True
+    assert "Minh họa" in p["dmaic"]["effect_note_vi"] and "Illustrative" in p["dmaic"]["effect_note_en"]
+    imp = next(ph for ph in p["dmaic"]["phases"] if ph["phase"] == "improve")
+    assert "Minh họa" in imp["summary_vi"] and "Illustrative" in imp["summary_en"]
 
 
 def test_tu_timeline(personas):
@@ -50,7 +55,14 @@ def test_tu_timeline(personas):
     assert first(p, "red") is None
     assert p["lights"][-1]["light"] == "yellow"
     imp = next(ph for ph in p["dmaic"]["phases"] if ph["phase"] == "improve")
-    assert "bác sĩ đánh giá" in imp["summary_vi"] and "thần kinh" not in imp["summary_vi"]
+    assert "khám định kỳ" in imp["summary_vi"] and "thần kinh" not in imp["summary_vi"]
+    an = next(ph for ph in p["dmaic"]["phases"] if ph["phase"] == "analyze")["summary_vi"]
+    assert "Tự nhớ lại" in an and "%" not in an.split("Tự nhớ lại")[-1] and "nhớ chuyện hôm trước" not in an
+    # recall is stated as counts of calls, never as a percentage
+    for l in p["lights"]:
+        if any(r.get("metric") == "recall_score" for r in l["reasons"]):
+            assert "nhớ lại" in l["explanation_vi"] and "%" not in l["explanation_vi"].split("nhớ lại")[-1]
+    assert p["dmaic"]["effect_illustrative"] is False and p["dmaic"]["effect_note_vi"] == ""
     assert imp["status"] == "not_started" and imp["day_from"] is None and imp["day_to"] is None
 
 

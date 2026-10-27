@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 410" width="860" height="410" font-family="Helvetica, Arial, sans-serif" font-size="11">
+<rect width="860" height="410" fill="#ffffff"/>
+<text x="56" y="18" font-size="13" font-weight="bold">Operating curve, held-out simulated cohort (L_yellow 1.5–4.0; L_red = L_yellow + 1.0)</text>
+<text x="56" y="36" fill="#555">Solid = attributed sensitivity; dashed = chance rate from pseudo-onsets on stable elders (same attribution rule, no decline).</text>
+<text x="56" y="51" fill="#555">Point labels = L_yellow. Ring = L_yellow 3.0, chosen on the development cohort. Simulated cohort - not clinical validation.</text>
+<text x="56.0" y="74" font-weight="bold">Clinical declines, channel-matched rules</text>
+<line x1="56.0" x2="418.0" y1="358.0" y2="358.0" stroke="#e5e7eb"/>
+<text x="50.0" y="362.0" text-anchor="end">0%</text>
+<line x1="56.0" x2="418.0" y1="302.4" y2="302.4" stroke="#e5e7eb"/>
+<text x="50.0" y="306.4" text-anchor="end">20%</text>
+<line x1="56.0" x2="418.0" y1="246.8" y2="246.8" stroke="#e5e7eb"/>
+<text x="50.0" y="250.8" text-anchor="end">40%</text>
+<line x1="56.0" x2="418.0" y1="191.2" y2="191.2" stroke="#e5e7eb"/>
+<text x="50.0" y="195.2" text-anchor="end">60%</text>
+<line x1="56.0" x2="418.0" y1="135.6" y2="135.6" stroke="#e5e7eb"/>
+<text x="50.0" y="139.6" text-anchor="end">80%</text>
+<line x1="56.0" x2="418.0" y1="80.0" y2="80.0" stroke="#e5e7eb"/>
+<text x="50.0" y="84.0" text-anchor="end">100%</text>
+<line x1="56.0" x2="56.0" y1="80" y2="358" stroke="#f1f5f9"/>
+<text x="56.0" y="372" text-anchor="middle">0.00</text>
+<line x1="128.4" x2="128.4" y1="80" y2="358" stroke="#f1f5f9"/>
+<text x="128.4" y="372" text-anchor="middle">0.25</text>
+<line x1="200.8" x2="200.8" y1="80" y2="358" stroke="#f1f5f9"/>
+<text x="200.8" y="372" text-anchor="middle">0.50</text>
+<line x1="273.2" x2="273.2" y1="80" y2="358" stroke="#f1f5f9"/>
+<text x="273.2" y="372" text-anchor="middle">0.75</text>
+<line x1="345.6" x2="345.6" y1="80" y2="358" stroke="#f1f5f9"/>
+<text x="345.6" y="372" text-anchor="middle">1.00</text>
+<line x1="418.0" x2="418.0" y1="80" y2="358" stroke="#f1f5f9"/>
+<text x="418.0" y="372" text-anchor="middle">1.25</text>
+<rect x="56.0" y="80" width="362.0" height="278" fill="none" stroke="#9ca3af"/>
+<text x="237.0" y="396" text-anchor="middle">False alarms per person-month (all rules)</text>
+<polyline points="370.5,95.6 235.3,102.5 184.3,109.2 154.8,115.9 125.2,129.2 110.2,136.2 91.3,160.6 84.4,183.1" fill="none" stroke="#1f6feb" stroke-width="2"/>
+<polyline points="370.5,137.5 235.3,212.6 184.3,250.1 154.8,273.5 125.2,301.0 110.2,316.3 91.3,341.6 84.4,349.1" fill="none" stroke="#1f6feb" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.8"/>
+<circle cx="370.5" cy="95.6" r="3" fill="#1f6feb"/>
+<text x="375.5" y="90.6" fill="#374151" font-size="9">1.5</text>
+<circle cx="235.3" cy="102.5" r="3" fill="#1f6feb"/>
+<text x="240.3" y="97.5" fill="#374151" font-size="9">2.0</text>
+<circle cx="184.3" cy="109.2" r="3" fill="#1f6feb"/>
+<text x="189.3" y="104.2" fill="#374151" font-size="9">2.25</text>
+<circle cx="154.8" cy="115.9" r="3" fill="#1f6feb"/>
+<text x="159.8" y="110.9" fill="#374151" font-size="9">2.5</text>
+<circle cx="125.2" cy="129.2" r="3" fill="#1f6feb"/>
+<text x="130.2" y="124.2" fill="#374151" font-size="9">2.75</text>
+<circle cx="110.2" cy="136.2" r="3" fill="#1f6feb"/>
+<text x="115.2" y="131.2" fill="#374151" font-size="9">3.0</text>
+<circle cx="110.2" cy="136.2" r="7" fill="none" stroke="#1f6feb" stroke-width="1.5"/>
+<circle cx="91.3" cy="160.6" r="3" fill="#1f6feb"/>
+<text x="96.3" y="155.6" fill="#374151" font-size="9">3.5</text>
+<circle cx="84.4" cy="183.1" r="3" fill="#1f6feb"/>
+<text x="89.4" y="178.1" fill="#374151" font-size="9">4.0</text>
+<polyline points="193.3,196.5 182.3,174.2 181.7,172.0 179.4,165.1 172.1,169.8 155.0,158.4 135.6,176.5 126.1,183.1" fill="none" stroke="#c2410c" stroke-width="2"/>
+<polyline points="193.3,244.9 182.3,250.4 181.7,247.6 179.4,252.6 172.1,260.4 155.0,270.2 135.6,290.7 126.1,301.8" fill="none" stroke="#c2410c" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.8"/>
+<circle cx="193.3" cy="196.5" r="3" fill="#c2410c"/>
+<circle cx="182.3" cy="174.2" r="3" fill="#c2410c"/>
+<circle cx="181.7" cy="172.0" r="3" fill="#c2410c"/>
+<circle cx="179.4" cy="165.1" r="3" fill="#c2410c"/>
+<circle cx="172.1" cy="169.8" r="3" fill="#c2410c"/>
+<circle cx="155.0" cy="158.4" r="3" fill="#c2410c"/>
+<circle cx="155.0" cy="158.4" r="7" fill="none" stroke="#c2410c" stroke-width="1.5"/>
+<circle cx="135.6" cy="176.5" r="3" fill="#c2410c"/>
+<circle cx="126.1" cy="183.1" r="3" fill="#c2410c"/>
+<line x1="268.0" x2="288.0" y1="324" y2="324" stroke="#1f6feb" stroke-width="2"/>
+<text x="293.0" y="328">personal baseline</text>
+<line x1="268.0" x2="288.0" y1="338" y2="338" stroke="#c2410c" stroke-width="2"/>
+<text x="293.0" y="342">population baseline</text>
+<text x="482.0" y="74" font-weight="bold">Speech/recall control chart only</text>
+<line x1="482.0" x2="844.0" y1="358.0" y2="358.0" stroke="#e5e7eb"/>
+<text x="476.0" y="362.0" text-anchor="end">0%</text>
+<line x1="482.0" x2="844.0" y1="302.4" y2="302.4" stroke="#e5e7eb"/>
+<text x="476.0" y="306.4" text-anchor="end">20%</text>
+<line x1="482.0" x2="844.0" y1="246.8" y2="246.8" stroke="#e5e7eb"/>
+<text x="476.0" y="250.8" text-anchor="end">40%</text>
+<line x1="482.0" x2="844.0" y1="191.2" y2="191.2" stroke="#e5e7eb"/>
+<text x="476.0" y="195.2" text-anchor="end">60%</text>
+<line x1="482.0" x2="844.0" y1="135.6" y2="135.6" stroke="#e5e7eb"/>
+<text x="476.0" y="139.6" text-anchor="end">80%</text>
+<line x1="482.0" x2="844.0" y1="80.0" y2="80.0" stroke="#e5e7eb"/>
+<text x="476.0" y="84.0" text-anchor="end">100%</text>
+<line x1="482.0" x2="482.0" y1="80" y2="358" stroke="#f1f5f9"/>
+<text x="482.0" y="372" text-anchor="middle">0.00</text>
+<line x1="554.4" x2="554.4" y1="80" y2="358" stroke="#f1f5f9"/>
+<text x="554.4" y="372" text-anchor="middle">0.25</text>
+<line x1="626.8" x2="626.8" y1="80" y2="358" stroke="#f1f5f9"/>
+<text x="626.8" y="372" text-anchor="middle">0.50</text>
+<line x1="699.2" x2="699.2" y1="80" y2="358" stroke="#f1f5f9"/>
+<text x="699.2" y="372" text-anchor="middle">0.75</text>
+<line x1="771.6" x2="771.6" y1="80" y2="358" stroke="#f1f5f9"/>
+<text x="771.6" y="372" text-anchor="middle">1.00</text>
+<line x1="844.0" x2="844.0" y1="80" y2="358" stroke="#f1f5f9"/>
+<text x="844.0" y="372" text-anchor="middle">1.25</text>
+<rect x="482.0" y="80" width="362.0" height="278" fill="none" stroke="#9ca3af"/>
+<text x="663.0" y="396" text-anchor="middle">Chart false alarms per person-month</text>
+<polyline points="782.0,102.5 642.1,122.5 588.6,131.4 558.2,147.3 527.8,180.9 512.1,200.9 492.7,248.2 485.8,286.3" fill="none" stroke="#1f6feb" stroke-width="2"/>
+<polyline points="782.0,138.4 642.1,214.8 588.6,252.6 558.2,276.0 527.8,303.8 512.1,319.9 492.7,345.2 485.8,352.7" fill="none" stroke="#1f6feb" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.8"/>
+<circle cx="782.0" cy="102.5" r="3" fill="#1f6feb"/>
+<text x="787.0" y="97.5" fill="#374151" font-size="9">1.5</text>
+<circle cx="642.1" cy="122.5" r="3" fill="#1f6feb"/>
+<text x="647.1" y="117.5" fill="#374151" font-size="9">2.0</text>
+<circle cx="588.6" cy="131.4" r="3" fill="#1f6feb"/>
+<text x="593.6" y="126.4" fill="#374151" font-size="9">2.25</text>
+<circle cx="558.2" cy="147.3" r="3" fill="#1f6feb"/>
+<text x="563.2" y="142.3" fill="#374151" font-size="9">2.5</text>
+<circle cx="527.8" cy="180.9" r="3" fill="#1f6feb"/>
+<text x="532.8" y="175.9" fill="#374151" font-size="9">2.75</text>
+<circle cx="512.1" cy="200.9" r="3" fill="#1f6feb"/>
+<text x="517.1" y="195.9" fill="#374151" font-size="9">3.0</text>
+<circle cx="512.1" cy="200.9" r="7" fill="none" stroke="#1f6feb" stroke-width="1.5"/>
+<circle cx="492.7" cy="248.2" r="3" fill="#1f6feb"/>
+<text x="497.7" y="243.2" fill="#374151" font-size="9">3.5</text>
+<circle cx="485.8" cy="286.3" r="3" fill="#1f6feb"/>
+<text x="490.8" y="281.3" fill="#374151" font-size="9">4.0</text>
+<polyline points="610.0,223.4 597.0,207.9 595.5,214.6 592.9,223.4 585.1,232.3 566.0,234.6 546.3,268.2 536.2,292.9" fill="none" stroke="#c2410c" stroke-width="2"/>
+<polyline points="610.0,246.2 597.0,251.5 595.5,249.0 592.9,254.6 585.1,262.6 566.0,272.7 546.3,293.8 536.2,304.9" fill="none" stroke="#c2410c" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.8"/>
+<circle cx="610.0" cy="223.4" r="3" fill="#c2410c"/>
+<circle cx="597.0" cy="207.9" r="3" fill="#c2410c"/>
+<circle cx="595.5" cy="214.6" r="3" fill="#c2410c"/>
+<circle cx="592.9" cy="223.4" r="3" fill="#c2410c"/>
+<circle cx="585.1" cy="232.3" r="3" fill="#c2410c"/>
+<circle cx="566.0" cy="234.6" r="3" fill="#c2410c"/>
+<circle cx="566.0" cy="234.6" r="7" fill="none" stroke="#c2410c" stroke-width="1.5"/>
+<circle cx="546.3" cy="268.2" r="3" fill="#c2410c"/>
+<circle cx="536.2" cy="292.9" r="3" fill="#c2410c"/>
+<line x1="694.0" x2="714.0" y1="324" y2="324" stroke="#1f6feb" stroke-width="2"/>
+<text x="719.0" y="328">personal baseline</text>
+<line x1="694.0" x2="714.0" y1="338" y2="338" stroke="#c2410c" stroke-width="2"/>
+<text x="719.0" y="342">population baseline</text>
+</svg>

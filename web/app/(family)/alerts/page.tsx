@@ -31,7 +31,7 @@ async function AlertsContent({ searchParams }: { searchParams: PageProps<"/alert
         simulated={ctx.elder.simulated !== false}
         live={ctx.live && alerts.live}
       />
-      <AlertsList key={ctx.elder.id} elderId={ctx.elder.id} initial={list} live={ctx.live && alerts.live} />
+      <AlertsList key={ctx.elder.id} elderId={ctx.elder.id} initial={list} />
       <Disclaimer />
     </div>
   );

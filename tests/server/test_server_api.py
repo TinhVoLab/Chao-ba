@@ -22,7 +22,7 @@ def run_simulated_call(c, elder="hanh"):
     replies = []
     for _ in range(25):
         line = c.get(f"/api/calls/{cid}/simulate").json()
-        dur = word_count(line["text"]) / 3.8 + sum(line["pauses"])
+        dur = line.get("duration_sec") or word_count(line["text"]) / 3.8 + sum(line["pauses"])
         out = c.post(f"/api/calls/{cid}/turns", json={"text": line["text"], "start": t, "end": t + dur,
                                                       "pauses": line["pauses"]}).json()
         replies.append(out)
@@ -109,9 +109,10 @@ def test_full_web_call_appends_day_91(client):
     # idempotent end, finished call rejects turns
     assert client.post(f"/api/calls/{cid}/end").json()["today"]["day"] == 91
     assert client.post(f"/api/calls/{cid}/turns", json={"text": "alo"}).status_code == 404
-    # next call uses the new memory/hook context and appends day 92
+    # a second call on the same date is a sub-call of day 91 (never a future-dated day 92)
     cid2, _ = run_simulated_call(client)
-    assert client.post(f"/api/calls/{cid2}/end").json()["today"]["day"] == 92
+    t2 = client.post(f"/api/calls/{cid2}/end").json()["today"]
+    assert t2["day"] == 91 and t2["calls"] == 2 and t2["is_today"] is True
 
 
 def test_emergency_call_creates_red_alert(client):
@@ -278,16 +279,20 @@ def test_access_log_dedupes_reads(client):
 
 def test_consent_withdraw_and_regrant(client):
     r = client.post("/api/elders/control/consents/daily_call/withdraw", headers={"X-Actor": "Th%E1%BA%A3o"})
-    assert r.status_code == 200 and r.json()["scheduling_active"] is False
+    assert r.status_code == 400 and r.json()["detail"]["field"] == "confirmed_by_elder_or_proxy"
+    r = client.post("/api/elders/control/consents/daily_call/withdraw", headers={"X-Actor": "Th%E1%BA%A3o"},
+                    json={"confirmed_by_elder_or_proxy": True})
+    assert r.status_code == 200 and r.json()["scheduling_active"] is False and r.json()["requested_by"] == "Thảo"
     pr = client.get("/api/elders/control/privacy").json()
     dc = next(c for c in pr["consents"] if c["kind"] == "daily_call")
     assert dc["status"] == "withdrawn" and pr["scheduling_active"] is False
+    assert dc["requested_by"] == "Thảo" and dc["confirmed_by_elder_or_proxy"] is True
     assert len([c for c in pr["consents"] if c["kind"] == "daily_call"]) == 1 and len(pr["consent_history"]) == 6
     assert client.post("/api/calls", json={"elder_id": "control"}).status_code == 409
     client.post("/api/elders/control/resume")
     assert client.post("/api/calls", json={"elder_id": "control"}).status_code == 200
     # family_sharing: the family app stops receiving health data until re-granted
-    client.post("/api/elders/control/consents/family_sharing/withdraw")
+    client.post("/api/elders/control/consents/family_sharing/withdraw", json={"confirmed_by_elder_or_proxy": True})
     t = client.get("/api/elders/control/today").json()
     assert t["sharing_paused"] and t["light"] == "gray" and t["summary_vi"] == ""
     assert client.get("/api/elders/control/timeline").json()["records"] == []
@@ -299,7 +304,7 @@ def test_consent_withdraw_and_regrant(client):
 
 
 def test_voice_metrics_withdrawn_stores_no_speech_metrics(client):
-    client.post("/api/elders/hanh/consents/voice_metrics/withdraw")
+    client.post("/api/elders/hanh/consents/voice_metrics/withdraw", headers={"X-Role": "elder_self"})
     cid, _ = run_simulated_call(client)
     client.post(f"/api/calls/{cid}/end")
     last = client.get("/api/elders/hanh/timeline?days=1").json()["records"][-1]

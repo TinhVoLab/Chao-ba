@@ -68,7 +68,7 @@ def test_metric_trend_yellow_after_three_days():
 
 
 def test_metric_shift_red_after_five_days_beyond_red():
-    L = lights_by_day(series(40, drop(range(22, 41), value=3.5)))
+    L = lights_by_day(series(40, drop(range(22, 41), value=3.2)))   # deep enough to pass L_red=4.0 on day 22
     reds = [d for d, l in L.items() if l.light == "red"]
     assert reds and "metric_shift" in codes(L[min(reds)])
     assert min(reds) == 26  # beyond L_red from day 22 -> 5 days
@@ -180,3 +180,29 @@ def test_dict_records_and_reason_shape():
     assert len(L) == 40
     r = next(x for l in L for x in l.reasons if x["code"] in ("metric_trend", "metric_shift"))
     assert {"code", "metric", "days", "change_pct", "level"} <= set(r)
+
+
+def test_emergency_record_is_red_and_survives_recompute():
+    """An emergency persisted on the record (DailyRecord.emergency) forces red via the `emergency` event rule, also
+    during baseline building, and hysteresis holds it until recover_days better valid days."""
+    from dataclasses import replace
+    recs = series(40)
+    recs[34] = replace(recs[34], emergency=True)            # day 35
+    lb = lights_by_day(recs)
+    assert lb[35].light == "red" and "emergency" in codes(lb[35])
+    assert lb[34].light == "green"
+    assert lb[36].light == "red" and "recovering" in codes(lb[36])    # held
+    assert lb[38].light == "green"                                    # 3 better valid days -> steps down
+    early = series(5)
+    early[2] = replace(early[2], emergency=True)
+    assert lights_by_day(early)[3].light == "red"                     # safety first: no baseline needed
+
+
+def test_health_concern_key_is_red_and_not_a_symptom():
+    recs = series(40, {35: {"symptoms": {"concern:chest_pain": 1}}, 36: {"symptoms": {"pain": 1}},
+                       37: {"symptoms": {"insomnia": 1}}})
+    lb = lights_by_day(recs)
+    r = next(x for x in lb[35].reasons if x["code"] == "health_concern")
+    assert lb[35].light == "red" and r["symptom"] == "chest_pain"
+    # the concern key does not count towards multi_symptom (only pain + insomnia = 2 distinct)
+    assert "multi_symptom" not in codes(lb[37])

@@ -1,11 +1,12 @@
 "use client";
-import { useState } from "react";
-import { Check, MessageSquareHeart, NotebookPen, Phone, PhoneCall, Send, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Check, CloudOff, MessageSquareHeart, NotebookPen, Phone, PhoneCall, Send, X } from "lucide-react";
 import type { ContactStatus, Note } from "@/lib/types";
-import { API_BASE } from "@/lib/config";
-import { actorHeaders, viewerFor } from "@/lib/viewer";
-import { useLang, useLocal, writeLocal } from "@/lib/useLang";
+import { viewerFor } from "@/lib/viewer";
+import { useLang, useLocal } from "@/lib/useLang";
+import { SENT_EVENT, postWrite, useOutbox, type PendingWrite } from "@/lib/outbox";
 import { shortDate } from "@/lib/format";
+import { NotSaved, SaveRefused } from "./SaveState";
 import { T } from "./T";
 
 const PRESETS: { vi: string; en: string; logsCall?: boolean }[] = [
@@ -19,6 +20,10 @@ function fill(s: string, k: string) {
   return s.replace("{k}", k).replace("{K}", k.charAt(0).toUpperCase() + k.slice(1));
 }
 
+const sameDay = (iso: string | null | undefined) => (iso ? new Date(iso).toDateString() === new Date().toDateString() : false);
+
+type SaveStatus = { state: "idle" | "saving" | "saved" | "queued" } | { state: "rejected"; detail: string };
+
 export function TodayActions({
   elderId,
   kinVi,
@@ -27,7 +32,6 @@ export function TodayActions({
   author,
   initialNotes,
   contact,
-  live,
   todayDate,
   todayDay,
 }: {
@@ -38,7 +42,6 @@ export function TodayActions({
   author: string;
   initialNotes: Note[];
   contact: ContactStatus | null;
-  live: boolean;
   todayDate: string;
   todayDay: number;
 }) {
@@ -46,55 +49,64 @@ export function TodayActions({
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
   const [notes, setNotes] = useState<Note[]>(initialNotes);
-  const [status, setStatus] = useState<"idle" | "saving" | "saved" | "local">("idle");
+  const [status, setStatus] = useState<SaveStatus>({ state: "idle" });
+  const [callStatus, setCallStatus] = useState<SaveStatus>({ state: "idle" });
   const [toElder, setToElder] = useState(false);
+  const pending = useOutbox(elderId);
+  // Set only after the API stored the contact row (directly, or later from the outbox).
   const calledAt = useLocal(`cb-called-${elderId}`);
-  const calledToday = calledAt ? new Date(calledAt).toDateString() === new Date().toDateString() : false;
-  const headers = { "Content-Type": "application/json", ...actorHeaders(elderId) };
+  const calledToday = sameDay(calledAt);
+  const callPending = pending.some((p) => p.kind === "contact" && sameDay(p.createdAt));
+  const pendingNotes = pending.filter((p) => p.kind === "note");
+  const base = `/api/elders/${encodeURIComponent(elderId)}`;
+
+  // A note that waited in the outbox reached the server: show the stored copy.
+  useEffect(() => {
+    function sent(e: Event) {
+      const { item, json } = (e as CustomEvent<{ item: PendingWrite; json: unknown }>).detail;
+      if (item.kind !== "note" || item.elderId !== elderId) return;
+      const local = item.meta?.note as Note | undefined;
+      const saved = json && typeof json === "object" && "text" in json ? (json as Partial<Note>) : {};
+      if (local) setNotes((n) => [{ ...local, ...saved, date: local.date }, ...n]);
+    }
+    window.addEventListener(SENT_EVENT, sent);
+    return () => window.removeEventListener(SENT_EVENT, sent);
+  }, [elderId]);
 
   /** Log a family call in the contact log (feeds "N days since anyone called" and the DMAIC Improve step). */
-  function logCall() {
-    writeLocal(`cb-called-${elderId}`, new Date().toISOString());
-    if (!live) return;
-    fetch(`${API_BASE}/api/elders/${encodeURIComponent(elderId)}/contacts`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({ kind: "call", member_id: viewerFor(elderId).memberId }),
-      keepalive: true,
-    }).catch(() => {});
+  async function logCall() {
+    setCallStatus({ state: "saving" });
+    const r = await postWrite("contact", elderId, `${base}/contacts`, { kind: "call", member_id: viewerFor(elderId).memberId }, {
+      markKey: `cb-called-${elderId}`,
+    });
+    setCallStatus(r.state === "rejected" ? { state: "rejected", detail: r.detail } : { state: r.state });
   }
 
   async function save(body: string, logsCall = false) {
     const t = body.trim();
     if (!t) return;
-    setStatus("saving");
-    let note: Note = { author, text: t, day: todayDay, date: todayDate, to_elder: toElder, created_at: new Date().toISOString() };
-    let ok = false;
-    if (live) {
-      try {
-        const res = await fetch(`${API_BASE}/api/elders/${encodeURIComponent(elderId)}/notes`, {
-          method: "POST",
-          headers,
-          body: JSON.stringify({ author, text: t, to_elder: toElder }),
-          signal: AbortSignal.timeout(4000),
-        });
-        ok = res.ok;
-        if (ok) {
-          const saved = (await res.json().catch(() => null)) as Partial<Note> | null;
-          if (saved && typeof saved === "object" && "text" in saved) note = { ...note, ...saved, date: note.date };
-        }
-      } catch {
-        ok = false;
-      }
+    setStatus({ state: "saving" });
+    const note: Note = { author, text: t, day: todayDay, date: todayDate, to_elder: toElder, created_at: new Date().toISOString() };
+    const r = await postWrite("note", elderId, `${base}/notes`, { author, text: t, to_elder: toElder }, { meta: { note } });
+    if (r.state === "rejected") {
+      setStatus({ state: "rejected", detail: r.detail });
+      return; // keep the text in the box so nothing is lost
+    }
+    if (r.state === "saved") {
+      const saved = r.json && typeof r.json === "object" && "text" in r.json ? (r.json as Partial<Note>) : {};
+      setNotes((n) => [{ ...note, ...saved, date: note.date }, ...n]);
     }
     if (logsCall) logCall();
-    setNotes((n) => [note, ...n]);
     setText("");
     setOpen(false);
-    setStatus(ok ? "saved" : "local");
+    setStatus({ state: r.state });
     setToElder(false);
   }
 
+  const shownNotes: (Note & { pending?: boolean })[] = [
+    ...pendingNotes.map((p) => ({ ...(p.meta?.note as Note), pending: true })).filter((n) => n.text),
+    ...notes,
+  ];
   const k = lang === "en" ? kinEn : kinVi;
 
   return (
@@ -125,8 +137,12 @@ export function TodayActions({
       {calledToday ? (
         <p className="flex items-center gap-2 rounded-xl bg-green-tint px-4 py-3 font-medium text-green-ink" role="status">
           <Check size={18} aria-hidden />
-          <T vi={`Bạn đã bấm gọi ${kinVi} hôm nay`} en={`You called ${kinEn} today`} />
+          <T vi={`Đã ghi: bạn gọi ${kinVi} hôm nay`} en={`Logged: you called ${kinEn} today`} />
         </p>
+      ) : callPending ? (
+        <NotSaved />
+      ) : callStatus.state === "rejected" ? (
+        <SaveRefused detail={callStatus.detail} />
       ) : contact?.nudge && contact.days_since != null ? (
         <p className="flex items-start gap-3 rounded-xl bg-yellow-tint px-4 py-3 text-yellow-ink" role="status">
           <PhoneCall size={20} className="mt-0.5 shrink-0" aria-hidden />
@@ -180,7 +196,7 @@ export function TodayActions({
                 <button
                   key={p.vi}
                   type="button"
-                  disabled={status === "saving"}
+                  disabled={status.state === "saving"}
                   onClick={() => save(label, p.logsCall)}
                   className="min-h-11 rounded-full border border-line-strong bg-bg px-3.5 text-[0.9375rem] font-medium transition-colors duration-150 hover:border-accent hover:text-accent disabled:opacity-50"
                 >
@@ -202,7 +218,7 @@ export function TodayActions({
             />
             <button
               type="submit"
-              disabled={!text.trim() || status === "saving"}
+              disabled={!text.trim() || status.state === "saving"}
               className="grid min-h-12 min-w-12 place-items-center rounded-xl bg-accent text-accent-ink transition-opacity duration-150 disabled:opacity-40"
             >
               <Send size={20} aria-hidden />
@@ -213,27 +229,23 @@ export function TodayActions({
       )}
 
       <div aria-live="polite">
-        {status === "saved" && (
+        {status.state === "saved" && (
           <p className="fade-in flex items-center gap-2 text-sm font-medium text-green-ink">
             <Check size={16} aria-hidden />
             <T vi="Đã lưu ghi chú. Cả nhà đều thấy." en="Note saved. The whole family can see it." />
           </p>
         )}
-        {status === "local" && (
-          <p className="fade-in flex items-center gap-2 text-sm font-medium text-ink-2">
-            <Check size={16} aria-hidden />
-            <T vi="Đã lưu trên máy này (chế độ demo ngoại tuyến)." en="Saved on this device (offline demo mode)." />
-          </p>
-        )}
+        {status.state === "queued" && pendingNotes.length > 0 && <NotSaved className="fade-in" />}
+        {status.state === "rejected" && <SaveRefused detail={status.detail} className="fade-in" />}
       </div>
 
-      {notes.length > 0 && (
+      {shownNotes.length > 0 && (
         <div>
           <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-ink-3">
             <T vi="Ghi chú gần đây" en="Recent notes" />
           </h2>
           <ul className="divide-y divide-line">
-            {notes.slice(0, 3).map((n, i) => (
+            {shownNotes.slice(0, 3).map((n, i) => (
               <li key={`${n.id ?? i}-${n.created_at ?? ""}`} className="flex gap-3 py-2.5">
                 <span className="w-12 shrink-0 pt-0.5 text-sm text-ink-3 tnum">{n.date ? shortDate(n.date) : ""}</span>
                 <p className="min-w-0">
@@ -242,6 +254,12 @@ export function TodayActions({
                     <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-accent-tint px-2 py-px align-middle text-xs font-semibold text-accent">
                       <MessageSquareHeart size={12} aria-hidden />
                       <T vi={`nhắn cho ${kinVi}`} en={`to ${kinEn}`} />
+                    </span>
+                  )}
+                  {n.pending && (
+                    <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-yellow-tint px-2 py-px align-middle text-xs font-semibold text-yellow-ink">
+                      <CloudOff size={12} aria-hidden />
+                      <T vi="chưa lưu, giữ trên máy này" en="not saved, kept on this device" />
                     </span>
                   )}
                 </p>

@@ -4,6 +4,13 @@ Implements the REST API in CONTRACT.md plus the static elder web-call page at /c
 Family reads are written to access_log (actor from the `X-Actor` header, role from `X-Role`; defaults
 "family:primary"/"primary" because the prototype has no auth - production uses Supabase Auth + RLS, see schema.sql).
 Reads are de-duplicated to one row per actor / action / resource / day (with a counter); writes always get a row.
+
+Environment:
+  CHAOBA_DB            SQLite path (default data/runtime/chaoba.db)
+  CHAOBA_END_DATE      pin the seeded calendar (day 90 = this date; default yesterday)
+  CHAOBA_CORS_ORIGINS  comma-separated allowed origins (e.g. "https://app.chaoba.vn"). Unset: any http(s) origin on
+                       localhost / 127.0.0.1 / [::1], any port (development).
+  CHAOBA_DEMO          "1" (default) enables demo-only endpoints (POST /api/demo/reset); set "0" in production.
 """
 from __future__ import annotations
 
@@ -20,7 +27,17 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from .db import Store
-from .service import Service, llm_enabled
+from .service import Service, llm_enabled, demo_enabled
+
+LOCALHOST_ORIGIN_RE = r"^https?://(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$"
+
+
+def cors_settings() -> dict:
+    """CORSMiddleware kwargs from CHAOBA_CORS_ORIGINS (comma list); default = localhost on any port (dev)."""
+    env = os.environ.get("CHAOBA_CORS_ORIGINS", "").strip()
+    if env:
+        return {"allow_origins": [o.strip().rstrip("/") for o in env.split(",") if o.strip()]}
+    return {"allow_origins": [], "allow_origin_regex": LOCALHOST_ORIGIN_RE}
 
 log = logging.getLogger("chaoba.server")
 STATIC = Path(__file__).parent / "static"
@@ -46,6 +63,14 @@ class ContactIn(BaseModel):
     duration_min: int | None = None
 
 
+class ConsentChangeIn(BaseModel):
+    # The consent belongs to the elder. A family member asking to withdraw it must state that the elder (or their
+    # legal proxy) confirmed the request; `requested_by` defaults to the X-Actor header.
+    confirmed_by_elder_or_proxy: bool = False
+    requested_by: str | None = None
+    reason: str | None = None
+
+
 class NoteIn(BaseModel):
     author: str
     text: str
@@ -64,9 +89,7 @@ def create_app(db_path: str | None = None, seed: bool = True) -> FastAPI:
         store.close()
 
     app = FastAPI(title="Chào Bà API", version="0.1.0", lifespan=lifespan)
-    app.add_middleware(CORSMiddleware,
-                       allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
-                       allow_methods=["*"], allow_headers=["*"])
+    app.add_middleware(CORSMiddleware, allow_methods=["*"], allow_headers=["*"], **cors_settings())
     app.mount("/static", StaticFiles(directory=str(STATIC)), name="static")
 
     def svc(request: Request) -> Service:
@@ -75,6 +98,9 @@ def create_app(db_path: str | None = None, seed: bool = True) -> FastAPI:
     def actor(request: Request) -> str:
         # HTTP headers are ASCII: the app percent-encodes Vietnamese names ("Th%E1%BA%A3o" -> "Thảo").
         return unquote(request.headers.get("x-actor", "family:primary"))[:80]
+
+    def role(request: Request) -> str:
+        return unquote(request.headers.get("x-role", "primary"))[:40]
 
     def elder_guard(request: Request, elder_id: str, action: str) -> Service:
         s = svc(request)
@@ -154,13 +180,29 @@ def create_app(db_path: str | None = None, seed: bool = True) -> FastAPI:
         return s.log_contact(elder_id, body.member_id, body.member_name, body.kind, body.duration_min)
 
     @app.post("/api/elders/{elder_id}/consents/{kind}/withdraw")
-    def withdraw_consent(request: Request, elder_id: str, kind: str):
-        """Withdraw one consent purpose; processing for it stops (daily_call also pauses scheduling, like opt-out)."""
+    def withdraw_consent(request: Request, elder_id: str, kind: str, body: ConsentChangeIn | None = None):
+        """Withdraw one consent purpose; processing for it stops (daily_call also pauses scheduling, like opt-out).
+
+        The consent is the elder's: unless the caller is the elder (X-Role: elder_self), the body must carry
+        `confirmed_by_elder_or_proxy: true` (else 400). `requested_by` (default: X-Actor) is recorded."""
         from .service import CONSENT_KINDS
         if kind not in CONSENT_KINDS:
             raise HTTPException(404, f"unknown consent type {kind}")
+        body = body or ConsentChangeIn()
+        r = role(request)
+        if r not in ("elder_self", "elder") and not body.confirmed_by_elder_or_proxy:
+            raise HTTPException(400, {
+                "error": "confirmation_required",
+                "field": "confirmed_by_elder_or_proxy",
+                "message_en": ("This consent belongs to the elder. A family member can withdraw it only after the elder "
+                               "(or their legal proxy) has confirmed. Send {\"confirmed_by_elder_or_proxy\": true}."),
+                "message_vi": ("Đây là sự đồng ý của người cao tuổi. Người nhà chỉ rút được sau khi chính người cao tuổi "
+                               "(hoặc người đại diện hợp pháp) đã xác nhận."),
+            })
         s = elder_guard(request, elder_id, "withdraw_consent")
-        return s.set_consent(elder_id, kind, False, actor(request))
+        return s.set_consent(elder_id, kind, False, actor(request), requested_by=body.requested_by or actor(request),
+                             confirmed_by_elder_or_proxy=bool(body.confirmed_by_elder_or_proxy) or r in ("elder_self", "elder"),
+                             role=r, reason=body.reason)
 
     @app.post("/api/elders/{elder_id}/consents/{kind}/grant")
     def grant_consent(request: Request, elder_id: str, kind: str):
@@ -169,7 +211,7 @@ def create_app(db_path: str | None = None, seed: bool = True) -> FastAPI:
         if kind not in CONSENT_KINDS:
             raise HTTPException(404, f"unknown consent type {kind}")
         s = elder_guard(request, elder_id, "grant_consent")
-        return s.set_consent(elder_id, kind, True, actor(request))
+        return s.set_consent(elder_id, kind, True, actor(request), requested_by=actor(request), role=role(request))
 
     @app.get("/api/elders/{elder_id}/privacy")
     def privacy(request: Request, elder_id: str):
@@ -181,6 +223,17 @@ def create_app(db_path: str | None = None, seed: bool = True) -> FastAPI:
         s = elder_guard(request, elder_id, "resume_calls")
         s.store.set_opt_out(elder_id, False, by=actor(request))
         return {"ok": True, "scheduling_active": True}
+
+    @app.post("/api/demo/reset")
+    def demo_reset(request: Request, elder: str | None = None):
+        """Demo only (CHAOBA_DEMO=1, the default): delete live calls, notes, alerts and contacts and re-seed the
+        simulated personas (all, or one with ?elder=hanh). 403 when CHAOBA_DEMO=0."""
+        if not demo_enabled():
+            raise HTTPException(403, "demo endpoints are disabled (CHAOBA_DEMO=0)")
+        s = svc(request)
+        if elder and elder not in ("hanh", "tu", "control") and not s.elder_or_none(elder):
+            raise HTTPException(404, f"unknown elder {elder}")
+        return s.reset(elder)
 
     @app.get("/api/evaluation")
     def evaluation(request: Request):

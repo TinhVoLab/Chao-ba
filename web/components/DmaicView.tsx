@@ -78,6 +78,8 @@ export function DmaicView({
   const minDay = sortedLights[0]?.day ?? 1;
   const span = Math.max(1, maxDay - minDay + 1);
   const effects = METRICS.filter((m) => dmaic.effect?.[m]);
+  // API flag first; older API / fixtures: any simulated cycle is an illustration.
+  const illustrative = dmaic.effect_illustrative ?? dmaic.simulated !== false;
   const selPhase = PHASES[sel];
   const selData = byKey.get(selPhase.key);
 
@@ -281,6 +283,25 @@ export function DmaicView({
               );
             })()}
           </h2>
+          {illustrative && (
+            <div className="flex flex-col gap-1 rounded-xl border border-dashed border-line-strong bg-surface-2 px-3 py-2.5" role="note">
+              <span className="w-fit rounded-full bg-ink px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-bg">
+                <T vi="Minh hoạ – nhân vật kịch bản" en="Illustrative – scripted persona" />
+              </span>
+              <p className="text-sm text-ink-2">
+                <T
+                  vi={
+                    dmaic.effect_note_vi ||
+                    "Hồi phục sau can thiệp được viết sẵn trong kịch bản mô phỏng. Bảng này cho thấy cách hệ thống đo trước/sau, không phải bằng chứng can thiệp có hiệu quả."
+                  }
+                  en={
+                    dmaic.effect_note_en ||
+                    "The recovery after the intervention is written into the simulated script. This table shows how the system measures before/after; it is not evidence that the intervention worked."
+                  }
+                />
+              </p>
+            </div>
+          )}
           <div className="overflow-x-auto rounded-2xl border border-line bg-surface">
             <table className="w-full min-w-[22rem] text-[0.9375rem] tnum">
               <thead>
@@ -304,9 +325,12 @@ export function DmaicView({
   );
 }
 
+const fmtSigned = (x: number) => `${x > 0 ? "+" : x < 0 ? "−" : "±"}${Math.abs(x).toFixed(1)}`;
+
 function EffectRow({ m, e }: { m: Metric; e: { pre: number | null; post: number | null; change_pct: number | null } }) {
   const meta = METRIC_META[m];
-  const pct = e.change_pct;
+  // Recall (0–3 score) is compared in points, not percent.
+  const pct = m === "recall_score" ? (e.pre != null && e.post != null ? (e.post - e.pre) * 100 : null) : e.change_pct;
   const better = pct != null && Math.abs(pct) >= 1 ? Math.sign(pct) === -BAD_DIRECTION[m] : null;
   const Icon = pct == null || Math.abs(pct) < 1 ? Minus : pct > 0 ? ArrowUpRight : ArrowDownRight;
   return (
@@ -319,7 +343,13 @@ function EffectRow({ m, e }: { m: Metric; e: { pre: number | null; post: number 
       <td className="px-4 py-2.5 text-right">
         <span className={`inline-flex items-center gap-1 font-bold ${better === true ? "text-green-ink" : better === false ? "text-red-ink" : "text-ink-2"}`}>
           <Icon size={16} aria-hidden />
-          {pct != null ? `${pct > 0 ? "+" : ""}${pct.toFixed(1)}%` : "–"}
+          {m === "recall_score"
+            ? e.pre != null && e.post != null
+              ? <T vi={`${fmtSigned(e.post - e.pre)} điểm`} en={`${fmtSigned(e.post - e.pre)} pts`} />
+              : "–"
+            : pct != null
+              ? `${pct > 0 ? "+" : ""}${pct.toFixed(1)}%`
+              : "–"}
         </span>
         <span className="block text-xs font-medium text-ink-3">
           {better === true ? <T vi="tốt hơn" en="better" /> : better === false ? <T vi="kém hơn" en="worse" /> : <T vi="như cũ" en="unchanged" />}

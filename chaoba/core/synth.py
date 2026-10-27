@@ -323,7 +323,7 @@ def generate_persona(key: Literal["hanh", "tu", "control"], days: int = 90, seed
     rebase = [HANH["rebaseline"]] if key == "hanh" and days >= HANH["rebaseline"] else []
     lights = evaluate_series(records, ControlConfig(), rebaseline_days=rebase)
     for l in lights:
-        l.explanation_vi, l.explanation_en = explain(l, profile["display_name"], profile["name_en"])
+        l.explanation_vi, l.explanation_en = explain(l, profile["display_name"], profile["name_en"], records=records)
 
     notes, events = [], [
         {"day": 1, "type": "enrolment", "label_vi": "Bắt đầu cuộc gọi hằng ngày", "label_en": "Daily calls start"},
@@ -371,8 +371,8 @@ def generate_persona(key: Literal["hanh", "tu", "control"], days: int = 90, seed
             "concern_en": "memory and mental sharpness",
             "context_vi": "Thay đổi diễn ra chậm, từ từ qua nhiều tuần, chủ yếu ở trí nhớ và cách dùng từ.",
             "context_en": "Change is slow and gradual over weeks, mainly in recall and word use.",
-            "recommendation_vi": "nên đưa ông đi khám để bác sĩ đánh giá, mang theo báo cáo xu hướng này; gia đình trò chuyện với ông thường xuyên hơn.",
-            "recommendation_en": "arrange a doctor's visit so a doctor can assess, and bring this trend report; family to talk with him more often.",
+            "recommendation_vi": "gia đình gọi trò chuyện với ông thường xuyên hơn; nếu thay đổi kéo dài, mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+            "recommendation_en": "family to call and talk with him more often; if the change persists, bring this trend report to his next routine check-up.",
         })
     else:
         notes += [{"day": 50, "author": "Thảo", "text": "Ba khỏe, tuần này đi đám giỗ bên ngoại."}]
@@ -383,7 +383,7 @@ def generate_persona(key: Literal["hanh", "tu", "control"], days: int = 90, seed
     events.sort(key=lambda e: e["day"])
 
     contacts = family_contacts(key, profile, days, seed)
-    cycle = compute_cycle(records, lights, define, intervention_day, contacts=contacts)
+    cycle = compute_cycle(records, lights, define, intervention_day, contacts=contacts, simulated=True)
     from .control_chart import current_baseline
     out = {
         "elder": profile,

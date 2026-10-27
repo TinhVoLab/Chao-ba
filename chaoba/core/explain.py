@@ -1,7 +1,8 @@
 """Bilingual (Vietnamese / English) family-facing explanation of a ``DailyLight``.
 
-* **Template first.** Code turns the structured reasons into facts (numbers rounded to whole
-  percents / counts) and fills fixed sentence templates. Vietnamese wording is warm, plain and
+* **Template first.** Code turns the structured reasons into facts (percent changes rounded to whole
+  percents below 10 % and to the nearest 5 % above; recall, a 0-3 score, only ever as counts of recent calls
+  such as "2/7 lần (thường khoảng 6/7)", never as a percentage) and fills fixed sentence templates. Vietnamese wording is warm, plain and
   Southern-neutral ("bà", "té ngã", "đi khám"), always framed as *change relative to the person's own
   usual pattern*, never as a diagnosis.
 * **Safety blocklist.** Output must never contain diagnostic labels (``BLOCKLIST``). Templates are
@@ -85,9 +86,38 @@ def _span_en(days: int) -> str:
 
 
 def _pct(x) -> int | None:
+    """Rounded size of a % change: whole percent below 10 %, nearest 5 % above (no false precision)."""
     if x is None:
         return None
-    return int(round(abs(float(x))))
+    p = abs(float(x))
+    return int(round(p)) if p < 10 else int(5 * round(p / 5.0))
+
+
+def _rget(r, k):
+    return r.get(k) if isinstance(r, dict) else getattr(r, k, None)
+
+
+def recall_counts(records, day: int, baseline_days: int = 21, window: int = 7, min_asked: int = 3):
+    """Recall as counts, never as a percentage of a 0-3 score.
+
+    Returns ``(free, asked, usual)``: in the last ``window`` calendar days up to ``day``, on how many of the
+    ``asked`` valid calls with a recall question the person recalled the earlier story fully without hints
+    (score 3 = exact free recall), and how many of ``asked`` that would usually be (rate over the first
+    ``baseline_days`` days, scaled to ``asked``). None if fewer than ``min_asked`` recall calls in either window.
+    """
+    if not records:
+        return None
+    rs = [r for r in records if _rget(r, "recall_score") is not None and _rget(r, "valid") is not False]
+    if not rs:
+        return None
+    first = min(int(_rget(r, "day")) for r in records)
+    recent = [r for r in rs if day - window < int(_rget(r, "day")) <= day]
+    base = [r for r in rs if int(_rget(r, "day")) < first + baseline_days]
+    if len(recent) < min_asked or len(base) < min_asked:
+        return None
+    free = sum(1 for r in recent if float(_rget(r, "recall_score")) >= 3)
+    usual_rate = sum(1 for r in base if float(_rget(r, "recall_score")) >= 3) / len(base)
+    return free, len(recent), int(round(usual_rate * len(recent)))
 
 
 def _metric_items(reasons):
@@ -104,7 +134,9 @@ def _metric_items(reasons):
     return sorted(items.items(), key=lambda kv: (prio.get(kv[0], 2), -abs(kv[1][1] or 0)))
 
 
-def template_explain(light: DailyLight, elder_name_vi: str, elder_name_en: str) -> tuple[str, str]:
+def template_explain(light: DailyLight, elder_name_vi: str, elder_name_en: str,
+                     records=None) -> tuple[str, str]:
+    """``records`` (optional, the person's daily records) lets recall be stated as counts of recent calls."""
     hon, he, his = _pronouns(elder_name_vi, elder_name_en)
     He = he.capitalize()
     him = "her" if he == "she" else "him"
@@ -149,7 +181,11 @@ def template_explain(light: DailyLight, elder_name_vi: str, elder_name_en: str) 
     if metrics:
         days = max(d for _, (d, _) in metrics)
         parts_vi, parts_en = [], []
+        recall_shown = False
         for m, (_, c) in metrics[:2]:
+            if m == "recall_score":  # 0-3 score: counts, never a percentage
+                recall_shown = True
+                continue
             p = _pct(c)
             if p and p >= 3:
                 parts_vi.append(f"{METRIC_VI[m]} khoảng {p}%")
@@ -165,11 +201,25 @@ def template_explain(light: DailyLight, elder_name_vi: str, elder_name_en: str) 
             s = rep[0]
             sym_vi = f" và {int(s.get('quotes', 2))} lần nhắc {SYMPTOM_VI.get(s['symptom'], s['symptom'])}"
             sym_en = f", and mentioned {SYMPTOM_EN.get(s['symptom'], s['symptom'])} {int(s.get('quotes', 2))} times"
-        vi.append(f"{_span_vi(span_days)} {hon} " + " và ".join(parts_vi)
-                  + f" so với bình thường của {hon}{sym_vi}.")
-        en.append(f"{_span_en(span_days)} {he} has been " + " and ".join(parts_en)
-                  + f" compared with {his} own usual pattern{sym_en}.")
-        used_rep = bool(rep)
+        if parts_vi:
+            vi.append(f"{_span_vi(span_days)} {hon} " + " và ".join(parts_vi)
+                      + f" so với bình thường của {hon}{sym_vi}.")
+            en.append(f"{_span_en(span_days)} {he} has been " + " and ".join(parts_en)
+                      + f" compared with {his} own usual pattern{sym_en}.")
+            used_rep = bool(rep)
+        else:
+            used_rep = False
+        if recall_shown:
+            rc = recall_counts(records, light.day)
+            if rc:
+                f_, n_, u_ = rc
+                vi.append(f"Trong {n_} cuộc gọi gần đây, {hon} tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý "
+                          f"{f_}/{n_} lần (thường khoảng {u_}/{n_}).")
+                en.append(f"In the last {n_} calls {he} recalled the earlier story fully without hints "
+                          f"{f_} of {n_} times (usually about {u_} of {n_}).")
+            else:
+                vi.append(f"Gần đây {hon} cần gợi ý nhiều hơn thường lệ khi nhắc lại chuyện đã kể.")
+                en.append(f"Lately {he} has needed more hints than usual to recall earlier conversations.")
     else:
         used_rep = False
 
@@ -210,10 +260,12 @@ def template_explain(light: DailyLight, elder_name_vi: str, elder_name_en: str) 
             en.append(f"Please call {him} and consider arranging a doctor's visit.")
     else:
         if cognitive_only:
-            vi.append(f"Nên gọi hỏi thăm {hon} nhiều hơn và đưa {hon} đi khám để bác sĩ đánh giá; "
-                      f"mang theo báo cáo xu hướng này.")
-            en.append(f"Consider calling more often and arranging a doctor's visit so a doctor can assess; "
-                      f"bring this trend report.")
+            # Neutral: a change in talk/recall is not a test result. Suggest contact first; the trend report is
+            # something to bring to a routine check-up if the change persists.
+            vi.append(f"Nên gọi trò chuyện với {hon} thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể "
+                      f"mang báo cáo xu hướng này khi {hon} đi khám định kỳ.")
+            en.append(f"Consider calling {him} more often. If the change persists, you could bring this trend "
+                      f"report to {his} next routine check-up.")
         else:
             vi.append(f"Nên gọi hỏi thăm {hon} trong hôm nay hoặc ngày mai.")
             en.append(f"Consider giving {him} a call today or tomorrow.")
@@ -282,9 +334,13 @@ def _llm_reword(vi: str, en: str) -> tuple[str, str] | None:
         return None
 
 
-def explain(light: DailyLight, elder_name_vi: str, elder_name_en: str, use_llm: bool = False) -> tuple[str, str]:
-    """(vi, en) explanation of a daily light. Deterministic unless ``use_llm`` and a key is configured."""
-    vi, en = template_explain(light, elder_name_vi, elder_name_en)
+def explain(light: DailyLight, elder_name_vi: str, elder_name_en: str, use_llm: bool = False,
+            records=None) -> tuple[str, str]:
+    """(vi, en) explanation of a daily light. Deterministic unless ``use_llm`` and a key is configured.
+
+    Pass the person's daily ``records`` so a recall change is stated as counts ("2/7 calls, usually 6/7");
+    without them the recall sentence carries no number."""
+    vi, en = template_explain(light, elder_name_vi, elder_name_en, records=records)
     if use_llm:
         res = _llm_reword(vi, en)
         if res:

@@ -19,6 +19,48 @@ SOUTHERN_STYLE = {
 }
 
 
+# How Út Thương (who calls herself "con") refers to a family member, by relation, when the profile entry has no
+# explicit `honorific`. The synthetic profiles in chaoba.core.synth carry no honorific, so the server fills this in
+# at seed time (Service._seed_persona) and ElderView falls back to the same mapping.
+RELATION_HONORIFIC = {
+    "daughter": "chị", "son": "anh", "daughter_in_law": "chị", "son_in_law": "anh",
+    "wife": "bà", "husband": "ông", "sister": "bà", "brother": "ông",
+    "niece": "chị", "nephew": "anh", "granddaughter": "", "grandson": "", "grandchild": "",
+}
+HONORIFIC_WORDS = ("bà", "ông", "cô", "chú", "anh", "chị", "bác", "dì", "cậu", "mợ", "thím", "em")
+
+
+def family_honorific(member: dict | None) -> str:
+    """anh / chị / cô / chú / bà / ông (or "" = name only) for a family-member entry."""
+    if not member:
+        return ""
+    if member.get("honorific") is not None:
+        return str(member["honorific"]).lower()
+    name = (member.get("name") or "").split()
+    if len(name) > 1 and name[0].lower() in HONORIFIC_WORDS:   # "Bà Tư" already carries it
+        return name[0].lower()
+    return RELATION_HONORIFIC.get((member.get("relation") or "").lower(), "")
+
+
+def family_ref(member: dict | None) -> str | None:
+    """Mid-sentence reference to a family member: "chị Lan", "bà Tư" (never "cô Bà Tư")."""
+    if not member or not member.get("name"):
+        return None
+    name = member["name"].strip()
+    parts = name.split()
+    if len(parts) > 1 and parts[0].lower() in HONORIFIC_WORDS:
+        return parts[0].lower() + " " + " ".join(parts[1:])
+    h = family_honorific(member)
+    return f"{h} {name}".strip()
+
+
+def with_family_honorifics(profile: dict) -> dict:
+    """Copy of the profile whose family entries all carry an explicit `honorific`."""
+    p = dict(profile)
+    p["family"] = [dict(f, honorific=family_honorific(f)) for f in (profile.get("family") or [])]
+    return p
+
+
 @dataclass
 class ElderView:
     """The bits of the profile the agent needs, with safe defaults."""
@@ -29,6 +71,7 @@ class ElderView:
     short_name: str = ""
     family_primary: str | None = None
     family_relation: str | None = None
+    family_ref: str | None = None          # "chị Lan", "bà Tư": how the agent names the primary family member
     medications: list[dict] = field(default_factory=list)
     province: str = ""
 
@@ -44,6 +87,7 @@ class ElderView:
             id=p.get("id", "?"), display_name=display, honorific=honor, self_ref=p.get("self_ref") or "con",
             short_name=short, family_primary=primary.get("name") if primary else None,
             family_relation=primary.get("relation") if primary else None,
+            family_ref=family_ref(primary),
             medications=list(p.get("medications") or []), province=p.get("province") or "",
         )
 

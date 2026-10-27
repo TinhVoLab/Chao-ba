@@ -1,9 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, CheckCheck, Info, OctagonAlert, TriangleAlert } from "lucide-react";
 import type { Alert } from "@/lib/types";
-import { API_BASE } from "@/lib/config";
-import { actorHeaders } from "@/lib/viewer";
+import { SENT_EVENT, postWrite, useOutbox, type PendingWrite } from "@/lib/outbox";
+import { NotSaved, SaveRefused } from "./SaveState";
 import { longDate } from "@/lib/format";
 import { T } from "./T";
 
@@ -30,27 +30,38 @@ const TYPE: Record<string, { vi: string; en: string }> = {
   scam_topic: { vi: "Nhắc chuyện tiền, mã OTP", en: "Mentioned money or OTP codes" },
 };
 
-export function AlertsList({ elderId, initial, live }: { elderId: string; initial: Alert[]; live: boolean }) {
+export function AlertsList({ elderId, initial }: { elderId: string; initial: Alert[] }) {
   const [alerts, setAlerts] = useState(initial);
   const [pending, setPending] = useState<string | number | null>(null);
-  const [failed, setFailed] = useState(false);
+  const [refused, setRefused] = useState<string | null>(null);
+  const outbox = useOutbox(elderId);
+  // Acks still waiting in the outbox: shown as "not saved", never as "seen".
+  const queued = new Set(outbox.filter((p) => p.kind === "ack").map((p) => String(p.meta?.alertId)));
   const unread = alerts.filter((a) => !a.acknowledged).length;
+
+  // A queued ack reached the server later: now it is really "seen".
+  useEffect(() => {
+    function sent(e: Event) {
+      const { item } = (e as CustomEvent<{ item: PendingWrite }>).detail;
+      if (item.kind !== "ack" || item.elderId !== elderId) return;
+      setAlerts((list) => list.map((a) => (String(a.id) === String(item.meta?.alertId) ? { ...a, acknowledged: true } : a)));
+    }
+    window.addEventListener(SENT_EVENT, sent);
+    return () => window.removeEventListener(SENT_EVENT, sent);
+  }, [elderId]);
 
   async function ack(id: string | number) {
     setPending(id);
-    if (live) {
-      try {
-        const res = await fetch(`${API_BASE}/api/elders/${encodeURIComponent(elderId)}/alerts/${encodeURIComponent(String(id))}/ack`, {
-          method: "POST",
-          headers: actorHeaders(elderId),
-          signal: AbortSignal.timeout(4000),
-        });
-        setFailed(!res.ok);
-      } catch {
-        setFailed(true);
-      }
-    }
-    setAlerts((list) => list.map((a) => (a.id === id ? { ...a, acknowledged: true } : a)));
+    setRefused(null);
+    const r = await postWrite(
+      "ack",
+      elderId,
+      `/api/elders/${encodeURIComponent(elderId)}/alerts/${encodeURIComponent(String(id))}/ack`,
+      undefined,
+      { meta: { alertId: String(id) } },
+    );
+    if (r.state === "saved") setAlerts((list) => list.map((a) => (a.id === id ? { ...a, acknowledged: true } : a)));
+    if (r.state === "rejected") setRefused(r.detail);
     setPending(null);
   }
 
@@ -82,11 +93,7 @@ export function AlertsList({ elderId, initial, live }: { elderId: string; initia
           </span>
         )}
       </p>
-      {failed && (
-        <p className="text-sm text-ink-2" role="status">
-          <T vi="Chưa gửi được lên máy chủ; đã đánh dấu trên máy này." en="Couldn't reach the server; marked on this device." />
-        </p>
-      )}
+      {refused != null && <SaveRefused detail={refused} />}
       <ol className="flex flex-col gap-3">
         {alerts.map((a) => {
           const s = SEV[a.severity] ?? SEV.info;
@@ -115,7 +122,9 @@ export function AlertsList({ elderId, initial, live }: { elderId: string; initia
                 <T vi={a.explanation_vi} en={a.explanation_en} />
               </p>
               <div className="mt-3">
-                {a.acknowledged ? (
+                {!a.acknowledged && queued.has(String(a.id)) ? (
+                  <NotSaved />
+                ) : a.acknowledged ? (
                   <span className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-3">
                     <Check size={16} aria-hidden />
                     <T vi="Đã xem" en="Seen" />

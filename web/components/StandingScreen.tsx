@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import type { ElderProfile } from "@/lib/types";
-import { Lock, Mic, Phone } from "lucide-react";
+import { Mic, Phone } from "lucide-react";
 
 type Line = [speaker: "ai" | "elder", vi: string, en: string];
 
@@ -146,20 +146,10 @@ export function StandingScreen({ profile }: { profile: ElderProfile }) {
         background: "radial-gradient(120% 70% at 50% 0%, #3a2c22 0%, #241b15 60%, #1c1511 100%)",
       }}
     >
-      {/* bezel: physical camera shutter indicator */}
-      <div className="flex items-center justify-between px-[5cqw] pt-[3cqw]">
+      {/* concept label: this screen is a phase-2 design idea, not part of the prototype's scope */}
+      <div className="flex items-center px-[5cqw] pt-[3cqw]">
         <span className="rounded-full border border-[#f6efe2]/25 px-[2.4cqw] py-[0.6cqw] text-[2.4cqw] font-semibold tracking-wide text-[#f6efe2]/75">
-          Gói Nâng cao<span className="l-en"> · Premium</span>
-        </span>
-        <span className="flex items-center gap-[1.6cqw] rounded-full bg-[#120d0a] py-[0.8cqw] pl-[1cqw] pr-[2.6cqw]" title="Nắp che camera vật lý / Physical camera cover">
-          <span className="relative grid size-[5cqw] place-items-center overflow-hidden rounded-full bg-[#0a0807] ring-1 ring-[#f6efe2]/20">
-            <span className="size-[2.2cqw] rounded-full bg-[#2b3550]" />
-            <span className="absolute inset-y-0 left-0 w-[80%] rounded-l-full bg-[#d9cdb8]" />
-          </span>
-          <Lock className="size-[3cqw] text-[#a8d5a2]" aria-hidden />
-          <span className="text-[2.6cqw] font-semibold text-[#a8d5a2]">
-            Camera đã che<span className="l-en"> · covered</span>
-          </span>
+          Màn hình đứng (thiết kế giai đoạn 2)<span className="l-en"> · Standing screen (phase-2 concept)</span>
         </span>
       </div>
 

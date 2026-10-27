@@ -2,12 +2,15 @@
 
 Mirrors the production Postgres/Supabase schema in schema.sql (same table names). Structured blobs are stored as
 JSON text. There is no audio column anywhere: the browser only sends text + VAD timings, and transcripts carry
-an expiry (7 days) and are purged on startup and after every call.
+an expiry (7 days) and are purged on startup and after every call. Verbatim elder quotes kept in alerts and in
+call_analysis (symptom quotes, follow-up hooks) are replaced by "[đã xoá sau 30 ngày]" after 30 days (QUOTE_DAYS),
+also on startup and after every call (``purge_quotes``).
 """
 from __future__ import annotations
 
 import json
 import os
+import re
 import sqlite3
 import threading
 from datetime import datetime, timedelta, timezone
@@ -16,6 +19,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_DB = ROOT / "data" / "runtime" / "chaoba.db"
 TRANSCRIPT_DAYS = 7
+QUOTE_DAYS = 30
+PURGED_VI = "[đã xoá sau 30 ngày]"
+PURGED_EN = "[removed after 30 days]"
+QUOTE_RE = re.compile(r"“[^”]*”")
+ELDER_TABLES = ("family_member", "consent", "call_session", "call_analysis", "memory_fact", "metric_daily", "baseline",
+                "daily_light", "alert", "dmaic_cycle", "family_note", "access_log", "family_contact", "care_event")
 
 DDL = """
 CREATE TABLE IF NOT EXISTS elder (
@@ -143,6 +152,10 @@ class Store:
     def records(self, elder_id: str) -> list[dict]:
         return [json.loads(r["record_json"]) for r in
                 self.q("SELECT record_json FROM metric_daily WHERE elder_id=? ORDER BY day", (elder_id,))]
+
+    def record(self, elder_id: str, day: int) -> dict | None:
+        r = self.one("SELECT record_json FROM metric_daily WHERE elder_id=? AND day=?", (elder_id, day))
+        return json.loads(r["record_json"]) if r else None
 
     def upsert_record(self, rec: dict) -> None:
         self.x("INSERT OR REPLACE INTO metric_daily(elder_id, day, date, record_json, simulated) VALUES (?,?,?,?,?)",
@@ -278,6 +291,9 @@ class Store:
             last = latest[k]
             c.update({"granted": last["granted"], "granted_by": last["granted_by"], "ts": last["ts"],
                       "note": last["note"], "changed_by": last["granted_by"] if last is not first[k] else None,
+                      "requested_by": last.get("requested_by") if last is not first[k] else c.get("requested_by"),
+                      "confirmed_by_elder_or_proxy": (last.get("confirmed_by_elder_or_proxy")
+                                                      if last is not first[k] else c.get("confirmed_by_elder_or_proxy")),
                       "status": "active" if last["granted"] else ("withdrawn" if ever[k] else "declined")})
             if last is not first[k]:
                 c["changed_at"] = last["ts"]
@@ -348,6 +364,45 @@ class Store:
         return [json.loads(r["analysis_json"]) for r in
                 self.q("SELECT analysis_json FROM call_analysis WHERE elder_id=? ORDER BY created_at DESC LIMIT ?",
                        (elder_id, n))]
+
+    def purge_quotes(self, now: datetime | None = None, days: int = QUOTE_DAYS) -> int:
+        """Replace verbatim elder quotes older than ``days`` (by creation time): “...” in alert texts, and symptom
+        quotes / follow-up hooks / new-fact sentences in call_analysis. Returns the number of rows changed."""
+        cutoff = ((now or datetime.now(timezone.utc)) - timedelta(days=days)).isoformat(timespec="seconds")
+        n = 0
+        with self.lock:
+            for r in self.conn.execute("SELECT id, explanation_vi, explanation_en FROM alert WHERE created_at < ?",
+                                       (cutoff,)).fetchall():
+                vi = QUOTE_RE.sub(f"“{PURGED_VI}”", r["explanation_vi"] or "")
+                en = QUOTE_RE.sub(f"“{PURGED_EN}”", r["explanation_en"] or "")
+                if vi != (r["explanation_vi"] or "") or en != (r["explanation_en"] or ""):
+                    self.conn.execute("UPDATE alert SET explanation_vi=?, explanation_en=? WHERE id=?", (vi, en, r["id"]))
+                    n += 1
+            for r in self.conn.execute("SELECT call_id, analysis_json FROM call_analysis WHERE created_at < ?",
+                                       (cutoff,)).fetchall():
+                a = json.loads(r["analysis_json"] or "{}")
+                if a.get("quotes_purged"):
+                    continue
+                a["symptoms"] = {k: [PURGED_VI] * len(v or []) for k, v in (a.get("symptoms") or {}).items()}
+                a["followup_hooks"] = []
+                a["memory_facts_new"] = [PURGED_VI] * len(a.get("memory_facts_new") or [])
+                a["quotes_purged"] = True
+                self.conn.execute("UPDATE call_analysis SET analysis_json=? WHERE call_id=?",
+                                  (json.dumps(a, ensure_ascii=False), r["call_id"]))
+                n += 1
+            self.conn.commit()
+        return n
+
+    def delete_elder_data(self, elder_id: str | None = None) -> None:
+        """Demo reset: remove every row for one elder (or everything)."""
+        with self.lock:
+            for t in ELDER_TABLES + ("elder",):
+                col = "id" if t == "elder" else "elder_id"
+                if elder_id is None:
+                    self.conn.execute(f"DELETE FROM {t}")
+                else:
+                    self.conn.execute(f"DELETE FROM {t} WHERE {col}=?", (elder_id,))
+            self.conn.commit()
 
     def purge_transcripts(self) -> int:
         with self.lock:

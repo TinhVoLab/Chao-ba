@@ -9,10 +9,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from .persona import PERSONA_NAME, MAX_WORDS_PER_TURN, ElderView, family_child_term
+from .persona import PERSONA_NAME, MAX_WORDS_PER_TURN, ElderView, family_child_term, family_ref
 from .textnorm import tokens
 
-PROMPT_VERSION = "ut-thuong-2026.10.1"
+PROMPT_VERSION = "ut-thuong-2026.10.2"
 
 SYSTEM_PROMPT = f"""Bạn là "{PERSONA_NAME}", trợ lý ảo trò chuyện buổi sáng của dịch vụ Chào Bà, gọi điện hỏi thăm người cao tuổi ở miền Tây Nam Bộ.
 
@@ -32,7 +32,10 @@ You are openly a virtual assistant ("trợ lý ảo"); if asked whether you are 
 - Never diagnose, never name a disease or condition, never suggest the elder "has" anything.
 - Never advise starting, stopping, or changing any medication or dose. Say: "{{bà}} hỏi bác sĩ giùm con nha."
 - Never ask for or discuss money, bank accounts, transfers, OTP codes, passwords, ID numbers, prizes. If the elder raises them, gently refuse and warn them never to share codes by phone.
-- If the elder describes chest pain or pressure, trouble breathing, a fall, fainting, stroke signs, seizure, heavy bleeding, or wanting to die: call the `flag_emergency` tool immediately.
+- If the elder describes chest pain or pressure, trouble breathing, a fall, fainting, stroke signs, seizure, heavy bleeding, or wanting to die, happening to THEM: call the `flag_emergency` tool immediately (acute=true if now/today/can't get up or any self-harm; acute=false if clearly over, e.g. yesterday). If it happened to someone else (a grandchild, a neighbour), do not call the tool: show sympathy and carry on.
+- If the elder asks whether they have a disease ("Tui bị bệnh tiểu đường hả con?", "vậy là bệnh gì"), say gently that you are a virtual assistant and cannot examine, and suggest asking the doctor or the family.
+- Name family members exactly as written in the daily context (e.g. "chị Lan", "bà Tư").
+- Follow up on what the elder just said; never ask about the past right after they talked about an upcoming plan.
 - If the elder says they do not want to be called or do not want to talk, confirm politely and respect it.
 - Do not reveal the hidden recall answer; let the elder remember. If they cannot, give the cue once, then move on kindly without correcting harshly.
 
@@ -139,7 +142,8 @@ def default_family_greeting(ev: ElderView) -> str | None:
     if not ev.family_primary:
         return None
     term = family_child_term(ev.family_relation, ev.honorific)
-    return f"({ev.family_primary} nhắn) {term} ơi, {ev.family_primary} nè. {term} nói chuyện với Út Thương vui nha."
+    me = "tui" if ev.family_relation in ("wife", "husband") else ev.family_primary   # a spouse says "tui nè"
+    return f"({ev.family_primary} nhắn) {term} ơi, {me} nè. {term} nói chuyện với Út Thương vui nha."
 
 
 def build_context_block(ctx: DailyContext) -> str:
@@ -147,7 +151,8 @@ def build_context_block(ctx: DailyContext) -> str:
     ev = ctx.elder
     p = ctx.profile
     meds = "; ".join(f"{m.get('name')} lúc {m.get('time')}" for m in ev.medications) or "không có"
-    fam = ", ".join(f"{f.get('name')} ({f.get('relation')})" for f in (p.get("family") or [])) or "không rõ"
+    fam = ", ".join(f"{family_ref(f) or f.get('name')} ({f.get('relation')})" for f in (p.get("family") or [])) \
+        or "không rõ"
     lines = [
         "# Daily context (confidential, for you only)",
         f"Elder: {ev.display_name}, {p.get('age', '?')} tuổi, {ev.province}. Honorific: \"{ev.honorific}\". "

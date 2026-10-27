@@ -16,10 +16,10 @@ Method (per elder, per metric channel in ``models.METRICS``):
    Before standardising, the scale is multiplied by a variance-inflation factor k (~1.45, see
    ``inflation()``) for serial correlation of daily data and for the uncertainty of a 14-21 call
    baseline; without it the chart statistic had SD ~1.6 instead of 1 on stable simulated people.
-   **Thresholds:** L_yellow = 2.5 and L_red = 3.5 (CONTRACT.md listed 2.0 / 3.0). With five metric
-   channels, 2.0 gave ~0.57 false alarms per person-month on the simulated cohort; 2.5 / 3.5 gives
-   ~0.29 at almost the same sensitivity (see data/eval/report.md). Pass ControlConfig(L_yellow=2.0,
-   L_red=3.0) to reproduce the contract values.
+   **Thresholds:** L_yellow = 3.0 and L_red = 4.0 (the original contract listed 2.0 / 3.0). With five
+   metric channels the lower limits raised too many false alarms; 3.0 / 4.0 were selected on the
+   development cohort by the evaluation (figures in data/eval/report.md). Pass
+   ControlConfig(L_yellow=2.0, L_red=3.0) to reproduce the original contract values.
 4. **Rules** (all windows explicit; a "metric-yellow" day = chart statistic >= L_yellow on a valid
    day; runs count consecutive valid days and are *not* broken by missed/invalid days):
 
@@ -32,7 +32,12 @@ Method (per elder, per metric channel in ``models.METRICS``):
    * red    - >= 2 metrics in metric-yellow state for >= ``red_days`` (5) days (``multi_metric``);
               one metric beyond L_red for >= ``red_days`` days (``metric_shift``); a fall reported in
               the last ``fall_days`` (1 = today) days (``fall``); >= 3 distinct symptoms in the last 7
-              days (``multi_symptom``); 3 consecutive unanswered days (``unanswered``).
+              days (``multi_symptom``); 3 consecutive unanswered days (``unanswered``); an emergency in
+              that day's call (``record.emergency``, reason ``emergency``: the 115 path fired); a non-acute
+              health concern raised that day (a ``"concern:<category>"`` key in ``record.symptoms``, reason
+              ``health_concern``, e.g. "hôm qua tui hơi tức ngực"). ``concern:`` keys are not counted as
+              symptoms by the symptom rules. Both are event rules, so a recompute keeps them (and hysteresis
+              holds the red for ``recover_days`` valid days afterwards).
    * Event rules (symptoms, fall, unanswered, mood) also apply during baseline building - safety
      first; only the metric rules need a ready baseline.
 5. **Hysteresis.** The displayed light rises immediately but only steps down after
@@ -64,6 +69,7 @@ import numpy as np
 from .models import BAD_DIRECTION, METRICS, DailyLight, DailyRecord, SYMPTOMS
 
 LEVEL = {"gray": -1, "green": 0, "yellow": 1, "red": 2}
+CONCERN_PREFIX = "concern:"   # symptoms key for a non-acute health concern ("concern:chest_pain")
 NAME = {0: "green", 1: "yellow", 2: "red"}
 
 DEFAULT_SIGMA_FLOOR = {
@@ -80,8 +86,8 @@ class ControlConfig:
     baseline_days: int = 21
     min_valid: int = 14
     lam: float = 0.3
-    L_yellow: float = 2.5   # contract default 2.0 -> 2.5 after false-alarm tuning (see docstring)
-    L_red: float = 3.5      # contract default 3.0 -> 3.5
+    L_yellow: float = 3.0   # selected on the dev cohort (see docstring and data/eval/report.md)
+    L_red: float = 4.0
     yellow_days: int = 3
     red_days: int = 5
     recover_days: int = 3
@@ -302,6 +308,14 @@ def evaluate_series(records: list[DailyRecord], cfg: ControlConfig | None = None
             reasons.append(reason)
             raw = max(raw, level)
 
+        # emergency / non-acute concern raised in that day's call (persisted on the record, so recomputes keep it).
+        # Listed first: they are the most specific reason for the day.
+        if getattr(r, "emergency", False):
+            add(2, {"code": "emergency", "day": r.day})
+        for s_key, c in sorted((r.symptoms or {}).items()):
+            if c and s_key.startswith(CONCERN_PREFIX):
+                add(2, {"code": "health_concern", "symptom": s_key[len(CONCERN_PREFIX):], "day": r.day})
+
         if baseline_ready:
             def chg(m):
                 b = baseline[m]
@@ -332,7 +346,7 @@ def evaluate_series(records: list[DailyRecord], cfg: ControlConfig | None = None
             if h.day < w0:
                 break
             for s, c in (h.symptoms or {}).items():
-                if c:
+                if c and not s.startswith(CONCERN_PREFIX):
                     sym_counts[s] = sym_counts.get(s, 0) + int(c)
         fall_recent = 0
         for h in hist[::-1]:
@@ -341,6 +355,7 @@ def evaluate_series(records: list[DailyRecord], cfg: ControlConfig | None = None
             fall_recent += int((h.symptoms or {}).get("fall", 0) or 0)
         if fall_recent:
             add(2, {"code": "fall", "symptom": "fall", "quotes": fall_recent, "days": cfg.fall_days})
+
         if len(sym_counts) >= cfg.distinct_symptoms_red:
             add(2, {"code": "multi_symptom", "symptoms": sorted(sym_counts), "count": len(sym_counts),
                     "quotes": sum(sym_counts.values()), "days": cfg.symptom_window})

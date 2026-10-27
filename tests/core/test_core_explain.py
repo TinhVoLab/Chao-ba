@@ -117,4 +117,28 @@ def test_cognitive_only_next_step_names_no_specialty():
                    reasons=[{"code": "metric_trend", "metric": "recall_score", "days": 4, "change_pct": -30}],
                    z={}, baseline_ready=True)
     vi, en = explain(l, "Ông Tư", "Mr Tu")
-    assert "bác sĩ đánh giá" in vi and "thần kinh" not in vi and "neurolog" not in en.lower()
+    assert "thần kinh" not in vi and "neurolog" not in en.lower()
+    assert "khám định kỳ" in vi and "check-up" in en      # neutral: routine check-up if it persists
+    assert "%" not in vi and "%" not in en                # no percentage for a 0-3 recall score
+    assert "30" not in vi
+
+
+def test_recall_stated_as_counts_with_records():
+    from core_helpers import series
+    recs = series(70, {d: {"recall_score": 1.0} for d in range(64, 71)})
+    for d in range(1, 22, 3):  # baseline: a few partial recalls
+        recs[d - 1].recall_score = 2.0
+    l = DailyLight(elder_id="x", day=70, date="2026-01-01", light="yellow",
+                   reasons=[{"code": "metric_trend", "metric": "recall_score", "days": 4, "change_pct": -37.4},
+                            {"code": "metric_trend", "metric": "speech_rate_sps", "days": 4, "change_pct": -12.4}],
+                   z={}, baseline_ready=True)
+    vi, en = explain(l, "Ông Tư", "Mr Tu", records=recs)
+    assert "0/7 lần (thường khoảng 5/7)" in vi and "0 of 7 times (usually about 5 of 7)" in en
+    assert "37" not in vi and "37" not in en
+    assert "nói chậm hơn khoảng 10%" in vi       # >= 10 %: rounded to the nearest 5 %
+    assert not contains_blocked(vi) and not contains_blocked(en)
+
+
+def test_percent_rounding():
+    from chaoba.core.explain import _pct
+    assert (_pct(-4.4), _pct(9.6), _pct(12.4), _pct(-37.4), _pct(None)) == (4, 10, 10, 35, None)

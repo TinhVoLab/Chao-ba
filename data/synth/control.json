@@ -53,7 +53,8 @@
    "symptoms": {},
    "summary_vi": "Ông ăn cơm với cháu, đi đám giỗ bà con, đi chợ nổi Cái Răng.",
    "summary_en": "He had a meal with his grandchildren, went to a relative's memorial meal and went to Cái Răng floating market.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -71,7 +72,8 @@
    "symptoms": {},
    "summary_vi": "Ông uống trà với bạn, nghe vọng cổ.",
    "summary_en": "He had tea with friends and listened to vọng cổ songs.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -89,7 +91,8 @@
    "symptoms": {},
    "summary_vi": "Ông uống trà với bạn, đi đám giỗ bà con, nghe vọng cổ.",
    "summary_en": "He had tea with friends, went to a relative's memorial meal and listened to vọng cổ songs.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -107,7 +110,8 @@
    "symptoms": {},
    "summary_vi": "Ông làm vườn, uống trà với bạn, coi đá banh.",
    "summary_en": "He worked in the garden, had tea with friends and watched football.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -125,7 +129,8 @@
    "symptoms": {},
    "summary_vi": "Ông đi đám giỗ bà con, uống trà với bạn.",
    "summary_en": "He went to a relative's memorial meal and had tea with friends.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -143,7 +148,8 @@
    "symptoms": {},
    "summary_vi": "Ông sửa lại cái xuồng, đi đám giỗ bà con.",
    "summary_en": "He repaired his boat and went to a relative's memorial meal.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -161,7 +167,8 @@
    "symptoms": {},
    "summary_vi": "Ông ăn cơm với cháu, đi đám giỗ bà con, làm vườn.",
    "summary_en": "He had a meal with his grandchildren, went to a relative's memorial meal and worked in the garden.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -179,7 +186,8 @@
    "symptoms": {},
    "summary_vi": "Ông sửa lại cái xuồng, làm vườn.",
    "summary_en": "He repaired his boat and worked in the garden.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -197,7 +205,8 @@
    "symptoms": {},
    "summary_vi": "Ông câu cá ngoài sông, uống trà với bạn, nghe vọng cổ.",
    "summary_en": "He went fishing on the river, had tea with friends and listened to vọng cổ songs.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -215,7 +224,8 @@
    "symptoms": {},
    "summary_vi": "Ông cho cá ăn, nghe vọng cổ.",
    "summary_en": "He fed the fish and listened to vọng cổ songs.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -233,7 +243,8 @@
    "symptoms": {},
    "summary_vi": "Ông sửa lại cái xuồng, uống trà với bạn, đi chợ nổi Cái Răng.",
    "summary_en": "He repaired his boat, had tea with friends and went to Cái Răng floating market.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -251,7 +262,8 @@
    "symptoms": {},
    "summary_vi": "Ông cho cá ăn, đi đám giỗ bà con.",
    "summary_en": "He fed the fish and went to a relative's memorial meal.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -269,7 +281,8 @@
    "symptoms": {},
    "summary_vi": "Ông uống trà với bạn, đi chợ nổi Cái Răng, đi đám giỗ bà con.",
    "summary_en": "He had tea with friends, went to Cái Răng floating market and went to a relative's memorial meal.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -287,7 +300,8 @@
    "symptoms": {},
    "summary_vi": "Ông ăn cơm với cháu, cho cá ăn, nghe vọng cổ.",
    "summary_en": "He had a meal with his grandchildren, fed the fish and listened to vọng cổ songs.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -305,7 +319,8 @@
    "symptoms": {},
    "summary_vi": "Ông đi chợ nổi Cái Răng, cho cá ăn.",
    "summary_en": "He went to Cái Răng floating market and fed the fish.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -323,7 +338,8 @@
    "symptoms": {},
    "summary_vi": "Ông ăn cơm với cháu, cho cá ăn, câu cá ngoài sông.",
    "summary_en": "He had a meal with his grandchildren, fed the fish and went fishing on the river.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -341,7 +357,8 @@
    "symptoms": {},
    "summary_vi": "Cuộc gọi ngắn, ông đang bận nấu cơm.",
    "summary_en": "Short call - he was busy cooking.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -359,7 +376,8 @@
    "symptoms": {},
    "summary_vi": "Ông câu cá ngoài sông, đi chợ nổi Cái Răng.",
    "summary_en": "He went fishing on the river and went to Cái Răng floating market.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -377,7 +395,8 @@
    "symptoms": {},
    "summary_vi": "Ông đi đám giỗ bà con, đi chợ nổi Cái Răng, làm vườn.",
    "summary_en": "He went to a relative's memorial meal, went to Cái Răng floating market and worked in the garden.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -395,7 +414,8 @@
    "symptoms": {},
    "summary_vi": "Ông nghe vọng cổ, đi chợ nổi Cái Răng, đi đám giỗ bà con.",
    "summary_en": "He listened to vọng cổ songs, went to Cái Răng floating market and went to a relative's memorial meal.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -413,7 +433,8 @@
    "symptoms": {},
    "summary_vi": "Ông ăn cơm với cháu, đi đám giỗ bà con, đi chợ nổi Cái Răng.",
    "summary_en": "He had a meal with his grandchildren, went to a relative's memorial meal and went to Cái Răng floating market.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -431,7 +452,8 @@
    "symptoms": {},
    "summary_vi": "Ông uống trà với bạn, cho cá ăn, câu cá ngoài sông.",
    "summary_en": "He had tea with friends, fed the fish and went fishing on the river.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -449,7 +471,8 @@
    "symptoms": {},
    "summary_vi": "Ông đi chợ nổi Cái Răng, làm vườn.",
    "summary_en": "He went to Cái Răng floating market and worked in the garden.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -467,7 +490,8 @@
    "symptoms": {},
    "summary_vi": "Ông đi chợ nổi Cái Răng, coi đá banh.",
    "summary_en": "He went to Cái Răng floating market and watched football.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -485,7 +509,8 @@
    "symptoms": {},
    "summary_vi": "Ông ăn cơm với cháu, coi đá banh.",
    "summary_en": "He had a meal with his grandchildren and watched football.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -503,7 +528,8 @@
    "symptoms": {},
    "summary_vi": "Ông coi đá banh, cho cá ăn.",
    "summary_en": "He watched football and fed the fish.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -521,7 +547,8 @@
    "symptoms": {},
    "summary_vi": "Ông câu cá ngoài sông, làm vườn.",
    "summary_en": "He went fishing on the river and worked in the garden.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -539,7 +566,8 @@
    "symptoms": {},
    "summary_vi": "Ông không bắt máy.",
    "summary_en": "He did not answer the call.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -557,7 +585,8 @@
    "symptoms": {},
    "summary_vi": "Ông làm vườn, đi đám giỗ bà con.",
    "summary_en": "He worked in the garden and went to a relative's memorial meal.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -575,7 +604,8 @@
    "symptoms": {},
    "summary_vi": "Ông không bắt máy.",
    "summary_en": "He did not answer the call.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -593,7 +623,8 @@
    "symptoms": {},
    "summary_vi": "Ông coi đá banh, sửa lại cái xuồng.",
    "summary_en": "He watched football and repaired his boat.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -611,7 +642,8 @@
    "symptoms": {},
    "summary_vi": "Ông đi đám giỗ bà con, đi chợ nổi Cái Răng.",
    "summary_en": "He went to a relative's memorial meal and went to Cái Răng floating market.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -629,7 +661,8 @@
    "symptoms": {},
    "summary_vi": "Ông uống trà với bạn, làm vườn.",
    "summary_en": "He had tea with friends and worked in the garden.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -647,7 +680,8 @@
    "symptoms": {},
    "summary_vi": "Ông coi đá banh, nghe vọng cổ, sửa lại cái xuồng.",
    "summary_en": "He watched football, listened to vọng cổ songs and repaired his boat.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -665,7 +699,8 @@
    "symptoms": {},
    "summary_vi": "Ông coi đá banh, sửa lại cái xuồng, nghe vọng cổ.",
    "summary_en": "He watched football, repaired his boat and listened to vọng cổ songs.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -683,7 +718,8 @@
    "symptoms": {},
    "summary_vi": "Ông làm vườn, cho cá ăn.",
    "summary_en": "He worked in the garden and fed the fish.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -701,7 +737,8 @@
    "symptoms": {},
    "summary_vi": "Ông sửa lại cái xuồng, ăn cơm với cháu, cho cá ăn.",
    "summary_en": "He repaired his boat, had a meal with his grandchildren and fed the fish.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -719,7 +756,8 @@
    "symptoms": {},
    "summary_vi": "Ông ăn cơm với cháu, nghe vọng cổ, đi chợ nổi Cái Răng.",
    "summary_en": "He had a meal with his grandchildren, listened to vọng cổ songs and went to Cái Răng floating market.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -737,7 +775,8 @@
    "symptoms": {},
    "summary_vi": "Ông đi đám giỗ bà con, làm vườn, nghe vọng cổ.",
    "summary_en": "He went to a relative's memorial meal, worked in the garden and listened to vọng cổ songs.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -757,7 +796,8 @@
    },
    "summary_vi": "Ông cho cá ăn, câu cá ngoài sông, ăn cơm với cháu. Ông than đau lưng.",
    "summary_en": "He fed the fish, went fishing on the river and had a meal with his grandchildren. He complained of back pain.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -775,7 +815,8 @@
    "symptoms": {},
    "summary_vi": "Ông uống trà với bạn, câu cá ngoài sông, sửa lại cái xuồng.",
    "summary_en": "He had tea with friends, went fishing on the river and repaired his boat.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -793,7 +834,8 @@
    "symptoms": {},
    "summary_vi": "Ông nghe vọng cổ, uống trà với bạn.",
    "summary_en": "He listened to vọng cổ songs and had tea with friends.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -811,7 +853,8 @@
    "symptoms": {},
    "summary_vi": "Ông câu cá ngoài sông, cho cá ăn, ăn cơm với cháu.",
    "summary_en": "He went fishing on the river, fed the fish and had a meal with his grandchildren.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -829,7 +872,8 @@
    "symptoms": {},
    "summary_vi": "Ông đi chợ nổi Cái Răng, coi đá banh, đi đám giỗ bà con.",
    "summary_en": "He went to Cái Răng floating market, watched football and went to a relative's memorial meal.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -847,7 +891,8 @@
    "symptoms": {},
    "summary_vi": "Ông cho cá ăn, coi đá banh, ăn cơm với cháu.",
    "summary_en": "He fed the fish, watched football and had a meal with his grandchildren.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -865,7 +910,8 @@
    "symptoms": {},
    "summary_vi": "Ông ăn cơm với cháu, coi đá banh, cho cá ăn.",
    "summary_en": "He had a meal with his grandchildren, watched football and fed the fish.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -883,7 +929,8 @@
    "symptoms": {},
    "summary_vi": "Ông làm vườn, đi đám giỗ bà con.",
    "summary_en": "He worked in the garden and went to a relative's memorial meal.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -901,7 +948,8 @@
    "symptoms": {},
    "summary_vi": "Ông câu cá ngoài sông, đi chợ nổi Cái Răng.",
    "summary_en": "He went fishing on the river and went to Cái Răng floating market.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -919,7 +967,8 @@
    "symptoms": {},
    "summary_vi": "Ông đi chợ nổi Cái Răng, uống trà với bạn, cho cá ăn.",
    "summary_en": "He went to Cái Răng floating market, had tea with friends and fed the fish.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -937,7 +986,8 @@
    "symptoms": {},
    "summary_vi": "Ông câu cá ngoài sông, cho cá ăn.",
    "summary_en": "He went fishing on the river and fed the fish.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -955,7 +1005,8 @@
    "symptoms": {},
    "summary_vi": "Ông câu cá ngoài sông, ăn cơm với cháu, đi chợ nổi Cái Răng.",
    "summary_en": "He went fishing on the river, had a meal with his grandchildren and went to Cái Răng floating market.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -973,7 +1024,8 @@
    "symptoms": {},
    "summary_vi": "Ông làm vườn, uống trà với bạn, coi đá banh.",
    "summary_en": "He worked in the garden, had tea with friends and watched football.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -991,7 +1043,8 @@
    "symptoms": {},
    "summary_vi": "Cuộc gọi ngắn, ông đang bận nấu cơm.",
    "summary_en": "Short call - he was busy cooking.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1009,7 +1062,8 @@
    "symptoms": {},
    "summary_vi": "Ông không bắt máy.",
    "summary_en": "He did not answer the call.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1027,7 +1081,8 @@
    "symptoms": {},
    "summary_vi": "Ông uống trà với bạn, sửa lại cái xuồng, ăn cơm với cháu.",
    "summary_en": "He had tea with friends, repaired his boat and had a meal with his grandchildren.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1045,7 +1100,8 @@
    "symptoms": {},
    "summary_vi": "Ông không bắt máy.",
    "summary_en": "He did not answer the call.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1063,7 +1119,8 @@
    "symptoms": {},
    "summary_vi": "Ông câu cá ngoài sông, uống trà với bạn.",
    "summary_en": "He went fishing on the river and had tea with friends.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1081,7 +1138,8 @@
    "symptoms": {},
    "summary_vi": "Ông coi đá banh, câu cá ngoài sông.",
    "summary_en": "He watched football and went fishing on the river.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1099,7 +1157,8 @@
    "symptoms": {},
    "summary_vi": "Ông coi đá banh, đi chợ nổi Cái Răng, sửa lại cái xuồng.",
    "summary_en": "He watched football, went to Cái Răng floating market and repaired his boat.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1117,7 +1176,8 @@
    "symptoms": {},
    "summary_vi": "Ông uống trà với bạn, đi đám giỗ bà con, nghe vọng cổ.",
    "summary_en": "He had tea with friends, went to a relative's memorial meal and listened to vọng cổ songs.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1135,7 +1195,8 @@
    "symptoms": {},
    "summary_vi": "Ông đi chợ nổi Cái Răng, đi đám giỗ bà con, câu cá ngoài sông.",
    "summary_en": "He went to Cái Răng floating market, went to a relative's memorial meal and went fishing on the river.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1153,7 +1214,8 @@
    "symptoms": {},
    "summary_vi": "Ông cho cá ăn, ăn cơm với cháu, đi chợ nổi Cái Răng.",
    "summary_en": "He fed the fish, had a meal with his grandchildren and went to Cái Răng floating market.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1171,7 +1233,8 @@
    "symptoms": {},
    "summary_vi": "Ông đi chợ nổi Cái Răng, uống trà với bạn.",
    "summary_en": "He went to Cái Răng floating market and had tea with friends.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1189,7 +1252,8 @@
    "symptoms": {},
    "summary_vi": "Ông đi đám giỗ bà con, nghe vọng cổ.",
    "summary_en": "He went to a relative's memorial meal and listened to vọng cổ songs.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1207,7 +1271,8 @@
    "symptoms": {},
    "summary_vi": "Ông đi đám giỗ bà con, coi đá banh.",
    "summary_en": "He went to a relative's memorial meal and watched football.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1225,7 +1290,8 @@
    "symptoms": {},
    "summary_vi": "Ông nghe vọng cổ, làm vườn, uống trà với bạn.",
    "summary_en": "He listened to vọng cổ songs, worked in the garden and had tea with friends.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1243,7 +1309,8 @@
    "symptoms": {},
    "summary_vi": "Ông đi chợ nổi Cái Răng, câu cá ngoài sông, đi đám giỗ bà con.",
    "summary_en": "He went to Cái Răng floating market, went fishing on the river and went to a relative's memorial meal.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1261,7 +1328,8 @@
    "symptoms": {},
    "summary_vi": "Ông không bắt máy.",
    "summary_en": "He did not answer the call.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1279,7 +1347,8 @@
    "symptoms": {},
    "summary_vi": "Ông câu cá ngoài sông, sửa lại cái xuồng, uống trà với bạn.",
    "summary_en": "He went fishing on the river, repaired his boat and had tea with friends.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1297,7 +1366,8 @@
    "symptoms": {},
    "summary_vi": "Ông làm vườn, nghe vọng cổ.",
    "summary_en": "He worked in the garden and listened to vọng cổ songs.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1315,7 +1385,8 @@
    "symptoms": {},
    "summary_vi": "Ông cho cá ăn, nghe vọng cổ, sửa lại cái xuồng.",
    "summary_en": "He fed the fish, listened to vọng cổ songs and repaired his boat.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1333,7 +1404,8 @@
    "symptoms": {},
    "summary_vi": "Ông sửa lại cái xuồng, câu cá ngoài sông, cho cá ăn.",
    "summary_en": "He repaired his boat, went fishing on the river and fed the fish.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1351,7 +1423,8 @@
    "symptoms": {},
    "summary_vi": "Ông sửa lại cái xuồng, làm vườn, uống trà với bạn.",
    "summary_en": "He repaired his boat, worked in the garden and had tea with friends.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1369,7 +1442,8 @@
    "symptoms": {},
    "summary_vi": "Ông đi đám giỗ bà con, coi đá banh, ăn cơm với cháu.",
    "summary_en": "He went to a relative's memorial meal, watched football and had a meal with his grandchildren.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1387,7 +1461,8 @@
    "symptoms": {},
    "summary_vi": "Ông làm vườn, đi chợ nổi Cái Răng.",
    "summary_en": "He worked in the garden and went to Cái Răng floating market.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1405,7 +1480,8 @@
    "symptoms": {},
    "summary_vi": "Ông uống trà với bạn, sửa lại cái xuồng.",
    "summary_en": "He had tea with friends and repaired his boat.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1423,7 +1499,8 @@
    "symptoms": {},
    "summary_vi": "Ông đi chợ nổi Cái Răng, câu cá ngoài sông.",
    "summary_en": "He went to Cái Răng floating market and went fishing on the river.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1441,7 +1518,8 @@
    "symptoms": {},
    "summary_vi": "Ông ăn cơm với cháu, sửa lại cái xuồng.",
    "summary_en": "He had a meal with his grandchildren and repaired his boat.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1459,7 +1537,8 @@
    "symptoms": {},
    "summary_vi": "Ông sửa lại cái xuồng, coi đá banh.",
    "summary_en": "He repaired his boat and watched football.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1477,7 +1556,8 @@
    "symptoms": {},
    "summary_vi": "Ông cho cá ăn, đi chợ nổi Cái Răng.",
    "summary_en": "He fed the fish and went to Cái Răng floating market.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1495,7 +1575,8 @@
    "symptoms": {},
    "summary_vi": "Ông cho cá ăn, đi chợ nổi Cái Răng.",
    "summary_en": "He fed the fish and went to Cái Răng floating market.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1513,7 +1594,8 @@
    "symptoms": {},
    "summary_vi": "Ông uống trà với bạn, sửa lại cái xuồng, câu cá ngoài sông.",
    "summary_en": "He had tea with friends, repaired his boat and went fishing on the river.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1531,7 +1613,8 @@
    "symptoms": {},
    "summary_vi": "Ông đi đám giỗ bà con, câu cá ngoài sông, cho cá ăn.",
    "summary_en": "He went to a relative's memorial meal, went fishing on the river and fed the fish.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1549,7 +1632,8 @@
    "symptoms": {},
    "summary_vi": "Ông đi đám giỗ bà con, uống trà với bạn, đi chợ nổi Cái Răng.",
    "summary_en": "He went to a relative's memorial meal, had tea with friends and went to Cái Răng floating market.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1567,7 +1651,8 @@
    "symptoms": {},
    "summary_vi": "Ông đi đám giỗ bà con, sửa lại cái xuồng, cho cá ăn.",
    "summary_en": "He went to a relative's memorial meal, repaired his boat and fed the fish.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1585,7 +1670,8 @@
    "symptoms": {},
    "summary_vi": "Ông đi chợ nổi Cái Răng, câu cá ngoài sông.",
    "summary_en": "He went to Cái Răng floating market and went fishing on the river.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1603,7 +1689,8 @@
    "symptoms": {},
    "summary_vi": "Ông nghe vọng cổ, ăn cơm với cháu.",
    "summary_en": "He listened to vọng cổ songs and had a meal with his grandchildren.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1621,7 +1708,8 @@
    "symptoms": {},
    "summary_vi": "Ông uống trà với bạn, đi đám giỗ bà con.",
    "summary_en": "He had tea with friends and went to a relative's memorial meal.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1639,7 +1727,8 @@
    "symptoms": {},
    "summary_vi": "Ông sửa lại cái xuồng, làm vườn.",
    "summary_en": "He repaired his boat and worked in the garden.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   },
   {
    "elder_id": "control",
@@ -1657,7 +1746,8 @@
    "symptoms": {},
    "summary_vi": "Ông coi đá banh, uống trà với bạn.",
    "summary_en": "He watched football and had tea with friends.",
-   "simulated": true
+   "simulated": true,
+   "emergency": false
   }
  ],
  "lights": [
@@ -3852,8 +3942,8 @@
     "status": "done",
     "day_from": 1,
     "day_to": 21,
-    "summary_vi": "20 cuộc gọi hợp lệ trong 21 ngày đầu (0 ngày lỡ cuộc gọi) để lập mức bình thường riêng: tốc độ nói 4,84 âm tiết/giây, điểm nhớ lại trung bình 2,78/3.",
-    "summary_en": "20 valid calls in the first 21 days (0 missed) built the personal baseline: speech rate 4.84 syllables/s, mean recall 2.78/3."
+    "summary_vi": "20 cuộc gọi hợp lệ trong 21 ngày đầu (0 ngày lỡ cuộc gọi) để lập mức bình thường riêng: tốc độ nói 4,84 âm tiết/giây, tự nhớ lại đầy đủ chuyện đã kể (không cần gợi ý) 14/18 cuộc gọi.",
+    "summary_en": "20 valid calls in the first 21 days (0 missed) built the personal baseline: speech rate 4.84 syllables/s; recalled the earlier story fully without hints on 14 of 18 calls."
    },
    {
     "phase": "analyze",
@@ -3893,7 +3983,10 @@
     77,
     90
    ]
-  }
+  },
+  "effect_illustrative": false,
+  "effect_note_vi": "",
+  "effect_note_en": ""
  },
  "simulated": true
 }

@@ -1,11 +1,12 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Cpu, Eye, FileText, MicOff, ShieldCheck, ShieldOff, ChartLine, Undo2 } from "lucide-react";
 import type { FamilyMember, Privacy, RawAccess, RawConsent } from "@/lib/types";
 import { longDate, shortDate, vnTime } from "@/lib/format";
-import { API_BASE } from "@/lib/config";
-import { actorHeaders } from "@/lib/viewer";
+import { viewerFor } from "@/lib/viewer";
+import { SENT_EVENT, postWrite, useOutbox, type PendingWrite } from "@/lib/outbox";
+import { NotSaved } from "./SaveState";
 import { T } from "./T";
 
 const STATUS: Record<string, { vi: string; en: string; cls: string }> = {
@@ -122,29 +123,50 @@ export function PrivacyView({
   const [override, setOverride] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState<string | null>(null);
   const [target, setTarget] = useState<{ id: string; labelVi: string; labelEn: string } | null>(null);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<null | { kind: "confirm" | "refused" | "grant"; detail?: string }>(null);
+  const [confirmed, setConfirmed] = useState(false);
   const dlg = useRef<HTMLDialogElement>(null);
+  const outbox = useOutbox(elderId);
+  // Withdrawals waiting in the outbox (the API could not be reached): shown as pending, not as withdrawn.
+  const queuedWithdraw = new Set(outbox.filter((p) => p.kind === "withdraw").map((p) => String(p.meta?.consent)));
 
-  /** Withdraw or re-enable one purpose. daily_call re-enable goes through /resume (same as after an in-call opt-out). */
+  useEffect(() => {
+    function sent(e: Event) {
+      const { item } = (e as CustomEvent<{ item: PendingWrite }>).detail;
+      if (item.kind !== "withdraw" || item.elderId !== elderId) return;
+      const kind = String(item.meta?.consent);
+      setOverride((o) => ({ ...o, [kind]: "withdrawn" }));
+      if (kind === "daily_call") setPaused(true);
+      router.refresh();
+    }
+    window.addEventListener(SENT_EVENT, sent);
+    return () => window.removeEventListener(SENT_EVENT, sent);
+  }, [elderId, router]);
+
+  /**
+   * Withdraw or re-enable one purpose. daily_call re-enable goes through /resume (same as after an in-call opt-out).
+   * A withdrawal names who asked and confirms the elder (or a documented proxy) agreed; if the API can't be reached
+   * it is kept on this device and sent later (honouring a withdrawal late is better than losing it). A re-grant is
+   * never queued: turning processing back on must happen while the elder's agreement is current.
+   */
   async function change(kind: string, on: boolean) {
     setBusy(kind);
-    setError(false);
-    let ok = !live; // offline demo: change the displayed state only
-    if (live) {
-      const base = `${API_BASE}/api/elders/${encodeURIComponent(elderId)}`;
-      const url = on ? (kind === "daily_call" ? `${base}/resume` : `${base}/consents/${kind}/grant`) : `${base}/consents/${kind}/withdraw`;
-      try {
-        const res = await fetch(url, { method: "POST", headers: actorHeaders(elderId), signal: AbortSignal.timeout(4000) });
-        ok = res.ok;
-      } catch {
-        ok = false;
-      }
-    }
-    if (ok) {
+    setError(null);
+    const base = `/api/elders/${encodeURIComponent(elderId)}`;
+    const path = on ? (kind === "daily_call" ? `${base}/resume` : `${base}/consents/${kind}/grant`) : `${base}/consents/${kind}/withdraw`;
+    const body = on
+      ? { requested_by: viewerFor(elderId).name }
+      : { requested_by: viewerFor(elderId).name, confirmed_by_elder_or_proxy: true };
+    const r = await postWrite("withdraw", elderId, path, body, { meta: { consent: kind }, queue: !on });
+    if (r.state === "saved") {
       setOverride((o) => ({ ...o, [kind]: on ? "active" : "withdrawn" }));
       if (kind === "daily_call") setPaused(!on);
       if (live) router.refresh();
-    } else setError(true);
+    } else if (r.state === "rejected") {
+      if (on) setError({ kind: "grant", detail: r.status ? r.detail : undefined });
+      else if (r.status === 400 || r.status === 422) setError({ kind: "confirm", detail: r.detail });
+      else setError({ kind: "refused", detail: r.detail });
+    }
     setBusy(null);
   }
   const r = privacy.data_retention ?? { audio: "not stored", transcript_days: 7 };
@@ -194,9 +216,20 @@ export function PrivacyView({
           </button>
         </div>
       )}
+      {queuedWithdraw.size > 0 && <NotSaved />}
       {error && (
         <p className="rounded-xl bg-red-tint px-4 py-3 text-red-ink" role="alert">
-          <T vi="Chưa đổi được. Kiểm tra máy chủ rồi thử lại." en="Couldn't change that. Check the server and try again." />
+          {error.kind === "confirm" ? (
+            <T
+              vi="Chưa rút được: máy chủ cần xác nhận bà/ông (hoặc người đại diện) đã đồng ý rút. Hãy đánh dấu ô xác nhận rồi thử lại."
+              en="Not withdrawn: the server needs confirmation that the elder (or their representative) agreed. Tick the confirmation box and try again."
+            />
+          ) : error.kind === "grant" ? (
+            <T vi="Chưa bật lại được. Kiểm tra máy chủ rồi thử lại." en="Couldn't turn it back on. Check the server and try again." />
+          ) : (
+            <T vi="Không đổi được: máy chủ từ chối yêu cầu." en="Not changed: the server refused the request." />
+          )}
+          {error.detail && error.detail !== "network" && <span className="mt-1 block text-sm opacity-90">{error.detail}</span>}
         </p>
       )}
 
@@ -260,9 +293,12 @@ export function PrivacyView({
           {(privacy.consents ?? []).map((raw) => {
             const c = consentView(raw, elderVi, elderEn);
             const cur = override[c.id] ?? c.status;
-            const st = STATUS[cur] ?? { vi: cur, en: cur, cls: "bg-surface-2 text-ink-2" };
+            const waiting = cur === "active" && queuedWithdraw.has(c.id);
+            const st = waiting
+              ? { vi: "Rút lại · chưa gửi được", en: "Withdrawal not sent yet", cls: "bg-yellow-tint text-yellow-ink" }
+              : (STATUS[cur] ?? { vi: cur, en: cur, cls: "bg-surface-2 text-ink-2" });
             const when = c.date ? longDate(c.date.slice(0, 10)) : null;
-            const canToggle = c.id in WITHDRAW_EFFECT && (cur === "active" || cur === "withdrawn");
+            const canToggle = !waiting && c.id in WITHDRAW_EFFECT && (cur === "active" || cur === "withdrawn");
             return (
               <li key={c.id} className="flex flex-col gap-2 px-4 py-3">
                 <div className="flex items-start justify-between gap-3">
@@ -296,6 +332,7 @@ export function PrivacyView({
                       if (cur === "withdrawn") change(c.id, true);
                       else {
                         setTarget({ id: c.id, labelVi: c.labelVi, labelEn: c.labelEn });
+                        setConfirmed(false);
                         dlg.current?.showModal();
                       }
                     }}
@@ -382,14 +419,35 @@ export function PrivacyView({
           <p className="rounded-xl bg-surface-2 px-3 py-2 text-sm text-ink-2">
             <T vi="Dữ liệu đã có không bị xoá." en="Existing data is not deleted." />
           </p>
+          <label className="flex min-h-11 cursor-pointer items-start gap-3 rounded-xl border border-line-strong px-3 py-2.5">
+            <input
+              type="checkbox"
+              checked={confirmed}
+              onChange={(e) => setConfirmed(e.target.checked)}
+              className="mt-0.5 size-5 shrink-0 accent-[var(--red)]"
+              aria-describedby="wd-confirm-hint"
+            />
+            <span>
+              <span className="block font-semibold">
+                <T vi="Bà/ông (hoặc người đại diện) đã đồng ý rút" en="The elder (or their representative) agreed to withdraw" />
+              </span>
+              <span id="wd-confirm-hint" className="block text-sm text-ink-3">
+                <T
+                  vi={`Ghi nhận: ${viewerFor(elderId).name} yêu cầu, có xác nhận của ${elderVi} hoặc người đại diện.`}
+                  en={`Recorded as: requested by ${viewerFor(elderId).name}, confirmed by ${elderEn} or their representative.`}
+                />
+              </span>
+            </span>
+          </label>
           <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
             <button value="cancel" className="min-h-12 rounded-xl border border-line-strong px-4 font-semibold">
               <T vi="Giữ nguyên" en="Keep as is" />
             </button>
             <button
               value="confirm"
-              onClick={() => target && change(target.id, false)}
-              className="min-h-12 rounded-xl bg-red px-4 font-bold text-on-red"
+              disabled={!confirmed}
+              onClick={() => target && confirmed && change(target.id, false)}
+              className="min-h-12 rounded-xl bg-red px-4 font-bold text-on-red disabled:cursor-not-allowed disabled:opacity-40"
             >
               <T vi="Rút đồng ý" en="Withdraw" />
             </button>

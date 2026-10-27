@@ -7,7 +7,7 @@ import { StandingScreen } from "@/components/StandingScreen";
 import { getProfile, loadElderContext } from "@/lib/api";
 import { T } from "@/components/T";
 
-export const metadata: Metadata = { title: "Màn hình đứng / Standing screen" };
+export const metadata: Metadata = { title: "Màn hình đứng (giai đoạn 2) / Standing screen (phase-2 concept)" };
 
 const ELDERS = [
   ["hanh", "Bà Hạnh"],

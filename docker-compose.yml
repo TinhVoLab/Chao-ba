@@ -1,0 +1,63 @@
+# Chào Bà: API + family app + Postgres (production schema target).
+#   docker compose up --build        -> family app http://localhost:3000, API + elder call page http://localhost:8000
+#   docker compose exec -T postgres psql -U chaoba -d chaoba -v ON_ERROR_STOP=1 -f /deploy/rls_test.sql   -> "RLS OK"
+#
+# Honest scope: the prototype API still stores data in SQLite (volume `api-data`). The `postgres` service loads the
+# production schema (chaoba/server/schema.sql: tables, Row Level Security, no audio column) so it can be inspected
+# and RLS-tested; wiring the API to Postgres/Supabase is the next production step (docs/TECHNICAL_DOCUMENTATION.md §12).
+# Dev-only defaults below (password, ports) must be replaced in any shared environment.
+
+services:
+  api:
+    build: .
+    environment:
+      CHAOBA_CORS_ORIGINS: ${CHAOBA_CORS_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}
+      CHAOBA_DB: /var/lib/chaoba/chaoba.db
+      CHAOBA_END_DATE: ${CHAOBA_END_DATE:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    ports:
+      - "${API_PORT:-8000}:8000"
+    volumes:
+      - api-data:/var/lib/chaoba
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./web
+      args:
+        # Address the browser uses to reach the API (baked into the client bundle at build time).
+        NEXT_PUBLIC_API_BASE: ${NEXT_PUBLIC_API_BASE:-http://localhost:8000}
+    environment:
+      # Address the Next server uses for server-side reads (inside the compose network).
+      CHAOBA_API_INTERNAL: http://api:8000
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: chaoba
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-chaoba-dev-only}
+      POSTGRES_DB: chaoba
+    volumes:
+      # Init scripts run once, in name order, on an empty data volume.
+      - ./deploy/postgres/00_auth_shim.sql:/docker-entrypoint-initdb.d/00_auth_shim.sql:ro
+      - ./chaoba/server/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./deploy/postgres/02_grants.sql:/docker-entrypoint-initdb.d/02_grants.sql:ro
+      - ./deploy/rls_test.sql:/deploy/rls_test.sql:ro
+      - pg-data:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:${PG_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chaoba -d chaoba"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  api-data:
+  pg-data:

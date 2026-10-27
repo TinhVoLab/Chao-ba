@@ -24,8 +24,22 @@ MEDICATION_CHANGE_PHRASES = [
     "mua thuốc gì",
 ]
 DIAGNOSIS_REQUEST_PHRASES = [
-    "bị bệnh gì", "bệnh gì vậy", "có phải bị", "có bị bệnh", "bị gì vậy con", "mắc bệnh gì", "chẩn đoán",
-    "tui bị lẫn", "bị lú lẫn hả", "có bị lẫn",
+    "bị bệnh gì", "bệnh gì", "bệnh chi", "có phải bị", "có bị bệnh", "bị gì vậy con", "mắc bệnh gì", "chẩn đoán",
+    "tui bị lẫn", "bị lú lẫn hả", "có bị lẫn", "là bệnh gì", "vậy là bệnh", "bị gì vậy", "bị cái gì vậy",
+]
+# Disease-ish words: "tui bị <one of these> ... hả/hông/không/phải hông?" is a request for a diagnosis.
+DISEASE_WORDS = ["bệnh", "chứng", "tiểu đường", "đường huyết", "huyết áp", "tim", "lẫn", "lú lẫn", "tai biến",
+                 "đột quỵ", "ung thư", "gút", "gout", "mỡ máu", "thận", "gan", "phổi", "parkinson", "alzheimer",
+                 "trầm cảm", "sa sút", "mất trí", "suy", "thiếu máu", "loãng xương", "thoái hóa", "thoái hoá", "khớp"]
+_Q_END = r"(hả|hông|hổng|không|ko|ha|hả con|phải hông|phải không|đúng hông|đúng không|chưa|à|sao|hôn)"
+_DIAG_RE = [
+    # "Tui bị bệnh tiểu đường hả con?", "Bà bị tim phải hông?"
+    re.compile(rf"\b(bị|mắc)\s+(?:cái\s+)?(?:{'|'.join(map(re.escape, DISEASE_WORDS))})\b.*\b{_Q_END}\b"),
+    # "Có phải tui bị ... không", "phải tui mắc ... hông"
+    re.compile(r"\b(có phải|phải)\s+(tui|tôi|bà|ông|mình|má|ba)?\s*(bị|mắc)\b"),
+    # "vậy là bị gì", "vậy là sao con", "tui bị gì"
+    re.compile(r"\b(vậy là|như vậy là|vậy chắc là)\s+(bị\s+)?(gì|bệnh)\b"),
+    re.compile(r"\b(tui|tôi|bà|ông|mình)\s+(bị|mắc)\s+(gì|cái gì|chi)\b"),
 ]
 OPT_OUT_PHRASES = [
     "đừng gọi nữa", "đừng gọi tui nữa", "đừng có gọi nữa", "không muốn nói chuyện", "hổng muốn nói chuyện",
@@ -66,7 +80,20 @@ def detect_medication_change(text: str) -> str | None:
 
 
 def detect_diagnosis_request(text: str) -> str | None:
-    return _match_any(text, DIAGNOSIS_REQUEST_PHRASES)
+    """"What do I have?" / "Do I have diabetes?" -> gentle no-diagnosis reply. Phrase list plus patterns."""
+    n = normalize(text)
+    m = _match_any(text, DIAGNOSIS_REQUEST_PHRASES)
+    if m in ("bệnh gì", "bệnh chi") and re.search(r"\b(không|hổng|hông|chẳng|chả)\s+(có\s+)?(bị\s+)?bệnh (gì|chi)\b", n):
+        m = None   # "hổng có bệnh gì hết" is a statement, not a question
+    if m:
+        return m
+    if not has_vietnamese_diacritics(text):
+        return None
+    for rx in _DIAG_RE:
+        hit = rx.search(n)
+        if hit:
+            return hit.group(0)
+    return None
 
 
 def detect_opt_out(text: str) -> str | None:
@@ -98,9 +125,11 @@ def medication_reply(h: str = "bà") -> str:
             f"{h.capitalize()} cứ uống như bác sĩ dặn nghen.")
 
 
-def diagnosis_reply(h: str = "bà") -> str:
-    return (f"Dạ, con là trợ lý ảo, con hổng biết khám bệnh. Có gì lạ {h} hỏi bác sĩ nha, "
-            f"con cũng nhắn người nhà để ý.")
+def diagnosis_reply(h: str = "bà", family: str | None = None) -> str:
+    """No diagnosis, ever: say so gently and point to the doctor and the family (`family` = "chị Lan" etc.)."""
+    fam = family or "người nhà"
+    return (f"Dạ, con là trợ lý ảo, con hổng khám bệnh được nên hổng dám nói {h} bị gì. "
+            f"{h.capitalize()} hỏi bác sĩ, hoặc nhờ {fam} chở đi khám cho chắc nha {h}.")
 
 
 def opt_out_confirm(h: str = "bà") -> str:
@@ -108,7 +137,8 @@ def opt_out_confirm(h: str = "bà") -> str:
 
 
 def opt_out_done(h: str = "bà", family: str | None = None) -> str:
-    fam = f"cô {family}" if family else "người nhà"
+    """`family` is the already-addressed family reference ("chị Lan", "bà Tư"), see persona.family_ref."""
+    fam = family or "người nhà"
     return (f"Dạ, con ghi nhận rồi. Con sẽ ngưng gọi và báo {fam} biết. "
             f"Khi nào {h} muốn nói chuyện lại thì nhắn {fam} nha. Con chào {h}.")
 

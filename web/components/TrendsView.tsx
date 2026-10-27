@@ -145,6 +145,22 @@ export function TrendsView({ timeline }: { timeline: Timeline }) {
     return out;
   }, [records, bands, lightByDay, rebaseDay, segs]);
 
+  // Recall is a 0–3 score, so it is summarised as counts of days, never as a percentage change:
+  // "recalled without a cue on 2 of the last 7 measured days (usually 6/7)".
+  const recall = useMemo(() => {
+    const isFree = (v: number | null) => v != null && v >= 3;
+    const recent = records.filter((r) => r.day > maxDay - 7 && r.recall_score != null);
+    if (!recent.length) return null;
+    const win = segs.at(-1)?.window ?? [records[0]?.day ?? 1, (records[0]?.day ?? 1) + 20];
+    const base = records.filter((r) => r.day >= win[0] && r.day <= win[1] && r.recall_score != null);
+    const n = recent.length;
+    return {
+      hits: recent.filter((r) => isFree(r.recall_score)).length,
+      n,
+      usual: base.length >= 5 ? Math.round((base.filter((r) => isFree(r.recall_score)).length / base.length) * n) : null,
+    };
+  }, [records, segs, maxDay]);
+
   const ticks = useMemo(() => {
     const step = range === 30 ? 7 : 21;
     const t: number[] = [];
@@ -221,6 +237,7 @@ export function TrendsView({ timeline }: { timeline: Timeline }) {
             eventNo={eventNo}
             dateOf={dateOf}
             lang={lang}
+            recall={m === "recall_score" ? recall : null}
           />
         ))}
       </div>
@@ -311,6 +328,7 @@ function MetricChart({
   eventNo,
   dateOf,
   lang,
+  recall,
 }: {
   metric: Metric;
   rows: Row[];
@@ -322,6 +340,7 @@ function MetricChart({
   eventNo: Map<TimelineEvent, number>;
   dateOf: Map<number, string>;
   lang: "vi" | "en";
+  recall?: { hits: number; n: number; usual: number | null } | null;
 }) {
   const meta = METRIC_META[metric];
   const vals: number[] = [];
@@ -356,7 +375,16 @@ function MetricChart({
           <h2 className="text-lg font-bold">
             <T vi={meta.vi} en={meta.en} />
           </h2>
-          {delta && (
+          {recall ? (
+            <p
+              className={`text-[0.9375rem] font-semibold tnum ${recall.usual != null && recall.hits < recall.usual - 1 ? "text-red-ink" : "text-ink-2"}`}
+            >
+              <T
+                vi={`Nhớ chuyện không cần gợi ý: ${recall.hits}/${recall.n} ngày gần đây${recall.usual != null ? ` (thường ${recall.usual}/${recall.n})` : ""}`}
+                en={`Recalled without a cue: ${recall.hits} of the last ${recall.n} days${recall.usual != null ? ` (usually ${recall.usual}/${recall.n})` : ""}`}
+              />
+            </p>
+          ) : delta && metric !== "recall_score" && (
             <p className={`text-[0.9375rem] font-semibold tnum ${delta.outside && worse ? "text-red-ink" : "text-ink-2"}`}>
               {Math.abs(delta.pct) < 1 ? (
                 <T vi="Như mức thường ngày" en="At usual level" />

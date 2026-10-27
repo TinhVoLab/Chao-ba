@@ -74,6 +74,11 @@ export interface Today {
   /** True when the family_sharing consent is withdrawn: the API withholds the light and summary. */
   sharing_paused?: boolean;
   contact?: ContactStatus;
+  /** True when `date` is the server's today (the record is this morning's call). */
+  is_today?: boolean;
+  /** Heading for the call section, e.g. "Cuộc gọi sáng nay" or "Cuộc gọi gần nhất (12/10)". */
+  label_vi?: string;
+  label_en?: string;
   simulated: boolean;
 }
 
@@ -188,6 +193,10 @@ export interface Dmaic {
   green_day?: number | null;
   days_to_green?: number | null;
   /** Family calls + visits per week: before / after the intervention and in the last 14 days. */
+  /** True when the effect table comes from a scripted persona (illustration, not a measured outcome). */
+  effect_illustrative?: boolean;
+  effect_note_vi?: string;
+  effect_note_en?: string;
   contact?: {
     pre_per_week?: number | null;
     post_per_week?: number | null;

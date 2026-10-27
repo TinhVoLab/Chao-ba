@@ -19,6 +19,7 @@ from chaoba.core.models import CallAnalysis, SYMPTOMS, Turn
 
 from .guardrails import FORBIDDEN_IN_REPLY
 from .prompts import PROMPT_VERSION, RecallItem, content_keywords
+from .emergency import is_third_party, CATEGORY_VI, CATEGORY_EN
 from .textnorm import normalize, contains_phrase, find_phrase, sentences, word_count
 
 log = logging.getLogger("chaoba.analysis")
@@ -64,7 +65,9 @@ def _negated(norm: str, start: int) -> bool:
     return any(w in NEG for w in prev)
 
 
-def extract_symptoms(elder_texts: list[str]) -> dict[str, list[str]]:
+def extract_symptoms(elder_texts: list[str], honorific: str | None = None) -> dict[str, list[str]]:
+    """symptom -> verbatim sentences. Negated mentions and mentions about someone else ("thằng cháu té xe") are
+    skipped: only what the elder reports about herself counts."""
     out: dict[str, list[str]] = {}
     for text in elder_texts:
         for sent in sentences(text):
@@ -77,6 +80,8 @@ def extract_symptoms(elder_texts: list[str]) -> dict[str, list[str]]:
                         if any(s <= st < s + len(e) for e in excl for s in find_phrase(n, e)):
                             continue
                         if p.split()[0] not in NEG and _negated(n, st):
+                            continue
+                        if is_third_party(sent, st, honorific):
                             continue
                         found = True
                         break
@@ -175,7 +180,7 @@ RECALL_EN = {3: "recalled the earlier story clearly", 2: "partly recalled the ea
 
 
 def summaries(name_vi: str, name_en: str, mood: int, symptoms: dict, recall: int | None, emergency: bool,
-              opted_out: bool, n_elder_turns: int) -> tuple[str, str]:
+              opted_out: bool, n_elder_turns: int, concerns: list[str] | None = None) -> tuple[str, str]:
     if emergency:
         return (f"{name_vi} có nói điều cần chú ý ngay trong cuộc gọi; Út Thương đã hướng dẫn gọi 115 và báo gia đình.",
                 f"{name_en} said something that needs attention now; the assistant advised calling 115 and notified the family.")
@@ -194,6 +199,12 @@ def summaries(name_vi: str, name_en: str, mood: int, symptoms: dict, recall: int
         en.append("no worrying mentions")
     s_vi = "; ".join(vi) + "."
     s_en = "; ".join(en) + "."
+    cs = [c for c in dict.fromkeys(concerns or [])]
+    if cs:
+        s_vi = (f"{name_vi} kể đã bị {', '.join(CATEGORY_VI.get(c, c) for c in cs)} (không phải lúc gọi); Út Thương đã "
+                f"hỏi lại và đề nghị gia đình gọi hỏi thăm trong hôm nay. " + s_vi)
+        s_en = (f"{name_en} mentioned an earlier episode of {', '.join(CATEGORY_EN.get(c, c) for c in cs)} (not "
+                f"ongoing during the call); the assistant checked and asked the family to check in today. " + s_en)
     if recall is not None:
         s_vi += f" {RECALL_VI[recall].capitalize()}."
         s_en += f" {RECALL_EN[recall].capitalize()}."
@@ -210,10 +221,11 @@ def _safe_text(s: str) -> str:
 
 def analyze_rule_based(turns: list[Turn], elder_profile: dict, recall: RecallItem | None = None,
                        recall_free_text: str = "", recall_cued_text: str = "", emergency: bool = False,
-                       opted_out: bool = False, recall_result_hint: str | None = None) -> CallAnalysis:
+                       opted_out: bool = False, recall_result_hint: str | None = None,
+                       concerns: list[str] | None = None) -> CallAnalysis:
     elder_texts = [t.text for t in turns if t.speaker == "elder" and t.text.strip()]
     # The recall answers are not symptom reports and not new facts; keep them out of those extractors.
-    symptoms = extract_symptoms(elder_texts)
+    symptoms = extract_symptoms(elder_texts, (elder_profile.get("honorific") or "bà").lower())
     mood = mood_score(elder_texts, symptoms)
     rscore, cue = score_recall(recall, recall_free_text, recall_cued_text, recall_result_hint)
     other_texts = [t for t in elder_texts if t not in (recall_free_text, recall_cued_text)]
@@ -221,7 +233,7 @@ def analyze_rule_based(turns: list[Turn], elder_profile: dict, recall: RecallIte
     hooks = followup_hooks_from(other_texts)
     name_vi = elder_profile.get("display_name", "Người thân")
     name_en = elder_profile.get("name_en", name_vi)
-    s_vi, s_en = summaries(name_vi, name_en, mood, symptoms, rscore, emergency, opted_out, len(elder_texts))
+    s_vi, s_en = summaries(name_vi, name_en, mood, symptoms, rscore, emergency, opted_out, len(elder_texts), concerns)
     return CallAnalysis(summary_vi=_safe_text(s_vi), summary_en=_safe_text(s_en), mood=mood, symptoms=symptoms,
                         recall_score=rscore, recall_cue_level=cue, memory_facts_new=facts, followup_hooks=hooks,
                         emergency=emergency, prompt_version=PROMPT_VERSION)
@@ -257,7 +269,8 @@ Rules:
 - Never diagnose or name diseases/conditions (no "dementia", "sa sút trí tuệ", "trầm cảm", etc.). Describe only what the
   elder said and how they seemed, relative to their usual self.
 - symptoms: for each key, list VERBATIM elder quotes that report it (empty list if none). Negated mentions
-  ("hổng đau gì hết") do not count.
+  ("hổng đau gì hết") do not count. Only what the elder reports about THEMSELF counts: events of other people
+  ("thằng cháu té xe") are not the elder's symptoms.
 - recall_score: compare the elder's answers to the HIDDEN recall fact. 3 = exact free recall, 2 = partial free recall,
   1 = correct only after the cue, 0 = failed, null if the recall question was not asked.
 - mood: 1 very low .. 5 very good.
@@ -299,8 +312,11 @@ def analyze_with_claude(client, turns: list[Turn], elder_profile: dict, recall: 
 
 def analyze_call(turns: list[Turn], elder_profile: dict, recall: RecallItem | None = None,
                  recall_free_text: str = "", recall_cued_text: str = "", emergency: bool = False,
-                 opted_out: bool = False, use_llm: bool | None = None, client=None) -> CallAnalysis:
-    rb = analyze_rule_based(turns, elder_profile, recall, recall_free_text, recall_cued_text, emergency, opted_out)
+                 opted_out: bool = False, use_llm: bool | None = None, client=None,
+                 concerns: list[str] | None = None) -> CallAnalysis:
+    """``concerns`` = categories of non-acute (past) episodes the spotter raised during the call."""
+    rb = analyze_rule_based(turns, elder_profile, recall, recall_free_text, recall_cued_text, emergency, opted_out,
+                            concerns=concerns)
     if use_llm is None:
         use_llm = bool(os.environ.get("ANTHROPIC_API_KEY"))
     if not use_llm or opted_out:
@@ -312,6 +328,9 @@ def analyze_call(turns: list[Turn], elder_profile: dict, recall: RecallItem | No
         ca = analyze_with_claude(client, turns, elder_profile, recall, emergency)
         # Safety net: the deterministic emergency flag can only add, never be removed by the LLM.
         ca.emergency = ca.emergency or rb.emergency
+        if concerns and not ca.emergency:   # keep the deterministic "check in today" sentence
+            ca.summary_vi = rb.summary_vi.split(". ")[0] + ". " + ca.summary_vi
+            ca.summary_en = rb.summary_en.split(". ")[0] + ". " + ca.summary_en
         return ca
     except Exception as e:
         log.warning("Claude analysis failed (%s); using rule-based analyzer", e)

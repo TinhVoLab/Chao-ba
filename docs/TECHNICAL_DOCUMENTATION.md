@@ -68,7 +68,7 @@ Many older adults live alone or with an elderly spouse. Their adult children oft
 | **Emergency spotter** | Keyword spotter on every utterance before any LLM, plus an LLM tool (`flag_emergency`). Calmly tells the elder to call **115**, ends the call and raises a red alert to the family. | `chaoba/agent/emergency.py` |
 | **Family coordination** | Family app: today's light, trends, alerts with acknowledgement, DMAIC view, notes (including a message read to the elder at the end of the next call), privacy and consent view, access log. | `web/` (Next.js PWA) |
 | **Memory book** | Life facts from calls become tomorrow's recall question and story prompts. | `memory_fact` table, `chaoba/agent/prompts.py` |
-| **Standing screen** | A 9:16 home-display mockup for the elder's house. | `web/app/screen` |
+| **Standing screen (phase-2 concept)** | A 9:16 home-display mockup for the elder's house: clock, family photos, captions, two big buttons. A design idea for phase 2, not part of the prototype's scope or price; no camera. | `web/app/screen` |
 
 Hard design rules (from `CONTRACT.md`):
 
@@ -88,7 +88,7 @@ flowchart LR
   subgraph Elder["Elder side"]
     WEB["Web call page<br/>/call?elder=…<br/>Web Speech STT/TTS vi-VN<br/>WebAudio VAD"]
     PHONE["Ordinary phone (PSTN)<br/>production path"]
-    SCREEN["Standing screen 9:16<br/>(mockup)"]
+    SCREEN["Standing screen 9:16<br/>(phase-2 concept mockup)"]
   end
 
   subgraph Voice["Voice transport (production, untested)"]
@@ -424,86 +424,112 @@ REST API: see `CONTRACT.md` (including contacts, consent withdraw/grant, resume,
 
 ## 10. Evaluation on a simulated cohort
 
-> **Simulated cohort, not clinical validation.** These numbers show that the pipeline behaves as designed on
-> data we generated ourselves. They are **not** evidence of real-world sensitivity, specificity or clinical benefit.
-> Source: `data/eval/report.md` / `report.json`, reproducible with `.venv/bin/python scripts/run_eval.py` (seed 11, < 1 s; output verified identical).
+> **Simulated cohort, not clinical validation.** These numbers show how the pipeline behaves on data we generated
+> ourselves, under assumptions we chose. They are **not** evidence of real-world sensitivity, specificity or clinical benefit.
+> Source: `data/eval/report.md`, `report.json`, `operating_curve.csv`, `operating_curve.svg`; reproducible with
+> `.venv/bin/python scripts/run_eval.py` (development seed 11, held-out seed 2026, bootstrap seed 0; ~20 s; output verified byte-identical across runs).
 
-### 10.1 Cohort and definitions
+**Definition change (read first).** An earlier version of this section reported **92.0 % sensitivity**. That figure counted *any* alarm from *any* rule starting on or after the onset day, with no time limit, and it pooled missed-calls declines, which the unanswered-calls rule detects almost by construction. A null test (stable elders given pseudo-onsets drawn from the real onset distribution) scored about **46 % "detection" with no decline at all**, and only 40 of 88 detections began with a control-chart rule. The figure was inflated by chance and is withdrawn. The corrected evaluation below (1) only credits an alarm started by a rule matching the decline's channel within 45 days of onset, (2) reports the chance rate from pseudo-onsets and the chance-corrected (excess) sensitivity, (3) reports missed-calls declines separately as an operational check, (4) chooses the alert threshold on a development cohort and reports on a separate held-out cohort, and (5) gives 95 % bootstrap intervals over people.
 
-- **200 simulated elders × 120 days.** 88 have an injected decline (onset day 35–85, gradual ramp of 14–35 days, random magnitude 0.3–1.2) and 112 are stable. Baseline = first 21 days.
+### 10.1 Cohorts and definitions
+
+- **Development cohort:** 200 simulated elders × 120 days (seed 11), used only to choose the threshold. **Held-out cohort:** 400 × 120 days (seed 2026): 124 with a clinical-type injected decline, 49 with a missed-calls decline, 227 stable. Onset day 35–85, gradual ramp 14–35 days, random magnitude 0.3–1.2. Baseline = first 21 days.
 - Generative model per metric: personal level × weekday effect × (1 + AR(1) noise, φ = 0.3) × decline effect. There are about 3 % missed and 3–5 % short calls, and rare background symptom mentions. Dialect (south 45 %, central 25 %, north 30 %) sets the population speech-rate mean (4.6 / 4.3 / 4.9 syll/s). The **PSTN channel and central dialect get extra measurement noise**, an assumption meant to mimic 8 kHz audio and weaker ASR.
-- Decline types: `cognitive_drift` (recall, MATTR, pauses, fillers), `frailty_symptom` (speech rate, pauses, mood, pain/dizziness/sleep/meal/fall mentions), `mood_withdrawal` (mood, sadness, short calls), `missed_calls`.
-- **Sensitivity**: decline elders with an alarm episode (run of yellow/red days) starting on or after onset. **Detection delay**: first such episode start − onset. **False alarms**: episodes starting on stable person-days, per 30 monitored days. **Specificity**: person-level = stable elders never alerted; day-level = stable monitored days not yellow/red.
+- Decline types and the rules allowed to claim them: `cognitive_drift` (recall, MATTR, pauses, fillers) → control-chart rules; `frailty_symptom` (speech rate, pauses, mood, pain/dizziness/sleep/meal/fall mentions) → symptom/fall rules or control chart; `mood_withdrawal` (mood, sadness, short calls) → `low_mood` or control chart; `missed_calls` → `unanswered` (operational check only).
+- **Attributed detection:** the first day within [onset, onset + 45] (truncated at the end of follow-up) on which a matching rule *starts* driving a yellow/red light. An alarm already running at onset does not count.
+- **Chance rate:** the same rule applied to every (stable elder, decline elder) pair, using the decline elder's onset day and type on the stable elder's lights. **Excess sensitivity** = attributed sensitivity − chance rate. **Chart-only** variants count only the speech/recall control-chart rules.
+- **False alarms:** alarm episodes (runs of yellow/red, any rule) starting on stable monitored person-days, per 30 days. **Specificity:** person-level = stable elders never alerted; day-level = stable monitored days not yellow/red.
+- **Intervals:** 95 % percentile bootstrap, 1,000 resamples, people resampled within clinical-decline / missed-calls / stable strata.
 
-### 10.2 Headline (simulated)
+### 10.2 Threshold choice and operating curve
 
-| Metric | Value |
-|---|---|
-| Sensitivity (decline flagged after onset) | **92.0 %** (76.1 % within 30 days) |
-| Median detection delay | **19 days** after onset (IQR 11–29) |
-| False alarms | **0.29 per person-month** of stable monitoring; 0.183 of these come from the speech/recall control chart, the rest from event rules (falls, repeated symptoms, missed calls) |
-| Day-level specificity | **95.4 %** |
-| Person-level specificity | **42.0 %** of stable elders never alerted in 99 monitored days |
+Rule fixed before the held-out cohort was scored: on the development cohort, pick the L_yellow (grid 1.5–4.0, L_red = L_yellow + 1) with the highest excess clinical sensitivity among settings with ≤ 0.30 false alarms per person-month. It picked **L_yellow = 3.0 / L_red = 4.0** (development: sensitivity 84.4 %, chance 9.6 %, excess 74.8 %, 0.17 false alarms per person-month). The control chart currently ships with **2.5 / 3.5**, a value set earlier under the uncorrected definition; both are reported below. On the held-out cohort, the corrected analysis favours 3.0. The three demo personas keep their story at 3.0 / 4.0 (Bà Hạnh yellow day 38, red day 43; Ông Tư yellow day 70), so switching is a one-line change in `ControlConfig`.
 
-**Read this candidly:** 0.29 false alarms per person-month means a typical stable family gets about **one yellow/red light every 3–4 months** that does not reflect a real change. Most stable elders (58 %) see at least one over 99 days. That is acceptable only because the action for yellow is "give her a call", which is low-cost and arguably useful anyway. Event-rule alerts such as a reported fall are things a family would want to hear regardless.
+![Operating curve](../data/eval/operating_curve.svg)
 
-### 10.3 By decline type (simulated)
+Held-out cohort (full table, including the development cohort: `data/eval/operating_curve.csv`):
 
-| Group | N | N decline | Sensitivity | Sens. ≤30 d | Median delay (d) | Specificity (person) | Specificity (day) | False alarms / person-month |
-|---|---|---|---|---|---|---|---|---|
-| All | 200 | 88 | 92.0% | 76.1% | 19 | 42.0% | 95.4% | 0.29 |
-| cognitive_drift | 17 | 17 | 100.0% | 94.1% | 18 | n/a | 92.2% | 0.449 |
-| frailty_symptom | 29 | 29 | 93.1% | 86.2% | 18 | n/a | 94.2% | 0.416 |
-| missed_calls | 24 | 24 | 87.5% | 62.5% | 20 | n/a | 95.5% | 0.294 |
-| mood_withdrawal | 18 | 18 | 88.9% | 61.1% | 29 | n/a | 95.1% | 0.31 |
-| stable | 112 | 0 | n/a | n/a | n/a | 42.0% | 95.7% | 0.268 |
+| Baseline | L_yellow | Sensitivity | Chance | Excess | Chart-only sens. | Chart chance | False alarms / p-m |
+|---|---|---|---|---|---|---|---|
+| personal | 2.0 | 91.9 % | 52.3 % | 39.7 % | 84.7 % | 51.5 % | 0.62 |
+| personal | 2.5 (shipped) | 87.1 % | 30.4 % | 56.7 % | 75.8 % | 29.5 % | 0.34 |
+| personal | **3.0 (chosen)** | **79.8 %** | **15.0 %** | **64.9 %** | 56.5 % | 13.7 % | **0.19** |
+| personal | 3.5 | 71.0 % | 5.9 % | 65.1 % | 39.5 % | 4.6 % | 0.12 |
+| population | 2.5 | 69.4 % | 37.9 % | 31.5 % | 48.4 % | 37.2 % | 0.43 |
+| population | 3.0 | 71.8 % | 31.6 % | 40.1 % | 44.4 % | 30.7 % | 0.34 |
 
-### 10.4 Ablation: personal baseline vs population norm (simulated)
+The table shows why a raw sensitivity number misleads. Lowering the threshold to 1.5 raises "sensitivity" to 94 % while the chance rate rises to 79 %, so almost all of the gain is chance.
 
-Same rules and thresholds. *Personal* = each person's own 21-day baseline. *Population* = one pooled norm (median / 1.4826·MAD over all baseline-period calls).
+### 10.3 Headline (held-out, simulated)
 
-| Baseline | Sensitivity | Sens. ≤30 d | Median delay (d) | Specificity (person) | Specificity (day) | False alarms / person-month |
+| Metric | L_yellow 3.0 (chosen on dev) | L_yellow 2.5 (shipped) |
+|---|---|---|
+| Attributed sensitivity, clinical declines | **79.8 %** (72.6–86.3) | 87.1 % (81.5–92.7) |
+| Chance rate (pseudo-onsets, no decline) | 15.0 % (11.4–18.8) | 30.4 % (25.4–35.8) |
+| **Excess (chance-corrected) sensitivity** | **64.9 %** (57.1–72.5) | 56.7 % (48.9–64.5) |
+| Speech/recall control chart only: excess | **42.7 %** (33.0–51.7); sens. 56.5 %, chance 13.7 % | 46.3 % (37.2–54.5) |
+| Median delay (attributed detections) | 24 days (IQR 15–29) | n/a |
+| False alarms per person-month (all rules) | **0.19** (0.16–0.22), 0.10 from the control chart | 0.34 (0.29–0.40) |
+| Day-level specificity | 97.2 % (96.6–97.7) | n/a |
+| Stable elders never alerted in 99 days | 57.7 % (51.5–64.3) | n/a |
+| Operational: missed-calls declines flagged by `unanswered` | 71.4 % (59.2–83.7), chance 6.5 % | n/a |
+
+**Read this candidly.** With no decline at all, a stable elder still shows a channel-matched alarm in a random 45-day window about 15 % of the time. Only the excess over that is attributable to the decline. The speech/recall control chart on its own picks up well under half of the injected declines beyond chance; symptom, fall and mood rules carry much of the rest. At 0.19 false alarms per person-month a typical stable family sees about **one yellow/red light every five months** that reflects no real change, and 42 % of stable elders see at least one in 99 days. That is acceptable only because the yellow action is "give her a call".
+
+### 10.4 By decline type (held-out, L_yellow 3.0)
+
+| Decline type | N | Sensitivity | Chance | Excess | Chart-only sens. | Median delay (d) |
 |---|---|---|---|---|---|---|
-| **Personal (Chào Bà)** | **92.0%** | **76.1%** | 19.0 | 42.0% | **95.4%** | **0.29** |
-| Population norm | 76.1% | 60.2% | 17.0 | 43.8% | 67.8% | 0.435 |
+| cognitive_drift | 34 | 88.2 % (76.5–97.1) | 14.0 % | 74.2 % (62.0–84.2) | 88.2 % | 22 |
+| frailty_symptom | 40 | 95.0 % (87.5–100) | 17.3 % | 77.7 % (69.0–84.7) | 65.0 % | 20 |
+| mood_withdrawal | 50 | 62.0 % (48.0–76.0) | 13.7 % | 48.3 % (33.4–62.2) | 28.0 % | 28 |
+| missed_calls (operational, not clinical) | 49 | 71.4 % (59.2–83.7) | 6.5 % | 64.9 % | 10.2 % | 25 |
 
-| Decline type | Sensitivity, personal | Sensitivity, population |
+Mood/withdrawal declines are the weakest: speech changes are small and the mood rule needs several low-mood days.
+
+### 10.5 Personal baseline vs population norm (held-out, same rules and threshold)
+
+*Personal* = each person's own 21-day baseline. *Population* = one pooled norm (median / 1.4826·MAD over all baseline-period calls). Same corrected definition.
+
+| Baseline | Sensitivity | Chance | Excess | Chart-only excess | False alarms / p-m | Day specificity |
+|---|---|---|---|---|---|---|
+| **Personal (Chào Bà)** | 79.8 % (72.6–86.3) | 15.0 % | **64.9 %** (57.1–72.5) | **42.7 %** (33.0–51.7) | **0.19** (0.16–0.22) | **97.2 %** |
+| Population norm | 71.8 % (63.7–79.8) | 31.6 % | 40.1 % (30.4–49.4) | 13.6 % (3.3–23.2) | 0.34 (0.29–0.39) | 78.6 % |
+
+- Stable elders shown yellow/red on **more than half** of their monitored days: personal **0**, population **43 of 227**. Share of stable monitored days in yellow/red: personal 2.8 %, population 21.4 %.
+- The advantage holds along the whole operating curve (§10.2), not only at the chosen point. At a matched false-alarm rate the personal baseline has the higher excess sensitivity: at about 0.24 false alarms per person-month it reaches 61.8 % (L_yellow 2.75) against 42.7 % for the population norm (L_yellow 4.0). At L_yellow 1.5 both are mostly chance.
+- **Why it matters.** Speech rate, pauses and vocabulary differ much more *between* people (dialect, education, personality, phone line) than a meaningful change *within* one person. A population norm keeps naturally slow speakers permanently flagged, which raises the chance rate, and misses a 10–15 % decline in a fast speaker who is still "above average". **This is a property of how we built the simulation and must be confirmed on real data.**
+
+### 10.6 Fairness by dialect and channel (held-out, L_yellow 3.0)
+
+| Group | N | Clinical declines | Sensitivity | Chance | Excess | False alarms / p-m |
+|---|---|---|---|---|---|---|
+| south | 175 | 53 | 86.8 % (77.4–94.3) | 15.9 % | 70.9 % (60.1–80.9) | 0.19 |
+| central | 110 | 34 | 79.4 % (64.7–91.2) | 12.4 % | 67.0 % (51.3–81.1) | 0.18 |
+| north | 115 | 37 | 70.3 % (54.1–83.8) | 15.8 % | 54.5 % (38.3–68.8) | 0.19 |
+| PSTN | 248 | 74 | 78.4 % (68.9–87.8) | 17.3 % | 61.1 % (50.0–70.7) | 0.20 |
+| web | 152 | 50 | 82.0 % (70.0–92.0) | 11.0 % | 71.0 % (58.0–82.8) | 0.16 |
+
+False alarms are flat across groups (0.16–0.20 per person-month). Subgroup intervals overlap widely, so no difference is established either way. **Caveat:** dialect and channel effects in the simulation are our *assumptions* (noise multipliers). Real fairness depends on vi-VN STT accuracy for each dialect, age group and phone line, which we have not measured (§15).
+
+### 10.7 Which rules started detections and false alarms (held-out, L_yellow 3.0)
+
+| Rule | Started an attributed detection | False-alarm episodes (start-day rules) |
 |---|---|---|
-| cognitive_drift | 100.0% | 82.4% |
-| frailty_symptom | 93.1% | 69.0% |
-| missed_calls | 87.5% | 75.0% |
-| mood_withdrawal | 88.9% | 83.3% |
+| `metric_trend` | 54 | 99 |
+| `unanswered` | 35 (operational) | 53 |
+| `low_mood` | 18 | 0 |
+| `symptom_repeat` | 15 | 20 |
+| `multi_symptom` | 7 | 5 |
+| `fall` | 6 | 4 |
 
-- Stable elders shown yellow/red on **more than half** of their monitored days: personal **0**, population **38 of 112**.
-- Share of stable monitored days shown yellow/red: personal **4.6 %**, population **32.2 %**.
-- The population norm's slightly better person-level specificity and shorter delay are artefacts. People already in permanent alarm cannot generate a *new* episode, so they are not counted as false alarms, and declines that start while someone is already flagged are not counted as detections.
+### 10.8 Pre/post effects in the DMAIC loop are not evidence of benefit
 
-**Why it matters.** Speech rate, pauses and vocabulary differ much more *between* people (dialect, education, personality, phone line) than a meaningful change *within* one person. A population norm keeps naturally slow speakers permanently flagged and misses a 10–15 % decline in a fast speaker who is still "above average". In the simulation this is the core design argument for the personal baseline. **It is a property of how we built the simulation and must be confirmed on real data.**
+The DMAIC Improve step compares a metric before and after the family's or doctor's action. For the scripted personas (Bà Hạnh) that improvement was **written into the simulation script**, so it is circular. The API (`GET /api/elders/{id}/dmaic`, `compute_cycle`) marks it with `effect_illustrative: true` plus `effect_note_vi` / `effect_note_en` ("Illustrative (scripted persona) …"), and the Improve summary is prefixed "Minh họa (kịch bản mô phỏng)" / "Illustrative (scripted persona)". With real data, the comparison is against the person's **own pre-change baseline**. Each metric carries `diff` and an approximate 95 % interval `diff_ci95` (Welch standard error inflated by √((1+φ)/(1−φ)), φ = 0.3, for day-to-day autocorrelation). The note warns that an action is usually taken when values are at their worst, so part of any improvement is **regression to the mean or natural recovery**. Showing that an intervention works requires a comparison group (§13 validation plan).
 
-### 10.5 Fairness by dialect and channel (simulated)
+Recall (0–3 per call) is never shown as a percentage, because "37 % worse recall" reads like a test score. Explanations and DMAIC summaries state it as counts, e.g. "tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 2/7 lần (thường khoảng 6/7)" / "recalled the earlier story fully without hints 2 of 7 times (usually about 6 of 7)". Other % changes are rounded to whole percents below 10 % and to the nearest 5 % above.
 
-| Group | N | N decline | Sensitivity | Sens. ≤30 d | Median delay (d) | Specificity (person) | Specificity (day) | False alarms / person-month |
-|---|---|---|---|---|---|---|---|---|
-| central | 49 | 20 | 100.0% | 75.0% | 16 | 44.8% | 95.3% | 0.289 |
-| north | 61 | 25 | 92.0% | 84.0% | 18 | 38.9% | 94.7% | 0.312 |
-| south | 90 | 43 | 88.4% | 72.1% | 22 | 42.6% | 96.0% | 0.275 |
-| pstn | 127 | 55 | 94.5% | 78.2% | 18 | 40.3% | 94.9% | 0.319 |
-| web | 73 | 33 | 87.9% | 72.7% | 19 | 45.0% | 96.3% | 0.238 |
-
-Day-level specificity stays within 94.7–96.3 % across groups, and false alarms within 0.24–0.32 per person-month. With a personal baseline, between-group level differences cancel by construction. Sensitivity differences are within what small subgroups (20–55 declines) produce by chance. **Caveat:** the dialect/channel effects in the simulation are our *assumptions* (noise multipliers). Real fairness depends on vi-VN STT accuracy for each dialect, age group and phone line, which we have not measured (§15). A real study must report these breakdowns.
-
-### 10.6 Which rules fired (simulated)
-
-| Rule | First alert of detected declines | False-alarm episodes |
-|---|---|---|
-| `metric_trend` | 40 | 87 |
-| `unanswered` | 20 | 19 |
-| `symptom_repeat` | 13 | 24 |
-| `low_mood` | 4 | 0 |
-| `fall` | 3 | 6 |
-| `multi_symptom` | 2 | 2 |
-
-### 10.7 Software verification
+### 10.9 Software verification
 
 - `.venv/bin/pytest -q` → **119 tests pass** (core metrics, control chart, explanations and blocklist, synthetic personas, DMAIC/evaluation, emergency spotter true/false positives including idioms and negation, orchestrator phases, consent/opt-out, scam/medication/diagnosis guardrails, Claude engine with a fake client, server API end-to-end including "no audio anywhere").
 - A full hands-free simulated web call was run in the browser (Playwright, headless Chromium): recall failed free and succeeded after the cue (score 1), 56 s voiced speech (valid), day 91 appended with today's date, light computed. A typed call was also run end to end (stored as live data; typed answers carry no speech timing, so it counts as a too-short call and its speech metrics are not shown).
@@ -517,8 +543,10 @@ Day-level specificity stays within 94.7–96.3 % across groups, and false alarms
 
 | Risk | Control in the prototype |
 |---|---|
-| Missed emergency | Layer-1 keyword spotter runs before any LLM on every turn; Layer-2 LLM tool can only add; 115 instruction; red alert with quote; call ends |
-| Diagnostic or alarming language | System prompt rule + output scrub (agent) + blocklist (family explanations, LLM rewording, analysis summaries); "change relative to the person's own baseline" wording throughout |
+| Missed emergency | Layer-1 keyword spotter runs before any LLM on every turn; Layer-2 LLM tool can only add. Three tiers: **acute** (happening now/today, no time given, "can't get up", and any self-harm statement whatever the tense) → calm 115 instruction, red `emergency` alert with quote, call ends; **non-acute** (the elder's own event clearly in the past, e.g. "Tui bị ngã cầu thang hôm qua") → one confirming question ("Bà có đang đau hay chảy máu hông?"), red `health_concern` "check in today" alert, no 115, and a "yes" escalates to acute; **third-party** ("Hôm qua thằng cháu té xe") → empathy only, nothing recorded against the elder. The emergency is persisted on the day's record (`DailyRecord.emergency`) and is a control-chart event rule, so recomputes keep the day red |
+| Over-triggering emergencies | Subject heuristic (cháu, con + name, ông nhà, bả/ổng, hàng xóm…; possessives like "cháu tui") and time words (hôm qua, bữa trước, hồi…, tuần rồi vs đang, bây giờ, mới, còn đau). Tested on the exact sentences that previously over-fired |
+| Diagnostic or alarming language | System prompt rule + output scrub (agent) + blocklist (family explanations, LLM rewording, analysis summaries); "change relative to the person's own baseline" wording throughout. Questions like "Tui bị bệnh tiểu đường hả con?", "vậy là bệnh gì", "có phải tui bị … không" get a gentle "I'm a virtual assistant, I can't examine; please ask the doctor or (chị Lan)" |
+| Rehearsal data polluting the chart | Simulated web calls ("Giả lập người nói") are stored and displayed but excluded from scoring; the day shows the last scored light with a `rehearsal_not_scored` reason. Calls never create a future-dated day: several calls on one date are sub-calls of that day |
 | Medication harm | Never advises starting/stopping/changing medication; refers to the doctor; reminders read the exact profile schedule |
 | Scams targeting older adults | Refuses money/OTP topics, warns the elder, alerts the family |
 | Over-alerting / alarm fatigue | Personal baseline, variance inflation, 3/5-day runs, hysteresis; false-alarm rate reported openly (§10) |
@@ -533,12 +561,15 @@ Clinical safety is *human-in-the-loop by design*. Chào Bà never takes a clinic
 
 1. **Enrolment** (with the elder, a family member as witness). Separate, revocable consents are stored as rows: `daily_call` (receive calls), `voice_metrics` (derive timing metrics from text and timings, no audio), `family_sharing` (share the light and summaries), `clinician_sharing` (share reports with a clinician on family request), `research_use` (de-identified research use, **off by default**).
 2. **Every call:** AI disclosure, "no recording" notice, and a consent question. Declining ends the call politely and counts as an unanswered day.
-3. **Any time:** the elder can say "đừng gọi nữa" (confirmed, recorded, scheduling stops), or a purpose can be withdrawn from the Privacy screen (`POST /api/elders/{id}/consents/{type}/withdraw`, with a confirmation dialog). Processing for that purpose stops at once: `daily_call` pauses scheduling exactly like the in-call opt-out; `voice_metrics` stops storing speech metrics (calls still happen); `family_sharing` withholds the light, summaries, trends, alerts and care cycle from the family. "Turn back on" re-grants (`/grant`, or `/resume` for calls). Withdrawal does not delete existing data (deletion on request is a production feature, §15).
+3. **Any time:** the elder can say "đừng gọi nữa" (confirmed, recorded, scheduling stops), or a purpose can be withdrawn from the Privacy screen (`POST /api/elders/{id}/consents/{type}/withdraw`, with a confirmation dialog). The consent is the elder's: when a family member requests the withdrawal, the request must state `confirmed_by_elder_or_proxy: true` (otherwise HTTP 400 with an explanation), and the row records `requested_by` and the requester's role. Processing for that purpose stops at once: `daily_call` pauses scheduling exactly like the in-call opt-out; `voice_metrics` stops storing speech metrics (calls still happen); `family_sharing` withholds the light, summaries, trends, alerts and care cycle from the family. "Turn back on" re-grants (`/grant`, or `/resume` for calls). Withdrawal does not delete existing data (deletion on request is a production feature, §15).
 
 ### 11.3 Data minimisation and retention
 
-- **No raw audio** is stored or transmitted by the prototype. The browser VAD only reads levels, and STT happens in the browser. There is no audio column in either schema, and a server test asserts this.
+- **No raw audio reaches or is stored by the Chào Bà server.** The page's VAD only reads signal levels locally. There is no audio column in either schema, and a server test asserts this.
+- **Speech recognition in the web prototype is the browser's service, and it is not local.** Chrome and Edge implement `webkitSpeechRecognition` by streaming microphone audio to the vendor's cloud (Google for Chrome), under that vendor's terms. The call page says so ("Nhận dạng giọng nói dùng dịch vụ của trình duyệt (Google); máy chủ Chào Bà không nhận và không lưu ghi âm"). Typed mode ("Gõ chữ") avoids it. We therefore do **not** claim that no audio leaves the device in the prototype.
+- **Production path:** telephone audio (LiveKit SIP) is transcribed by a **self-hosted** Vietnamese ASR (PhoWhisper or Whisper fine-tuned on Vietnamese) on our own Vietnam-region servers. Audio frames live only in memory for the duration of the transcription and are discarded afterwards; only text plus timings are written.
 - **Transcripts** (text + timings) expire after **7 days**. They are purged on startup and after each call (prototype) or by a daily `pg_cron` job (production).
+- **Verbatim quotes** kept outside transcripts (the quoted words in emergency / health-concern / scam alerts; symptom quotes, follow-up hooks and new-fact sentences in the stored call analysis) are replaced by "[đã xoá sau 30 ngày]" after **30 days**, on startup and after each call (`Store.purge_quotes`). Memory facts the elder chose to share for the memory book are kept while enrolled.
 - **Derived numbers** (metrics, lights, baselines) are kept while enrolled, because the personal baseline needs history.
 - Families see **summaries, lights and explanations**. Under RLS, transcripts are visible only to the primary carer and the elder.
 - Every family read is written to the **access log**, which is shown in the Privacy screen. The app identifies the viewer with `X-Actor` / `X-Role` (demo: the elder's primary carer, e.g. Lan); repeated reads of the same resource on the same day are one row with a count, so the log stays readable.
@@ -560,7 +591,7 @@ RLS uses helper functions `app_role()`, `can_read()` and `clinician_shared()` (t
 
 ### 11.5 Cross-border processing and Vietnamese law
 
-- **No-key mode** sends nothing to third parties; all processing stays on the server.
+- **No-key mode**: the Chào Bà server sends nothing to third parties. In the web prototype, however, the browser's own speech recognition sends microphone audio to the browser vendor (Google for Chrome) unless typed mode is used (§11.3); the production telephone path uses self-hosted ASR instead.
 - **Claude mode** sends transcript text and the per-call context (first name, honorific, age, province, medication schedule, family first names, recent summaries) to Anthropic's API, outside Vietnam. That is a **cross-border transfer of health-related personal data**. Before any real deployment we plan to:
   - minimise and pseudonymise the context (no full names, coarse location);
   - evaluate whether a domestic or in-region LLM, or fully scripted conversation with only post-call analysis via an LLM, meets quality needs;
@@ -579,30 +610,91 @@ RLS uses helper functions `app_role()`, `can_read()` and `clinician_shared()` (t
 | Voice transport | Browser page: Web Speech API (vi-VN STT/TTS) + WebAudio VAD | **LiveKit Agents**: outbound SIP calls to ordinary phones via a domestic SIP trunk; Silero VAD; vi-VN STT/TTS provider (candidates: Deepgram, Google, FPT.AI). Adapter `chaoba/agent/livekit_agent.py` is a sketch: import-guarded, `TurnTimer` unit-tested, **otherwise untested** |
 | Orchestration | In-process `Orchestrator`, call state in memory | Same code; call state in Redis or a sticky worker per LiveKit room; one job = one call |
 | Scheduling | Manual (click "Nghe") | `pg_cron` / worker creates rooms and dials at each elder's preferred time; checks `opted_out` and consent first; retry policy for unanswered calls |
-| Store | SQLite file | **Postgres on Supabase** with RLS (`schema.sql`), Supabase Auth for families, `pg_cron` purge |
-| Family app | Next.js PWA against REST; falls back to bundled fixtures if the API is down | Same, behind auth; push notifications for red/emergency alerts; Zalo/SMS channel for families |
+| Store | SQLite file | **Postgres on Supabase** with RLS (`schema.sql`), Supabase Auth for families, `pg_cron` purge. An RLS test against plain Postgres is in the repository (§12.2); it needs Docker and has not yet been run in the build environment |
+| Family app | Next.js PWA against REST; falls back to bundled fixtures if the API is down; writes that fail are kept on the device and retried, and only shown as saved after the API confirms | Same, behind auth; push notifications for red/emergency alerts; Zalo/SMS channel for families |
 | Analytics | `evaluate_series` recomputes the full series per call (milliseconds for 90–365 days) | Same; incremental update possible; nightly batch for population-health dashboards |
 
 **Load profile.** Calls are short (4–5 min), bounded and cluster in the morning. 10,000 elders calling between 7 and 9 am average about 330 calls in progress at once (10,000 × 4 min / 120 min ≈ 333), each needing STT + TTS + about 10 LLM turns. Workers scale horizontally (stateless apart from the per-call state). Post-call analysis is asynchronous. Database writes are a few rows per call.
 
-### 12.2 Cost model (estimates, not quotes)
+### 12.2 Containers and the production schema
 
-Per 4-minute call, from the concept planning estimates:
+The repository ships a container setup so a reviewer can run the whole stack with one command:
 
-| Channel | Per call | Per person-month (30 calls) | Per person-month (5 calls/week ≈ 21.5) |
-|---|---|---|---|
-| Web (STT/TTS + LLM) | ~US$0.10–0.25 | ~US$3–7.5 | ~US$2.2–5.4 |
-| Domestic PSTN (+ telephony minutes) | ~US$0.20–0.45 | **~US$6–14** | ~US$4.3–9.7 |
+| File | What it does |
+|---|---|
+| `Dockerfile` | API image (`python:3.14-slim`, same Python as the dev venv; `--build-arg PYTHON_VERSION=3.13` if a 3.14 image is unavailable). Non-root user, SQLite on a volume, health check on `/api/health` |
+| `web/Dockerfile` | Family app, multi-stage Next.js **standalone** build (`NEXT_OUTPUT=standalone`, `node server.js`), non-root |
+| `docker-compose.yml` | `api` + `web` + `postgres`. Postgres runs the init scripts `deploy/postgres/00_auth_shim.sql` (a stand-in for Supabase's `auth.uid()` and `authenticated` role), `chaoba/server/schema.sql`, `deploy/postgres/02_grants.sql` |
+| `deploy/rls_test.sql` | RLS smoke test in one rolled-back transaction: a stranger sees nothing; transcripts are visible to the primary carer but not to a viewer; a viewer cannot write consent; a clinician sees the profile only after `clinician_sharing` is granted; withdrawing `family_sharing` hides lights from family roles but not from the elder. Prints `RLS OK` |
+| `tests/deploy/test_deploy_rls_postgres.py` | Pytest wrapper: starts a throwaway `postgres:17-alpine`, applies the schema, runs `rls_test.sql`, and checks that no table lacks RLS and no column stores audio. **Skips cleanly when Docker is not running** |
+| `deploy/cost_model.py` | The cost model in §12.3, reproducible |
 
-**Target:** under about 100,000 VND per person-month (≈ US$4 at an assumed 25,000–26,000 VND/USD) for the B2C price point. Reaching it on PSTN requires:
+```bash
+docker compose up --build                     # app http://localhost:3000, API + elder call page http://localhost:8000
+docker compose exec -T postgres psql -U chaoba -d chaoba -v ON_ERROR_STOP=1 -f /deploy/rls_test.sql   # -> RLS OK
+.venv/bin/pytest -q tests/deploy               # same RLS checks from pytest (needs Docker)
+```
 
-- `claude-haiku-5-5` (or the scripted engine) for the conversation, keeping Opus for the single post-call analysis or replacing it with Haiku plus the rule-based analyser;
-- prompt caching, which is already implemented;
-- domestic vi-VN STT/TTS at volume pricing;
-- volume SIP telephony rates;
-- fewer calls per week where the family chooses.
+Configuration is by environment variable: `CHAOBA_CORS_ORIGINS` (comma-separated origins the API accepts), `NEXT_PUBLIC_API_BASE` (API address the **browser** uses; baked in at build time), `CHAOBA_API_INTERNAL` (API address the Next **server** uses for server-side reads, e.g. `http://api:8000` inside compose), `CHAOBA_DB`, `CHAOBA_END_DATE`, `ANTHROPIC_API_KEY`.
 
-These are planning ranges that must be replaced by measured cost per call in the pilot.
+**Honest scope.** The API still stores data in SQLite. In compose, Postgres is the *production schema target*: it proves the schema and RLS policies load and behave as designed, but the API is not yet wired to it (that port, with Supabase Auth replacing the `X-Actor` header, is the first item on the roadmap). `docker compose config` validates the file; the images were written against the same Python 3.14 / Node 22 toolchain used in development, but the full `docker compose up` and the RLS pytest were **not executed in the build environment** because the Docker daemon was not running there; they are one command away for anyone with Docker.
+
+**Claude path.** Everything above runs without an API key. The Claude conversation, analysis and rewording paths are covered only by unit tests with a fake client and have never been run against the live API here (no key was available). One command runs a keyed session:
+
+```bash
+ANTHROPIC_API_KEY=sk-ant-... .venv/bin/uvicorn chaoba.server.app:app --port 8000
+# then open http://localhost:8000/call?elder=hanh&sim=1 ; /api/health must report "llm":"claude"
+# (or: ANTHROPIC_API_KEY=sk-ant-... docker compose up --build)
+```
+
+Check the `engine` field of the call record afterwards: a failing key silently falls back to Haiku and then to the scripted engine.
+
+### 12.3 Cost per call (transparent model; estimates, not quotes)
+
+`deploy/cost_model.py` runs one complete hands-free call for Bà Hạnh through the real API in-process, twice: once with the scripted engine (transcript, turns per phase, spoken length) and once with the Claude engine and Claude analyser wired to a **recording fake client**, which captures the exact request payloads (persona prompt, per-call context, emergency tool, growing history, per-turn directive, analysis prompt) without sending anything. Token counts are then estimated from text size; with a key, `--count-tokens` replaces the estimate with Claude's own token counter.
+
+**Measured from the scripted call** (one run; lines vary slightly per call id):
+
+| Phase | Elder turns | Agent turns | Elder tokens | Agent tokens |
+|---|---:|---:|---:|---:|
+| greeting | 0 | 1 | 0 | 82 |
+| wellbeing | 4 | 4 | 112 | 99 |
+| recall | 2 | 2 | 40 | 51 |
+| story | 4 | 4 | 191 | 103 |
+| closing | 1 | 1 | 51 | 77 |
+
+Per conversation request (11 per call): cached prefix (persona prompt + tool) ≈ 1,290 tokens; uncached part (per-call context + history + directive) grows from ≈ 540 to ≈ 1,520 tokens; output ≈ 30 tokens per reply. Post-call analysis input ≈ 1,350 tokens. TTS ≈ 950 characters per call.
+
+**Assumptions** (all editable constants at the top of the script; **none is a supplier quote**):
+
+| Item | Value used | Status |
+|---|---|---|
+| Tokens | UTF-8 bytes ÷ 3 (≈ 2 tokens per Vietnamese syllable; conservative for English) | estimate; verify with `--count-tokens` |
+| Claude list prices (US$/1M tokens, in / out / cache read) | Opus 5.5 4 / 20 / 0.20; Sonnet 5.5 2 / 10 / 0.20; Haiku 5.5 0.10 / 0.50 / 0.01 (assumed 0.1 × input); cache write 1.25 × input | Anthropic list prices, Oct 2026; verify |
+| Analysis output | 700 tokens JSON + 1,500 thinking tokens (effort `medium`) | assumption |
+| Billed minutes per call | 4.5 (design length: closing starts at 4:30). The scripted call is shorter (~2 min of TTS-timed lines), so per-minute items use the design length | conservative assumption |
+| STT | international cloud US$0.016/min; domestic vi-VN US$0.006/min (streamed for the whole call) | planning assumption, verify |
+| TTS | international US$16 per 1M characters; domestic US$4 per 1M characters | planning assumption, verify |
+| Domestic SIP telephony, outbound to Vietnamese mobiles | US$0.030/min (≈ 780 VND/min) | planning assumption, **the largest cost driver**; verify with ≥ 2 written trunk quotes |
+| Hosting (API, Postgres, workers, monitoring) | US$0.20 per person-month at ≥ 1,000 enrolled elders | assumption |
+| Exchange rate | 26,000 VND/USD | assumption |
+
+**Result** (target: < 100,000 VND per person-month):
+
+| Scenario | LLM | STT | TTS | Telephony | Per call | Person-month, 30 calls | Person-month, 5 calls/week (21.5) | Highest telephony price meeting the target at 30 calls |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| A. Web call (browser STT/TTS, as built) + Haiku 5.5 conversation + Opus 5.5 analysis | $0.051 | 0 | 0 | 0 | $0.051 | **≈ 45,000 VND ✓** | **≈ 34,000 VND ✓** | n/a |
+| B. Domestic SIP + Sonnet 5.5 conversation + Opus 5.5 analysis + international STT/TTS | $0.080 | $0.072 | $0.015 | $0.135 | $0.302 | ≈ 241,000 VND ✗ | ≈ 174,000 VND ✗ | not reachable |
+| C. Domestic SIP + Haiku 5.5 conversation + Haiku 5.5 analysis + domestic STT/TTS | $0.003 | $0.027 | $0.004 | $0.135 | $0.169 | ≈ 137,000 VND ✗ | **≈ 99,500 VND ✓ (barely)** | ≈ 510 VND/min |
+| D. Same as C but no LLM (scripted conversation + rule-based analysis) | 0 | $0.027 | $0.004 | $0.135 | $0.166 | ≈ 135,000 VND ✗ | **≈ 98,000 VND ✓** | ≈ 525 VND/min |
+
+What this shows:
+
+- **Only the web channel reaches the target with daily calls** under these assumptions, and it is the channel with the weakest reach among older adults (needs a smartphone or tablet and Chrome/Edge).
+- **On the phone, telephony dominates** (≈ 80 % of scenario C). With LLM cost reduced to Haiku (≈ US$0.003 per call), the model choice barely matters any more; scenario D (no LLM at all) saves only ≈ 2,000 VND per month. The phone target is met either at **5 calls a week**, or with daily calls if domestic outbound minutes cost **≤ ≈ 500 VND/min**. Whether that rate is obtainable is the first question for the pilot's procurement step.
+- **Sonnet + Opus + international voice (B) is about 2.4× the target** even before telephony, so it is a quality benchmark, not a price point.
+- Caching: the persona prompt (≈ 1,300 estimated tokens) is close to the minimum cacheable prefix length, which depends on the model; if it does not cache, scenario C's LLM cost rises by about US$0.001 per call, which does not change any conclusion.
+- Not included: payment fees, customer support, family-side SMS/Zalo notifications, retries for unanswered calls (each unanswered attempt costs telephony for its ring time), and VAT. These are measured per call in the usability pilot (§13) and replace this model.
 
 ---
 
@@ -610,9 +702,19 @@ These are planning ranges that must be replaced by measured cost per call in the
 
 | Segment | Buyer | Offer | Notes |
 |---|---|---|---|
-| **B2C** | adult children (often in cities or abroad) | monthly subscription: daily calls, light, alerts, notes, memory book | price target < 100k VND/month needs the cost levers in §12.2 |
+| **B2C** | adult children (often in cities or abroad) | monthly subscription: daily calls, light, alerts, notes, memory book | price target < 100k VND/month: met on the web channel; on the phone only at 5 calls/week or ≤ ≈ 500 VND/min telephony (§12.3) |
 | **B2G** | commune health stations / district health centres | population-level view of enrolled older adults (share green/yellow/red, missed calls); prioritised outreach list | supports prevention and screening; requires government procurement and data-sharing agreements |
 | **B2B** | insurers, hospitals (post-discharge follow-up) | 30–90 day post-discharge check-in with escalation to the care team | value case: earlier contact before readmission; must be shown in a pilot |
+
+**Unit economics (hypotheses to test, from §12.3).** Prices below are hypotheses for the usability pilot, not validated willingness to pay, and no partner or supplier has been engaged.
+
+| Offer (B2C, paid by the adult child) | Channel and frequency | Direct cost per person-month (§12.3) | Hypothesis price | Gross margin before support, payment fees and VAT |
+|---|---|---:|---:|---:|
+| "Web" | web call, daily (scenario A) | ≈ 45,000 VND | 99,000 VND | ≈ 55 % |
+| "Phone, 5 days a week" | ordinary phone, 21–22 calls (scenario C) | ≈ 99,500 VND | 149,000 VND | ≈ 33 % |
+| "Phone, daily" | ordinary phone, 30 calls (scenario C) | ≈ 137,000 VND | 199,000 VND | ≈ 31 % |
+
+Read this as: the < 100k VND target is reachable on the web, and on the phone only if the telephony rate is about 500 VND/min or lower, or at five calls a week. For B2G and B2B the buyer pays per enrolled person and the same per-call model applies; volume telephony rates are the lever to negotiate. The pilot measures real cost per call (minutes, tokens, retries) and replaces these numbers.
 
 **Competitive landscape** (based on public product descriptions; verify before quoting):
 
@@ -641,7 +743,7 @@ These are planning ranges that must be replaced by measured cost per call in the
 5. PSTN audio and Central dialects add measurement noise (simulation noise multipliers 1.15–1.3); dialect sets population speech-rate means of 4.3–4.9 syll/s. These numbers are assumptions, not measurements.
 6. Self-reported symptoms, falls and mood in conversation are reasonably honest and stable enough to trend.
 7. Families will act on yellow/red with a call, visit or doctor appointment, and will record interventions so the Improve/Control steps can be evaluated.
-8. Planning cost ranges per call (§12.2) and an exchange rate of about 25,000–26,000 VND/USD.
+8. Cost model inputs in §12.3: Claude list prices; STT, TTS, telephony and hosting prices that are planning assumptions, not quotes; 4.5 billed minutes per call; 26,000 VND/USD.
 9. Vietnam demographic figures are as published by GSO and the GSO–UNFPA projection (§1).
 
 ---

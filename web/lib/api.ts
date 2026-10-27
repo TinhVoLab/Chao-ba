@@ -1,6 +1,6 @@
 // Server-side data access. Every read tries the live API first and falls back to the
 // bundled fixtures (offline demo data) when the API is unreachable or errors.
-import { API_BASE } from "./config";
+import { serverApiBase } from "./config";
 import { fixtureElders, fixtureFor } from "./fixtures";
 import { normAlerts } from "./normalize";
 import { actorHeaders } from "./viewer";
@@ -8,7 +8,7 @@ import type { Alert, Dmaic, ElderProfile, ElderSummary, Loaded, Note, Privacy, T
 
 async function get<T>(path: string, fallback: () => T, elderId?: string): Promise<Loaded<T>> {
   try {
-    const res = await fetch(`${API_BASE}${path}`, {
+    const res = await fetch(`${serverApiBase()}${path}`, {
       cache: "no-store",
       signal: AbortSignal.timeout(3000),
       headers: actorHeaders(elderId),

@@ -2,11 +2,16 @@
 
 Flow of one elder turn (`Orchestrator.handle_turn`):
   1. record the elder Turn (text + VAD timings; never audio)
-  2. Layer-1 emergency spotter            -> calm 115 instruction, end call, red alert
+  2. Layer-1 emergency spotter, three tiers (emergency.py):
+       acute       -> calm 115 instruction, family notified now, end call
+       non_acute   -> calm reply + ONE confirming question; "yes" escalates to acute, "no" -> reassure and continue
+                      (the family still gets a red "check in today" alert)
+       third_party -> empathetic reaction, nothing recorded against the elder, conversation continues
   3. opt-out confirmation flow             -> record opt-out, stop scheduling
   4. consent answer (greeting phase)       -> declined today -> polite goodbye
   5. deterministic guardrails              -> anti-scam / no medication change / no diagnosis
   6. phase planner (`plan_step`)           -> decides the next conversational step (time + turn based)
+  6b. symptom follow-up (scripted engine)  -> "Dạ bà mỏi lưng từ hồi nào vậy bà, có đỡ chưa?" once per symptom
   7. engine.reply(state, elder_text)       -> ClaudeEngine (if ANTHROPIC_API_KEY) or ScriptedEngine
   8. output scrub (no disease names, no money talk)
 
@@ -26,11 +31,13 @@ from typing import Protocol
 from chaoba.core.models import Turn
 
 from . import guardrails as g
-from .emergency import spot, emergency_reply, EmergencyHit, FLAG_EMERGENCY_TOOL
+from .emergency import (spot, emergency_reply, non_acute_reply, non_acute_settled, third_party_reply, confirms_now,
+                        is_third_party, EmergencyHit, FLAG_EMERGENCY_TOOL)
 from .persona import ElderView, MAX_WORDS_PER_TURN
 from .prompts import (SYSTEM_PROMPT, PROMPT_VERSION, PHASE_DIRECTIVES, DailyContext, build_context_block,
                       default_family_greeting)
-from .textnorm import normalize, contains_phrase, word_count, strip_diacritics, has_vietnamese_diacritics
+from .textnorm import (normalize, contains_phrase, find_phrase, word_count, strip_diacritics,
+                       has_vietnamese_diacritics)
 
 log = logging.getLogger("chaoba.agent")
 
@@ -60,8 +67,13 @@ class CallState:
     story_turns: int = 0
     used_story_prompts: list[int] = field(default_factory=list)
     used_texts: list[str] = field(default_factory=list)
-    emergency: bool = False
+    emergency: bool = False                  # acute tier only (115 advised)
     emergency_hits: list[dict] = field(default_factory=list)
+    concern_hits: list[dict] = field(default_factory=list)      # non-acute tier (red light + "check in today")
+    third_party_hits: list[dict] = field(default_factory=list)  # events that happened to someone else
+    awaiting_confirm: dict | None = None     # non-acute hit waiting for the answer to "có đang đau...?"
+    react_override: str | None = None        # reaction the engine must use instead of a keyword reaction
+    followed_up: list[str] = field(default_factory=list)        # symptoms already followed up in this call
     opt_out_pending: bool = False
     opted_out: bool = False
     declined: bool = False
@@ -95,7 +107,9 @@ class TurnResult:
     emergency: bool = False
     end_call: bool = False
     emergency_hit: dict | None = None
-    event: str | None = None   # "emergency" | "opt_out" | "declined" | "scam" | "medication" | "diagnosis"
+    # "emergency" | "health_concern" | "health_concern_settled" | "third_party" | "symptom_followup" | "opt_out" |
+    # "declined" | "scam" | "medication" | "diagnosis"
+    event: str | None = None
 
 
 class Engine(Protocol):
@@ -232,6 +246,73 @@ QUESTIONS = {
                      "Hồi đó ai đi chung với {h} vậy?", "Nghe hay quá, rồi sau đó sao {h}?",
                      "Bây giờ nhớ lại {h} thấy sao {h}?"],
 }
+# Story follow-ups chosen from what the elder just said, so the hook never contradicts it (no "Hồi đó..." right after
+# talk of an upcoming visit).
+STORY_FOLLOW_BY_TIME = {
+    "future": ["Vui quá, {h} tính chuẩn bị gì vậy {h}?", "Dạ, rồi {h} tính nấu món gì vậy {h}?",
+               "Dạ, {h} mong tới bữa đó lắm ha {h}?", "Hay quá, bữa đó ai về nữa vậy {h}?"],
+    "past": ["Hồi đó ai đi chung với {h} vậy?", "Chuyện đó {h} nhớ nhất cái gì vậy {h}?",
+             "Bây giờ nhớ lại {h} thấy sao {h}?", "Rồi sao nữa {h}, kể con nghe thêm với?"],
+    "present": ["Rồi sao nữa {h}, kể con nghe thêm với?", "Nghe hay quá, rồi sau đó sao {h}?",
+                "Dạ, vậy {h} thấy vui hông {h}?", "Dạ, {h} kể con nghe thêm chút nha {h}?"],
+}
+_FUTURE_WORDS = ["sắp", "chủ nhật này", "chủ nhật", "ngày mai", "mai mốt", "tuần sau", "tuần tới", "tháng sau",
+                 "bữa sau", "định", "tính", "sẽ", "về thăm", "hẹn", "chuẩn bị", "tết này", "năm nay"]
+_PAST_WORDS = ["hồi đó", "hồi xưa", "hồi nhỏ", "hồi trẻ", "hồi trước", "ngày xưa", "năm đó", "hồi còn", "lúc trước",
+               "hồi mới", "thời đó", "bữa đó"]
+
+
+def time_frame(text: str) -> str:
+    """future | past | present: what the elder's last utterance was about."""
+    n = normalize(text)
+    if any(contains_phrase(n, w) for w in _FUTURE_WORDS):
+        return "future"
+    if any(contains_phrase(n, w) for w in _PAST_WORDS):
+        return "past"
+    return "present"
+
+
+# Symptom follow-up (one extra turn, once per symptom per call). Trigger phrases are matched outside negation and
+# only when the elder is the subject (not "thằng cháu bị đau bụng").
+SYMPTOM_FOLLOWUPS = [
+    ("pain", ["đau", "nhức", "mỏi", "ê ẩm", "tê"], "Dạ, {h} {p} từ hồi nào vậy {h}, có đỡ chưa?"),
+    ("dizziness", ["chóng mặt", "choáng", "xây xẩm", "hoa mắt"], "Dạ, {h} {p} từ hồi nào vậy {h}, giờ còn hông?"),
+    ("insomnia", ["mất ngủ", "khó ngủ", "ngủ hổng được", "ngủ không được", "thức trắng", "trằn trọc", "ngủ ít",
+                  "thức hoài", "ngủ hông được"], "Dạ, {h} khó ngủ vậy mấy bữa rồi {h}, có đỡ chưa?"),
+    ("no_food", ["ăn hổng vô", "ăn không vô", "hổng muốn ăn", "không muốn ăn", "bỏ bữa", "biếng ăn"],
+     "Dạ, {h} ăn hổng vô mấy bữa rồi {h}, trong người có mệt hông?"),
+    ("sad", ["buồn", "cô đơn", "tủi"], "Dạ, {h} buồn chuyện gì, kể con nghe với {h}?"),
+]
+_SYM_NEG = {"không", "hổng", "hông", "chưa", "chẳng", "chả", "hết", "đỡ", "bớt"}
+_SYM_STOP = {"chút", "xíu", "quá", "lắm", "hà", "nha", "con", "mà", "nữa", "rồi", "à", "ghê", "thôi", "đó", "nè",
+             "hông", "hổng", "không", "trời", "thiệt", "vậy", "dữ", "cũng", "với", "hoài"}
+_SYM_EXCL = ["buồn cười", "buồn ngủ", "hết buồn", "đỡ buồn", "đau lòng", "mỏi mắt chờ"]
+
+
+def symptom_followup(text: str, done: list[str], h: str, honorific: str | None = None) -> tuple[str, str] | None:
+    """(symptom key, follow-up question) for the first self-reported, non-negated symptom not yet followed up."""
+    n = normalize(text)
+    toks = n.split()
+    excl = [(s, s + len(e)) for e in _SYM_EXCL for s in find_phrase(n, e)]
+    for key, triggers, tmpl in SYMPTOM_FOLLOWUPS:
+        if key in done:
+            continue
+        for trig in sorted(triggers, key=len, reverse=True):
+            for st in find_phrase(n, trig):
+                if any(a <= st < b for a, b in excl):
+                    continue
+                prefix = n[:st].split()
+                if any(w in _SYM_NEG for w in prefix[-2:]) or is_third_party(text, st, honorific):
+                    continue
+                phrase = trig.split()
+                j = len(prefix) + len(phrase)
+                while j < len(toks) and len(phrase) < 3 and toks[j] not in _SYM_STOP:   # "mỏi" -> "mỏi cái lưng"
+                    phrase.append(toks[j])
+                    j += 1
+                return key, tmpl.format(h=h, p=" ".join(phrase))
+    return None
+
+
 RECALL_LEADS = ["Giờ con hỏi chơi nè.", "Con đố {h} chút nha.", "Con hỏi thử trí nhớ nè."]
 RECALL_PRAISE = {"exact": ["Đúng rồi đó {h}, {h} nhớ giỏi ghê!", "Dạ đúng y chang, {h} nhớ hay quá!"],
                  "partial": ["Dạ gần đúng rồi đó {h}, giỏi lắm!", "Dạ, {h} nhớ được vậy là hay rồi."],
@@ -292,12 +373,19 @@ class ScriptedEngine:
         if step == "closing":
             return closing_text(state), "closing", True
         _, react = reaction_for(elder_text, h, seed)
+        # A safety acknowledgement (react_override) is never dropped for length. Branches that use it clear it;
+        # otherwise the orchestrator prepends it to the reply.
+        forced = bool(state.react_override)
+        if forced:
+            react = state.react_override
         if step == "recall_free" and state.ctx.recall:
             q = state.ctx.recall.question_vi
             lead = _pick(RECALL_LEADS, seed).format(h=h)
             text = f"{react} {lead} {q}" if word_count(f"{react} {lead} {q}") <= MAX_WORDS_PER_TURN else f"{lead} {q}"
             if word_count(text) > MAX_WORDS_PER_TURN:
                 text = q
+            if forced:
+                text, state.react_override = f"{react} {q}", None
             return text, "recall", False
         if step == "recall_cue" and state.ctx.recall:
             return state.ctx.recall.cue_vi, "recall", False
@@ -308,17 +396,21 @@ class ScriptedEngine:
             state.story_turns = max(state.story_turns, 1)
             return self._fit(praise, q), "story", False
         if step in ("story_open", "story_follow"):
-            q = self._story_question(state, seed, opening=(step == "story_open"))
-            return self._fit(react, q), "story", False
+            q = self._story_question(state, seed, opening=(step == "story_open"), last=elder_text)
+            state.react_override = None
+            return self._fit(react, q, forced), "story", False
         q = self._fresh(state, [x.format(h=h) for x in QUESTIONS.get(step, QUESTIONS["ask_feel"])], seed)
-        return self._fit(react, q), state.phase, False
+        state.react_override = None
+        return self._fit(react, q, forced), state.phase, False
 
     @staticmethod
-    def _fit(react: str, q: str) -> str:
+    def _fit(react: str, q: str, force: bool = False) -> str:
+        if react.startswith("Dạ") and q.startswith("Dạ, "):   # no "Dạ. Dạ, ..."
+            q = q[4:5].upper() + q[5:]
         text = f"{react} {q}"
-        return text if word_count(text) <= MAX_WORDS_PER_TURN else q
+        return text if force or word_count(text) <= MAX_WORDS_PER_TURN else q
 
-    def _story_question(self, state: CallState, seed: str, opening: bool) -> str:
+    def _story_question(self, state: CallState, seed: str, opening: bool, last: str = "") -> str:
         h = state.ev.honorific
         hooks = state.ctx.followup_hooks
         if opening and hooks:
@@ -326,7 +418,11 @@ class ScriptedEngine:
             q = f"Bữa trước {h} có nói {hook[:1].lower() + hook[1:]}, giờ sao rồi {h}?"
             if word_count(q) <= MAX_WORDS_PER_TURN - 4:
                 return q
-        pool = [q.format(h=h) for q in QUESTIONS["story_open" if opening else "story_follow"]]
+        if opening:
+            pool = [q.format(h=h) for q in QUESTIONS["story_open"]]
+        else:
+            # follow the content of what the elder just said (future plan / old memory / present)
+            pool = [q.format(h=h) for q in STORY_FOLLOW_BY_TIME[time_frame(last)]]
         return self._fresh(state, pool, seed)
 
     @staticmethod
@@ -419,11 +515,19 @@ class ClaudeEngine:
         for block in resp.content:
             if getattr(block, "type", None) == "tool_use" and block.name == "flag_emergency":
                 inp = block.input if isinstance(block.input, dict) else {}
-                hit = EmergencyHit(category=str(inp.get("category", "other")),
-                                   keyword="(llm)", quote=str(inp.get("quote") or elder_text))
+                cat = str(inp.get("category", "other"))
+                acute = bool(inp.get("acute", True)) or cat == "self_harm"
+                hit = EmergencyHit(category=cat, keyword="(llm)", quote=str(inp.get("quote") or elder_text),
+                                   tier="acute" if acute else "non_acute", time="unknown" if acute else "past")
+                if not acute:
+                    state.concern_hits.append(hit.to_dict() | {"layer": 2})
+                    state.awaiting_confirm = hit.to_dict() | {"layer": 2}
+                    text = non_acute_reply(cat, state.ev.honorific)
+                    state.history.append({"role": "assistant", "content": text})
+                    return text, state.phase, False
                 state.emergency = True
                 state.emergency_hits.append(hit.to_dict() | {"layer": 2})
-                text = emergency_reply(hit.category, state.ev.honorific, state.ev.family_primary)
+                text = emergency_reply(hit.category, state.ev.honorific, state.ev.family_ref)
                 state.history.append({"role": "assistant", "content": text})
                 return text, state.phase, True
         text = " ".join(b.text for b in resp.content if getattr(b, "type", None) == "text").strip()
@@ -493,13 +597,33 @@ class Orchestrator:
         ev = state.ev
         h = ev.honorific
 
-        # 1. emergency (layer 1) -- always first
-        hit = spot(text)
-        if hit:
-            state.emergency = True
-            state.emergency_hits.append(hit.to_dict() | {"layer": 1})
-            state.end_reason = "emergency"
-            return self._finish(state, emergency_reply(hit.category, h, ev.family_primary), "emergency", True, hit)
+        # 1. emergency (layer 1) -- always first; tiered (acute / non_acute / third_party)
+        hit = spot(text, h)
+        if state.awaiting_confirm is not None:
+            # answer to the non-acute confirming question ("có đang đau hay chảy máu hông?")
+            pending, state.awaiting_confirm = state.awaiting_confirm, None
+            if (hit and hit.tier == "acute") or confirms_now(text):
+                acute = hit if (hit and hit.tier == "acute") else EmergencyHit(
+                    category=pending.get("category", "other"), keyword="(confirmed now)",
+                    quote=f"{pending.get('quote', '')} / {text}".strip(" /"), tier="acute", time="now")
+                return self._acute(state, acute)
+            state.react_override = non_acute_settled(h, ev.family_ref)
+            hit = None
+            event_note = "health_concern_settled"
+        else:
+            event_note = None
+        if hit and hit.tier == "acute":
+            return self._acute(state, hit)
+        if hit and hit.tier == "non_acute":
+            state.concern_hits.append(hit.to_dict() | {"layer": 1})
+            state.awaiting_confirm = hit.to_dict() | {"layer": 1}
+            if state.phase == "greeting" and state.consent_given is None:
+                state.consent_given = True       # she is talking to us; the next "hổng có" answers the question
+            return self._finish(state, non_acute_reply(hit.category, h), "health_concern")
+        if hit and hit.tier == "third_party":
+            state.third_party_hits.append(hit.to_dict() | {"layer": 1})
+            state.react_override = third_party_reply(h)
+            event_note = "third_party"
 
         # 2. opt-out confirmation
         if state.opt_out_pending:
@@ -507,7 +631,7 @@ class Orchestrator:
             if g.is_yes(text) or g.detect_opt_out(text):
                 state.opted_out = True
                 state.end_reason = "opt_out"
-                return self._finish(state, g.opt_out_done(h, ev.family_primary), "opt_out", True)
+                return self._finish(state, g.opt_out_done(h, ev.family_ref), "opt_out", True)
             return self._finish(state, g.opt_out_cancel(h), "opt_out_cancelled")
         if g.detect_opt_out(text):
             state.opt_out_pending = True
@@ -526,11 +650,24 @@ class Orchestrator:
         # 4. guardrails (deterministic; do not advance the conversation plan)
         for kind, det, rep in (("scam", g.detect_scam, g.scam_reply),
                                ("medication", g.detect_medication_change, g.medication_reply),
-                               ("diagnosis", g.detect_diagnosis_request, g.diagnosis_reply)):
+                               ("diagnosis", g.detect_diagnosis_request,
+                                lambda hh: g.diagnosis_reply(hh, ev.family_ref))):
             m = det(text)
             if m:
                 state.flags.append({"type": kind, "match": m, "quote": text})
+                state.react_override = None
                 return self._finish(state, rep(h), kind)
+
+        # 4b. symptom follow-up (scripted engine; Claude follows up on its own). One extra turn per symptom; it does
+        #     not advance the plan, and never interrupts the recall answers or the closing.
+        if (isinstance(self.engine, ScriptedEngine) and state.recall_stage not in ("asked_free", "asked_cue")
+                and state.phase in ("greeting", "wellbeing", "story") and state.step != "closing"
+                and state.elapsed() < CLOSING_AT_SEC - 30 and not state.react_override):
+            fu = symptom_followup(text, state.followed_up, h, h)
+            if fu:
+                state.followed_up.append(fu[0])
+                state.step = "symptom_followup"
+                return self._finish(state, fu[1], "symptom_followup")
 
         # 5. plan + engine
         state.step = plan_step(state, text)
@@ -538,6 +675,8 @@ class Orchestrator:
         if state.emergency and not any(x.get("layer") == 1 for x in state.emergency_hits):
             state.end_reason = "emergency"
             return self._finish(state, reply, "emergency", True)
+        if state.react_override:   # engine did not use it (e.g. Claude): say it first
+            reply, state.react_override = f"{state.react_override} {reply}", None
         reply = g.scrub_reply(reply, h)
         state.phase = phase if phase in PHASES else state.phase
         if state.step == "closing":
@@ -545,4 +684,11 @@ class Orchestrator:
         if state.elapsed() >= HARD_STOP_SEC and not end_call:
             reply, end_call = closing_text(state), True
             state.phase = "closing"
-        return self._finish(state, reply, None, end_call)
+        return self._finish(state, reply, event_note, end_call)
+
+    def _acute(self, state: CallState, hit: EmergencyHit) -> TurnResult:
+        state.emergency = True
+        state.emergency_hits.append(hit.to_dict() | {"layer": 1})
+        state.end_reason = "emergency"
+        return self._finish(state, emergency_reply(hit.category, state.ev.honorific, state.ev.family_ref),
+                            "emergency", True, hit)
