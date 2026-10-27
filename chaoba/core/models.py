@@ -79,6 +79,7 @@ class DailyRecord:
     summary_vi: str = ""
     summary_en: str = ""
     simulated: bool = True
+    emergency: bool = False               # an emergency was triggered during that day's call (forces red)
 
 
 @dataclass
