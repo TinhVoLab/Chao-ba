@@ -40,7 +40,7 @@
   {
    "elder_id": "control",
    "day": 1,
-   "date": "2026-08-22",
+   "date": "2026-07-18",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -58,7 +58,7 @@
   {
    "elder_id": "control",
    "day": 2,
-   "date": "2026-08-23",
+   "date": "2026-07-19",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -76,7 +76,7 @@
   {
    "elder_id": "control",
    "day": 3,
-   "date": "2026-08-24",
+   "date": "2026-07-20",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -94,7 +94,7 @@
   {
    "elder_id": "control",
    "day": 4,
-   "date": "2026-08-25",
+   "date": "2026-07-21",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -112,7 +112,7 @@
   {
    "elder_id": "control",
    "day": 5,
-   "date": "2026-08-26",
+   "date": "2026-07-22",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -130,7 +130,7 @@
   {
    "elder_id": "control",
    "day": 6,
-   "date": "2026-08-27",
+   "date": "2026-07-23",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -148,7 +148,7 @@
   {
    "elder_id": "control",
    "day": 7,
-   "date": "2026-08-28",
+   "date": "2026-07-24",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -166,7 +166,7 @@
   {
    "elder_id": "control",
    "day": 8,
-   "date": "2026-08-29",
+   "date": "2026-07-25",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -184,7 +184,7 @@
   {
    "elder_id": "control",
    "day": 9,
-   "date": "2026-08-30",
+   "date": "2026-07-26",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -202,7 +202,7 @@
   {
    "elder_id": "control",
    "day": 10,
-   "date": "2026-08-31",
+   "date": "2026-07-27",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -220,7 +220,7 @@
   {
    "elder_id": "control",
    "day": 11,
-   "date": "2026-09-01",
+   "date": "2026-07-28",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -238,7 +238,7 @@
   {
    "elder_id": "control",
    "day": 12,
-   "date": "2026-09-02",
+   "date": "2026-07-29",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -256,7 +256,7 @@
   {
    "elder_id": "control",
    "day": 13,
-   "date": "2026-09-03",
+   "date": "2026-07-30",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -274,7 +274,7 @@
   {
    "elder_id": "control",
    "day": 14,
-   "date": "2026-09-04",
+   "date": "2026-07-31",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -292,7 +292,7 @@
   {
    "elder_id": "control",
    "day": 15,
-   "date": "2026-09-05",
+   "date": "2026-08-01",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -310,7 +310,7 @@
   {
    "elder_id": "control",
    "day": 16,
-   "date": "2026-09-06",
+   "date": "2026-08-02",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -328,7 +328,7 @@
   {
    "elder_id": "control",
    "day": 17,
-   "date": "2026-09-07",
+   "date": "2026-08-03",
    "channel": "sim",
    "answered": true,
    "valid": false,
@@ -346,7 +346,7 @@
   {
    "elder_id": "control",
    "day": 18,
-   "date": "2026-09-08",
+   "date": "2026-08-04",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -364,7 +364,7 @@
   {
    "elder_id": "control",
    "day": 19,
-   "date": "2026-09-09",
+   "date": "2026-08-05",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -382,7 +382,7 @@
   {
    "elder_id": "control",
    "day": 20,
-   "date": "2026-09-10",
+   "date": "2026-08-06",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -400,7 +400,7 @@
   {
    "elder_id": "control",
    "day": 21,
-   "date": "2026-09-11",
+   "date": "2026-08-07",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -418,7 +418,7 @@
   {
    "elder_id": "control",
    "day": 22,
-   "date": "2026-09-12",
+   "date": "2026-08-08",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -436,7 +436,7 @@
   {
    "elder_id": "control",
    "day": 23,
-   "date": "2026-09-13",
+   "date": "2026-08-09",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -454,7 +454,7 @@
   {
    "elder_id": "control",
    "day": 24,
-   "date": "2026-09-14",
+   "date": "2026-08-10",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -472,7 +472,7 @@
   {
    "elder_id": "control",
    "day": 25,
-   "date": "2026-09-15",
+   "date": "2026-08-11",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -490,7 +490,7 @@
   {
    "elder_id": "control",
    "day": 26,
-   "date": "2026-09-16",
+   "date": "2026-08-12",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -508,7 +508,7 @@
   {
    "elder_id": "control",
    "day": 27,
-   "date": "2026-09-17",
+   "date": "2026-08-13",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -526,7 +526,7 @@
   {
    "elder_id": "control",
    "day": 28,
-   "date": "2026-09-18",
+   "date": "2026-08-14",
    "channel": "sim",
    "answered": false,
    "valid": false,
@@ -544,7 +544,7 @@
   {
    "elder_id": "control",
    "day": 29,
-   "date": "2026-09-19",
+   "date": "2026-08-15",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -562,7 +562,7 @@
   {
    "elder_id": "control",
    "day": 30,
-   "date": "2026-09-20",
+   "date": "2026-08-16",
    "channel": "sim",
    "answered": false,
    "valid": false,
@@ -580,7 +580,7 @@
   {
    "elder_id": "control",
    "day": 31,
-   "date": "2026-09-21",
+   "date": "2026-08-17",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -598,7 +598,7 @@
   {
    "elder_id": "control",
    "day": 32,
-   "date": "2026-09-22",
+   "date": "2026-08-18",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -616,7 +616,7 @@
   {
    "elder_id": "control",
    "day": 33,
-   "date": "2026-09-23",
+   "date": "2026-08-19",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -634,7 +634,7 @@
   {
    "elder_id": "control",
    "day": 34,
-   "date": "2026-09-24",
+   "date": "2026-08-20",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -652,7 +652,7 @@
   {
    "elder_id": "control",
    "day": 35,
-   "date": "2026-09-25",
+   "date": "2026-08-21",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -670,7 +670,7 @@
   {
    "elder_id": "control",
    "day": 36,
-   "date": "2026-09-26",
+   "date": "2026-08-22",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -688,7 +688,7 @@
   {
    "elder_id": "control",
    "day": 37,
-   "date": "2026-09-27",
+   "date": "2026-08-23",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -706,7 +706,7 @@
   {
    "elder_id": "control",
    "day": 38,
-   "date": "2026-09-28",
+   "date": "2026-08-24",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -724,7 +724,7 @@
   {
    "elder_id": "control",
    "day": 39,
-   "date": "2026-09-29",
+   "date": "2026-08-25",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -742,7 +742,7 @@
   {
    "elder_id": "control",
    "day": 40,
-   "date": "2026-09-30",
+   "date": "2026-08-26",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -762,7 +762,7 @@
   {
    "elder_id": "control",
    "day": 41,
-   "date": "2026-10-01",
+   "date": "2026-08-27",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -780,7 +780,7 @@
   {
    "elder_id": "control",
    "day": 42,
-   "date": "2026-10-02",
+   "date": "2026-08-28",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -798,7 +798,7 @@
   {
    "elder_id": "control",
    "day": 43,
-   "date": "2026-10-03",
+   "date": "2026-08-29",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -816,7 +816,7 @@
   {
    "elder_id": "control",
    "day": 44,
-   "date": "2026-10-04",
+   "date": "2026-08-30",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -834,7 +834,7 @@
   {
    "elder_id": "control",
    "day": 45,
-   "date": "2026-10-05",
+   "date": "2026-08-31",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -852,7 +852,7 @@
   {
    "elder_id": "control",
    "day": 46,
-   "date": "2026-10-06",
+   "date": "2026-09-01",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -870,7 +870,7 @@
   {
    "elder_id": "control",
    "day": 47,
-   "date": "2026-10-07",
+   "date": "2026-09-02",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -888,7 +888,7 @@
   {
    "elder_id": "control",
    "day": 48,
-   "date": "2026-10-08",
+   "date": "2026-09-03",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -906,7 +906,7 @@
   {
    "elder_id": "control",
    "day": 49,
-   "date": "2026-10-09",
+   "date": "2026-09-04",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -924,7 +924,7 @@
   {
    "elder_id": "control",
    "day": 50,
-   "date": "2026-10-10",
+   "date": "2026-09-05",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -942,7 +942,7 @@
   {
    "elder_id": "control",
    "day": 51,
-   "date": "2026-10-11",
+   "date": "2026-09-06",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -960,7 +960,7 @@
   {
    "elder_id": "control",
    "day": 52,
-   "date": "2026-10-12",
+   "date": "2026-09-07",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -978,7 +978,7 @@
   {
    "elder_id": "control",
    "day": 53,
-   "date": "2026-10-13",
+   "date": "2026-09-08",
    "channel": "sim",
    "answered": true,
    "valid": false,
@@ -996,7 +996,7 @@
   {
    "elder_id": "control",
    "day": 54,
-   "date": "2026-10-14",
+   "date": "2026-09-09",
    "channel": "sim",
    "answered": false,
    "valid": false,
@@ -1014,7 +1014,7 @@
   {
    "elder_id": "control",
    "day": 55,
-   "date": "2026-10-15",
+   "date": "2026-09-10",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1032,7 +1032,7 @@
   {
    "elder_id": "control",
    "day": 56,
-   "date": "2026-10-16",
+   "date": "2026-09-11",
    "channel": "sim",
    "answered": false,
    "valid": false,
@@ -1050,7 +1050,7 @@
   {
    "elder_id": "control",
    "day": 57,
-   "date": "2026-10-17",
+   "date": "2026-09-12",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1068,7 +1068,7 @@
   {
    "elder_id": "control",
    "day": 58,
-   "date": "2026-10-18",
+   "date": "2026-09-13",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1086,7 +1086,7 @@
   {
    "elder_id": "control",
    "day": 59,
-   "date": "2026-10-19",
+   "date": "2026-09-14",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1104,7 +1104,7 @@
   {
    "elder_id": "control",
    "day": 60,
-   "date": "2026-10-20",
+   "date": "2026-09-15",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1122,7 +1122,7 @@
   {
    "elder_id": "control",
    "day": 61,
-   "date": "2026-10-21",
+   "date": "2026-09-16",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1140,7 +1140,7 @@
   {
    "elder_id": "control",
    "day": 62,
-   "date": "2026-10-22",
+   "date": "2026-09-17",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1158,7 +1158,7 @@
   {
    "elder_id": "control",
    "day": 63,
-   "date": "2026-10-23",
+   "date": "2026-09-18",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1176,7 +1176,7 @@
   {
    "elder_id": "control",
    "day": 64,
-   "date": "2026-10-24",
+   "date": "2026-09-19",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1194,7 +1194,7 @@
   {
    "elder_id": "control",
    "day": 65,
-   "date": "2026-10-25",
+   "date": "2026-09-20",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1212,7 +1212,7 @@
   {
    "elder_id": "control",
    "day": 66,
-   "date": "2026-10-26",
+   "date": "2026-09-21",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1230,7 +1230,7 @@
   {
    "elder_id": "control",
    "day": 67,
-   "date": "2026-10-27",
+   "date": "2026-09-22",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1248,7 +1248,7 @@
   {
    "elder_id": "control",
    "day": 68,
-   "date": "2026-10-28",
+   "date": "2026-09-23",
    "channel": "sim",
    "answered": false,
    "valid": false,
@@ -1266,7 +1266,7 @@
   {
    "elder_id": "control",
    "day": 69,
-   "date": "2026-10-29",
+   "date": "2026-09-24",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1284,7 +1284,7 @@
   {
    "elder_id": "control",
    "day": 70,
-   "date": "2026-10-30",
+   "date": "2026-09-25",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1302,7 +1302,7 @@
   {
    "elder_id": "control",
    "day": 71,
-   "date": "2026-10-31",
+   "date": "2026-09-26",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1320,7 +1320,7 @@
   {
    "elder_id": "control",
    "day": 72,
-   "date": "2026-11-01",
+   "date": "2026-09-27",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1338,7 +1338,7 @@
   {
    "elder_id": "control",
    "day": 73,
-   "date": "2026-11-02",
+   "date": "2026-09-28",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1356,7 +1356,7 @@
   {
    "elder_id": "control",
    "day": 74,
-   "date": "2026-11-03",
+   "date": "2026-09-29",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1374,7 +1374,7 @@
   {
    "elder_id": "control",
    "day": 75,
-   "date": "2026-11-04",
+   "date": "2026-09-30",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1392,7 +1392,7 @@
   {
    "elder_id": "control",
    "day": 76,
-   "date": "2026-11-05",
+   "date": "2026-10-01",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1410,7 +1410,7 @@
   {
    "elder_id": "control",
    "day": 77,
-   "date": "2026-11-06",
+   "date": "2026-10-02",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1428,7 +1428,7 @@
   {
    "elder_id": "control",
    "day": 78,
-   "date": "2026-11-07",
+   "date": "2026-10-03",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1446,7 +1446,7 @@
   {
    "elder_id": "control",
    "day": 79,
-   "date": "2026-11-08",
+   "date": "2026-10-04",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1464,7 +1464,7 @@
   {
    "elder_id": "control",
    "day": 80,
-   "date": "2026-11-09",
+   "date": "2026-10-05",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1482,7 +1482,7 @@
   {
    "elder_id": "control",
    "day": 81,
-   "date": "2026-11-10",
+   "date": "2026-10-06",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1500,7 +1500,7 @@
   {
    "elder_id": "control",
    "day": 82,
-   "date": "2026-11-11",
+   "date": "2026-10-07",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1518,7 +1518,7 @@
   {
    "elder_id": "control",
    "day": 83,
-   "date": "2026-11-12",
+   "date": "2026-10-08",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1536,7 +1536,7 @@
   {
    "elder_id": "control",
    "day": 84,
-   "date": "2026-11-13",
+   "date": "2026-10-09",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1554,7 +1554,7 @@
   {
    "elder_id": "control",
    "day": 85,
-   "date": "2026-11-14",
+   "date": "2026-10-10",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1572,7 +1572,7 @@
   {
    "elder_id": "control",
    "day": 86,
-   "date": "2026-11-15",
+   "date": "2026-10-11",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1590,7 +1590,7 @@
   {
    "elder_id": "control",
    "day": 87,
-   "date": "2026-11-16",
+   "date": "2026-10-12",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1608,7 +1608,7 @@
   {
    "elder_id": "control",
    "day": 88,
-   "date": "2026-11-17",
+   "date": "2026-10-13",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1626,7 +1626,7 @@
   {
    "elder_id": "control",
    "day": 89,
-   "date": "2026-11-18",
+   "date": "2026-10-14",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1644,7 +1644,7 @@
   {
    "elder_id": "control",
    "day": 90,
-   "date": "2026-11-19",
+   "date": "2026-10-15",
    "channel": "sim",
    "answered": true,
    "valid": true,
@@ -1664,7 +1664,7 @@
   {
    "elder_id": "control",
    "day": 1,
-   "date": "2026-08-22",
+   "date": "2026-07-18",
    "light": "gray",
    "reasons": [
     {
@@ -1689,7 +1689,7 @@
   {
    "elder_id": "control",
    "day": 2,
-   "date": "2026-08-23",
+   "date": "2026-07-19",
    "light": "gray",
    "reasons": [
     {
@@ -1714,7 +1714,7 @@
   {
    "elder_id": "control",
    "day": 3,
-   "date": "2026-08-24",
+   "date": "2026-07-20",
    "light": "gray",
    "reasons": [
     {
@@ -1739,7 +1739,7 @@
   {
    "elder_id": "control",
    "day": 4,
-   "date": "2026-08-25",
+   "date": "2026-07-21",
    "light": "gray",
    "reasons": [
     {
@@ -1764,7 +1764,7 @@
   {
    "elder_id": "control",
    "day": 5,
-   "date": "2026-08-26",
+   "date": "2026-07-22",
    "light": "gray",
    "reasons": [
     {
@@ -1789,7 +1789,7 @@
   {
    "elder_id": "control",
    "day": 6,
-   "date": "2026-08-27",
+   "date": "2026-07-23",
    "light": "gray",
    "reasons": [
     {
@@ -1814,7 +1814,7 @@
   {
    "elder_id": "control",
    "day": 7,
-   "date": "2026-08-28",
+   "date": "2026-07-24",
    "light": "gray",
    "reasons": [
     {
@@ -1839,7 +1839,7 @@
   {
    "elder_id": "control",
    "day": 8,
-   "date": "2026-08-29",
+   "date": "2026-07-25",
    "light": "gray",
    "reasons": [
     {
@@ -1864,7 +1864,7 @@
   {
    "elder_id": "control",
    "day": 9,
-   "date": "2026-08-30",
+   "date": "2026-07-26",
    "light": "gray",
    "reasons": [
     {
@@ -1889,7 +1889,7 @@
   {
    "elder_id": "control",
    "day": 10,
-   "date": "2026-08-31",
+   "date": "2026-07-27",
    "light": "gray",
    "reasons": [
     {
@@ -1914,7 +1914,7 @@
   {
    "elder_id": "control",
    "day": 11,
-   "date": "2026-09-01",
+   "date": "2026-07-28",
    "light": "gray",
    "reasons": [
     {
@@ -1939,7 +1939,7 @@
   {
    "elder_id": "control",
    "day": 12,
-   "date": "2026-09-02",
+   "date": "2026-07-29",
    "light": "gray",
    "reasons": [
     {
@@ -1964,7 +1964,7 @@
   {
    "elder_id": "control",
    "day": 13,
-   "date": "2026-09-03",
+   "date": "2026-07-30",
    "light": "gray",
    "reasons": [
     {
@@ -1989,7 +1989,7 @@
   {
    "elder_id": "control",
    "day": 14,
-   "date": "2026-09-04",
+   "date": "2026-07-31",
    "light": "gray",
    "reasons": [
     {
@@ -2014,7 +2014,7 @@
   {
    "elder_id": "control",
    "day": 15,
-   "date": "2026-09-05",
+   "date": "2026-08-01",
    "light": "gray",
    "reasons": [
     {
@@ -2039,7 +2039,7 @@
   {
    "elder_id": "control",
    "day": 16,
-   "date": "2026-09-06",
+   "date": "2026-08-02",
    "light": "gray",
    "reasons": [
     {
@@ -2064,7 +2064,7 @@
   {
    "elder_id": "control",
    "day": 17,
-   "date": "2026-09-07",
+   "date": "2026-08-03",
    "light": "gray",
    "reasons": [
     {
@@ -2092,7 +2092,7 @@
   {
    "elder_id": "control",
    "day": 18,
-   "date": "2026-09-08",
+   "date": "2026-08-04",
    "light": "gray",
    "reasons": [
     {
@@ -2117,7 +2117,7 @@
   {
    "elder_id": "control",
    "day": 19,
-   "date": "2026-09-09",
+   "date": "2026-08-05",
    "light": "gray",
    "reasons": [
     {
@@ -2142,7 +2142,7 @@
   {
    "elder_id": "control",
    "day": 20,
-   "date": "2026-09-10",
+   "date": "2026-08-06",
    "light": "gray",
    "reasons": [
     {
@@ -2167,7 +2167,7 @@
   {
    "elder_id": "control",
    "day": 21,
-   "date": "2026-09-11",
+   "date": "2026-08-07",
    "light": "gray",
    "reasons": [
     {
@@ -2192,7 +2192,7 @@
   {
    "elder_id": "control",
    "day": 22,
-   "date": "2026-09-12",
+   "date": "2026-08-08",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2209,7 +2209,7 @@
   {
    "elder_id": "control",
    "day": 23,
-   "date": "2026-09-13",
+   "date": "2026-08-09",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2226,7 +2226,7 @@
   {
    "elder_id": "control",
    "day": 24,
-   "date": "2026-09-14",
+   "date": "2026-08-10",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2243,7 +2243,7 @@
   {
    "elder_id": "control",
    "day": 25,
-   "date": "2026-09-15",
+   "date": "2026-08-11",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2260,7 +2260,7 @@
   {
    "elder_id": "control",
    "day": 26,
-   "date": "2026-09-16",
+   "date": "2026-08-12",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2277,7 +2277,7 @@
   {
    "elder_id": "control",
    "day": 27,
-   "date": "2026-09-17",
+   "date": "2026-08-13",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2294,7 +2294,7 @@
   {
    "elder_id": "control",
    "day": 28,
-   "date": "2026-09-18",
+   "date": "2026-08-14",
    "light": "gray",
    "reasons": [
     {
@@ -2315,7 +2315,7 @@
   {
    "elder_id": "control",
    "day": 29,
-   "date": "2026-09-19",
+   "date": "2026-08-15",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2332,7 +2332,7 @@
   {
    "elder_id": "control",
    "day": 30,
-   "date": "2026-09-20",
+   "date": "2026-08-16",
    "light": "gray",
    "reasons": [
     {
@@ -2353,7 +2353,7 @@
   {
    "elder_id": "control",
    "day": 31,
-   "date": "2026-09-21",
+   "date": "2026-08-17",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2370,7 +2370,7 @@
   {
    "elder_id": "control",
    "day": 32,
-   "date": "2026-09-22",
+   "date": "2026-08-18",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2387,7 +2387,7 @@
   {
    "elder_id": "control",
    "day": 33,
-   "date": "2026-09-23",
+   "date": "2026-08-19",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2404,7 +2404,7 @@
   {
    "elder_id": "control",
    "day": 34,
-   "date": "2026-09-24",
+   "date": "2026-08-20",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2421,7 +2421,7 @@
   {
    "elder_id": "control",
    "day": 35,
-   "date": "2026-09-25",
+   "date": "2026-08-21",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2438,7 +2438,7 @@
   {
    "elder_id": "control",
    "day": 36,
-   "date": "2026-09-26",
+   "date": "2026-08-22",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2455,7 +2455,7 @@
   {
    "elder_id": "control",
    "day": 37,
-   "date": "2026-09-27",
+   "date": "2026-08-23",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2472,7 +2472,7 @@
   {
    "elder_id": "control",
    "day": 38,
-   "date": "2026-09-28",
+   "date": "2026-08-24",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2489,7 +2489,7 @@
   {
    "elder_id": "control",
    "day": 39,
-   "date": "2026-09-29",
+   "date": "2026-08-25",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2506,7 +2506,7 @@
   {
    "elder_id": "control",
    "day": 40,
-   "date": "2026-09-30",
+   "date": "2026-08-26",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2523,7 +2523,7 @@
   {
    "elder_id": "control",
    "day": 41,
-   "date": "2026-10-01",
+   "date": "2026-08-27",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2540,7 +2540,7 @@
   {
    "elder_id": "control",
    "day": 42,
-   "date": "2026-10-02",
+   "date": "2026-08-28",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2557,7 +2557,7 @@
   {
    "elder_id": "control",
    "day": 43,
-   "date": "2026-10-03",
+   "date": "2026-08-29",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2574,7 +2574,7 @@
   {
    "elder_id": "control",
    "day": 44,
-   "date": "2026-10-04",
+   "date": "2026-08-30",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2591,7 +2591,7 @@
   {
    "elder_id": "control",
    "day": 45,
-   "date": "2026-10-05",
+   "date": "2026-08-31",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2608,7 +2608,7 @@
   {
    "elder_id": "control",
    "day": 46,
-   "date": "2026-10-06",
+   "date": "2026-09-01",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2625,7 +2625,7 @@
   {
    "elder_id": "control",
    "day": 47,
-   "date": "2026-10-07",
+   "date": "2026-09-02",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2642,7 +2642,7 @@
   {
    "elder_id": "control",
    "day": 48,
-   "date": "2026-10-08",
+   "date": "2026-09-03",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2659,7 +2659,7 @@
   {
    "elder_id": "control",
    "day": 49,
-   "date": "2026-10-09",
+   "date": "2026-09-04",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2676,7 +2676,7 @@
   {
    "elder_id": "control",
    "day": 50,
-   "date": "2026-10-10",
+   "date": "2026-09-05",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2693,7 +2693,7 @@
   {
    "elder_id": "control",
    "day": 51,
-   "date": "2026-10-11",
+   "date": "2026-09-06",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2710,7 +2710,7 @@
   {
    "elder_id": "control",
    "day": 52,
-   "date": "2026-10-12",
+   "date": "2026-09-07",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2727,7 +2727,7 @@
   {
    "elder_id": "control",
    "day": 53,
-   "date": "2026-10-13",
+   "date": "2026-09-08",
    "light": "gray",
    "reasons": [
     {
@@ -2748,7 +2748,7 @@
   {
    "elder_id": "control",
    "day": 54,
-   "date": "2026-10-14",
+   "date": "2026-09-09",
    "light": "gray",
    "reasons": [
     {
@@ -2769,7 +2769,7 @@
   {
    "elder_id": "control",
    "day": 55,
-   "date": "2026-10-15",
+   "date": "2026-09-10",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2786,7 +2786,7 @@
   {
    "elder_id": "control",
    "day": 56,
-   "date": "2026-10-16",
+   "date": "2026-09-11",
    "light": "gray",
    "reasons": [
     {
@@ -2807,7 +2807,7 @@
   {
    "elder_id": "control",
    "day": 57,
-   "date": "2026-10-17",
+   "date": "2026-09-12",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2824,7 +2824,7 @@
   {
    "elder_id": "control",
    "day": 58,
-   "date": "2026-10-18",
+   "date": "2026-09-13",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2841,7 +2841,7 @@
   {
    "elder_id": "control",
    "day": 59,
-   "date": "2026-10-19",
+   "date": "2026-09-14",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2858,7 +2858,7 @@
   {
    "elder_id": "control",
    "day": 60,
-   "date": "2026-10-20",
+   "date": "2026-09-15",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2875,7 +2875,7 @@
   {
    "elder_id": "control",
    "day": 61,
-   "date": "2026-10-21",
+   "date": "2026-09-16",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2892,7 +2892,7 @@
   {
    "elder_id": "control",
    "day": 62,
-   "date": "2026-10-22",
+   "date": "2026-09-17",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2909,7 +2909,7 @@
   {
    "elder_id": "control",
    "day": 63,
-   "date": "2026-10-23",
+   "date": "2026-09-18",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2926,7 +2926,7 @@
   {
    "elder_id": "control",
    "day": 64,
-   "date": "2026-10-24",
+   "date": "2026-09-19",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2943,7 +2943,7 @@
   {
    "elder_id": "control",
    "day": 65,
-   "date": "2026-10-25",
+   "date": "2026-09-20",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2960,7 +2960,7 @@
   {
    "elder_id": "control",
    "day": 66,
-   "date": "2026-10-26",
+   "date": "2026-09-21",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2977,7 +2977,7 @@
   {
    "elder_id": "control",
    "day": 67,
-   "date": "2026-10-27",
+   "date": "2026-09-22",
    "light": "green",
    "reasons": [],
    "z": {
@@ -2994,7 +2994,7 @@
   {
    "elder_id": "control",
    "day": 68,
-   "date": "2026-10-28",
+   "date": "2026-09-23",
    "light": "gray",
    "reasons": [
     {
@@ -3015,7 +3015,7 @@
   {
    "elder_id": "control",
    "day": 69,
-   "date": "2026-10-29",
+   "date": "2026-09-24",
    "light": "green",
    "reasons": [],
    "z": {
@@ -3032,7 +3032,7 @@
   {
    "elder_id": "control",
    "day": 70,
-   "date": "2026-10-30",
+   "date": "2026-09-25",
    "light": "green",
    "reasons": [],
    "z": {
@@ -3049,7 +3049,7 @@
   {
    "elder_id": "control",
    "day": 71,
-   "date": "2026-10-31",
+   "date": "2026-09-26",
    "light": "green",
    "reasons": [],
    "z": {
@@ -3066,7 +3066,7 @@
   {
    "elder_id": "control",
    "day": 72,
-   "date": "2026-11-01",
+   "date": "2026-09-27",
    "light": "green",
    "reasons": [],
    "z": {
@@ -3083,7 +3083,7 @@
   {
    "elder_id": "control",
    "day": 73,
-   "date": "2026-11-02",
+   "date": "2026-09-28",
    "light": "green",
    "reasons": [],
    "z": {
@@ -3100,7 +3100,7 @@
   {
    "elder_id": "control",
    "day": 74,
-   "date": "2026-11-03",
+   "date": "2026-09-29",
    "light": "green",
    "reasons": [],
    "z": {
@@ -3117,7 +3117,7 @@
   {
    "elder_id": "control",
    "day": 75,
-   "date": "2026-11-04",
+   "date": "2026-09-30",
    "light": "green",
    "reasons": [],
    "z": {
@@ -3134,7 +3134,7 @@
   {
    "elder_id": "control",
    "day": 76,
-   "date": "2026-11-05",
+   "date": "2026-10-01",
    "light": "green",
    "reasons": [],
    "z": {
@@ -3151,7 +3151,7 @@
   {
    "elder_id": "control",
    "day": 77,
-   "date": "2026-11-06",
+   "date": "2026-10-02",
    "light": "green",
    "reasons": [],
    "z": {
@@ -3168,7 +3168,7 @@
   {
    "elder_id": "control",
    "day": 78,
-   "date": "2026-11-07",
+   "date": "2026-10-03",
    "light": "green",
    "reasons": [],
    "z": {
@@ -3185,7 +3185,7 @@
   {
    "elder_id": "control",
    "day": 79,
-   "date": "2026-11-08",
+   "date": "2026-10-04",
    "light": "green",
    "reasons": [],
    "z": {
@@ -3202,7 +3202,7 @@
   {
    "elder_id": "control",
    "day": 80,
-   "date": "2026-11-09",
+   "date": "2026-10-05",
    "light": "green",
    "reasons": [],
    "z": {
@@ -3219,7 +3219,7 @@
   {
    "elder_id": "control",
    "day": 81,
-   "date": "2026-11-10",
+   "date": "2026-10-06",
    "light": "green",
    "reasons": [],
    "z": {
@@ -3236,7 +3236,7 @@
   {
    "elder_id": "control",
    "day": 82,
-   "date": "2026-11-11",
+   "date": "2026-10-07",
    "light": "green",
    "reasons": [],
    "z": {
@@ -3253,7 +3253,7 @@
   {
    "elder_id": "control",
    "day": 83,
-   "date": "2026-11-12",
+   "date": "2026-10-08",
    "light": "green",
    "reasons": [],
    "z": {
@@ -3270,7 +3270,7 @@
   {
    "elder_id": "control",
    "day": 84,
-   "date": "2026-11-13",
+   "date": "2026-10-09",
    "light": "green",
    "reasons": [],
    "z": {
@@ -3287,7 +3287,7 @@
   {
    "elder_id": "control",
    "day": 85,
-   "date": "2026-11-14",
+   "date": "2026-10-10",
    "light": "green",
    "reasons": [],
    "z": {
@@ -3304,7 +3304,7 @@
   {
    "elder_id": "control",
    "day": 86,
-   "date": "2026-11-15",
+   "date": "2026-10-11",
    "light": "green",
    "reasons": [],
    "z": {
@@ -3321,7 +3321,7 @@
   {
    "elder_id": "control",
    "day": 87,
-   "date": "2026-11-16",
+   "date": "2026-10-12",
    "light": "green",
    "reasons": [],
    "z": {
@@ -3338,7 +3338,7 @@
   {
    "elder_id": "control",
    "day": 88,
-   "date": "2026-11-17",
+   "date": "2026-10-13",
    "light": "green",
    "reasons": [],
    "z": {
@@ -3355,7 +3355,7 @@
   {
    "elder_id": "control",
    "day": 89,
-   "date": "2026-11-18",
+   "date": "2026-10-14",
    "light": "green",
    "reasons": [],
    "z": {
@@ -3372,7 +3372,7 @@
   {
    "elder_id": "control",
    "day": 90,
-   "date": "2026-11-19",
+   "date": "2026-10-15",
    "light": "green",
    "reasons": [],
    "z": {
@@ -3415,7 +3415,7 @@
    "day": 50,
    "author": "Thảo",
    "text": "Ba khỏe, tuần này đi đám giỗ bên ngoại.",
-   "date": "2026-10-10"
+   "date": "2026-09-05"
   }
  ],
  "events": [
@@ -3440,7 +3440,7 @@
    "witness": "family",
    "scope_vi": "Nhận cuộc gọi hỏi thăm hằng ngày",
    "scope_en": "Receive daily check-in calls",
-   "date": "2026-08-22"
+   "date": "2026-07-18"
   },
   {
    "type": "voice_metrics",
@@ -3448,7 +3448,7 @@
    "by": "self",
    "scope_vi": "Đo tốc độ nói, ngừng nghỉ từ văn bản và thời gian (không lưu âm thanh)",
    "scope_en": "Derive speech timing metrics from text and timings (no audio stored)",
-   "date": "2026-08-22"
+   "date": "2026-07-18"
   },
   {
    "type": "family_sharing",
@@ -3456,7 +3456,7 @@
    "by": "self",
    "scope_vi": "Chia sẻ đèn tín hiệu và tóm tắt với con cháu",
    "scope_en": "Share daily light and summaries with family",
-   "date": "2026-08-22"
+   "date": "2026-07-18"
   },
   {
    "type": "clinician_sharing",
@@ -3464,7 +3464,7 @@
    "by": "self",
    "scope_vi": "Chia sẻ báo cáo với bác sĩ khi gia đình yêu cầu",
    "scope_en": "Share report with clinician on family request",
-   "date": "2026-08-22"
+   "date": "2026-07-18"
   },
   {
    "type": "research_use",
@@ -3472,13 +3472,376 @@
    "by": "self",
    "scope_vi": "Dùng dữ liệu ẩn danh cho nghiên cứu",
    "scope_en": "Use de-identified data for research",
-   "date": "2026-08-22"
+   "date": "2026-07-18"
+  }
+ ],
+ "contacts": [
+  {
+   "day": 1,
+   "date": "2026-07-18",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 10,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 2,
+   "date": "2026-07-19",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "visit",
+   "duration_min": 24,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 3,
+   "date": "2026-07-20",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 10,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 7,
+   "date": "2026-07-24",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 8,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 9,
+   "date": "2026-07-26",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 3,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 12,
+   "date": "2026-07-29",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 10,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 16,
+   "date": "2026-08-02",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 6,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 20,
+   "date": "2026-08-06",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 9,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 23,
+   "date": "2026-08-09",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 4,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 25,
+   "date": "2026-08-11",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 3,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 28,
+   "date": "2026-08-14",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 13,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 30,
+   "date": "2026-08-16",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "visit",
+   "duration_min": 56,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 31,
+   "date": "2026-08-17",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 10,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 34,
+   "date": "2026-08-20",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 3,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 37,
+   "date": "2026-08-23",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 7,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 41,
+   "date": "2026-08-27",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 3,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 44,
+   "date": "2026-08-30",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 6,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 47,
+   "date": "2026-09-02",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 3,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 49,
+   "date": "2026-09-04",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 5,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 52,
+   "date": "2026-09-07",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 3,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 55,
+   "date": "2026-09-10",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 11,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 58,
+   "date": "2026-09-13",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 3,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 61,
+   "date": "2026-09-16",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 11,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 63,
+   "date": "2026-09-18",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 8,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 65,
+   "date": "2026-09-20",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "visit",
+   "duration_min": 36,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 67,
+   "date": "2026-09-22",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 8,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 70,
+   "date": "2026-09-25",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 9,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 72,
+   "date": "2026-09-27",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "visit",
+   "duration_min": 100,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 73,
+   "date": "2026-09-28",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 6,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 76,
+   "date": "2026-10-01",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 11,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 79,
+   "date": "2026-10-04",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 9,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 81,
+   "date": "2026-10-06",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 4,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 83,
+   "date": "2026-10-08",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 12,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 86,
+   "date": "2026-10-11",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 3,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 88,
+   "date": "2026-10-13",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 12,
+   "source": "simulated",
+   "simulated": true
+  },
+  {
+   "day": 89,
+   "date": "2026-10-14",
+   "member_id": "thao",
+   "member_name": "Thảo",
+   "kind": "call",
+   "duration_min": 5,
+   "source": "simulated",
+   "simulated": true
   }
  ],
  "dmaic": {
   "phases": [
    {
     "phase": "define",
+    "status": "done",
     "day_from": 1,
     "day_to": 1,
     "summary_vi": "Mục tiêu chăm sóc: sức khỏe chung khi tuổi cao. Mục tiêu đặt cùng gia đình: Đi bộ mỗi chiều; Ăn uống đều bữa.",
@@ -3486,6 +3849,7 @@
    },
    {
     "phase": "measure",
+    "status": "done",
     "day_from": 1,
     "day_to": 21,
     "summary_vi": "20 cuộc gọi hợp lệ trong 21 ngày đầu (0 ngày lỡ cuộc gọi) để lập mức bình thường riêng: tốc độ nói 4,84 âm tiết/giây, điểm nhớ lại trung bình 2,78/3.",
@@ -3493,20 +3857,23 @@
    },
    {
     "phase": "analyze",
-    "day_from": 22,
-    "day_to": 90,
+    "status": "not_started",
+    "day_from": null,
+    "day_to": null,
     "summary_vi": "Không có thay đổi kéo dài so với mức bình thường của người thân.",
     "summary_en": "No sustained change from the person's own baseline."
    },
    {
     "phase": "improve",
-    "day_from": 90,
-    "day_to": 90,
+    "status": "not_started",
+    "day_from": null,
+    "day_to": null,
     "summary_vi": "Đề xuất: Tiếp tục gọi hằng ngày như bình thường.",
     "summary_en": "Recommended: Continue daily calls as usual."
    },
    {
     "phase": "control",
+    "status": "current",
     "day_from": 22,
     "day_to": 90,
     "summary_vi": "Theo dõi liên tục: 63 ngày đèn xanh sau khi có mức bình thường.",
@@ -3519,7 +3886,14 @@
   "peak_light": null,
   "intervention_day": null,
   "green_day": null,
-  "days_to_green": null
+  "days_to_green": null,
+  "contact": {
+   "recent_per_week": 3.0,
+   "recent_window": [
+    77,
+    90
+   ]
+  }
  },
  "simulated": true
 }

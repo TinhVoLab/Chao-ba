@@ -39,6 +39,10 @@ create table consent (
   kind         text not null check (kind in ('daily_call','voice_metrics','family_sharing','clinician_sharing','research_use')),
   granted      boolean not null,
   granted_by   text not null,                          -- 'self' | family member name | 'elder (in call)'
+  -- Append-only: a withdrawal or re-grant is a new row (granted=false/true); the latest row per kind is the state.
+  -- Withdrawal stops processing for that purpose: daily_call pauses scheduling (= opt-out), voice_metrics stops
+  -- storing speech metrics, family_sharing hides lights/trends/alerts/care cycle from family roles.
+  note         text,                                   -- 'withdrawn from the family app' | 'opt-out during call' ...
   witness      text,
   scope_vi     text,
   scope_en     text,
@@ -131,8 +135,12 @@ create table alert (
   id            bigserial primary key,
   elder_id      text not null references elder(id) on delete cascade,
   day           int, date date,
-  type          text not null,                         -- metric_trend | emergency | opt_out | scam_topic | ...
+  type          text not null,                         -- see CONTRACT.md "Alert types": metric_trend | metric_shift |
+                                                       -- multi_metric | fall | multi_symptom | symptom_repeat |
+                                                       -- unanswered | low_mood | emergency | opt_out | scam_topic
   severity      text not null check (severity in ('yellow','red')),
+  severity_level text generated always as
+                 (case severity when 'red' then 'critical' when 'yellow' then 'warning' else 'info' end) stored,
   explanation_vi text, explanation_en text,
   acknowledged  boolean not null default false,
   acknowledged_by uuid,
@@ -162,7 +170,21 @@ create table family_note (
   created_at timestamptz not null default now()
 );
 
-create table access_log (
+create table family_contact (                          -- family calls / visits: the measurable side of a care plan
+  id           bigserial primary key,
+  elder_id     text not null references elder(id) on delete cascade,
+  day          int not null,
+  date         date not null,
+  member_id    uuid references family_member(id) on delete set null,
+  member_name  text,
+  kind         text not null check (kind in ('call','visit','message')),
+  duration_min int,
+  source       text not null default 'app',           -- app (family tapped "Gọi má" / logged it) | telephony | simulated
+  simulated    boolean not null default false,
+  created_at   timestamptz not null default now()
+);
+
+create table access_log (                              -- reads de-duplicated: one row per actor/action/resource/day
   id        bigserial primary key,
   elder_id  text references elder(id) on delete cascade,
   actor_id  uuid,
@@ -170,11 +192,14 @@ create table access_log (
   role      text,
   action    text not null,
   resource  text,
-  ts        timestamptz not null default now()
+  ts        timestamptz not null default now(),       -- first access that day
+  n         int not null default 1,                   -- number of reads collapsed into this row
+  last_ts   timestamptz
 );
 
 create index on alert (elder_id, day desc);
 create index on access_log (elder_id, ts desc);
+create index on family_contact (elder_id, day desc);
 create index on call_session (transcript_expires_at) where transcript is not null;
 
 -- ---------------------------------------------------------------- helper functions for RLS
@@ -194,6 +219,16 @@ create or replace function clinician_shared(e text) returns boolean language sql
                    order by ts desc limit 1), false)
 $$;
 
+-- Latest family_sharing consent (default true at enrolment). Withdrawn -> family roles stop seeing health data.
+create or replace function family_shared(e text) returns boolean language sql stable security definer as $$
+  select coalesce((select granted from consent where elder_id = e and kind = 'family_sharing'
+                   order by ts desc limit 1), true)
+$$;
+
+create or replace function family_ok(e text) returns boolean language sql stable as $$
+  select app_role(e) not in ('primary','viewer') or family_shared(e)
+$$;
+
 -- ---------------------------------------------------------------- RLS
 alter table elder          enable row level security;
 alter table family_member  enable row level security;
@@ -208,6 +243,7 @@ alter table alert          enable row level security;
 alter table dmaic_cycle    enable row level security;
 alter table family_note    enable row level security;
 alter table access_log     enable row level security;
+alter table family_contact enable row level security;
 
 -- Elder profile: everyone linked can read; only primary carer (or the elder) can update.
 create policy elder_read   on elder for select using (can_read(id) and (app_role(id) <> 'clinician' or clinician_shared(id)));
@@ -228,16 +264,16 @@ create policy ca_read on call_analysis for select
   using (can_read(elder_id) and (app_role(elder_id) <> 'clinician' or clinician_shared(elder_id)));
 create policy mf_read on memory_fact for select using (app_role(elder_id) in ('primary','elder_self'));
 create policy md_read on metric_daily for select
-  using (can_read(elder_id) and (app_role(elder_id) <> 'clinician' or clinician_shared(elder_id)));
+  using (can_read(elder_id) and family_ok(elder_id) and (app_role(elder_id) <> 'clinician' or clinician_shared(elder_id)));
 create policy bl_read on baseline for select
   using (can_read(elder_id) and (app_role(elder_id) <> 'clinician' or clinician_shared(elder_id)));
-create policy dl_read on daily_light for select using (can_read(elder_id));
+create policy dl_read on daily_light for select using (can_read(elder_id) and family_ok(elder_id));
 create policy dm_read on dmaic_cycle for select
   using (can_read(elder_id) and (app_role(elder_id) <> 'clinician' or clinician_shared(elder_id)));
 create policy dm_write on dmaic_cycle for all using (app_role(elder_id) in ('primary','clinician'));
 
 -- Alerts: everyone linked reads; primary and viewer can acknowledge.
-create policy alert_read on alert for select using (can_read(elder_id));
+create policy alert_read on alert for select using (can_read(elder_id) and family_ok(elder_id));
 create policy alert_ack  on alert for update using (app_role(elder_id) in ('primary','viewer'))
   with check (app_role(elder_id) in ('primary','viewer'));
 
@@ -246,6 +282,10 @@ create policy note_read  on family_note for select
   using (app_role(elder_id) in ('primary','viewer','clinician') or (app_role(elder_id) = 'elder_self' and to_elder));
 create policy note_write on family_note for insert
   with check (app_role(elder_id) in ('primary','viewer','clinician') and author_id = auth.uid());
+
+-- Family contact log: family roles read and add their own calls/visits.
+create policy fc_read   on family_contact for select using (app_role(elder_id) in ('primary','viewer','elder_self'));
+create policy fc_insert on family_contact for insert with check (app_role(elder_id) in ('primary','viewer'));
 
 -- Access log: append by any linked role (server writes with service key); read by primary and the elder.
 create policy al_read   on access_log for select using (app_role(elder_id) in ('primary','elder_self'));

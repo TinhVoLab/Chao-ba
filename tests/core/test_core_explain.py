@@ -109,3 +109,12 @@ def test_llm_output_rejected_if_unsafe(monkeypatch):
     monkeypatch.setattr(anthropic, "Anthropic", Client)
     light = L("yellow", [REASONS[0]])
     assert explain(light, "Bà Hạnh", "Mrs Hanh", use_llm=True) == template_explain(light, "Bà Hạnh", "Mrs Hanh")
+
+
+def test_cognitive_only_next_step_names_no_specialty():
+    from chaoba.core.explain import explain
+    l = DailyLight(elder_id="x", day=70, date="2026-01-01", light="yellow",
+                   reasons=[{"code": "metric_trend", "metric": "recall_score", "days": 4, "change_pct": -30}],
+                   z={}, baseline_ready=True)
+    vi, en = explain(l, "Ông Tư", "Mr Tu")
+    assert "bác sĩ đánh giá" in vi and "thần kinh" not in vi and "neurolog" not in en.lower()

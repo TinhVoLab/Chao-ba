@@ -31,7 +31,11 @@ from .dmaic import compute_cycle
 from .explain import explain
 from .models import DailyRecord, METRICS, SYMPTOMS, to_dict
 
-START_DATE = date(2026, 8, 22)  # day 90 = 2026-11-19, day 91 (live demo call) = 2026-11-20
+# Internal calendar of the generator: day 1 = 2026-07-18 (a Saturday), day 90 = 2026-10-15. Only the weekday matters
+# to the generator (small weekday effects), so moving this by whole weeks leaves every value unchanged. The demo
+# server re-labels the dates at seed time (``end_date``) so that day 90 is the day before the server's current date;
+# day indices, values and lights never depend on the anchor.
+START_DATE = date(2026, 7, 18)
 PHI = 0.3
 REL_SD = {"speech_rate_sps": 0.045, "pause_ratio": 0.12, "filled_pause_rate": 0.18, "mattr": 0.025}
 BG_SYMPTOM_RATE = {"pain": 0.010, "insomnia": 0.007, "skipped_meal": 0.003, "dizziness": 0.002,
@@ -285,8 +289,13 @@ def _light_events(lights, from_day=22):
     return ev
 
 
-def generate_persona(key: Literal["hanh", "tu", "control"], days: int = 90, seed: int = 7) -> dict:
-    """One demo persona: profile, daily records, lights, notes, events, consents, DMAIC cycle."""
+def generate_persona(key: Literal["hanh", "tu", "control"], days: int = 90, seed: int = 7,
+                     end_date: date | None = None) -> dict:
+    """One demo persona: profile, daily records, lights, notes, events, consents, family contacts, DMAIC cycle.
+
+    ``end_date`` re-anchors the calendar so that the last day (``days``) falls on that date. Values are generated on
+    the fixed internal calendar (``START_DATE``) first, so the story is identical whatever the anchor.
+    """
     if key not in PERSONA_CFG:
         raise ValueError(f"unknown persona {key!r}")
     profile = _profiles()[key]
@@ -362,8 +371,8 @@ def generate_persona(key: Literal["hanh", "tu", "control"], days: int = 90, seed
             "concern_en": "memory and mental sharpness",
             "context_vi": "Thay đổi diễn ra chậm, từ từ qua nhiều tuần, chủ yếu ở trí nhớ và cách dùng từ.",
             "context_en": "Change is slow and gradual over weeks, mainly in recall and word use.",
-            "recommendation_vi": "đặt lịch khám chuyên khoa thần kinh để kiểm tra trí nhớ; gia đình trò chuyện với ông thường xuyên hơn.",
-            "recommendation_en": "book a neurology check-up to assess memory; family to talk with him more often.",
+            "recommendation_vi": "nên đưa ông đi khám để bác sĩ đánh giá, mang theo báo cáo xu hướng này; gia đình trò chuyện với ông thường xuyên hơn.",
+            "recommendation_en": "arrange a doctor's visit so a doctor can assess, and bring this trend report; family to talk with him more often.",
         })
     else:
         notes += [{"day": 50, "author": "Thảo", "text": "Ba khỏe, tuần này đi đám giỗ bên ngoại."}]
@@ -373,9 +382,10 @@ def generate_persona(key: Literal["hanh", "tu", "control"], days: int = 90, seed
     events += _light_events(lights)
     events.sort(key=lambda e: e["day"])
 
-    cycle = compute_cycle(records, lights, define, intervention_day)
+    contacts = family_contacts(key, profile, days, seed)
+    cycle = compute_cycle(records, lights, define, intervention_day, contacts=contacts)
     from .control_chart import current_baseline
-    return {
+    out = {
         "elder": profile,
         "records": [to_dict(r) for r in records],
         "lights": [to_dict(l) for l in lights],
@@ -384,9 +394,95 @@ def generate_persona(key: Literal["hanh", "tu", "control"], days: int = 90, seed
         "notes": notes,
         "events": events,
         "consents": [dict(c, date=START_DATE.isoformat()) for c in CONSENTS],
+        "contacts": contacts,
         "dmaic": cycle,
         "simulated": True,
     }
+    return reanchor(out, end_date) if end_date is not None else out
+
+
+def _shift(iso: str, delta: timedelta) -> str:
+    return (date.fromisoformat(iso[:10]) + delta).isoformat()
+
+
+def reanchor(persona: dict, end_date: date) -> dict:
+    """Re-label every calendar date in a persona so its last record falls on ``end_date`` (day indices unchanged)."""
+    recs = persona.get("records") or []
+    if not recs:
+        return persona
+    delta = end_date - date.fromisoformat(recs[-1]["date"])
+    if not delta:
+        return persona
+    for key in ("records", "lights", "notes", "contacts"):
+        for x in persona.get(key) or []:
+            if x.get("date"):
+                x["date"] = _shift(x["date"], delta)
+    for c in persona.get("consents") or []:
+        if c.get("date"):
+            c["date"] = _shift(c["date"], delta)
+    return persona
+
+
+# ---------------------------------------------------------------------------------------------
+# Family contact log (simulated): calls and visits from the family, the measurable side of the care plan
+# ---------------------------------------------------------------------------------------------
+def family_contacts(key: str, profile: dict, days: int = 90, seed: int = 7) -> list[dict]:
+    """Simulated family calls/visits with realistic gaps. ALL SIMULATED.
+
+    * ``hanh``: Lan calls about once a week; brother Minh visits now and then. From the doctor visit (day 44) the care
+      plan is "Lan calls 3x/week", which holds for about a month and then fades (last call day 85 -> on day 90 the
+      app shows "5 days since anyone called").
+    * ``tu``: lives with his wife; son Khoa calls about twice a week and visits some Sundays.
+    * ``control``: daughter Thảo calls every few days and visits on Sundays.
+    """
+    rng = np.random.default_rng([seed, 501, len(key)])
+    fam = {f["id"]: f["name"] for f in profile.get("family") or []}
+    out: list[dict] = []
+
+    def add(d, member, kind):
+        if 1 <= d <= days and not any(c["day"] == d and c["member_id"] == member for c in out):
+            out.append({"day": int(d), "date": (START_DATE + timedelta(days=int(d) - 1)).isoformat(),
+                        "member_id": member, "member_name": fam.get(member, member), "kind": kind,
+                        "duration_min": int(rng.integers(20, 120)) if kind == "visit" else int(rng.integers(3, 15)),
+                        "source": "simulated", "simulated": True})
+
+    def sunday(d):  # weekday of the generator calendar
+        return (START_DATE + timedelta(days=d - 1)).weekday() == 6
+
+    if key == "hanh":
+        d = 3
+        while d < HANH["intervention"]:
+            add(d, "lan", "call")
+            d += int(rng.integers(6, 10))
+        for d in (20, 41):
+            add(d, "minh", "visit")
+        for d in range(HANH["intervention"], 79):  # care plan: Mon/Wed/Fri-like rhythm, the odd one missed
+            if (d - HANH["intervention"]) % 7 in (0, 2, 4) and rng.random() > 0.1:
+                add(d, "lan", "call")
+        add(60, "minh", "visit")
+        for d in (81, 85):  # the habit fades
+            add(d, "lan", "call")
+    elif key == "tu":
+        d = 2
+        while d <= days - 1:
+            add(d, "khoa", "call")
+            d += int(rng.integers(2, 6))
+        for d in range(1, days + 1):
+            if sunday(d) and rng.random() < 0.5:
+                add(d, "khoa", "visit")
+        add(days - 1, "khoa", "call")
+    else:
+        d = 1
+        while d <= days - 1:
+            add(d, "thao", "call")
+            d += int(rng.integers(2, 5))
+        for d in range(1, days + 1):
+            if sunday(d) and rng.random() < 0.6:
+                add(d, "thao", "visit")
+        add(days - 1, "thao", "call")
+    out = [c for c in out if c["day"] <= days]
+    out.sort(key=lambda c: (c["day"], c["member_id"]))
+    return out
 
 
 # ---------------------------------------------------------------------------------------------

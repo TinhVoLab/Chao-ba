@@ -15,11 +15,11 @@ const SEVERITY: Record<string, Alert["severity"]> = {
 export function normAlerts(list: unknown): Alert[] {
   if (!Array.isArray(list)) return [];
   return (list as Alert[])
-    .map((a) => ({ ...a, id: String(a.id), severity: SEVERITY[String(a.severity)] ?? "info" }))
+    .map((a) => ({ ...a, id: String(a.id), severity: a.severity_level ?? SEVERITY[String(a.severity)] ?? "info" }))
     .sort((a, b) => b.day - a.day || String(b.id).localeCompare(String(a.id), undefined, { numeric: true }));
 }
 
-/** API notes carry `day` but no calendar date; attach it from the timeline. Newest first. */
+/** Notes carry `day` and `date` from the API; older snapshots lacked `date`, so fall back to the timeline. Newest first. */
 export function normNotes(list: unknown, records: Pick<DailyRecord, "day" | "date">[]): Note[] {
   if (!Array.isArray(list)) return [];
   const dateOf = new Map(records.map((r) => [r.day, r.date]));
@@ -31,6 +31,7 @@ export function normNotes(list: unknown, records: Pick<DailyRecord, "day" | "dat
 /** Timeline events worth a marker on charts (lights already show alert/recovery days). */
 const MARKER_TYPES = new Set(["medication_change", "doctor_visit", "care_plan", "rebaseline", "new_baseline", "symptom_report", "hospital", "fall"]);
 export function chartEvents(events: TimelineEvent[] | undefined): TimelineEvent[] {
-  return (events ?? []).filter((e) => MARKER_TYPES.has(e.type)).sort((a, b) => a.day - b.day);
+  const rank = (t: string) => ["medication_change", "symptom_report", "fall", "hospital", "doctor_visit", "care_plan"].indexOf(t);
+  return (events ?? []).filter((e) => MARKER_TYPES.has(e.type)).sort((a, b) => a.day - b.day || rank(a.type) - rank(b.type));
 }
 export const isRebaseline = (e: TimelineEvent) => e.type === "rebaseline" || e.type === "new_baseline";

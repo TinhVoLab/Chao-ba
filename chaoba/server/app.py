@@ -3,6 +3,7 @@
 Implements the REST API in CONTRACT.md plus the static elder web-call page at /call?elder=hanh.
 Family reads are written to access_log (actor from the `X-Actor` header, role from `X-Role`; defaults
 "family:primary"/"primary" because the prototype has no auth - production uses Supabase Auth + RLS, see schema.sql).
+Reads are de-duplicated to one row per actor / action / resource / day (with a counter); writes always get a row.
 """
 from __future__ import annotations
 
@@ -10,6 +11,7 @@ import logging
 import os
 from contextlib import asynccontextmanager
 from pathlib import Path
+from urllib.parse import unquote
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -35,6 +37,13 @@ class TurnIn(BaseModel):
     start: float | None = None
     end: float | None = None
     pauses: list[float] = Field(default_factory=list)
+
+
+class ContactIn(BaseModel):
+    kind: str = "call"                 # call | visit | message
+    member_id: str | None = None       # family member id from the profile (e.g. "lan")
+    member_name: str | None = None
+    duration_min: int | None = None
 
 
 class NoteIn(BaseModel):
@@ -63,12 +72,16 @@ def create_app(db_path: str | None = None, seed: bool = True) -> FastAPI:
     def svc(request: Request) -> Service:
         return request.app.state.svc
 
+    def actor(request: Request) -> str:
+        # HTTP headers are ASCII: the app percent-encodes Vietnamese names ("Th%E1%BA%A3o" -> "Thảo").
+        return unquote(request.headers.get("x-actor", "family:primary"))[:80]
+
     def elder_guard(request: Request, elder_id: str, action: str) -> Service:
         s = svc(request)
         if not s.elder_or_none(elder_id):
             raise HTTPException(404, f"unknown elder {elder_id}")
-        s.store.log_access(elder_id, request.headers.get("x-actor", "family:primary"),
-                           request.headers.get("x-role", "primary"), action, str(request.url.path))
+        s.store.log_access(elder_id, actor(request), unquote(request.headers.get("x-role", "primary"))[:40], action,
+                           str(request.url.path))
         return s
 
     @app.get("/")
@@ -99,12 +112,13 @@ def create_app(db_path: str | None = None, seed: bool = True) -> FastAPI:
 
     @app.get("/api/elders/{elder_id}/alerts")
     def alerts(request: Request, elder_id: str):
-        return elder_guard(request, elder_id, "read_alerts").store.alerts(elder_id)
+        s = elder_guard(request, elder_id, "read_alerts")
+        return [] if s.sharing_paused(elder_id) else s.store.alerts(elder_id)
 
     @app.post("/api/elders/{elder_id}/alerts/{alert_id}/ack")
     def ack(request: Request, elder_id: str, alert_id: int):
         s = elder_guard(request, elder_id, "ack_alert")
-        if not s.store.ack_alert(elder_id, alert_id, request.headers.get("x-actor", "family:primary")):
+        if not s.store.ack_alert(elder_id, alert_id, actor(request)):
             raise HTTPException(404, "alert not found")
         return {"ok": True, "id": alert_id, "acknowledged": True}
 
@@ -121,10 +135,41 @@ def create_app(db_path: str | None = None, seed: bool = True) -> FastAPI:
         s = elder_guard(request, elder_id, "write_note")
         if not note.text.strip():
             raise HTTPException(422, "empty note")
-        recs = s.store.records(elder_id)
-        nid = s.store.add_note(elder_id, note.author, note.text.strip(), recs[-1]["day"] if recs else None,
-                               to_elder=note.to_elder)
-        return {"id": nid, "ok": True}
+        day, date = s.current_day(elder_id)
+        nid = s.store.add_note(elder_id, note.author, note.text.strip(), day, to_elder=note.to_elder)
+        return {"id": nid, "ok": True, "day": day, "date": date, "author": note.author, "text": note.text.strip(),
+                "to_elder": note.to_elder}
+
+    @app.get("/api/elders/{elder_id}/contacts")
+    def contacts(request: Request, elder_id: str, days: int = 90):
+        return elder_guard(request, elder_id, "read_contacts").contacts(elder_id, days)
+
+    @app.post("/api/elders/{elder_id}/contacts")
+    def add_contact(request: Request, elder_id: str, body: ContactIn):
+        """Family logs a call/visit (the app's "Gọi má" button posts kind=call)."""
+        from .service import CONTACT_KINDS
+        s = elder_guard(request, elder_id, "log_contact")
+        if body.kind not in CONTACT_KINDS:
+            raise HTTPException(422, f"kind must be one of {CONTACT_KINDS}")
+        return s.log_contact(elder_id, body.member_id, body.member_name, body.kind, body.duration_min)
+
+    @app.post("/api/elders/{elder_id}/consents/{kind}/withdraw")
+    def withdraw_consent(request: Request, elder_id: str, kind: str):
+        """Withdraw one consent purpose; processing for it stops (daily_call also pauses scheduling, like opt-out)."""
+        from .service import CONSENT_KINDS
+        if kind not in CONSENT_KINDS:
+            raise HTTPException(404, f"unknown consent type {kind}")
+        s = elder_guard(request, elder_id, "withdraw_consent")
+        return s.set_consent(elder_id, kind, False, actor(request))
+
+    @app.post("/api/elders/{elder_id}/consents/{kind}/grant")
+    def grant_consent(request: Request, elder_id: str, kind: str):
+        """Re-grant a withdrawn purpose (for daily_call this is the same as POST /resume)."""
+        from .service import CONSENT_KINDS
+        if kind not in CONSENT_KINDS:
+            raise HTTPException(404, f"unknown consent type {kind}")
+        s = elder_guard(request, elder_id, "grant_consent")
+        return s.set_consent(elder_id, kind, True, actor(request))
 
     @app.get("/api/elders/{elder_id}/privacy")
     def privacy(request: Request, elder_id: str):
@@ -134,7 +179,7 @@ def create_app(db_path: str | None = None, seed: bool = True) -> FastAPI:
     def resume(request: Request, elder_id: str):
         """Extension: re-enable daily calls after an opt-out (recorded as a new consent row)."""
         s = elder_guard(request, elder_id, "resume_calls")
-        s.store.set_opt_out(elder_id, False, by=request.headers.get("x-actor", "family:primary"))
+        s.store.set_opt_out(elder_id, False, by=actor(request))
         return {"ok": True, "scheduling_active": True}
 
     @app.get("/api/evaluation")

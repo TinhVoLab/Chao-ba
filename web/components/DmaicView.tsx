@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, Minus, PhoneCall } from "lucide-react";
 import type { DailyLight, Dmaic, DmaicPhase, Light, Metric, PhaseKey } from "@/lib/types";
 import { BAD_DIRECTION, METRICS } from "@/lib/types";
 import { LIGHT_WORD, METRIC_META, shortDate } from "@/lib/format";
@@ -45,8 +45,10 @@ export function DmaicView({
   const daysBack = dmaic.days_to_green ?? (iv != null && firstGreen != null ? firstGreen - iv : null);
   const firstOff = firstAlert;
 
-  // Where the loop stands: intervention -> improve/control; alert only -> analyze; otherwise monitoring (control).
-  const currentKey: PhaseKey | null = !has
+  // Where the loop stands. The API sends `status` per phase (done | current | not_started); older snapshots
+  // without it fall back to: intervention -> improve/control; alert only -> analyze; otherwise monitoring.
+  const apiStatus = (dmaic.phases ?? []).some((p) => p.status);
+  const derivedKey: PhaseKey | null = !has
     ? null
     : iv != null
       ? firstGreen != null
@@ -55,9 +57,16 @@ export function DmaicView({
       : firstAlert != null
         ? "analyze"
         : "control";
+  const currentKey: PhaseKey | null = apiStatus
+    ? ((dmaic.phases ?? []).find((p) => p.status === "current")?.phase ?? null)
+    : derivedKey;
   const curIdx = currentKey ? PHASES.findIndex((p) => p.key === currentKey) : -1;
   const status = (i: number): Status => {
     if (!has) return "upcoming";
+    if (apiStatus) {
+      const st = byKey.get(PHASES[i].key)?.status;
+      return st === "done" ? "done" : st === "current" ? "current" : "upcoming";
+    }
     const k = PHASES[i].key;
     if (i === curIdx) return "current";
     if (currentKey === "control" && iv == null && k === "improve") return "upcoming"; // nothing needed to improve
@@ -109,7 +118,7 @@ export function DmaicView({
                     <T vi={p.vi} en={p.en} />
                   </span>
                   <span className="text-[0.75rem] text-ink-3 tnum">
-                    {st === "upcoming" ? <T vi="chưa cần" en="not yet" /> : byKey.get(p.key) ? date(byKey.get(p.key)?.day_from) : ""}
+                    {st === "upcoming" ? <T vi="chưa cần" en="not yet" /> : byKey.get(p.key)?.day_from != null ? date(byKey.get(p.key)?.day_from) : ""}
                   </span>
                 </button>
               </li>
@@ -133,7 +142,7 @@ export function DmaicView({
             <span className="mr-2 text-accent">{selPhase.letter}</span>
             <T vi={selPhase.vi} en={selPhase.en} />
           </h2>
-          {selData && status(sel) !== "upcoming" && (
+          {selData && status(sel) !== "upcoming" && selData.day_from != null && (
             <span className="text-sm font-medium text-ink-2 tnum">
               <T vi="Ngày" en="Day" /> {selData.day_from ?? "?"}
               {selData.day_to != null && selData.day_to !== selData.day_from ? `–${selData.day_to}` : ""} ·{" "}
@@ -145,6 +154,11 @@ export function DmaicView({
         <p className="mt-1 text-sm text-ink-3">
           <T vi={selPhase.whatVi} en={selPhase.whatEn} />
         </p>
+        {selData && status(sel) === "upcoming" && (
+          <p className="mt-2 inline-flex rounded-full bg-surface-2 px-2.5 py-0.5 text-sm font-semibold text-ink-2">
+            <T vi="Chưa bắt đầu" en="Not started" />
+          </p>
+        )}
         <p className="mt-3 max-w-[65ch] text-[1.0625rem] leading-relaxed">
           {selData ? (
             <T vi={selData.summary_vi || "–"} en={selData.summary_en || selData.summary_vi || "–"} />
@@ -190,6 +204,11 @@ export function DmaicView({
             </p>
           )}
         </section>
+      )}
+
+      {/* Family contact: the care plan's measurable intervention */}
+      {dmaic.contact && (dmaic.contact.pre_per_week != null || dmaic.contact.recent_per_week != null) && (
+        <ContactBlock c={dmaic.contact} date={date} />
       )}
 
       {/* Timeline (Gantt) */}
@@ -307,5 +326,54 @@ function EffectRow({ m, e }: { m: Metric; e: { pre: number | null; post: number 
         </span>
       </td>
     </tr>
+  );
+}
+
+function ContactBlock({
+  c,
+  date,
+}: {
+  c: NonNullable<Dmaic["contact"]>;
+  date: (d: number | null | undefined) => string;
+}) {
+  const fmt = (x: number | null | undefined) => (x == null ? "–" : x.toFixed(1));
+  const fmtVi = (x: number | null | undefined) => fmt(x).replace(".", ",");
+  const cells: { key: string; vi: string; en: string; v: number | null | undefined; w?: [number, number] }[] = [];
+  if (c.pre_per_week != null) cells.push({ key: "pre", vi: "Trước can thiệp", en: "Before", v: c.pre_per_week, w: c.pre_window });
+  if (c.post_per_week != null) cells.push({ key: "post", vi: "Sau can thiệp", en: "After", v: c.post_per_week, w: c.post_window });
+  cells.push({ key: "recent", vi: "14 ngày gần đây", en: "Last 14 days", v: c.recent_per_week, w: c.recent_window });
+  const fading = c.post_per_week != null && c.recent_per_week != null && c.recent_per_week < c.post_per_week * 0.6;
+  return (
+    <section aria-labelledby="contact-h" className="flex flex-col gap-2">
+      <h2 id="contact-h" className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-ink-3">
+        <PhoneCall size={16} aria-hidden />
+        <T vi="Gia đình gọi / ghé thăm mỗi tuần" en="Family calls / visits per week" />
+      </h2>
+      <div className="grid grid-cols-3 gap-2">
+        {cells.map((x) => (
+          <div key={x.key} className={`rounded-2xl border p-3 ${x.key === "post" ? "border-ink bg-surface" : "border-line bg-surface"}`}>
+            <p className="text-[2rem] font-extrabold leading-none tnum">
+              <T vi={fmtVi(x.v)} en={fmt(x.v)} />
+            </p>
+            <p className="mt-1 text-sm font-semibold text-ink-2">
+              <T vi={x.vi} en={x.en} />
+            </p>
+            {x.w && <p className="text-xs text-ink-3 tnum">{`${date(x.w[0])}–${date(x.w[1])}`}</p>}
+          </div>
+        ))}
+      </div>
+      {fading ? (
+        <p className="rounded-xl bg-yellow-tint px-3 py-2 text-[0.9375rem] text-yellow-ink">
+          <T
+            vi="Lịch gọi đang thưa dần so với kế hoạch. Giữ cuộc gọi đều là một phần của bước Kiểm soát."
+            en="Calls are thinning out compared with the plan. Keeping them regular is part of the Control step."
+          />
+        </p>
+      ) : (
+        <p className="text-sm text-ink-3">
+          <T vi="Đếm từ nhật ký cuộc gọi và lần ghé thăm của gia đình." en="Counted from the family's call and visit log." />
+        </p>
+      )}
+    </section>
   );
 }

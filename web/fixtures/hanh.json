@@ -47,7 +47,7 @@
   "simulated": true
  },
  "today": {
-  "date": "2026-11-19",
+  "date": "2026-10-26",
   "day": 90,
   "light": "green",
   "reasons": [],
@@ -58,6 +58,24 @@
   "answered": true,
   "mood": 5,
   "channel": "sim",
+  "sharing_paused": false,
+  "contact": {
+   "last": {
+    "id": 24,
+    "day": 85,
+    "date": "2026-10-21",
+    "member_id": "lan",
+    "member_name": "Lan",
+    "kind": "call",
+    "duration_min": 4,
+    "source": "simulated",
+    "simulated": true,
+    "created_at": "2026-10-27T13:58:05+00:00"
+   },
+   "days_since": 5,
+   "nudge": true,
+   "nudge_after_days": 3
+  },
   "simulated": true
  },
  "timeline": {
@@ -65,7 +83,7 @@
    {
     "elder_id": "hanh",
     "day": 1,
-    "date": "2026-08-22",
+    "date": "2026-07-29",
     "channel": "sim",
     "answered": true,
     "valid": false,
@@ -83,7 +101,7 @@
    {
     "elder_id": "hanh",
     "day": 2,
-    "date": "2026-08-23",
+    "date": "2026-07-30",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -101,7 +119,7 @@
    {
     "elder_id": "hanh",
     "day": 3,
-    "date": "2026-08-24",
+    "date": "2026-07-31",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -119,7 +137,7 @@
    {
     "elder_id": "hanh",
     "day": 4,
-    "date": "2026-08-25",
+    "date": "2026-08-01",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -137,7 +155,7 @@
    {
     "elder_id": "hanh",
     "day": 5,
-    "date": "2026-08-26",
+    "date": "2026-08-02",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -155,7 +173,7 @@
    {
     "elder_id": "hanh",
     "day": 6,
-    "date": "2026-08-27",
+    "date": "2026-08-03",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -173,7 +191,7 @@
    {
     "elder_id": "hanh",
     "day": 7,
-    "date": "2026-08-28",
+    "date": "2026-08-04",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -191,7 +209,7 @@
    {
     "elder_id": "hanh",
     "day": 8,
-    "date": "2026-08-29",
+    "date": "2026-08-05",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -209,7 +227,7 @@
    {
     "elder_id": "hanh",
     "day": 9,
-    "date": "2026-08-30",
+    "date": "2026-08-06",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -227,7 +245,7 @@
    {
     "elder_id": "hanh",
     "day": 10,
-    "date": "2026-08-31",
+    "date": "2026-08-07",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -245,7 +263,7 @@
    {
     "elder_id": "hanh",
     "day": 11,
-    "date": "2026-09-01",
+    "date": "2026-08-08",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -263,7 +281,7 @@
    {
     "elder_id": "hanh",
     "day": 12,
-    "date": "2026-09-02",
+    "date": "2026-08-09",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -281,7 +299,7 @@
    {
     "elder_id": "hanh",
     "day": 13,
-    "date": "2026-09-03",
+    "date": "2026-08-10",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -299,7 +317,7 @@
    {
     "elder_id": "hanh",
     "day": 14,
-    "date": "2026-09-04",
+    "date": "2026-08-11",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -317,7 +335,7 @@
    {
     "elder_id": "hanh",
     "day": 15,
-    "date": "2026-09-05",
+    "date": "2026-08-12",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -335,7 +353,7 @@
    {
     "elder_id": "hanh",
     "day": 16,
-    "date": "2026-09-06",
+    "date": "2026-08-13",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -353,7 +371,7 @@
    {
     "elder_id": "hanh",
     "day": 17,
-    "date": "2026-09-07",
+    "date": "2026-08-14",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -371,7 +389,7 @@
    {
     "elder_id": "hanh",
     "day": 18,
-    "date": "2026-09-08",
+    "date": "2026-08-15",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -389,7 +407,7 @@
    {
     "elder_id": "hanh",
     "day": 19,
-    "date": "2026-09-09",
+    "date": "2026-08-16",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -407,7 +425,7 @@
    {
     "elder_id": "hanh",
     "day": 20,
-    "date": "2026-09-10",
+    "date": "2026-08-17",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -425,7 +443,7 @@
    {
     "elder_id": "hanh",
     "day": 21,
-    "date": "2026-09-11",
+    "date": "2026-08-18",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -443,7 +461,7 @@
    {
     "elder_id": "hanh",
     "day": 22,
-    "date": "2026-09-12",
+    "date": "2026-08-19",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -461,7 +479,7 @@
    {
     "elder_id": "hanh",
     "day": 23,
-    "date": "2026-09-13",
+    "date": "2026-08-20",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -479,7 +497,7 @@
    {
     "elder_id": "hanh",
     "day": 24,
-    "date": "2026-09-14",
+    "date": "2026-08-21",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -497,7 +515,7 @@
    {
     "elder_id": "hanh",
     "day": 25,
-    "date": "2026-09-15",
+    "date": "2026-08-22",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -515,7 +533,7 @@
    {
     "elder_id": "hanh",
     "day": 26,
-    "date": "2026-09-16",
+    "date": "2026-08-23",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -533,7 +551,7 @@
    {
     "elder_id": "hanh",
     "day": 27,
-    "date": "2026-09-17",
+    "date": "2026-08-24",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -551,7 +569,7 @@
    {
     "elder_id": "hanh",
     "day": 28,
-    "date": "2026-09-18",
+    "date": "2026-08-25",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -569,7 +587,7 @@
    {
     "elder_id": "hanh",
     "day": 29,
-    "date": "2026-09-19",
+    "date": "2026-08-26",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -587,7 +605,7 @@
    {
     "elder_id": "hanh",
     "day": 30,
-    "date": "2026-09-20",
+    "date": "2026-08-27",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -605,7 +623,7 @@
    {
     "elder_id": "hanh",
     "day": 31,
-    "date": "2026-09-21",
+    "date": "2026-08-28",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -623,7 +641,7 @@
    {
     "elder_id": "hanh",
     "day": 32,
-    "date": "2026-09-22",
+    "date": "2026-08-29",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -641,7 +659,7 @@
    {
     "elder_id": "hanh",
     "day": 33,
-    "date": "2026-09-23",
+    "date": "2026-08-30",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -659,7 +677,7 @@
    {
     "elder_id": "hanh",
     "day": 34,
-    "date": "2026-09-24",
+    "date": "2026-08-31",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -677,7 +695,7 @@
    {
     "elder_id": "hanh",
     "day": 35,
-    "date": "2026-09-25",
+    "date": "2026-09-01",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -697,7 +715,7 @@
    {
     "elder_id": "hanh",
     "day": 36,
-    "date": "2026-09-26",
+    "date": "2026-09-02",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -715,7 +733,7 @@
    {
     "elder_id": "hanh",
     "day": 37,
-    "date": "2026-09-27",
+    "date": "2026-09-03",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -733,7 +751,7 @@
    {
     "elder_id": "hanh",
     "day": 38,
-    "date": "2026-09-28",
+    "date": "2026-09-04",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -753,7 +771,7 @@
    {
     "elder_id": "hanh",
     "day": 39,
-    "date": "2026-09-29",
+    "date": "2026-09-05",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -771,7 +789,7 @@
    {
     "elder_id": "hanh",
     "day": 40,
-    "date": "2026-09-30",
+    "date": "2026-09-06",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -789,7 +807,7 @@
    {
     "elder_id": "hanh",
     "day": 41,
-    "date": "2026-10-01",
+    "date": "2026-09-07",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -810,7 +828,7 @@
    {
     "elder_id": "hanh",
     "day": 42,
-    "date": "2026-10-02",
+    "date": "2026-09-08",
     "channel": "sim",
     "answered": false,
     "valid": false,
@@ -828,7 +846,7 @@
    {
     "elder_id": "hanh",
     "day": 43,
-    "date": "2026-10-03",
+    "date": "2026-09-09",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -849,7 +867,7 @@
    {
     "elder_id": "hanh",
     "day": 44,
-    "date": "2026-10-04",
+    "date": "2026-09-10",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -867,7 +885,7 @@
    {
     "elder_id": "hanh",
     "day": 45,
-    "date": "2026-10-05",
+    "date": "2026-09-11",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -885,7 +903,7 @@
    {
     "elder_id": "hanh",
     "day": 46,
-    "date": "2026-10-06",
+    "date": "2026-09-12",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -903,7 +921,7 @@
    {
     "elder_id": "hanh",
     "day": 47,
-    "date": "2026-10-07",
+    "date": "2026-09-13",
     "channel": "sim",
     "answered": true,
     "valid": false,
@@ -921,7 +939,7 @@
    {
     "elder_id": "hanh",
     "day": 48,
-    "date": "2026-10-08",
+    "date": "2026-09-14",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -939,7 +957,7 @@
    {
     "elder_id": "hanh",
     "day": 49,
-    "date": "2026-10-09",
+    "date": "2026-09-15",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -957,7 +975,7 @@
    {
     "elder_id": "hanh",
     "day": 50,
-    "date": "2026-10-10",
+    "date": "2026-09-16",
     "channel": "sim",
     "answered": false,
     "valid": false,
@@ -975,7 +993,7 @@
    {
     "elder_id": "hanh",
     "day": 51,
-    "date": "2026-10-11",
+    "date": "2026-09-17",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -993,7 +1011,7 @@
    {
     "elder_id": "hanh",
     "day": 52,
-    "date": "2026-10-12",
+    "date": "2026-09-18",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1011,7 +1029,7 @@
    {
     "elder_id": "hanh",
     "day": 53,
-    "date": "2026-10-13",
+    "date": "2026-09-19",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1029,7 +1047,7 @@
    {
     "elder_id": "hanh",
     "day": 54,
-    "date": "2026-10-14",
+    "date": "2026-09-20",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1047,7 +1065,7 @@
    {
     "elder_id": "hanh",
     "day": 55,
-    "date": "2026-10-15",
+    "date": "2026-09-21",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1065,7 +1083,7 @@
    {
     "elder_id": "hanh",
     "day": 56,
-    "date": "2026-10-16",
+    "date": "2026-09-22",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1083,7 +1101,7 @@
    {
     "elder_id": "hanh",
     "day": 57,
-    "date": "2026-10-17",
+    "date": "2026-09-23",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1101,7 +1119,7 @@
    {
     "elder_id": "hanh",
     "day": 58,
-    "date": "2026-10-18",
+    "date": "2026-09-24",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1119,7 +1137,7 @@
    {
     "elder_id": "hanh",
     "day": 59,
-    "date": "2026-10-19",
+    "date": "2026-09-25",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1137,7 +1155,7 @@
    {
     "elder_id": "hanh",
     "day": 60,
-    "date": "2026-10-20",
+    "date": "2026-09-26",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1155,7 +1173,7 @@
    {
     "elder_id": "hanh",
     "day": 61,
-    "date": "2026-10-21",
+    "date": "2026-09-27",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1173,7 +1191,7 @@
    {
     "elder_id": "hanh",
     "day": 62,
-    "date": "2026-10-22",
+    "date": "2026-09-28",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1193,7 +1211,7 @@
    {
     "elder_id": "hanh",
     "day": 63,
-    "date": "2026-10-23",
+    "date": "2026-09-29",
     "channel": "sim",
     "answered": true,
     "valid": false,
@@ -1211,7 +1229,7 @@
    {
     "elder_id": "hanh",
     "day": 64,
-    "date": "2026-10-24",
+    "date": "2026-09-30",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1229,7 +1247,7 @@
    {
     "elder_id": "hanh",
     "day": 65,
-    "date": "2026-10-25",
+    "date": "2026-10-01",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1247,7 +1265,7 @@
    {
     "elder_id": "hanh",
     "day": 66,
-    "date": "2026-10-26",
+    "date": "2026-10-02",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1265,7 +1283,7 @@
    {
     "elder_id": "hanh",
     "day": 67,
-    "date": "2026-10-27",
+    "date": "2026-10-03",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1283,7 +1301,7 @@
    {
     "elder_id": "hanh",
     "day": 68,
-    "date": "2026-10-28",
+    "date": "2026-10-04",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1301,7 +1319,7 @@
    {
     "elder_id": "hanh",
     "day": 69,
-    "date": "2026-10-29",
+    "date": "2026-10-05",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1319,7 +1337,7 @@
    {
     "elder_id": "hanh",
     "day": 70,
-    "date": "2026-10-30",
+    "date": "2026-10-06",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1337,7 +1355,7 @@
    {
     "elder_id": "hanh",
     "day": 71,
-    "date": "2026-10-31",
+    "date": "2026-10-07",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1355,7 +1373,7 @@
    {
     "elder_id": "hanh",
     "day": 72,
-    "date": "2026-11-01",
+    "date": "2026-10-08",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1373,7 +1391,7 @@
    {
     "elder_id": "hanh",
     "day": 73,
-    "date": "2026-11-02",
+    "date": "2026-10-09",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1391,7 +1409,7 @@
    {
     "elder_id": "hanh",
     "day": 74,
-    "date": "2026-11-03",
+    "date": "2026-10-10",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1409,7 +1427,7 @@
    {
     "elder_id": "hanh",
     "day": 75,
-    "date": "2026-11-04",
+    "date": "2026-10-11",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1427,7 +1445,7 @@
    {
     "elder_id": "hanh",
     "day": 76,
-    "date": "2026-11-05",
+    "date": "2026-10-12",
     "channel": "sim",
     "answered": true,
     "valid": false,
@@ -1445,7 +1463,7 @@
    {
     "elder_id": "hanh",
     "day": 77,
-    "date": "2026-11-06",
+    "date": "2026-10-13",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1463,7 +1481,7 @@
    {
     "elder_id": "hanh",
     "day": 78,
-    "date": "2026-11-07",
+    "date": "2026-10-14",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1481,7 +1499,7 @@
    {
     "elder_id": "hanh",
     "day": 79,
-    "date": "2026-11-08",
+    "date": "2026-10-15",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1499,7 +1517,7 @@
    {
     "elder_id": "hanh",
     "day": 80,
-    "date": "2026-11-09",
+    "date": "2026-10-16",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1519,7 +1537,7 @@
    {
     "elder_id": "hanh",
     "day": 81,
-    "date": "2026-11-10",
+    "date": "2026-10-17",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1537,7 +1555,7 @@
    {
     "elder_id": "hanh",
     "day": 82,
-    "date": "2026-11-11",
+    "date": "2026-10-18",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1555,7 +1573,7 @@
    {
     "elder_id": "hanh",
     "day": 83,
-    "date": "2026-11-12",
+    "date": "2026-10-19",
     "channel": "sim",
     "answered": true,
     "valid": false,
@@ -1573,7 +1591,7 @@
    {
     "elder_id": "hanh",
     "day": 84,
-    "date": "2026-11-13",
+    "date": "2026-10-20",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1591,7 +1609,7 @@
    {
     "elder_id": "hanh",
     "day": 85,
-    "date": "2026-11-14",
+    "date": "2026-10-21",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1609,7 +1627,7 @@
    {
     "elder_id": "hanh",
     "day": 86,
-    "date": "2026-11-15",
+    "date": "2026-10-22",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1627,7 +1645,7 @@
    {
     "elder_id": "hanh",
     "day": 87,
-    "date": "2026-11-16",
+    "date": "2026-10-23",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1645,7 +1663,7 @@
    {
     "elder_id": "hanh",
     "day": 88,
-    "date": "2026-11-17",
+    "date": "2026-10-24",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1663,7 +1681,7 @@
    {
     "elder_id": "hanh",
     "day": 89,
-    "date": "2026-11-18",
+    "date": "2026-10-25",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1681,7 +1699,7 @@
    {
     "elder_id": "hanh",
     "day": 90,
-    "date": "2026-11-19",
+    "date": "2026-10-26",
     "channel": "sim",
     "answered": true,
     "valid": true,
@@ -1701,7 +1719,7 @@
    {
     "elder_id": "hanh",
     "day": 1,
-    "date": "2026-08-22",
+    "date": "2026-07-29",
     "light": "gray",
     "reasons": [
      {
@@ -1729,7 +1747,7 @@
    {
     "elder_id": "hanh",
     "day": 2,
-    "date": "2026-08-23",
+    "date": "2026-07-30",
     "light": "gray",
     "reasons": [
      {
@@ -1754,7 +1772,7 @@
    {
     "elder_id": "hanh",
     "day": 3,
-    "date": "2026-08-24",
+    "date": "2026-07-31",
     "light": "gray",
     "reasons": [
      {
@@ -1779,7 +1797,7 @@
    {
     "elder_id": "hanh",
     "day": 4,
-    "date": "2026-08-25",
+    "date": "2026-08-01",
     "light": "gray",
     "reasons": [
      {
@@ -1804,7 +1822,7 @@
    {
     "elder_id": "hanh",
     "day": 5,
-    "date": "2026-08-26",
+    "date": "2026-08-02",
     "light": "gray",
     "reasons": [
      {
@@ -1829,7 +1847,7 @@
    {
     "elder_id": "hanh",
     "day": 6,
-    "date": "2026-08-27",
+    "date": "2026-08-03",
     "light": "gray",
     "reasons": [
      {
@@ -1854,7 +1872,7 @@
    {
     "elder_id": "hanh",
     "day": 7,
-    "date": "2026-08-28",
+    "date": "2026-08-04",
     "light": "gray",
     "reasons": [
      {
@@ -1879,7 +1897,7 @@
    {
     "elder_id": "hanh",
     "day": 8,
-    "date": "2026-08-29",
+    "date": "2026-08-05",
     "light": "gray",
     "reasons": [
      {
@@ -1904,7 +1922,7 @@
    {
     "elder_id": "hanh",
     "day": 9,
-    "date": "2026-08-30",
+    "date": "2026-08-06",
     "light": "gray",
     "reasons": [
      {
@@ -1929,7 +1947,7 @@
    {
     "elder_id": "hanh",
     "day": 10,
-    "date": "2026-08-31",
+    "date": "2026-08-07",
     "light": "gray",
     "reasons": [
      {
@@ -1954,7 +1972,7 @@
    {
     "elder_id": "hanh",
     "day": 11,
-    "date": "2026-09-01",
+    "date": "2026-08-08",
     "light": "gray",
     "reasons": [
      {
@@ -1979,7 +1997,7 @@
    {
     "elder_id": "hanh",
     "day": 12,
-    "date": "2026-09-02",
+    "date": "2026-08-09",
     "light": "gray",
     "reasons": [
      {
@@ -2004,7 +2022,7 @@
    {
     "elder_id": "hanh",
     "day": 13,
-    "date": "2026-09-03",
+    "date": "2026-08-10",
     "light": "gray",
     "reasons": [
      {
@@ -2029,7 +2047,7 @@
    {
     "elder_id": "hanh",
     "day": 14,
-    "date": "2026-09-04",
+    "date": "2026-08-11",
     "light": "gray",
     "reasons": [
      {
@@ -2054,7 +2072,7 @@
    {
     "elder_id": "hanh",
     "day": 15,
-    "date": "2026-09-05",
+    "date": "2026-08-12",
     "light": "gray",
     "reasons": [
      {
@@ -2079,7 +2097,7 @@
    {
     "elder_id": "hanh",
     "day": 16,
-    "date": "2026-09-06",
+    "date": "2026-08-13",
     "light": "gray",
     "reasons": [
      {
@@ -2104,7 +2122,7 @@
    {
     "elder_id": "hanh",
     "day": 17,
-    "date": "2026-09-07",
+    "date": "2026-08-14",
     "light": "gray",
     "reasons": [
      {
@@ -2129,7 +2147,7 @@
    {
     "elder_id": "hanh",
     "day": 18,
-    "date": "2026-09-08",
+    "date": "2026-08-15",
     "light": "gray",
     "reasons": [
      {
@@ -2154,7 +2172,7 @@
    {
     "elder_id": "hanh",
     "day": 19,
-    "date": "2026-09-09",
+    "date": "2026-08-16",
     "light": "gray",
     "reasons": [
      {
@@ -2179,7 +2197,7 @@
    {
     "elder_id": "hanh",
     "day": 20,
-    "date": "2026-09-10",
+    "date": "2026-08-17",
     "light": "gray",
     "reasons": [
      {
@@ -2204,7 +2222,7 @@
    {
     "elder_id": "hanh",
     "day": 21,
-    "date": "2026-09-11",
+    "date": "2026-08-18",
     "light": "gray",
     "reasons": [
      {
@@ -2229,7 +2247,7 @@
    {
     "elder_id": "hanh",
     "day": 22,
-    "date": "2026-09-12",
+    "date": "2026-08-19",
     "light": "green",
     "reasons": [],
     "z": {
@@ -2246,7 +2264,7 @@
    {
     "elder_id": "hanh",
     "day": 23,
-    "date": "2026-09-13",
+    "date": "2026-08-20",
     "light": "green",
     "reasons": [],
     "z": {
@@ -2263,7 +2281,7 @@
    {
     "elder_id": "hanh",
     "day": 24,
-    "date": "2026-09-14",
+    "date": "2026-08-21",
     "light": "green",
     "reasons": [],
     "z": {
@@ -2280,7 +2298,7 @@
    {
     "elder_id": "hanh",
     "day": 25,
-    "date": "2026-09-15",
+    "date": "2026-08-22",
     "light": "green",
     "reasons": [],
     "z": {
@@ -2297,7 +2315,7 @@
    {
     "elder_id": "hanh",
     "day": 26,
-    "date": "2026-09-16",
+    "date": "2026-08-23",
     "light": "green",
     "reasons": [],
     "z": {
@@ -2314,7 +2332,7 @@
    {
     "elder_id": "hanh",
     "day": 27,
-    "date": "2026-09-17",
+    "date": "2026-08-24",
     "light": "green",
     "reasons": [],
     "z": {
@@ -2331,7 +2349,7 @@
    {
     "elder_id": "hanh",
     "day": 28,
-    "date": "2026-09-18",
+    "date": "2026-08-25",
     "light": "green",
     "reasons": [],
     "z": {
@@ -2348,7 +2366,7 @@
    {
     "elder_id": "hanh",
     "day": 29,
-    "date": "2026-09-19",
+    "date": "2026-08-26",
     "light": "green",
     "reasons": [],
     "z": {
@@ -2365,7 +2383,7 @@
    {
     "elder_id": "hanh",
     "day": 30,
-    "date": "2026-09-20",
+    "date": "2026-08-27",
     "light": "green",
     "reasons": [],
     "z": {
@@ -2382,7 +2400,7 @@
    {
     "elder_id": "hanh",
     "day": 31,
-    "date": "2026-09-21",
+    "date": "2026-08-28",
     "light": "green",
     "reasons": [],
     "z": {
@@ -2399,7 +2417,7 @@
    {
     "elder_id": "hanh",
     "day": 32,
-    "date": "2026-09-22",
+    "date": "2026-08-29",
     "light": "green",
     "reasons": [],
     "z": {
@@ -2416,7 +2434,7 @@
    {
     "elder_id": "hanh",
     "day": 33,
-    "date": "2026-09-23",
+    "date": "2026-08-30",
     "light": "green",
     "reasons": [],
     "z": {
@@ -2433,7 +2451,7 @@
    {
     "elder_id": "hanh",
     "day": 34,
-    "date": "2026-09-24",
+    "date": "2026-08-31",
     "light": "green",
     "reasons": [],
     "z": {
@@ -2450,7 +2468,7 @@
    {
     "elder_id": "hanh",
     "day": 35,
-    "date": "2026-09-25",
+    "date": "2026-09-01",
     "light": "green",
     "reasons": [],
     "z": {
@@ -2467,7 +2485,7 @@
    {
     "elder_id": "hanh",
     "day": 36,
-    "date": "2026-09-26",
+    "date": "2026-09-02",
     "light": "green",
     "reasons": [],
     "z": {
@@ -2484,7 +2502,7 @@
    {
     "elder_id": "hanh",
     "day": 37,
-    "date": "2026-09-27",
+    "date": "2026-09-03",
     "light": "green",
     "reasons": [],
     "z": {
@@ -2501,7 +2519,7 @@
    {
     "elder_id": "hanh",
     "day": 38,
-    "date": "2026-09-28",
+    "date": "2026-09-04",
     "light": "yellow",
     "reasons": [
      {
@@ -2526,7 +2544,7 @@
    {
     "elder_id": "hanh",
     "day": 39,
-    "date": "2026-09-29",
+    "date": "2026-09-05",
     "light": "yellow",
     "reasons": [
      {
@@ -2551,7 +2569,7 @@
    {
     "elder_id": "hanh",
     "day": 40,
-    "date": "2026-09-30",
+    "date": "2026-09-06",
     "light": "yellow",
     "reasons": [
      {
@@ -2584,7 +2602,7 @@
    {
     "elder_id": "hanh",
     "day": 41,
-    "date": "2026-10-01",
+    "date": "2026-09-07",
     "light": "yellow",
     "reasons": [
      {
@@ -2625,7 +2643,7 @@
    {
     "elder_id": "hanh",
     "day": 42,
-    "date": "2026-10-02",
+    "date": "2026-09-08",
     "light": "yellow",
     "reasons": [
      {
@@ -2669,7 +2687,7 @@
    {
     "elder_id": "hanh",
     "day": 43,
-    "date": "2026-10-03",
+    "date": "2026-09-09",
     "light": "red",
     "reasons": [
      {
@@ -2730,7 +2748,7 @@
    {
     "elder_id": "hanh",
     "day": 44,
-    "date": "2026-10-04",
+    "date": "2026-09-10",
     "light": "red",
     "reasons": [
      {
@@ -2812,7 +2830,7 @@
    {
     "elder_id": "hanh",
     "day": 45,
-    "date": "2026-10-05",
+    "date": "2026-09-11",
     "light": "red",
     "reasons": [
      {
@@ -2900,7 +2918,7 @@
    {
     "elder_id": "hanh",
     "day": 46,
-    "date": "2026-10-06",
+    "date": "2026-09-12",
     "light": "red",
     "reasons": [
      {
@@ -2996,7 +3014,7 @@
    {
     "elder_id": "hanh",
     "day": 47,
-    "date": "2026-10-07",
+    "date": "2026-09-13",
     "light": "red",
     "reasons": [
      {
@@ -3095,7 +3113,7 @@
    {
     "elder_id": "hanh",
     "day": 48,
-    "date": "2026-10-08",
+    "date": "2026-09-14",
     "light": "red",
     "reasons": [
      {
@@ -3172,7 +3190,7 @@
    {
     "elder_id": "hanh",
     "day": 49,
-    "date": "2026-10-09",
+    "date": "2026-09-15",
     "light": "red",
     "reasons": [
      {
@@ -3241,7 +3259,7 @@
    {
     "elder_id": "hanh",
     "day": 50,
-    "date": "2026-10-10",
+    "date": "2026-09-16",
     "light": "red",
     "reasons": [
      {
@@ -3313,7 +3331,7 @@
    {
     "elder_id": "hanh",
     "day": 51,
-    "date": "2026-10-11",
+    "date": "2026-09-17",
     "light": "red",
     "reasons": [
      {
@@ -3395,7 +3413,7 @@
    {
     "elder_id": "hanh",
     "day": 52,
-    "date": "2026-10-12",
+    "date": "2026-09-18",
     "light": "red",
     "reasons": [
      {
@@ -3469,7 +3487,7 @@
    {
     "elder_id": "hanh",
     "day": 53,
-    "date": "2026-10-13",
+    "date": "2026-09-19",
     "light": "yellow",
     "reasons": [
      {
@@ -3495,7 +3513,7 @@
    {
     "elder_id": "hanh",
     "day": 54,
-    "date": "2026-10-14",
+    "date": "2026-09-20",
     "light": "yellow",
     "reasons": [
      {
@@ -3526,7 +3544,7 @@
    {
     "elder_id": "hanh",
     "day": 55,
-    "date": "2026-10-15",
+    "date": "2026-09-21",
     "light": "yellow",
     "reasons": [
      {
@@ -3557,7 +3575,7 @@
    {
     "elder_id": "hanh",
     "day": 56,
-    "date": "2026-10-16",
+    "date": "2026-09-22",
     "light": "green",
     "reasons": [],
     "z": {
@@ -3574,7 +3592,7 @@
    {
     "elder_id": "hanh",
     "day": 57,
-    "date": "2026-10-17",
+    "date": "2026-09-23",
     "light": "green",
     "reasons": [],
     "z": {
@@ -3591,7 +3609,7 @@
    {
     "elder_id": "hanh",
     "day": 58,
-    "date": "2026-10-18",
+    "date": "2026-09-24",
     "light": "green",
     "reasons": [],
     "z": {
@@ -3608,7 +3626,7 @@
    {
     "elder_id": "hanh",
     "day": 59,
-    "date": "2026-10-19",
+    "date": "2026-09-25",
     "light": "green",
     "reasons": [],
     "z": {
@@ -3625,7 +3643,7 @@
    {
     "elder_id": "hanh",
     "day": 60,
-    "date": "2026-10-20",
+    "date": "2026-09-26",
     "light": "green",
     "reasons": [],
     "z": {
@@ -3642,7 +3660,7 @@
    {
     "elder_id": "hanh",
     "day": 61,
-    "date": "2026-10-21",
+    "date": "2026-09-27",
     "light": "green",
     "reasons": [],
     "z": {
@@ -3659,7 +3677,7 @@
    {
     "elder_id": "hanh",
     "day": 62,
-    "date": "2026-10-22",
+    "date": "2026-09-28",
     "light": "green",
     "reasons": [],
     "z": {
@@ -3676,7 +3694,7 @@
    {
     "elder_id": "hanh",
     "day": 63,
-    "date": "2026-10-23",
+    "date": "2026-09-29",
     "light": "gray",
     "reasons": [
      {
@@ -3697,7 +3715,7 @@
    {
     "elder_id": "hanh",
     "day": 64,
-    "date": "2026-10-24",
+    "date": "2026-09-30",
     "light": "green",
     "reasons": [],
     "z": {
@@ -3714,7 +3732,7 @@
    {
     "elder_id": "hanh",
     "day": 65,
-    "date": "2026-10-25",
+    "date": "2026-10-01",
     "light": "green",
     "reasons": [],
     "z": {
@@ -3731,7 +3749,7 @@
    {
     "elder_id": "hanh",
     "day": 66,
-    "date": "2026-10-26",
+    "date": "2026-10-02",
     "light": "green",
     "reasons": [],
     "z": {
@@ -3748,7 +3766,7 @@
    {
     "elder_id": "hanh",
     "day": 67,
-    "date": "2026-10-27",
+    "date": "2026-10-03",
     "light": "green",
     "reasons": [],
     "z": {
@@ -3765,7 +3783,7 @@
    {
     "elder_id": "hanh",
     "day": 68,
-    "date": "2026-10-28",
+    "date": "2026-10-04",
     "light": "green",
     "reasons": [],
     "z": {
@@ -3782,7 +3800,7 @@
    {
     "elder_id": "hanh",
     "day": 69,
-    "date": "2026-10-29",
+    "date": "2026-10-05",
     "light": "green",
     "reasons": [],
     "z": {
@@ -3799,7 +3817,7 @@
    {
     "elder_id": "hanh",
     "day": 70,
-    "date": "2026-10-30",
+    "date": "2026-10-06",
     "light": "green",
     "reasons": [],
     "z": {
@@ -3816,7 +3834,7 @@
    {
     "elder_id": "hanh",
     "day": 71,
-    "date": "2026-10-31",
+    "date": "2026-10-07",
     "light": "green",
     "reasons": [],
     "z": {
@@ -3833,7 +3851,7 @@
    {
     "elder_id": "hanh",
     "day": 72,
-    "date": "2026-11-01",
+    "date": "2026-10-08",
     "light": "green",
     "reasons": [],
     "z": {
@@ -3850,7 +3868,7 @@
    {
     "elder_id": "hanh",
     "day": 73,
-    "date": "2026-11-02",
+    "date": "2026-10-09",
     "light": "green",
     "reasons": [],
     "z": {
@@ -3867,7 +3885,7 @@
    {
     "elder_id": "hanh",
     "day": 74,
-    "date": "2026-11-03",
+    "date": "2026-10-10",
     "light": "green",
     "reasons": [],
     "z": {
@@ -3884,7 +3902,7 @@
    {
     "elder_id": "hanh",
     "day": 75,
-    "date": "2026-11-04",
+    "date": "2026-10-11",
     "light": "green",
     "reasons": [],
     "z": {
@@ -3901,7 +3919,7 @@
    {
     "elder_id": "hanh",
     "day": 76,
-    "date": "2026-11-05",
+    "date": "2026-10-12",
     "light": "gray",
     "reasons": [
      {
@@ -3922,7 +3940,7 @@
    {
     "elder_id": "hanh",
     "day": 77,
-    "date": "2026-11-06",
+    "date": "2026-10-13",
     "light": "green",
     "reasons": [
      {
@@ -3944,7 +3962,7 @@
    {
     "elder_id": "hanh",
     "day": 78,
-    "date": "2026-11-07",
+    "date": "2026-10-14",
     "light": "green",
     "reasons": [],
     "z": {
@@ -3961,7 +3979,7 @@
    {
     "elder_id": "hanh",
     "day": 79,
-    "date": "2026-11-08",
+    "date": "2026-10-15",
     "light": "green",
     "reasons": [],
     "z": {
@@ -3978,7 +3996,7 @@
    {
     "elder_id": "hanh",
     "day": 80,
-    "date": "2026-11-09",
+    "date": "2026-10-16",
     "light": "green",
     "reasons": [],
     "z": {
@@ -3995,7 +4013,7 @@
    {
     "elder_id": "hanh",
     "day": 81,
-    "date": "2026-11-10",
+    "date": "2026-10-17",
     "light": "green",
     "reasons": [],
     "z": {
@@ -4012,7 +4030,7 @@
    {
     "elder_id": "hanh",
     "day": 82,
-    "date": "2026-11-11",
+    "date": "2026-10-18",
     "light": "green",
     "reasons": [],
     "z": {
@@ -4029,7 +4047,7 @@
    {
     "elder_id": "hanh",
     "day": 83,
-    "date": "2026-11-12",
+    "date": "2026-10-19",
     "light": "gray",
     "reasons": [
      {
@@ -4050,7 +4068,7 @@
    {
     "elder_id": "hanh",
     "day": 84,
-    "date": "2026-11-13",
+    "date": "2026-10-20",
     "light": "green",
     "reasons": [],
     "z": {
@@ -4067,7 +4085,7 @@
    {
     "elder_id": "hanh",
     "day": 85,
-    "date": "2026-11-14",
+    "date": "2026-10-21",
     "light": "green",
     "reasons": [],
     "z": {
@@ -4084,7 +4102,7 @@
    {
     "elder_id": "hanh",
     "day": 86,
-    "date": "2026-11-15",
+    "date": "2026-10-22",
     "light": "green",
     "reasons": [],
     "z": {
@@ -4101,7 +4119,7 @@
    {
     "elder_id": "hanh",
     "day": 87,
-    "date": "2026-11-16",
+    "date": "2026-10-23",
     "light": "green",
     "reasons": [],
     "z": {
@@ -4118,7 +4136,7 @@
    {
     "elder_id": "hanh",
     "day": 88,
-    "date": "2026-11-17",
+    "date": "2026-10-24",
     "light": "green",
     "reasons": [],
     "z": {
@@ -4135,7 +4153,7 @@
    {
     "elder_id": "hanh",
     "day": 89,
-    "date": "2026-11-18",
+    "date": "2026-10-25",
     "light": "green",
     "reasons": [],
     "z": {
@@ -4152,7 +4170,7 @@
    {
     "elder_id": "hanh",
     "day": 90,
-    "date": "2026-11-19",
+    "date": "2026-10-26",
     "light": "green",
     "reasons": [],
     "z": {
@@ -4189,6 +4207,68 @@
     "scale": 0.2448
    }
   },
+  "baselines": [
+   {
+    "from_day": 22,
+    "to_day": 76,
+    "window": [
+     1,
+     21
+    ],
+    "metrics": {
+     "speech_rate_sps": {
+      "center": 4.5705,
+      "scale": 0.1883
+     },
+     "pause_ratio": {
+      "center": 0.1134,
+      "scale": 0.015
+     },
+     "filled_pause_rate": {
+      "center": 0.0459,
+      "scale": 0.006
+     },
+     "mattr": {
+      "center": 0.7097,
+      "scale": 0.012
+     },
+     "recall_score": {
+      "center": 2.6667,
+      "scale": 0.5
+     }
+    }
+   },
+   {
+    "from_day": 77,
+    "to_day": 90,
+    "window": [
+     56,
+     76
+    ],
+    "metrics": {
+     "speech_rate_sps": {
+      "center": 4.6425,
+      "scale": 0.2448
+     },
+     "pause_ratio": {
+      "center": 0.1156,
+      "scale": 0.015
+     },
+     "filled_pause_rate": {
+      "center": 0.0469,
+      "scale": 0.006
+     },
+     "mattr": {
+      "center": 0.7147,
+      "scale": 0.012
+     },
+     "recall_score": {
+      "center": 2.8125,
+      "scale": 0.5
+     }
+    }
+   }
+  ],
   "events": [
    {
     "day": 1,
@@ -4245,15 +4325,17 @@
     "label_en": "New baseline set"
    }
   ],
+  "sharing_paused": false,
   "simulated": true
  },
  "alerts": [
   {
    "id": 2,
    "day": 43,
-   "date": "2026-10-03",
+   "date": "2026-09-09",
    "type": "metric_trend",
    "severity": "red",
+   "severity_level": "critical",
    "explanation_vi": "Hai tuần nay bà nói chậm hơn khoảng 14% và hay “ờ, à” nhiều hơn khoảng 32% so với bình thường của bà và 3 lần nhắc chóng mặt. Trong 7 ngày qua bà nhắc tới 3 chuyện sức khỏe: chóng mặt, mất ngủ, bỏ bữa. Nên gọi hỏi thăm và cân nhắc đưa bà đi khám.",
    "explanation_en": "Over two weeks she has been speaking slower (about 14% change) and using more fillers (“uh, um”) (about 32% change) compared with her own usual pattern, and mentioned dizziness 3 times. In the last 7 days she mentioned 3 different health complaints: dizziness, poor sleep, skipped meals. Please call her and consider arranging a doctor's visit.",
    "acknowledged": true
@@ -4261,9 +4343,10 @@
   {
    "id": 1,
    "day": 38,
-   "date": "2026-09-28",
+   "date": "2026-09-04",
    "type": "symptom_repeat",
    "severity": "yellow",
+   "severity_level": "warning",
    "explanation_vi": "Tuần này bà 2 lần nhắc chóng mặt. Nên gọi hỏi thăm bà trong hôm nay hoặc ngày mai.",
    "explanation_en": "This week she mentioned dizziness 2 times. Consider giving her a call today or tomorrow.",
    "acknowledged": true
@@ -4273,6 +4356,7 @@
   "phases": [
    {
     "phase": "define",
+    "status": "done",
     "day_from": 1,
     "day_to": 1,
     "summary_vi": "Mục tiêu chăm sóc: huyết áp, giấc ngủ và trí nhớ của bà khi sống một mình. Mục tiêu đặt cùng gia đình: Ngủ đủ 6 tiếng; Uống thuốc huyết áp đúng giờ; Giữ trí nhớ ổn định.",
@@ -4280,6 +4364,7 @@
    },
    {
     "phase": "measure",
+    "status": "done",
     "day_from": 1,
     "day_to": 21,
     "summary_vi": "20 cuộc gọi hợp lệ trong 21 ngày đầu (0 ngày lỡ cuộc gọi) để lập mức bình thường riêng: tốc độ nói 4,57 âm tiết/giây, điểm nhớ lại trung bình 2,67/3.",
@@ -4287,6 +4372,7 @@
    },
    {
     "phase": "analyze",
+    "status": "done",
     "day_from": 38,
     "day_to": 43,
     "summary_vi": "Đèn vàng từ ngày 38, đỏ từ ngày 43. Thay đổi so với mức bình thường: từ đệm (ờ, à) +32%, tỉ lệ ngừng nghỉ +32%, tốc độ nói -14%. Triệu chứng được nhắc: chóng mặt 4 lần, mất ngủ 1 lần, bỏ bữa 1 lần.",
@@ -4294,17 +4380,19 @@
    },
    {
     "phase": "improve",
+    "status": "done",
     "day_from": 44,
     "day_to": 56,
-    "summary_vi": "Ngày 44: Gia đình và bác sĩ can thiệp. Tốc độ nói 4,18 → 4,61 âm tiết/giây (+10%). Đèn xanh trở lại sau 12 ngày (ngày 56).",
-    "summary_en": "Day 44: Family and clinician intervention. Speech rate 4.18 → 4.61 syllables/s (+10%). Back to green after 12 days (day 56)."
+    "summary_vi": "Ngày 44: Gia đình và bác sĩ can thiệp. Tốc độ nói 4,18 → 4,61 âm tiết/giây (+10%). Gia đình gọi/thăm 1,2 → 3,0 lần/tuần. Đèn xanh trở lại sau 12 ngày (ngày 56).",
+    "summary_en": "Day 44: Family and clinician intervention. Speech rate 4.18 → 4.61 syllables/s (+10%). Family calls/visits 1.2 → 3.0 per week. Back to green after 12 days (day 56)."
    },
    {
     "phase": "control",
+    "status": "current",
     "day_from": 56,
     "day_to": 90,
-    "summary_vi": "Theo dõi tiếp từ ngày 56; tuân thủ kế hoạch chăm sóc. Ngày 77: lập mức bình thường mới từ giai đoạn ổn định sau can thiệp.",
-    "summary_en": "Monitoring continues from day 56; care plan maintained. Day 77: new personal baseline set from the stable post-intervention period."
+    "summary_vi": "Theo dõi tiếp từ ngày 56; tuân thủ kế hoạch chăm sóc. Ngày 77: lập mức bình thường mới từ giai đoạn ổn định sau can thiệp. Gia đình gọi/thăm 14 ngày gần đây: 1,0 lần/tuần (kế hoạch: 3,0).",
+    "summary_en": "Monitoring continues from day 56; care plan maintained. Day 77: new personal baseline set from the stable post-intervention period. Family calls/visits in the last 14 days: 1.0 per week (plan: 3.0)."
    }
   ],
   "effect": {
@@ -4385,53 +4473,76 @@
   "intervention_day": 44,
   "green_day": 56,
   "days_to_green": 12,
+  "contact": {
+   "recent_per_week": 1,
+   "recent_window": [
+    77,
+    90
+   ],
+   "pre_per_week": 1.2,
+   "pre_window": [
+    16,
+    43
+   ],
+   "post_per_week": 3,
+   "post_window": [
+    44,
+    71
+   ]
+  },
+  "sharing_paused": false,
   "simulated": true
  },
  "notes": [
   {
    "id": 5,
    "day": 90,
+   "date": "2026-10-26",
    "author": "Lan",
    "text": "Lan nhắn: chủ nhật này con về thăm má, má đừng nấu nhiều nha.",
    "to_elder": true,
    "simulated": true,
-   "created_at": "2026-10-27T12:29:05+00:00"
+   "created_at": "2026-10-27T13:58:05+00:00"
   },
   {
    "id": 4,
    "day": 60,
+   "date": "2026-09-26",
    "author": "Minh",
    "text": "Má ăn ngủ tốt lại rồi, lại ra vườn tưới cây mai.",
    "to_elder": false,
    "simulated": true,
-   "created_at": "2026-10-27T12:29:05+00:00"
+   "created_at": "2026-10-27T13:58:05+00:00"
   },
   {
    "id": 3,
    "day": 44,
+   "date": "2026-09-10",
    "author": "Lan",
    "text": "Đã đưa má đi khám, bác sĩ chỉnh lại liều thuốc huyết áp. Con sẽ gọi má 3 lần mỗi tuần.",
    "to_elder": false,
    "simulated": true,
-   "created_at": "2026-10-27T12:29:05+00:00"
+   "created_at": "2026-10-27T13:58:05+00:00"
   },
   {
    "id": 2,
    "day": 39,
+   "date": "2026-09-05",
    "author": "Lan",
    "text": "Má nói hơi chóng mặt khi đứng dậy, con sẽ để ý thêm.",
    "to_elder": false,
    "simulated": true,
-   "created_at": "2026-10-27T12:29:05+00:00"
+   "created_at": "2026-10-27T13:58:05+00:00"
   },
   {
    "id": 1,
    "day": 30,
+   "date": "2026-08-27",
    "author": "Lan",
    "text": "Bác sĩ đổi thuốc huyết áp cho má từ tuần này (đổi thuốc huyết áp).",
    "to_elder": false,
    "simulated": true,
-   "created_at": "2026-10-27T12:29:05+00:00"
+   "created_at": "2026-10-27T13:58:05+00:00"
   }
  ],
  "privacy": {
@@ -4443,11 +4554,13 @@
     "witness": "family",
     "scope_vi": "Nhận cuộc gọi hỏi thăm hằng ngày",
     "scope_en": "Receive daily check-in calls",
-    "date": "2026-08-22",
+    "date": "2026-07-29",
     "kind": "daily_call",
     "granted_by": "self",
     "note": "Receive daily check-in calls",
-    "ts": "2026-08-22"
+    "ts": "2026-07-29",
+    "changed_by": null,
+    "status": "active"
    },
    {
     "type": "voice_metrics",
@@ -4455,11 +4568,13 @@
     "by": "self",
     "scope_vi": "Đo tốc độ nói, ngừng nghỉ từ văn bản và thời gian (không lưu âm thanh)",
     "scope_en": "Derive speech timing metrics from text and timings (no audio stored)",
-    "date": "2026-08-22",
+    "date": "2026-07-29",
     "kind": "voice_metrics",
     "granted_by": "self",
     "note": "Derive speech timing metrics from text and timings (no audio stored)",
-    "ts": "2026-08-22"
+    "ts": "2026-07-29",
+    "changed_by": null,
+    "status": "active"
    },
    {
     "type": "family_sharing",
@@ -4467,11 +4582,13 @@
     "by": "self",
     "scope_vi": "Chia sẻ đèn tín hiệu và tóm tắt với con cháu",
     "scope_en": "Share daily light and summaries with family",
-    "date": "2026-08-22",
+    "date": "2026-07-29",
     "kind": "family_sharing",
     "granted_by": "self",
     "note": "Share daily light and summaries with family",
-    "ts": "2026-08-22"
+    "ts": "2026-07-29",
+    "changed_by": null,
+    "status": "active"
    },
    {
     "type": "clinician_sharing",
@@ -4479,11 +4596,13 @@
     "by": "self",
     "scope_vi": "Chia sẻ báo cáo với bác sĩ khi gia đình yêu cầu",
     "scope_en": "Share report with clinician on family request",
-    "date": "2026-08-22",
+    "date": "2026-07-29",
     "kind": "clinician_sharing",
     "granted_by": "self",
     "note": "Share report with clinician on family request",
-    "ts": "2026-08-22"
+    "ts": "2026-07-29",
+    "changed_by": null,
+    "status": "active"
    },
    {
     "type": "research_use",
@@ -4491,124 +4610,154 @@
     "by": "self",
     "scope_vi": "Dùng dữ liệu ẩn danh cho nghiên cứu",
     "scope_en": "Use de-identified data for research",
-    "date": "2026-08-22",
+    "date": "2026-07-29",
     "kind": "research_use",
     "granted_by": "self",
     "note": "Use de-identified data for research",
-    "ts": "2026-08-22"
+    "ts": "2026-07-29",
+    "changed_by": null,
+    "status": "declined"
+   }
+  ],
+  "consent_history": [
+   {
+    "type": "daily_call",
+    "granted": true,
+    "by": "self",
+    "witness": "family",
+    "scope_vi": "Nhận cuộc gọi hỏi thăm hằng ngày",
+    "scope_en": "Receive daily check-in calls",
+    "date": "2026-07-29",
+    "kind": "daily_call",
+    "granted_by": "self",
+    "note": "Receive daily check-in calls",
+    "ts": "2026-07-29"
+   },
+   {
+    "type": "voice_metrics",
+    "granted": true,
+    "by": "self",
+    "scope_vi": "Đo tốc độ nói, ngừng nghỉ từ văn bản và thời gian (không lưu âm thanh)",
+    "scope_en": "Derive speech timing metrics from text and timings (no audio stored)",
+    "date": "2026-07-29",
+    "kind": "voice_metrics",
+    "granted_by": "self",
+    "note": "Derive speech timing metrics from text and timings (no audio stored)",
+    "ts": "2026-07-29"
+   },
+   {
+    "type": "family_sharing",
+    "granted": true,
+    "by": "self",
+    "scope_vi": "Chia sẻ đèn tín hiệu và tóm tắt với con cháu",
+    "scope_en": "Share daily light and summaries with family",
+    "date": "2026-07-29",
+    "kind": "family_sharing",
+    "granted_by": "self",
+    "note": "Share daily light and summaries with family",
+    "ts": "2026-07-29"
+   },
+   {
+    "type": "clinician_sharing",
+    "granted": true,
+    "by": "self",
+    "scope_vi": "Chia sẻ báo cáo với bác sĩ khi gia đình yêu cầu",
+    "scope_en": "Share report with clinician on family request",
+    "date": "2026-07-29",
+    "kind": "clinician_sharing",
+    "granted_by": "self",
+    "note": "Share report with clinician on family request",
+    "ts": "2026-07-29"
+   },
+   {
+    "type": "research_use",
+    "granted": false,
+    "by": "self",
+    "scope_vi": "Dùng dữ liệu ẩn danh cho nghiên cứu",
+    "scope_en": "Use de-identified data for research",
+    "date": "2026-07-29",
+    "kind": "research_use",
+    "granted_by": "self",
+    "note": "Use de-identified data for research",
+    "ts": "2026-07-29"
    }
   ],
   "access_log": [
    {
-    "actor": "family:primary",
+    "actor": "Lan",
     "role": "primary",
     "action": "read_privacy",
     "resource": "/api/elders/hanh/privacy",
-    "ts": "2026-10-27T12:30:23+00:00"
+    "ts": "2026-10-27T13:58:09+00:00",
+    "count": 1,
+    "last_ts": "2026-10-27T13:58:09+00:00"
    },
    {
-    "actor": "family:primary",
-    "role": "primary",
-    "action": "read_notes",
-    "resource": "/api/elders/hanh/notes",
-    "ts": "2026-10-27T12:30:23+00:00"
-   },
-   {
-    "actor": "family:primary",
-    "role": "primary",
-    "action": "read_timeline",
-    "resource": "/api/elders/hanh/timeline",
-    "ts": "2026-10-27T12:30:23+00:00"
-   },
-   {
-    "actor": "family:primary",
-    "role": "primary",
-    "action": "read_dmaic",
-    "resource": "/api/elders/hanh/dmaic",
-    "ts": "2026-10-27T12:30:23+00:00"
-   },
-   {
-    "actor": "family:primary",
-    "role": "primary",
-    "action": "read_today",
-    "resource": "/api/elders/hanh/today",
-    "ts": "2026-10-27T12:30:23+00:00"
-   },
-   {
-    "actor": "family:primary",
+    "actor": "Lan",
     "role": "primary",
     "action": "read_alerts",
     "resource": "/api/elders/hanh/alerts",
-    "ts": "2026-10-27T12:30:23+00:00"
+    "ts": "2026-10-27T13:58:09+00:00",
+    "count": 1,
+    "last_ts": "2026-10-27T13:58:09+00:00"
    },
    {
-    "actor": "family:primary",
-    "role": "primary",
-    "action": "read_profile",
-    "resource": "/api/elders/hanh",
-    "ts": "2026-10-27T12:30:23+00:00"
-   },
-   {
-    "actor": "family:primary",
-    "role": "primary",
-    "action": "read_privacy",
-    "resource": "/api/elders/hanh/privacy",
-    "ts": "2026-10-27T12:29:15+00:00"
-   },
-   {
-    "actor": "family:primary",
-    "role": "primary",
-    "action": "read_notes",
-    "resource": "/api/elders/hanh/notes",
-    "ts": "2026-10-27T12:29:15+00:00"
-   },
-   {
-    "actor": "family:primary",
+    "actor": "Lan",
     "role": "primary",
     "action": "read_dmaic",
     "resource": "/api/elders/hanh/dmaic",
-    "ts": "2026-10-27T12:29:15+00:00"
+    "ts": "2026-10-27T13:58:09+00:00",
+    "count": 1,
+    "last_ts": "2026-10-27T13:58:09+00:00"
    },
    {
-    "actor": "family:primary",
-    "role": "primary",
-    "action": "read_alerts",
-    "resource": "/api/elders/hanh/alerts",
-    "ts": "2026-10-27T12:29:15+00:00"
-   },
-   {
-    "actor": "family:primary",
+    "actor": "Lan",
     "role": "primary",
     "action": "read_timeline",
     "resource": "/api/elders/hanh/timeline",
-    "ts": "2026-10-27T12:29:15+00:00"
+    "ts": "2026-10-27T13:58:09+00:00",
+    "count": 1,
+    "last_ts": "2026-10-27T13:58:09+00:00"
    },
    {
-    "actor": "family:primary",
+    "actor": "Lan",
+    "role": "primary",
+    "action": "read_notes",
+    "resource": "/api/elders/hanh/notes",
+    "ts": "2026-10-27T13:58:09+00:00",
+    "count": 1,
+    "last_ts": "2026-10-27T13:58:09+00:00"
+   },
+   {
+    "actor": "Lan",
     "role": "primary",
     "action": "read_today",
     "resource": "/api/elders/hanh/today",
-    "ts": "2026-10-27T12:29:09+00:00"
+    "ts": "2026-10-27T13:58:09+00:00",
+    "count": 1,
+    "last_ts": "2026-10-27T13:58:09+00:00"
    },
    {
-    "actor": "family:primary",
+    "actor": "Lan",
     "role": "primary",
     "action": "read_profile",
     "resource": "/api/elders/hanh",
-    "ts": "2026-10-27T12:29:09+00:00"
+    "ts": "2026-10-27T13:58:09+00:00",
+    "count": 1,
+    "last_ts": "2026-10-27T13:58:09+00:00"
    }
   ],
   "data_retention": {
    "audio": "not stored",
    "transcript_days": 7,
    "metrics": "derived numbers kept while enrolled",
-   "llm_processing": "on-device rules (no LLM)"
+   "llm_processing": "server-side rules (no LLM)"
   },
   "scheduling_active": true,
   "simulated": true
  },
  "_snapshot": {
-  "from": "http://localhost:8001",
-  "at": "2026-10-27T12:30:23.297Z"
+  "from": "http://localhost:8000",
+  "at": "2026-10-27T13:58:09.217Z"
  }
 }

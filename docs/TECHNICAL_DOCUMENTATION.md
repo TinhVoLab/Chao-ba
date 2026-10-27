@@ -284,32 +284,37 @@ DMAIC (Define–Measure–Analyze–Improve–Control) is the Six Sigma improvem
 | **Define** | day 1 | care concern and goals agreed with the family |
 | **Measure** | days 1 … baseline end | number of valid calls, baseline speech rate, mean recall |
 | **Analyze** | first yellow/red after baseline … day before intervention | which signals changed and by how much, symptoms mentioned, context note |
-| **Improve** | intervention day … first day of a run of ≥ 7 green/gray days | what the family or clinician did, pre/post effect, days to green. With no intervention yet, this shows the *recommended* action. |
-| **Control** | green day … last day | continued monitoring; **new baseline** = green day + 21, or a care-team-chosen day |
+| **Improve** | intervention day … first day of a run of ≥ 7 green/gray days | what the family or clinician did, pre/post effect, days to green, **family calls/visits per week before vs after**. With no intervention yet, this shows the *recommended* action. |
+| **Control** | green day … last day | continued monitoring; **new baseline** = green day + 21, or a care-team-chosen day; family contact in the last 14 days vs the plan |
+
+Each phase carries `status` = `done | current | not_started`. A phase that has not started has no date range (`day_from`/`day_to` = null) rather than an invented one; for example Ông Tư's Improve phase is `not_started` and carries only the recommendation.
+
+**Family contact log.** Calling more is the most common family intervention, so it is measured rather than assumed. `family_contact` rows (call / visit / message, who, day) come from the app: tapping **"Gọi má"** or the "Called, Mom is fine" quick note posts a call. The demo personas carry a simulated log. The cycle reports calls + visits per week in the 28 days before the intervention, the 28 days from it, and the last 14 days. The Today screen nudges ("No one has called Mom for 5 days") when the last contact is ≥ 3 days before the latest call day.
 
 **Effect estimate.** Mean of valid values in the 14 days before the intervention vs. 14 days starting after a washout of 7 days, shown next to the original baseline median.
 
 ### Bà Hạnh (simulated persona: 72, Bến Tre, lives alone, hypertension, Amlodipine 5 mg at 07:00)
 
-Story: a blood-pressure medication change on day 30 is followed by dizziness, poorer sleep, skipped meals, slower and more hesitant speech, and weaker recall. Her daughter Lan takes her to the doctor on day 44, the dose is adjusted, and Lan starts calling three times a week. All values below are taken from `data/synth/hanh.json` (seed 7) and are **simulated**. Day 1 = 2026-08-22.
+Story: a blood-pressure medication change on day 30 is followed by dizziness, poorer sleep, skipped meals, slower and more hesitant speech, and weaker recall. Her daughter Lan takes her to the doctor on day 44, the dose is adjusted, and Lan starts calling three times a week. All values below are taken from `data/synth/hanh.json` (seed 7) and are **simulated**. Days are indices from enrolment. The generator uses a fixed internal calendar (day 1 = 18 Jul 2026, so day 90 = 15 Oct 2026); the demo server re-labels dates at seed time so that day 90 is *yesterday* and a live call becomes day 91 *today* (override: `CHAOBA_END_DATE`). Only weekdays matter to the generator, and the internal calendar was moved by whole weeks, so values, lights and the evaluation are identical whatever the anchor.
 
 | Day (date) | Event | Light | Why (reason codes) |
 |---|---|---|---|
-| 1 (22 Aug) | Daily calls start. **Define:** "blood pressure, sleep and memory while living alone"; goals: sleep 6 h, take BP medication on time, keep memory stable | gray | `building_baseline` |
+| 1 | Daily calls start. **Define:** "blood pressure, sleep and memory while living alone"; goals: sleep 6 h, take BP medication on time, keep memory stable | gray | `building_baseline` |
 | 1–21 | **Measure:** 20 valid calls, 0 missed. Baseline speech rate 4.57 syll/s, mean recall 2.67/3 | gray | |
 | 22 | Personal baseline ready | green | |
-| 30 (20 Sep) | Doctor changes BP medication (family note) | green | |
+| 30 | Doctor changes BP medication (family note) | green | |
 | 35 | First mention of dizziness when standing up | green | |
-| **38** (28 Sep) | Dizziness mentioned a 2nd time in 7 days | **yellow** | `symptom_repeat` |
+| **38** | Dizziness mentioned a 2nd time in 7 days | **yellow** | `symptom_repeat` |
 | 40 | Speech-rate trend beyond limit 3 days (−8.6 %) | yellow | `metric_trend`, `symptom_repeat` |
 | 41 | Pause ratio also trending (+21.8 %) | yellow | 2× `metric_trend` |
-| **43** (3 Oct) | 3 distinct symptoms in 7 days (dizziness, poor sleep, skipped meal); filler rate +32 % | **red** | `multi_symptom` + trends |
-| **44** (4 Oct) | **Improve:** doctor visit, dose adjusted; daughter calls 3×/week | red | `multi_metric`, `metric_shift` (speech rate −14.6 %) |
+| **43** | 3 distinct symptoms in 7 days (dizziness, poor sleep, skipped meal); filler rate +32 % | **red** | `multi_symptom` + trends |
+| **44** | **Improve:** doctor visit, dose adjusted; daughter calls 3×/week (family contact 1.2 → 3.0 per week) | red | `multi_metric`, `metric_shift` (speech rate −14.6 %) |
 | 44–52 | Signals recover; light held red by the lagging EWMA and hysteresis | red → | `recovering` from day 51 |
 | 53–55 | Stepped down | yellow | residual speech-rate trend, `recovering` |
-| **56** (16 Oct) | **Back to green, 12 days after the intervention** | green | |
-| **77** (6 Nov) | **Control:** new personal baseline from the stable post-intervention period | green | `rebaseline` |
-| 90 (19 Nov) | Still green | green | |
+| **56** | **Back to green, 12 days after the intervention** | green | |
+| **77** | **Control:** new personal baseline from the stable post-intervention period | green | `rebaseline` |
+| 85 | Last family call; the 3×/week habit has faded (1.0 per week over days 77–90) | green | |
+| 90 | Still green. Today screen: "No one has called Mom for 5 days" | green | |
 
 Light timeline (days 1–90; `.` gray, `g` green, `Y` yellow, `R` red):
 
@@ -333,7 +338,7 @@ What the family read on day 44 (generated by the template, English version):
 
 The two other personas show the remaining cases:
 
-- **Ông Tư** (76, HCMC): a slow drift in recall and word use from about day 30. The light turns **yellow on day 65** (recall −37 %, pause ratio +18 %) and stays yellow to day 90. There is no intervention yet, so the Improve phase shows the *recommendation*: "book a neurology check-up to assess memory; family to talk with him more often". The recommendation is for a check-up, not a diagnosis.
+- **Ông Tư** (76, HCMC): a slow drift in recall and word use from about day 30. The light turns **yellow on day 65** (story recall −37 %, pause ratio +18 %) and stays yellow to day 90. There is no intervention yet: Analyze is the current phase, Improve is `not_started` and shows the *recommendation*: "arrange a doctor's visit so a doctor can assess, and bring this trend report; family to talk with him more often". The wording deliberately names no specialty or condition: the trend is a reason to see a doctor, not a finding.
 - **Ông Bảy** (69, Cần Thơ): the stable control. Green on all 63 monitored days with a valid call; gray only on missed or short-call days.
 
 ---
@@ -383,7 +388,7 @@ The two other personas show the remaining cases:
 
 **Family explanations** (`chaoba/core/explain.py`):
 
-- **Templates first.** The structured reasons become fixed bilingual sentences: span ("over about a week"), what changed (at most 2 metrics, speech rate and recall first, % rounded), symptoms, mood, recovery status, and a **next step** matched to severity. Examples: "call today or tomorrow"; "call now and ask someone nearby to check in person" after a fall; "consider arranging a doctor's visit"; for cognitive-only changes, "consider calling more often and booking a neurology check-up to look at her memory".
+- **Templates first.** The structured reasons become fixed bilingual sentences: span ("over about a week"), what changed (at most 2 metrics, speech rate and recall first, % rounded), symptoms, mood, recovery status, and a **next step** matched to severity. Examples: "call today or tomorrow"; "call now and ask someone nearby to check in person" after a fall; "consider arranging a doctor's visit"; for cognitive-only changes, "consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report" (no specialty is named, because naming one would imply a condition).
 - **Blocklist.** Templates and any LLM text must not contain *sa sút trí tuệ, alzheimer, trầm cảm, dementia, depression, parkinson, đột quỵ, stroke, mất trí, chẩn đoán, diagnos\**.
 - **Optional rewording** with `claude-haiku-5-5` (only for the newest light after a live call). It is accepted only if it introduces **no number that is not in the template**, contains no blocklisted word, and is at most 2 × template length + 80 characters. Otherwise the template is used.
 
@@ -399,20 +404,21 @@ Tables (SQLite in the prototype, `chaoba/server/db.py`; the Postgres/Supabase pr
 |---|---|---|
 | `elder` | profile (honorific, age, province, dialect, channel, conditions, medications, goals), `opted_out`, `simulated` | while enrolled |
 | `family_member` | linked people and role: `primary`, `viewer`, `clinician` | |
-| `consent` | append-only consent rows: kind, granted, by whom, witness, scope (VI/EN), timestamp | kept as audit trail |
+| `consent` | append-only consent rows: kind, granted, by whom, witness, scope (VI/EN), timestamp; a withdrawal or re-grant is a new row, the latest row per kind is the state | kept as audit trail |
 | `call_session` | channel, start/end, end reason, emergency, prompt version, engine, **transcript (text + timings) with `transcript_expires_at` = +7 days** | transcript nulled after expiry. **No audio column.** |
 | `call_analysis` | `CallAnalysis` + `CallMetrics` per call | derived; includes symptom quotes (see §15) |
 | `memory_fact` | life facts (profile or call), recall question/cue/keywords | memory book |
 | `metric_daily` | `DailyRecord` | derived numbers while enrolled |
-| `baseline` | center/scale per metric (per segment in production) | |
+| `baseline` | center/scale per metric (per segment in production); the API returns the full history as `baselines` (from/to day, estimation window) | |
 | `daily_light` | light, reasons, EWMA z per metric, explanations | |
-| `alert` | yellow/red alerts, type, explanation, acknowledged by | |
+| `alert` | yellow/red alerts, type, explanation, acknowledged by; API adds `severity_level` (warning/critical). Types: see `CONTRACT.md` "Alert types and severities" | |
 | `dmaic_cycle` | Define inputs, intervention day, re-baseline days, cycle result | |
 | `family_note` | notes; `to_elder` notes are read at the end of the next call | |
-| `access_log` | every family read/write: actor, role, action, resource, time | |
+| `family_contact` | family calls / visits / messages: who, kind, day, date, source (app, simulated) | feeds the contact nudge and the DMAIC Improve/Control steps |
+| `access_log` | family reads and writes: actor, role, action, resource, time. Reads are de-duplicated to one row per actor / action / resource / day with a counter; writes always get a row | |
 | `care_event` | timeline events (medication change, doctor visit, re-baseline…) | prototype only |
 
-REST API: see `CONTRACT.md`. Extensions beyond the contract: `POST /api/elders/{id}/resume`, `GET /api/calls/{id}/simulate` (demo only), and `to_elder` on notes.
+REST API: see `CONTRACT.md` (including contacts, consent withdraw/grant, resume, baseline history, phase status and alert types). Demo-only extension: `GET /api/calls/{id}/simulate`.
 
 ---
 
@@ -499,8 +505,9 @@ Day-level specificity stays within 94.7–96.3 % across groups, and false alarms
 
 ### 10.7 Software verification
 
-- `.venv/bin/pytest -q` → **107 tests pass** (core metrics, control chart, explanations and blocklist, synthetic personas, DMAIC/evaluation, emergency spotter true/false positives including idioms and negation, orchestrator phases, consent/opt-out, scam/medication/diagnosis guardrails, Claude engine with a fake client, server API end-to-end including "no audio anywhere").
-- A full hands-free simulated web call was run through the API: 10 elder turns, recall failed free and succeeded after the cue (score 1), 67 s voiced speech (valid), day 91 appended, light computed.
+- `.venv/bin/pytest -q` → **119 tests pass** (core metrics, control chart, explanations and blocklist, synthetic personas, DMAIC/evaluation, emergency spotter true/false positives including idioms and negation, orchestrator phases, consent/opt-out, scam/medication/diagnosis guardrails, Claude engine with a fake client, server API end-to-end including "no audio anywhere").
+- A full hands-free simulated web call was run in the browser (Playwright, headless Chromium): recall failed free and succeeded after the cue (score 1), 56 s voiced speech (valid), day 91 appended with today's date, light computed. A typed call was also run end to end (stored as live data; typed answers carry no speech timing, so it counts as a too-short call and its speech metrics are not shown).
+- Family app checked with Playwright on every route × 3 elders × VI/EN at 390×844 and 1280×800 (84 page loads, before and after the live calls): no console errors, no failed requests, no horizontal overflow. Offline (API stopped) the app falls back to the bundled fixtures.
 
 ---
 
@@ -526,7 +533,7 @@ Clinical safety is *human-in-the-loop by design*. Chào Bà never takes a clinic
 
 1. **Enrolment** (with the elder, a family member as witness). Separate, revocable consents are stored as rows: `daily_call` (receive calls), `voice_metrics` (derive timing metrics from text and timings, no audio), `family_sharing` (share the light and summaries), `clinician_sharing` (share reports with a clinician on family request), `research_use` (de-identified research use, **off by default**).
 2. **Every call:** AI disclosure, "no recording" notice, and a consent question. Declining ends the call politely and counts as an unanswered day.
-3. **Any time:** the elder can say "đừng gọi nữa" (confirmed, recorded, scheduling stops), or the family can withdraw consent in the Privacy screen. In the prototype this only changes the displayed state; no data is deleted.
+3. **Any time:** the elder can say "đừng gọi nữa" (confirmed, recorded, scheduling stops), or a purpose can be withdrawn from the Privacy screen (`POST /api/elders/{id}/consents/{type}/withdraw`, with a confirmation dialog). Processing for that purpose stops at once: `daily_call` pauses scheduling exactly like the in-call opt-out; `voice_metrics` stops storing speech metrics (calls still happen); `family_sharing` withholds the light, summaries, trends, alerts and care cycle from the family. "Turn back on" re-grants (`/grant`, or `/resume` for calls). Withdrawal does not delete existing data (deletion on request is a production feature, §15).
 
 ### 11.3 Data minimisation and retention
 
@@ -534,7 +541,7 @@ Clinical safety is *human-in-the-loop by design*. Chào Bà never takes a clinic
 - **Transcripts** (text + timings) expire after **7 days**. They are purged on startup and after each call (prototype) or by a daily `pg_cron` job (production).
 - **Derived numbers** (metrics, lights, baselines) are kept while enrolled, because the personal baseline needs history.
 - Families see **summaries, lights and explanations**. Under RLS, transcripts are visible only to the primary carer and the elder.
-- Every family read is written to the **access log**, which is shown in the Privacy screen.
+- Every family read is written to the **access log**, which is shown in the Privacy screen. The app identifies the viewer with `X-Actor` / `X-Role` (demo: the elder's primary carer, e.g. Lan); repeated reads of the same resource on the same day are one row with a count, so the log stays readable.
 
 ### 11.4 Roles and Row Level Security (production schema)
 
@@ -665,7 +672,7 @@ These are planning ranges that must be replaced by measured cost per call in the
 - **No authentication in the prototype.** Roles come from unauthenticated `X-Actor` / `X-Role` headers and every caller is treated as the primary carer. RLS exists only in the production schema and has not been tested against a live Supabase instance.
 - Active call state is in memory (single process); a server restart drops calls in progress.
 - Retention gaps: `call_analysis` keeps verbatim symptom quotes, and `memory_fact` keeps elder sentences, beyond the 7-day transcript window. Emergency and scam alerts quote the elder verbatim to the family. These need an explicit retention rule.
-- The family app's "withdraw consent" is a display-only demo; nothing is deleted.
+- Withdrawing a consent stops processing but does not delete stored data; a "delete my data" request flow is not built. In the prototype the family carer can withdraw on the elder's behalf; production should require the elder (or a documented proxy).
 - Not yet assessed: accessibility for hearing-impaired users, ethnic-minority languages, and elders with established cognitive impairment (who may not consent meaningfully on their own).
 
 ---

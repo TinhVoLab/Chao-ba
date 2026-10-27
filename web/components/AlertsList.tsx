@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Check, CheckCheck, Info, OctagonAlert, TriangleAlert } from "lucide-react";
 import type { Alert } from "@/lib/types";
 import { API_BASE } from "@/lib/config";
+import { actorHeaders } from "@/lib/viewer";
 import { longDate } from "@/lib/format";
 import { T } from "./T";
 
@@ -12,19 +13,21 @@ const SEV: Record<string, { vi: string; en: string; Icon: typeof Info; cls: stri
   info: { vi: "Thông tin", en: "Info", Icon: Info, cls: "bg-surface-2 text-ink-2" },
 };
 
+// Alert types the API emits (CONTRACT.md "Alert types"): light rises carry the first reason code of that day.
 const TYPE: Record<string, { vi: string; en: string }> = {
   metric_trend: { vi: "Thay đổi so với thường ngày", en: "Change from usual" },
-  symptom_repeat: { vi: "Nhắc triệu chứng nhiều lần", en: "Repeated symptom mentions" },
-  missed_call: { vi: "Không bắt máy", en: "Missed call" },
+  metric_shift: { vi: "Thay đổi rõ so với thường ngày", en: "Clear change from usual" },
+  multi_metric: { vi: "Nhiều chỉ số cùng thay đổi", en: "Several signals changed" },
+  fall: { vi: "Kể chuyện té ngã", en: "Mentioned a fall" },
   multi_symptom: { vi: "Nhiều than phiền sức khoẻ", en: "Several health complaints" },
-  opt_out: { vi: "Người thân muốn tạm dừng", en: "Paused by your parent" },
+  symptom_repeat: { vi: "Nhắc triệu chứng nhiều lần", en: "Repeated symptom mentions" },
+  unanswered: { vi: "Nhiều ngày không bắt máy", en: "Calls not answered" },
+  low_mood: { vi: "Nghe buồn, mệt nhiều ngày", en: "Sounded low for several days" },
   light_red: { vi: "Đèn chuyển đỏ", en: "Light turned red" },
   light_yellow: { vi: "Đèn chuyển vàng", en: "Light turned yellow" },
-  recovered: { vi: "Đã trở lại xanh", en: "Back to green" },
-  new_baseline: { vi: "Mức nền mới", en: "New baseline" },
-  missed_calls: { vi: "Không bắt máy", en: "Missed calls" },
-  symptom: { vi: "Tự kể triệu chứng", en: "Reported a symptom" },
   emergency: { vi: "Có thể khẩn cấp", en: "Possible emergency" },
+  opt_out: { vi: "Người thân muốn tạm dừng", en: "Paused by your parent" },
+  scam_topic: { vi: "Nhắc chuyện tiền, mã OTP", en: "Mentioned money or OTP codes" },
 };
 
 export function AlertsList({ elderId, initial, live }: { elderId: string; initial: Alert[]; live: boolean }) {
@@ -39,6 +42,7 @@ export function AlertsList({ elderId, initial, live }: { elderId: string; initia
       try {
         const res = await fetch(`${API_BASE}/api/elders/${encodeURIComponent(elderId)}/alerts/${encodeURIComponent(String(id))}/ack`, {
           method: "POST",
+          headers: actorHeaders(elderId),
           signal: AbortSignal.timeout(4000),
         });
         setFailed(!res.ok);

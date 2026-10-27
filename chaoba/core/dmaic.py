@@ -13,6 +13,12 @@
   falls inside the data (or ``define["new_baseline_day"]`` if the caller fixed it): the stabilised
   post-intervention period becomes the new personal baseline.
 
+Each phase carries ``status`` = ``done | current | not_started``. A phase that has not started has
+``day_from``/``day_to`` = None (no invented ranges); a not-started Improve carries the *recommended* action.
+
+``contacts`` (optional, family calls/visits ``[{"day": d, ...}]``) adds ``contact``: calls+visits per week in the
+``contact_window`` days before and from the intervention, and in the last 14 days (``recent_per_week``).
+
 ``effect[metric]``: mean of valid values in the ``pre_days`` before the intervention vs. mean of
 valid values in the ``post_days`` window that starts after a washout of ``post_days // 2`` days
 (recovery is not instant), plus the original baseline center for reference.
@@ -25,9 +31,9 @@ from .control_chart import _as_record
 from .models import METRICS
 
 LABEL_VI = {"speech_rate_sps": "tốc độ nói", "pause_ratio": "tỉ lệ ngừng nghỉ",
-            "filled_pause_rate": "từ đệm (ờ, à)", "mattr": "độ phong phú từ ngữ", "recall_score": "điểm nhớ lại"}
+            "filled_pause_rate": "từ đệm (ờ, à)", "mattr": "độ phong phú từ ngữ", "recall_score": "nhớ chuyện hôm trước"}
 LABEL_EN = {"speech_rate_sps": "speech rate", "pause_ratio": "pause ratio",
-            "filled_pause_rate": "filler rate", "mattr": "vocabulary diversity (MATTR)", "recall_score": "recall score"}
+            "filled_pause_rate": "filler rate", "mattr": "vocabulary diversity (MATTR)", "recall_score": "story recall (0–3)"}
 
 
 def _get(o, k, d=None):
@@ -46,12 +52,26 @@ def _fmt(x, metric, vi=False):
     return out.replace(".", ",") if vi else out
 
 
+def contact_rate(contacts, day_from: int, day_to: int) -> float | None:
+    """Family contacts (calls + visits) per week in [day_from, day_to] (inclusive); None if the window is empty."""
+    n_days = day_to - day_from + 1
+    if contacts is None or n_days <= 0:
+        return None
+    n = sum(1 for c in contacts if day_from <= int(_get(c, "day", -10 ** 6)) <= day_to)
+    return round(n * 7.0 / n_days, 1)
+
+
+def _fmt1(x, vi=False):
+    out = f"{x:.1f}"
+    return out.replace(".", ",") if vi else out
+
+
 def compute_cycle(records, lights, define: dict, intervention_day: int | None, pre_days: int = 14,
-                  post_days: int = 14) -> dict:
+                  post_days: int = 14, contacts: list | None = None, contact_window: int = 28) -> dict:
     recs = sorted((_as_record(r) for r in records), key=lambda r: r.day)
     lts = sorted(lights, key=lambda l: _get(l, "day"))
     if not recs:
-        return {"phases": [], "effect": {}, "new_baseline_day": None}
+        return {"phases": [], "effect": {}, "new_baseline_day": None, "contact": None}
     define = define or {}
     first, last = recs[0].day, recs[-1].day
     by_day_light = {_get(l, "day"): _get(l, "light") for l in lts}
@@ -129,19 +149,30 @@ def compute_cycle(records, lights, define: dict, intervention_day: int | None, p
                          "pre_window": [intervention_day - pre_days, intervention_day - 1],
                          "post_window": [intervention_day + wash, intervention_day + wash + post_days - 1]}
 
+    # family contact frequency (calls + visits per week): the care plan's measurable intervention
+    contact = None
+    if contacts is not None:
+        rw = [max(first, last - 13), last]
+        contact = {"recent_per_week": contact_rate(contacts, *rw), "recent_window": rw}
+        if has_iv:
+            pw = [max(first, intervention_day - contact_window), intervention_day - 1]
+            qw = [intervention_day, min(last, intervention_day + contact_window - 1)]
+            contact.update({"pre_per_week": contact_rate(contacts, *pw), "pre_window": pw,
+                            "post_per_week": contact_rate(contacts, *qw), "post_window": qw})
+
     # ---- phase summaries ---------------------------------------------------------------
     goals = define.get("goals", [])
     concern_vi = define.get("concern_vi", "theo dõi sức khỏe và trí nhớ hằng ngày")
     concern_en = define.get("concern_en", "daily wellbeing and memory follow-up")
     phases = [{
-        "phase": "define", "day_from": first, "day_to": first,
+        "phase": "define", "status": "done", "day_from": first, "day_to": first,
         "summary_vi": f"Mục tiêu chăm sóc: {concern_vi}. " + (f"Mục tiêu đặt cùng gia đình: {'; '.join(goals)}." if goals else ""),
         "summary_en": f"Care goal: {concern_en}. " + (f"{len(goals)} goals agreed with the family." if goals else ""),
     }]
     sr = base_med.get("speech_rate_sps")
     rc = base_vals.get("recall_score")
     phases.append({
-        "phase": "measure", "day_from": first, "day_to": base_end,
+        "phase": "measure", "status": "done" if ready_days else "current", "day_from": first, "day_to": base_end,
         "summary_vi": (f"{n_valid} cuộc gọi hợp lệ trong {base_end - first + 1} ngày đầu ({n_missed} ngày lỡ cuộc gọi) "
                        f"để lập mức bình thường riêng: tốc độ nói {_fmt(sr, 'speech_rate_sps', True)} âm tiết/giây, "
                        f"điểm nhớ lại trung bình {_fmt(rc, 'recall_score', True)}/3."),
@@ -150,7 +181,7 @@ def compute_cycle(records, lights, define: dict, intervention_day: int | None, p
                        f"{_fmt(rc, 'recall_score')}/3."),
     })
     if first_alert is None:
-        phases.append({"phase": "analyze", "day_from": base_end + 1, "day_to": last,
+        phases.append({"phase": "analyze", "status": "not_started", "day_from": None, "day_to": None,
                        "summary_vi": "Không có thay đổi kéo dài so với mức bình thường của người thân.",
                        "summary_en": "No sustained change from the person's own baseline."})
     else:
@@ -173,7 +204,8 @@ def compute_cycle(records, lights, define: dict, intervention_day: int | None, p
         if define.get("context_vi"):
             txt_vi += " " + define["context_vi"]
             txt_en += " " + define.get("context_en", "")
-        phases.append({"phase": "analyze", "day_from": first_alert, "day_to": end_an,
+        phases.append({"phase": "analyze", "status": "done" if has_iv else "current",
+                       "day_from": first_alert, "day_to": end_an,
                        "summary_vi": txt_vi, "summary_en": txt_en})
     if has_iv:
         iv_vi = define.get("intervention_vi", "Gia đình và bác sĩ can thiệp")
@@ -184,9 +216,14 @@ def compute_cycle(records, lights, define: dict, intervention_day: int | None, p
             eff_vi = (f" Tốc độ nói {_fmt(sr_eff['pre'], 'speech_rate_sps', True)} → "
                       f"{_fmt(sr_eff['post'], 'speech_rate_sps', True)} âm tiết/giây ({sr_eff['change_pct']:+.0f}%).")
             eff_en = f" Speech rate {sr_eff['pre']:.2f} → {sr_eff['post']:.2f} syllables/s ({sr_eff['change_pct']:+.0f}%)."
+        if contact and contact.get("pre_per_week") is not None and contact.get("post_per_week") is not None:
+            eff_vi += (f" Gia đình gọi/thăm {_fmt1(contact['pre_per_week'], True)} → "
+                       f"{_fmt1(contact['post_per_week'], True)} lần/tuần.")
+            eff_en += f" Family calls/visits {contact['pre_per_week']:.1f} → {contact['post_per_week']:.1f} per week."
         g_vi = f" Đèn xanh trở lại sau {days_to_green} ngày (ngày {green_day})." if green_day else " Chưa xanh trở lại."
         g_en = f" Back to green after {days_to_green} days (day {green_day})." if green_day else " Not yet back to green."
-        phases.append({"phase": "improve", "day_from": intervention_day, "day_to": green_day or last,
+        phases.append({"phase": "improve", "status": "done" if green_day else "current",
+                       "day_from": intervention_day, "day_to": green_day or last,
                        "summary_vi": f"Ngày {intervention_day}: {iv_vi}.{eff_vi}{g_vi}",
                        "summary_en": f"Day {intervention_day}: {iv_en}.{eff_en}{g_en}"})
     else:
@@ -194,7 +231,8 @@ def compute_cycle(records, lights, define: dict, intervention_day: int | None, p
         rec_en = define.get("recommendation_en", "Continue daily calls as usual.")
         if first_alert is None:
             rec_vi, rec_en = "Tiếp tục gọi hằng ngày như bình thường.", "Continue daily calls as usual."
-        phases.append({"phase": "improve", "day_from": last, "day_to": last,
+        # No action taken yet: the phase has no date range; it carries the recommended next step instead.
+        phases.append({"phase": "improve", "status": "not_started", "day_from": None, "day_to": None,
                        "summary_vi": f"Đề xuất: {rec_vi}", "summary_en": f"Recommended: {rec_en}"})
     if green_day:
         ctl_vi = f"Theo dõi tiếp từ ngày {green_day}; tuân thủ kế hoạch chăm sóc."
@@ -202,11 +240,21 @@ def compute_cycle(records, lights, define: dict, intervention_day: int | None, p
         if new_base:
             ctl_vi += f" Ngày {new_base}: lập mức bình thường mới từ giai đoạn ổn định sau can thiệp."
             ctl_en += f" Day {new_base}: new personal baseline set from the stable post-intervention period."
-        phases.append({"phase": "control", "day_from": green_day, "day_to": last,
+        if contact and contact.get("recent_per_week") is not None and contact.get("post_per_week") is not None:
+            ctl_vi += (f" Gia đình gọi/thăm 14 ngày gần đây: {_fmt1(contact['recent_per_week'], True)} lần/tuần"
+                       f" (kế hoạch: {_fmt1(contact['post_per_week'], True)}).")
+            ctl_en += (f" Family calls/visits in the last 14 days: {contact['recent_per_week']:.1f} per week"
+                       f" (plan: {contact['post_per_week']:.1f}).")
+        phases.append({"phase": "control", "status": "current", "day_from": green_day, "day_to": last,
                        "summary_vi": ctl_vi, "summary_en": ctl_en})
     else:
         n_green = sum(1 for c in by_day_light.values() if c == "green")
-        phases.append({"phase": "control", "day_from": base_end + 1, "day_to": last,
+        # Without an open cycle, Control is the steady state (continuous monitoring); while a change is being
+        # analysed and nothing has been tried yet, Control has not started.
+        open_cycle = first_alert is not None
+        phases.append({"phase": "control", "status": "not_started" if open_cycle else ("current" if ready_days else "not_started"),
+                       "day_from": None if open_cycle or not ready_days else base_end + 1,
+                       "day_to": None if open_cycle or not ready_days else last,
                        "summary_vi": f"Theo dõi liên tục: {n_green} ngày đèn xanh sau khi có mức bình thường.",
                        "summary_en": f"Continuous monitoring: {n_green} green days since the baseline was set."})
     return {
@@ -218,4 +266,5 @@ def compute_cycle(records, lights, define: dict, intervention_day: int | None, p
         "intervention_day": intervention_day if has_iv else None,
         "green_day": green_day,
         "days_to_green": days_to_green,
+        "contact": contact,
     }

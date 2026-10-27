@@ -47,16 +47,21 @@ def evaluate_series(records: list[DailyRecord], cfg: ControlConfig | None = None
 def explain(light: DailyLight, elder_name_vi: str, elder_name_en: str, use_llm: bool = False) -> tuple[str, str]  # (vi, en)
 
 # synth.py
-def generate_persona(key: Literal["hanh","tu","control"], days: int = 90, seed: int = 7) -> dict
+def generate_persona(key: Literal["hanh","tu","control"], days: int = 90, seed: int = 7,
+                     end_date: date | None = None) -> dict
     # -> {"elder": {...profile...}, "records": [DailyRecord as dict], "notes": [...], "events": [...],
-    #     "dmaic": {...}, "simulated": True}
+    #     "contacts": [family calls/visits], "dmaic": {...}, "simulated": True}
+    # end_date re-labels dates so day `days` falls on it; values never depend on the calendar anchor.
 def generate_cohort(n: int = 200, days: int = 120, seed: int = 11) -> list[dict]
     # each item like generate_persona plus "truth": {"decline": bool, "onset_day": int|None, "type": str}
 
 # dmaic.py
-def compute_cycle(records, lights, define: dict, intervention_day: int, pre_days=14, post_days=14) -> dict
-    # -> {"phases": [{"phase":"define|measure|analyze|improve|control","day_from","day_to","summary_vi","summary_en"}],
-    #     "effect": {metric: {"pre": x, "post": y, "change_pct": z}}, "new_baseline_day": int|None}
+def compute_cycle(records, lights, define: dict, intervention_day: int, pre_days=14, post_days=14,
+                  contacts: list | None = None, contact_window=28) -> dict
+    # -> {"phases": [{"phase":"define|measure|analyze|improve|control", "status":"done|current|not_started",
+    #                 "day_from","day_to","summary_vi","summary_en"}],   # not_started -> day_from/day_to None
+    #     "effect": {metric: {"pre": x, "post": y, "change_pct": z}}, "new_baseline_day": int|None,
+    #     "contact": {"pre_per_week","post_per_week","recent_per_week", *_window} | None}
 
 # evaluation.py
 def run_evaluation(cohort: list[dict], cfg=None) -> dict  # sensitivity, specificity, median detection delay,
@@ -75,21 +80,57 @@ def run_evaluation(cohort: list[dict], cfg=None) -> dict  # sensitivity, specifi
 
 ## REST API (chaoba/server, default http://localhost:8000, CORS open for localhost:3000)
 All responses JSON; every elder-scoped response includes `"simulated": bool`.
+Identity (no login in the prototype): the app sends `X-Actor` (percent-encoded name, e.g. `Lan`) and `X-Role`
+(`primary`); defaults `family:primary` / `primary`. Reads are logged once per actor / action / resource / day with a
+counter (`count`, `last_ts`); writes always get their own row.
 - `GET /api/health` → `{"ok":true,"llm":"claude"|"fallback"}`
 - `GET /api/elders` → `[{id, display_name, name_en, age, province, light, simulated}]`
 - `GET /api/elders/{id}` → elder profile
-- `GET /api/elders/{id}/today` → `{date, day, light, reasons, explanation_vi, explanation_en, summary_vi, summary_en, answered, mood, simulated}`
-- `GET /api/elders/{id}/timeline?days=90` → `{records:[DailyRecord], lights:[DailyLight], baseline:{metric:{center,scale}}, events:[{day,type,label_vi,label_en}]}`
-- `GET /api/elders/{id}/alerts` → `[{id, day, date, type, severity, explanation_vi, explanation_en, acknowledged}]`
+- `GET /api/elders/{id}/today` → `{date, day, light, reasons, explanation_vi, explanation_en, summary_vi, summary_en, answered, mood, sharing_paused, contact:{last, days_since, nudge, nudge_after_days}, simulated}`
+  (`contact.days_since` = latest call day − last family call/visit day; `nudge` when ≥ 3)
+- `GET /api/elders/{id}/timeline?days=90` → `{records:[DailyRecord], lights:[DailyLight], baseline:{metric:{center,scale}}, baselines:[{from_day, to_day, window:[a,b], metrics:{metric:{center,scale}}}], events:[{day,type,label_vi,label_en}]}`
+  (`baseline` = the one in force now, kept for compatibility; `baselines` = history: `from_day` first day judged against it, `window` days it was estimated from)
+- `GET /api/elders/{id}/alerts` → `[{id, day, date, type, severity, severity_level, explanation_vi, explanation_en, acknowledged}]` (see *Alert types and severities*)
 - `POST /api/elders/{id}/alerts/{alert_id}/ack`
-- `GET /api/elders/{id}/dmaic` → compute_cycle output
-- `GET /api/elders/{id}/notes`, `POST /api/elders/{id}/notes` `{author, text}`
-- `GET /api/elders/{id}/privacy` → `{consents:[...], access_log:[...], data_retention:{audio:"not stored", transcript_days:7}}`
+- `GET /api/elders/{id}/dmaic` → compute_cycle output (phases carry `status`; `contact` = family calls/visits per week before/after the intervention and in the last 14 days)
+- `GET /api/elders/{id}/notes` → `[{id, day, date, author, text, to_elder, simulated, created_at}]`, `POST /api/elders/{id}/notes` `{author, text, to_elder?}`
+- `GET /api/elders/{id}/contacts?days=90` → `{contacts:[{id, day, date, member_id, member_name, kind, duration_min, source, simulated}], last, days_since, nudge, per_week_last_14_days}`
+- `POST /api/elders/{id}/contacts` `{kind:"call"|"visit"|"message", member_id?, member_name?, duration_min?}` (the app posts `call` when the family taps "Gọi má")
+- `GET /api/elders/{id}/privacy` → `{consents:[{kind, status:"active"|"withdrawn"|"declined", granted, granted_by, changed_by, ts, scope_vi, scope_en,...}], consent_history:[...], access_log:[{actor, role, action, resource, ts, count, last_ts}], data_retention:{audio:"not stored", transcript_days:7}, scheduling_active}`
+- `POST /api/elders/{id}/consents/{type}/withdraw` (type ∈ daily_call, voice_metrics, family_sharing, clinician_sharing, research_use) → `{ok, kind, granted:false, status:"withdrawn", scheduling_active}`.
+  Processing for that purpose stops at once: `daily_call` pauses scheduling exactly like an in-call opt-out (`POST /api/calls` → 409);
+  `voice_metrics` stores no speech metrics for later calls; `family_sharing` makes today/timeline/alerts/dmaic return no health data
+  (`sharing_paused: true`, light gray); `clinician_sharing` has no clinician view to stop in the prototype. Nothing is deleted.
+- `POST /api/elders/{id}/consents/{type}/grant` re-grants; `POST /api/elders/{id}/resume` = re-grant `daily_call`.
 - `GET /api/evaluation` → evaluation report JSON
 - `POST /api/calls` `{elder_id, channel:"web"}` → `{call_id, greeting_text, phase}`
 - `POST /api/calls/{call_id}/turns` `{text, start, end, pauses:[...]}` → `{reply_text, phase, emergency:bool, end_call:bool}`
 - `POST /api/calls/{call_id}/end` → `{metrics: CallMetrics, analysis: CallAnalysis, today: <today shape>}`
 - Static elder call page: `GET /call?elder=hanh` (big single button, Web Speech API vi-VN for STT/TTS, WebAudio VAD for timings).
 
-Seed: on startup the server loads personas `hanh`, `tu`, `control` from `chaoba.core.synth` (90 days). A real
-web call appends day 91 for that elder (channel `web`, `simulated:false`) using the simulated baseline.
+Seed: on startup the server loads personas `hanh`, `tu`, `control` from `chaoba.core.synth` (90 days) plus their
+simulated family contact logs. **Calendar:** day indices are fixed; dates are anchored at seed time so that day 90 =
+the day before the server's current date (override with `CHAOBA_END_DATE=YYYY-MM-DD`). A web call appends day 91
+dated today (channel `web`; `simulated:false` only if a person spoke or typed). Notes/contacts posted from the app
+get today's day index on the elder's calendar.
+
+## Alert types and severities
+`severity` is the light colour (`yellow` | `red`); `severity_level` maps it for clients: `red` → `critical`,
+`yellow` → `warning` (anything else → `info`). `type` is:
+
+| type | source | severity |
+|---|---|---|
+| `metric_trend` | one signal's EWMA beyond the yellow limit for ≥ 3 consecutive valid days | yellow |
+| `metric_shift` | one signal beyond the red limit for ≥ 5 days | red |
+| `multi_metric` | ≥ 2 signals in the yellow state for ≥ 5 days | red |
+| `symptom_repeat` | same symptom mentioned ≥ 2× in 7 days | yellow |
+| `multi_symptom` | ≥ 3 different symptoms in 7 days | red |
+| `fall` | a fall reported in today's call (outside the emergency path) | red |
+| `unanswered` | consecutive unanswered calls (yellow 2 days, red 3+) | yellow / red |
+| `low_mood` | mood ≤ 2 on ≥ 3 of the last 7 days | yellow |
+| `light_yellow` / `light_red` | light rose without a specific reason code | yellow / red |
+| `emergency` | emergency spotter fired during a call (115 advised) | red |
+| `opt_out` | elder asked in a call to stop the daily calls | yellow |
+| `scam_topic` | elder mentioned money / bank / OTP requests | yellow |
+
+Light-rise alerts take the first non-`recovering` reason code of the day the light rose.

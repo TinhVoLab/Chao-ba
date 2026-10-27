@@ -6,6 +6,7 @@
   "age": 69,
   "province": "Cần Thơ",
   "light": "green",
+  "sharing_paused": false,
   "opted_out": false,
   "simulated": true
  },
@@ -16,6 +17,7 @@
   "age": 72,
   "province": "Bến Tre",
   "light": "green",
+  "sharing_paused": false,
   "opted_out": false,
   "simulated": true
  },
@@ -26,6 +28,7 @@
   "age": 76,
   "province": "TP.HCM",
   "light": "yellow",
+  "sharing_paused": false,
   "opted_out": false,
   "simulated": true
  }

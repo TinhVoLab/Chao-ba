@@ -24,16 +24,18 @@ Check:
 
 ```bash
 curl -s localhost:8000/api/health      # {"ok":true,"llm":"fallback"}  (or "claude" with a key)
-.venv/bin/pytest -q                     # 107 passed
+.venv/bin/pytest -q                     # 119 passed
 ```
 
-On first start the server seeds three simulated elders (90 days each) into `data/runtime/chaoba.db`:
+On first start the server seeds three simulated elders (90 days each, plus a simulated family call/visit log) into `data/runtime/chaoba.db`:
 
-| id | Elder | Story | Light on day 90 |
-|---|---|---|---|
-| `hanh` | Bà Hạnh, 72, Bến Tre, lives alone | BP medication change (day 30) → yellow day 38 → red day 43 → doctor visit day 44 → green day 56 → new baseline day 77 | green |
-| `tu` | Ông Tư, 76, HCMC | slow recall / word-use drift → yellow from day 65 | yellow |
-| `control` | Ông Bảy, 69, Cần Thơ | stable control | green |
+| id | Elder | Story | Light on day 90 | Family contact |
+|---|---|---|---|---|
+| `hanh` | Bà Hạnh, 72, Bến Tre, lives alone | BP medication change (day 30) → yellow day 38 → red day 43 → doctor visit day 44 → green day 56 → new baseline day 77 | green | Lan ~1×/week → 3×/week after day 44 → fades; last call day 85, so Today shows "5 days since anyone called" |
+| `tu` | Ông Tư, 76, HCMC | slow recall / word-use drift → yellow from day 65 | yellow | son calls ~2×/week (no nudge) |
+| `control` | Ông Bảy, 69, Cần Thơ | stable control | green | daughter calls / visits often (no nudge) |
+
+**Dates.** Day numbers are fixed; dates are set when the database is seeded: **day 90 = the day before the server's date**, so a live call made during the demo becomes day 91 dated today and nothing appears in the future. Re-seed on the day of the demo (below) so "this morning's call" is yesterday's date at worst. To pin dates (e.g. for screenshots), start uvicorn with `CHAOBA_END_DATE=2026-11-19`. The offline fixtures in `web/fixtures/` carry the calendar of the day they were snapshotted.
 
 **Reset the demo** (removes live calls, i.e. day 91+, and re-seeds): stop uvicorn, run `rm data/runtime/chaoba.db`, start again. To use a throw-away database instead: `CHAOBA_DB=/tmp/chaoba-demo.db .venv/bin/uvicorn chaoba.server.app:app --port 8000`.
 
@@ -59,11 +61,11 @@ Every safety layer (spotter, guardrails, output scrub, blocklist) runs in both m
 |---|---|
 | `http://localhost:8000/call?elder=hanh` | **Elder web call page**: one big green button "Nghe", live captions, "Không lưu ghi âm" (no recording) notice, typed-answer mode ("Gõ chữ"), demo toggle "Giả lập người nói (demo)", result card after the call (day, light, summary, explanation, metrics) |
 | `http://localhost:8000/call?elder=hanh&sim=1` | Same page in **hands-free simulation**: a scripted elder answers each question (spoken by the browser TTS in a lower voice and marked "(giả lập)") |
-| `http://localhost:3000/?elder=hanh` | Family app **Today**: light, plain explanation, this morning's call summary, mood, symptoms mentioned, quick note / call buttons, last 14 days |
-| `/trends?elder=hanh` | Each signal vs the person's usual range (baseline ± 1 SD), 7-day average, events, table view |
+| `http://localhost:3000/?elder=hanh` | Family app **Today**: light, plain explanation, this morning's call summary, mood, symptoms mentioned, "Gọi má" (logs a call) / quick note, contact nudge "No one has called Mom for 5 days", last 14 days |
+| `/trends?elder=hanh` | 90 days by default (30-day option): each signal vs the person's usual range (baseline ± 1 SD, the real baseline history from the API so the band steps at the day-77 re-baseline), 7-day average, the yellow/red period shaded behind every chart, numbered markers for medication change (1), doctor visit / care plan (2) and new baseline (3), table view |
 | `/alerts?elder=hanh` | Alerts with explanations; "Seen, I'm on it" acknowledgement |
-| `/dmaic?elder=hanh` | Define → Measure → Analyze → Improve → Control cards, cycle on the timeline, intervention effect (14 days before / after) |
-| `/privacy?elder=hanh` | Data retention, consents (withdraw is demo-only), "who viewed" access log |
+| `/dmaic?elder=hanh` | Define → Measure → Analyze → Improve → Control (status from the API: done / current / not started), family calls+visits per week before / after / last 14 days, cycle on the timeline, intervention effect (14 days before / after) |
+| `/privacy?elder=hanh` | Data retention; consents per purpose with **Withdraw** (confirm dialog; really stops processing via `POST /api/elders/{id}/consents/{type}/withdraw`) and **Turn back on**; "who viewed" access log (one row per person, page and day, with a count) |
 | `/screen?elder=hanh` | 9:16 standing-screen mockup for the elder's home |
 | `/call` | Links to the elder call page for each elder |
 | `http://localhost:8000/api/evaluation` | Simulated-cohort evaluation JSON (`data/eval/report.md` for the readable version) |
@@ -78,19 +80,21 @@ Before you start: both servers running and a freshly seeded DB. Open two Chrome 
 
 | Time | Do (click) | Say | Criterion |
 |---|---|---|---|
-| 0:00–0:20 | Window A on **Today** for Bà Hạnh (green) | "Vietnam has 14.2 million people over 60, heading to 20.9 million by 2034. Their children often live far away. Chào Bà is a 4-minute morning call from Út Thương, a Southern-Vietnamese AI companion, over the phone or the web. It watches for **change relative to the person's own baseline** and tells the family in plain words. It never diagnoses." | 1 Health impact |
+| 0:00–0:20 | Window A on **Today** for Bà Hạnh (green; point at the yellow "5 days since anyone called Mom" nudge) | "Vietnam has 14.2 million people over 60, heading to 20.9 million by 2034. Their children often live far away. Chào Bà is a 4-minute morning call from Út Thương, a Southern-Vietnamese AI companion, over the phone or the web. It watches for **change relative to the person's own baseline** and tells the family in plain words. It never diagnoses." | 1 Health impact |
 | 0:20–1:20 | Window B: click **Nghe**. Let the simulated call run (about 60 s; you can talk over it) | "She opens with a message from the daughter, says she's a virtual assistant, that nothing is recorded, and asks for consent. Then sleep, food, how she feels. Now the recall game: yesterday's story. The simulated elder fails free recall, so Út Thương gives one cue. That's a recall score of 1 out of 3. Then a life story for the memory book, and it closes with the exact medication reminder and the daughter's message. The browser only sends text and pause timings, no audio." | 3 Working demo · 4 Responsible AI |
 | 1:20–1:35 | Point at the **result card** (day 91: light, summary, metrics) | "Per call we compute syllables per second, pause ratio, filler rate, MATTR vocabulary diversity, recall 0–3, symptoms and mood. Calls with under 45 seconds of speech don't count." | 2 Technical depth |
-| 1:35–2:15 | Window A: **Trends**, then **DMAIC** for Bà Hạnh | "Here's 90 days of simulated data. After a blood-pressure medication change on day 30 she mentions dizziness. Yellow on day 38, then her speech slows and pauses grow: red on day 43. The family took her to the doctor on day 44. That's the Improve step. Speech rate recovered from 4.18 to 4.61 syllables per second and she was back to green on day 56. On day 77 the stable period becomes her new baseline. That's the DMAIC care loop: the system checks whether the action worked." | 1 Clinical relevance · 2 Technical depth |
-| 2:15–2:35 | Switch elder to **Ông Tư** (Today → yellow) | "Different pattern: a slow drift in recall. Yellow from day 65, with a recommendation to book a check-up, not a diagnosis." | 1 · 4 |
+| 1:35–2:15 | Window A: **Trends**, then **DMAIC** for Bà Hạnh | "Here's 90 days of simulated data; the shaded band is the yellow and red period. After a blood-pressure medication change, marker 1, she mentions dizziness. Yellow on day 38, then her speech slows and pauses grow: red on day 43. The family took her to the doctor on day 44, marker 2, and Lan started calling three times a week. That's the Improve step, and both parts are measured: speech rate recovered from 4.18 to 4.61 syllables per second, family calls went from 1.2 to 3 a week, and she was back to green on day 56. On day 77 the stable period becomes her new baseline, marker 3. Control keeps watching: calls have dropped back to once a week, which is why Today showed the nudge." | 1 Clinical relevance · 2 Technical depth |
+| 2:15–2:35 | Switch elder to **Ông Tư** (Today → yellow) | "Different pattern: a slow drift in story recall. Yellow from day 65. The cycle is at Analyze; Improve hasn't started and carries a recommendation: take him to a doctor and bring this trend report. No diagnosis, no specialty named." | 1 · 4 |
 | 2:35–2:50 | Show `data/eval/report.md` or a slide with the ablation table | "On a **simulated** cohort of 200 elders: 92 % of injected declines flagged, median 19 days, 0.29 false alarms per person-month. With one population norm instead of a personal baseline, sensitivity drops to 76 % and 38 of 112 stable people would be in near-permanent alarm. Simulated, not clinical. Next comes a 50–100 person validation against MoCA with a geriatrics department in Ho Chi Minh City." | 2 · 4 Fairness |
-| 2:50–3:00 | **Privacy** tab | "Consent per purpose, transcripts expire after 7 days, every family view is logged, no raw audio anywhere. Families pay by subscription; commune health stations and post-discharge programmes are the B2G and B2B path. Production calls go over ordinary phones via LiveKit SIP." | 4 · 5 Scalability · 6 Commercial |
+| 2:50–3:00 | **Privacy** tab | "Consent per purpose, and each can be withdrawn here; that really stops the processing. Transcripts expire after 7 days, every family view is logged, no raw audio anywhere. Families pay by subscription; commune health stations and post-discharge programmes are the B2G and B2B path. Production calls go over ordinary phones via LiveKit SIP." | 4 · 5 Scalability · 6 Commercial |
 
 ### Optional extras (if time or questions allow)
 
 - **Emergency (≈ 20 s).** Use Ông Bảy so Bà Hạnh's story stays clean. Open `localhost:8000/call?elder=control`, click **Gõ chữ**, then **Nghe**. Type `Dạ được con` → Enter, then `Sáng nay tui bị té trong nhà tắm` → Enter. Út Thương calmly says to call 115 or a neighbour and that the family is being told. A red banner with a "Gọi 115" link appears, the call ends, and the family app **Alerts** for Ông Bảy shows a red emergency alert quoting him. Negations and idioms do not fire: try `Hổng có té gì hết` or `Té ra hôm qua là chủ nhật`.
 - **Guardrails.** In typed mode: `Con ơi chuyển khoản giùm bà` (scam: refuses, warns about OTP, family gets a `scam_topic` alert), `Bà bỏ thuốc huyết áp được hông?` (medication: "ask the doctor"), `Bà bị bệnh gì vậy con?` (diagnosis: "I'm a virtual assistant, I can't examine").
-- **Opt-out.** `Thôi đừng gọi nữa` → confirmation → `Dạ đúng` → calls stop; a new `POST /api/calls` for that elder returns 409; the family gets an alert; `POST /api/elders/{id}/resume` re-enables.
+- **Opt-out.** `Thôi đừng gọi nữa` → confirmation → `Dạ đúng` → calls stop; a new `POST /api/calls` for that elder returns 409; the family gets an alert; the Privacy screen shows "Daily calls are paused" with **Resume calls** (`POST /api/elders/{id}/resume`).
+- **Consent withdrawal from the app.** Privacy (use Ông Bảy) → **Withdraw** next to "Share daily light and summaries with family" → confirm → Today shows "Paused" and hides the light, summary, trends and alerts. **Turn back on** restores it. Withdrawing "Receive daily check-in calls" pauses calls exactly like the in-call opt-out.
+- **Contact log.** On Today for Bà Hạnh, tap **Gọi má** (on a laptop the `tel:` link does nothing visible): the call is logged, the nudge disappears on reload and "You called Mom today" shows.
 - **Real speech.** Open `/call?elder=hanh` without `sim=1`, allow the microphone, and answer in Vietnamese. Speech is recognised by the browser (Chrome/Edge); pauses are measured by an in-page VAD.
 
 ### Caveats to state honestly if asked
@@ -98,4 +102,5 @@ Before you start: both servers running and a freshly seeded DB. Open two Chrome 
 - In **sim mode** the "speech" is the browser's TTS reading scripted lines, so the day-91 speech metrics measure the TTS voice, not a person. A single day does not move the light (a trend needs ≥ 3 valid days).
 - A sim-mode call (or any call where "Giả lập người nói" was used) is stored as `simulated: true` with the event "Web call (simulated elder)". Only calls where a person actually spoke or typed are stored as live data.
 - PSTN/LiveKit is architected and sketched but **not demonstrated**.
-- There is no login in the prototype.
+- There is no login in the prototype. The app identifies itself as the primary carer (Lan for Bà Hạnh) through `X-Actor` / `X-Role` headers, which is what the access log shows.
+- Typed answers ("Gõ chữ") carry no real speech timing, so a typed call is stored as a too-short (invalid) day: summary, mood and symptoms count, speech metrics do not. Use it for the safety demos, not for metrics.

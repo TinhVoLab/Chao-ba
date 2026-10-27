@@ -400,10 +400,13 @@
     const p1 = document.createElement("p"); p1.textContent = a.summary_vi || t.summary_vi || "";
     const p2 = document.createElement("p"); p2.textContent = t.explanation_vi || "";
     const mt = document.createElement("div"); mt.className = "metrics";
-    const f = (x, d) => (x === null || x === undefined) ? "–" : Number(x).toFixed(d);
+    const CUE_VI = { free: "tự nhớ", cued: "nhờ gợi ý", failed: "chưa nhớ ra" };
+    // Metrics of an invalid call (too little measured speech, e.g. typed answers) are not shown as numbers.
+    const f = (x, d) => (!m.valid || x === null || x === undefined) ? "–" : Number(x).toFixed(d);
     mt.textContent = `Tốc độ nói ${f(m.speech_rate_sps, 2)} âm tiết/giây · Ngừng nghỉ ${f(m.pause_ratio, 2)} · ` +
-      `Từ đệm ${f(m.filled_pause_rate, 3)} · MATTR ${f(m.mattr, 2)} · Nhớ lại ${a.recall_score ?? "–"}/3 · ` +
-      `Thời lượng nói ${f(m.elder_speech_sec, 0)} giây` + (m.valid ? "" : " · (cuộc gọi quá ngắn để đo)");
+      `Từ đệm ${f(m.filled_pause_rate, 3)} · MATTR ${f(m.mattr, 2)} · ` +
+      `Nhớ chuyện hôm trước ${a.recall_score ?? "–"}/3${CUE_VI[a.recall_cue_level] ? ` (${CUE_VI[a.recall_cue_level]})` : ""} · ` +
+      `Thời lượng nói ${Number(m.elder_speech_sec || 0).toFixed(0)} giây` + (m.valid ? "" : " · (cuộc gọi quá ngắn để đo)");
     el.append(h, p1, p2, mt);
     // The result card shrinks the captions box: re-pin captions to the last line before scrolling the page.
     requestAnimationFrame(() => { captions.scrollTop = captions.scrollHeight; el.scrollIntoView({ behavior: "smooth", block: "end" }); });

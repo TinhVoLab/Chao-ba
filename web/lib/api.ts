@@ -3,11 +3,16 @@
 import { API_BASE } from "./config";
 import { fixtureElders, fixtureFor } from "./fixtures";
 import { normAlerts } from "./normalize";
+import { actorHeaders } from "./viewer";
 import type { Alert, Dmaic, ElderProfile, ElderSummary, Loaded, Note, Privacy, Timeline, Today } from "./types";
 
-async function get<T>(path: string, fallback: () => T): Promise<Loaded<T>> {
+async function get<T>(path: string, fallback: () => T, elderId?: string): Promise<Loaded<T>> {
   try {
-    const res = await fetch(`${API_BASE}${path}`, { cache: "no-store", signal: AbortSignal.timeout(3000) });
+    const res = await fetch(`${API_BASE}${path}`, {
+      cache: "no-store",
+      signal: AbortSignal.timeout(3000),
+      headers: actorHeaders(elderId),
+    });
     if (!res.ok) throw new Error(`${res.status}`);
     return { data: (await res.json()) as T, live: true };
   } catch {
@@ -24,17 +29,17 @@ export function resolveElder(list: ElderSummary[], requested?: string | string[]
 }
 
 const e = encodeURIComponent;
-export const getProfile = (id: string) => get<ElderProfile>(`/api/elders/${e(id)}`, () => fixtureFor(id).profile);
-export const getToday = (id: string) => get<Today>(`/api/elders/${e(id)}/today`, () => fixtureFor(id).today);
+export const getProfile = (id: string) => get<ElderProfile>(`/api/elders/${e(id)}`, () => fixtureFor(id).profile, id);
+export const getToday = (id: string) => get<Today>(`/api/elders/${e(id)}/today`, () => fixtureFor(id).today, id);
 export const getTimeline = (id: string, days = 90) =>
-  get<Timeline>(`/api/elders/${e(id)}/timeline?days=${days}`, () => fixtureFor(id).timeline);
+  get<Timeline>(`/api/elders/${e(id)}/timeline?days=${days}`, () => fixtureFor(id).timeline, id);
 export const getAlerts = async (id: string): Promise<Loaded<Alert[]>> => {
-  const r = await get<Alert[]>(`/api/elders/${e(id)}/alerts`, () => fixtureFor(id).alerts);
+  const r = await get<Alert[]>(`/api/elders/${e(id)}/alerts`, () => fixtureFor(id).alerts, id);
   return { ...r, data: normAlerts(r.data) };
 };
-export const getDmaic = (id: string) => get<Dmaic>(`/api/elders/${e(id)}/dmaic`, () => fixtureFor(id).dmaic);
-export const getNotes = (id: string) => get<Note[]>(`/api/elders/${e(id)}/notes`, () => fixtureFor(id).notes);
-export const getPrivacy = (id: string) => get<Privacy>(`/api/elders/${e(id)}/privacy`, () => fixtureFor(id).privacy);
+export const getDmaic = (id: string) => get<Dmaic>(`/api/elders/${e(id)}/dmaic`, () => fixtureFor(id).dmaic, id);
+export const getNotes = (id: string) => get<Note[]>(`/api/elders/${e(id)}/notes`, () => fixtureFor(id).notes, id);
+export const getPrivacy = (id: string) => get<Privacy>(`/api/elders/${e(id)}/privacy`, () => fixtureFor(id).privacy, id);
 
 /** Loads the elder list + resolves the selected elder in one go. */
 export async function loadElderContext(requested?: string | string[]) {

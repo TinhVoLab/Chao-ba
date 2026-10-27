@@ -22,10 +22,14 @@ LINES = {
              "Hôm nay thấy khỏe re con, sáng ra vườn tưới mấy cây kiểng rồi."],
     "recall_free": ["Ờ... để coi... chuyện gì ta... ờ, quên mất tiêu rồi con ơi.",
                     "À... ờ... cái đó... nhớ hổng ra con."],
-    "story": ["Hồi nhỏ ở quê, chiều nào cũng theo mấy đứa trong xóm ra ruộng bắt cá lia thia, tối về bị má rầy quá trời.",
-              "Hồi đó nhà nghèo lắm con, ờ, mùa nước nổi thì cả xóm đi giăng lưới bắt cá linh, nấu canh chua bông điên điển.",
-              "Chủ nhật này con Lan về thăm, bà tính nấu nồi canh chua cá lóc với kho tộ cho nó ăn.",
-              "Ông nhà hồi xưa ổng hát vọng cổ hay lắm, đám cưới trong xóm ai cũng mời ổng hát."],
+    "story": ["Hồi nhỏ ở quê, chiều nào cũng theo mấy đứa trong xóm ra ruộng bắt cá lia thia, tối về bị má rầy quá trời, "
+              "mà bữa sau cũng đi nữa à con.",
+              "Hồi đó nhà nghèo lắm con, ờ, mùa nước nổi thì cả xóm đi giăng lưới bắt cá linh, nấu canh chua bông điên điển, "
+              "ăn với cơm nóng ngon hết biết.",
+              "Chủ nhật này con Lan về thăm, bà tính nấu nồi canh chua cá lóc với kho tộ cho nó ăn, "
+              "tại hồi nhỏ nó mê món đó lắm con.",
+              "Ông nhà hồi xưa ổng hát vọng cổ hay lắm, đám cưới trong xóm ai cũng mời ổng hát, "
+              "có bữa hát tới khuya mới về."],
     "closing": ["Ừ, bà nhớ rồi. Cảm ơn con nha, chào con.", "Ờ, chào con, mai nói chuyện tiếp nghen."],
 }
 

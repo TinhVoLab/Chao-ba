@@ -1,14 +1,15 @@
 "use client";
 import { useState } from "react";
 import { Check, MessageSquareHeart, NotebookPen, Phone, PhoneCall, Send, X } from "lucide-react";
-import type { Note } from "@/lib/types";
+import type { ContactStatus, Note } from "@/lib/types";
 import { API_BASE } from "@/lib/config";
+import { actorHeaders, viewerFor } from "@/lib/viewer";
 import { useLang, useLocal, writeLocal } from "@/lib/useLang";
 import { shortDate } from "@/lib/format";
 import { T } from "./T";
 
-const PRESETS: { vi: string; en: string }[] = [
-  { vi: "Đã gọi, {k} khỏe", en: "Called, {K} is fine" },
+const PRESETS: { vi: string; en: string; logsCall?: boolean }[] = [
+  { vi: "Đã gọi, {k} khỏe", en: "Called, {K} is fine", logsCall: true },
   { vi: "{K} kêu khó ngủ", en: "{K} says sleep is poor" },
   { vi: "Đã nhắc {k} uống thuốc", en: "Reminded {k} about medicine" },
   { vi: "Cuối tuần sẽ về thăm", en: "Visiting this weekend" },
@@ -25,7 +26,7 @@ export function TodayActions({
   phone,
   author,
   initialNotes,
-  daysSinceContact,
+  contact,
   live,
   todayDate,
   todayDay,
@@ -36,7 +37,7 @@ export function TodayActions({
   phone: string;
   author: string;
   initialNotes: Note[];
-  daysSinceContact: number | null;
+  contact: ContactStatus | null;
   live: boolean;
   todayDate: string;
   todayDay: number;
@@ -49,8 +50,21 @@ export function TodayActions({
   const [toElder, setToElder] = useState(false);
   const calledAt = useLocal(`cb-called-${elderId}`);
   const calledToday = calledAt ? new Date(calledAt).toDateString() === new Date().toDateString() : false;
+  const headers = { "Content-Type": "application/json", ...actorHeaders(elderId) };
 
-  async function save(body: string) {
+  /** Log a family call in the contact log (feeds "N days since anyone called" and the DMAIC Improve step). */
+  function logCall() {
+    writeLocal(`cb-called-${elderId}`, new Date().toISOString());
+    if (!live) return;
+    fetch(`${API_BASE}/api/elders/${encodeURIComponent(elderId)}/contacts`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ kind: "call", member_id: viewerFor(elderId).memberId }),
+      keepalive: true,
+    }).catch(() => {});
+  }
+
+  async function save(body: string, logsCall = false) {
     const t = body.trim();
     if (!t) return;
     setStatus("saving");
@@ -60,7 +74,7 @@ export function TodayActions({
       try {
         const res = await fetch(`${API_BASE}/api/elders/${encodeURIComponent(elderId)}/notes`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers,
           body: JSON.stringify({ author, text: t, to_elder: toElder }),
           signal: AbortSignal.timeout(4000),
         });
@@ -73,6 +87,7 @@ export function TodayActions({
         ok = false;
       }
     }
+    if (logsCall) logCall();
     setNotes((n) => [note, ...n]);
     setText("");
     setOpen(false);
@@ -87,7 +102,7 @@ export function TodayActions({
       <div className="grid grid-cols-2 gap-3">
         <a
           href={`tel:${phone}`}
-          onClick={() => writeLocal(`cb-called-${elderId}`, new Date().toISOString())}
+          onClick={logCall}
           className="flex min-h-16 items-center justify-center gap-2.5 rounded-2xl bg-accent px-4 text-lg font-bold text-accent-ink shadow-soft transition-colors duration-150 hover:bg-accent-hover active:translate-y-px"
         >
           <Phone size={22} aria-hidden />
@@ -112,14 +127,22 @@ export function TodayActions({
           <Check size={18} aria-hidden />
           <T vi={`Bạn đã bấm gọi ${kinVi} hôm nay`} en={`You called ${kinEn} today`} />
         </p>
-      ) : daysSinceContact != null && daysSinceContact >= 2 ? (
-        <p className="flex items-start gap-3 rounded-xl bg-yellow-tint px-4 py-3 text-yellow-ink">
+      ) : contact?.nudge && contact.days_since != null ? (
+        <p className="flex items-start gap-3 rounded-xl bg-yellow-tint px-4 py-3 text-yellow-ink" role="status">
           <PhoneCall size={20} className="mt-0.5 shrink-0" aria-hidden />
           <span>
             <strong className="font-bold">
-              <T vi={`Đã ${daysSinceContact} ngày chưa ai gọi ${kinVi}.`} en={`No one has called ${kinEn} for ${daysSinceContact} days.`} />
+              <T vi={`Đã ${contact.days_since} ngày chưa ai gọi ${kinVi}.`} en={`No one has called ${kinEn} for ${contact.days_since} days.`} />
             </strong>{" "}
             <T vi="Một cuộc gọi 5 phút cũng đủ." en="Five minutes is enough." />
+            {contact.last && (
+              <span className="mt-0.5 block text-sm opacity-90">
+                <T
+                  vi={`Lần gần nhất: ${contact.last.member_name ?? "gia đình"} ${contact.last.kind === "visit" ? "ghé thăm" : "gọi"}, ${shortDate(contact.last.date)}.`}
+                  en={`Last time: ${contact.last.member_name ?? "family"} ${contact.last.kind === "visit" ? "visited" : "called"}, ${shortDate(contact.last.date)}.`}
+                />
+              </span>
+            )}
           </span>
         </p>
       ) : null}
@@ -158,7 +181,7 @@ export function TodayActions({
                   key={p.vi}
                   type="button"
                   disabled={status === "saving"}
-                  onClick={() => save(label)}
+                  onClick={() => save(label, p.logsCall)}
                   className="min-h-11 rounded-full border border-line-strong bg-bg px-3.5 text-[0.9375rem] font-medium transition-colors duration-150 hover:border-accent hover:text-accent disabled:opacity-50"
                 >
                   {label}

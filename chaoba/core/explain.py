@@ -210,9 +210,10 @@ def template_explain(light: DailyLight, elder_name_vi: str, elder_name_en: str) 
             en.append(f"Please call {him} and consider arranging a doctor's visit.")
     else:
         if cognitive_only:
-            vi.append(f"Nên gọi hỏi thăm {hon} nhiều hơn và cân nhắc đưa {hon} đi khám chuyên khoa thần kinh "
-                      f"để kiểm tra trí nhớ.")
-            en.append(f"Consider calling more often and booking a neurology check-up to look at {his} memory.")
+            vi.append(f"Nên gọi hỏi thăm {hon} nhiều hơn và đưa {hon} đi khám để bác sĩ đánh giá; "
+                      f"mang theo báo cáo xu hướng này.")
+            en.append(f"Consider calling more often and arranging a doctor's visit so a doctor can assess; "
+                      f"bring this trend report.")
         else:
             vi.append(f"Nên gọi hỏi thăm {hon} trong hôm nay hoặc ngày mai.")
             en.append(f"Consider giving {him} a call today or tomorrow.")

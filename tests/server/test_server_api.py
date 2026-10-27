@@ -216,3 +216,97 @@ def test_typed_web_call_is_stored_as_live_data(client):
     sim = client.post("/api/calls", json={"elder_id": "control", "channel": "web", "simulated": True}).json()["call_id"]
     client.post(f"/api/calls/{sim}/turns", json={"text": "Dạ con chào", "start": 0, "end": 2, "pauses": []})
     assert client.post(f"/api/calls/{sim}/end").json()["simulated"] is True
+
+
+def test_calendar_anchor_day_90_is_yesterday(client):
+    from datetime import date, timedelta
+    t = client.get("/api/elders/hanh/today").json()
+    assert t["day"] == 90 and t["date"] == (date.today() - timedelta(days=1)).isoformat()
+    notes = client.get("/api/elders/hanh/notes").json()
+    assert all(n["date"] for n in notes if n["day"] is not None)
+    n30 = next(n for n in notes if n["day"] == 30)
+    assert n30["date"] == (date.today() - timedelta(days=61)).isoformat()
+
+
+def test_contact_log_and_nudge(client):
+    t = client.get("/api/elders/hanh/today").json()
+    assert t["contact"]["days_since"] == 5 and t["contact"]["nudge"] is True
+    assert client.get("/api/elders/tu/today").json()["contact"]["nudge"] is False
+    cs = client.get("/api/elders/hanh/contacts").json()
+    assert cs["contacts"][-1]["day"] == 85 and cs["contacts"][-1]["simulated"] is True
+    r = client.post("/api/elders/hanh/contacts", json={"kind": "call", "member_id": "lan"})
+    assert r.status_code == 200 and r.json()["member_name"] == "Lan"
+    t = client.get("/api/elders/hanh/today").json()
+    assert t["contact"]["days_since"] == 0 and not t["contact"]["nudge"]
+    assert client.post("/api/elders/hanh/contacts", json={"kind": "telepathy"}).status_code == 422
+    d = client.get("/api/elders/hanh/dmaic").json()
+    assert d["contact"]["post_per_week"] > d["contact"]["pre_per_week"]
+
+
+def test_dmaic_phase_status(client):
+    st = {p["phase"]: p for p in client.get("/api/elders/tu/dmaic").json()["phases"]}
+    assert st["analyze"]["status"] == "current"
+    assert st["improve"]["status"] == "not_started" and st["improve"]["day_from"] is None
+    st = {p["phase"]: p["status"] for p in client.get("/api/elders/hanh/dmaic").json()["phases"]}
+    assert st == {"define": "done", "measure": "done", "analyze": "done", "improve": "done", "control": "current"}
+
+
+def test_timeline_baseline_history(client):
+    tl = client.get("/api/elders/hanh/timeline?days=90").json()
+    b = tl["baselines"]
+    assert len(b) == 2 and b[0]["window"] == [1, 21] and b[1]["from_day"] == 77 and b[0]["to_day"] == 76
+    assert b[1]["metrics"]["speech_rate_sps"]["center"] == tl["baseline"]["speech_rate_sps"]["center"]
+    assert len(client.get("/api/elders/tu/timeline?days=90").json()["baselines"]) == 1
+
+
+def test_alert_severity_level(client):
+    for a in client.get("/api/elders/hanh/alerts").json():
+        assert a["severity_level"] == {"red": "critical", "yellow": "warning"}[a["severity"]]
+
+
+def test_access_log_dedupes_reads(client):
+    h = {"X-Actor": "Lan", "X-Role": "primary"}
+    for _ in range(5):
+        client.get("/api/elders/hanh/today", headers=h)
+    client.post("/api/elders/hanh/notes", json={"author": "Lan", "text": "a"}, headers=h)
+    client.post("/api/elders/hanh/notes", json={"author": "Lan", "text": "b"}, headers=h)
+    log = client.get("/api/elders/hanh/privacy", headers=h).json()["access_log"]
+    reads = [x for x in log if x["action"] == "read_today" and x["actor"] == "Lan"]
+    assert len(reads) == 1 and reads[0]["count"] == 5
+    assert len([x for x in log if x["action"] == "write_note"]) == 2
+
+
+def test_consent_withdraw_and_regrant(client):
+    r = client.post("/api/elders/control/consents/daily_call/withdraw", headers={"X-Actor": "Th%E1%BA%A3o"})
+    assert r.status_code == 200 and r.json()["scheduling_active"] is False
+    pr = client.get("/api/elders/control/privacy").json()
+    dc = next(c for c in pr["consents"] if c["kind"] == "daily_call")
+    assert dc["status"] == "withdrawn" and pr["scheduling_active"] is False
+    assert len([c for c in pr["consents"] if c["kind"] == "daily_call"]) == 1 and len(pr["consent_history"]) == 6
+    assert client.post("/api/calls", json={"elder_id": "control"}).status_code == 409
+    client.post("/api/elders/control/resume")
+    assert client.post("/api/calls", json={"elder_id": "control"}).status_code == 200
+    # family_sharing: the family app stops receiving health data until re-granted
+    client.post("/api/elders/control/consents/family_sharing/withdraw")
+    t = client.get("/api/elders/control/today").json()
+    assert t["sharing_paused"] and t["light"] == "gray" and t["summary_vi"] == ""
+    assert client.get("/api/elders/control/timeline").json()["records"] == []
+    assert client.get("/api/elders/control/alerts").json() == []
+    assert next(e for e in client.get("/api/elders").json() if e["id"] == "control")["light"] == "gray"
+    client.post("/api/elders/control/consents/family_sharing/grant")
+    assert client.get("/api/elders/control/timeline").json()["records"]
+    assert client.post("/api/elders/control/consents/nope/withdraw").status_code == 404
+
+
+def test_voice_metrics_withdrawn_stores_no_speech_metrics(client):
+    client.post("/api/elders/hanh/consents/voice_metrics/withdraw")
+    cid, _ = run_simulated_call(client)
+    client.post(f"/api/calls/{cid}/end")
+    last = client.get("/api/elders/hanh/timeline?days=1").json()["records"][-1]
+    assert last["day"] == 91 and last["answered"] and last["speech_rate_sps"] is None and last["mattr"] is None
+
+
+def test_percent_encoded_actor_is_decoded(client):
+    client.get("/api/elders/control/today", headers={"X-Actor": "Th%E1%BA%A3o", "X-Role": "primary"})
+    log = client.get("/api/elders/control/privacy").json()["access_log"]
+    assert any(x["actor"] == "Thảo" and x["action"] == "read_today" for x in log)

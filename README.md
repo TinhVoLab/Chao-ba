@@ -24,12 +24,14 @@ cd web && npm install && npm run dev                      # family app (second t
 - Family app: http://localhost:3000/?elder=hanh (Today · Trends · Alerts · DMAIC · Privacy · `/screen`)
 - Health check: `curl localhost:8000/api/health` → `{"ok":true,"llm":"fallback"}`
 
+Seeded dates are anchored at startup: day 90 = yesterday, so a live call is day 91 today (`CHAOBA_END_DATE=YYYY-MM-DD` pins them).
+
 **No API key needed.** Every LLM step has a deterministic fallback. Set `ANTHROPIC_API_KEY` before starting uvicorn to use Claude (conversation, post-call analysis, wording). Reset demo data with `rm data/runtime/chaoba.db` (re-seeded on start).
 
 ## Tests and data
 
 ```bash
-.venv/bin/pytest -q                        # 107 tests
+.venv/bin/pytest -q                        # 119 tests
 .venv/bin/python scripts/gen_synth.py      # regenerate data/synth/{hanh,tu,control}.json (simulated personas)
 .venv/bin/python scripts/run_eval.py       # regenerate data/eval/report.{json,md} (simulated cohort, < 1 s)
 ```
@@ -41,7 +43,8 @@ cd web && npm install && npm run dev                      # family app (second t
 | `chaoba/core/` | metrics (M1–M3), personal-baseline control chart and light rules, VI/EN explanations, DMAIC cycle, synthetic data, evaluation |
 | `chaoba/agent/` | Út Thương persona and prompts, call orchestrator (scripted + Claude engines), emergency spotter, guardrails, post-call analysis, demo elder simulator, LiveKit SIP adapter (untested sketch) |
 | `chaoba/server/` | FastAPI app, SQLite store, Postgres/Supabase production schema with RLS (`schema.sql`), static elder call page (`static/call.html`) |
-| `web/` | Next.js family app (PWA) and 9:16 standing-screen mockup |
+| `web/` | Next.js family app (PWA) and 9:16 standing-screen mockup; offline fixtures in `web/fixtures/` (`node web/scripts/snapshot-fixtures.mjs` against a fresh API) |
+| `docs/screenshots/` | app screenshots: `app-*.png` = first screen (390×844 @2x), `full/app-*.png` = full page |
 | `data/synth/`, `data/eval/` | generated simulated personas and evaluation report |
 | `scripts/` | data generation and evaluation |
 | `tests/` | pytest suites for core, agent, server |

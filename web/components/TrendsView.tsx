@@ -5,6 +5,7 @@ import {
   CartesianGrid,
   ComposedChart,
   Line,
+  ReferenceArea,
   ReferenceLine,
   ResponsiveContainer,
   Tooltip,
@@ -59,9 +60,14 @@ interface Row {
   center: number | null;
 }
 
+type Run = { from: number; to: number; light: "yellow" | "red" };
+const LIGHT_EVENT_TYPES = new Set(["alert_yellow", "alert_red", "recovered"]);
+const LIGHT_OF_EVENT: Record<string, Light> = { alert_yellow: "yellow", alert_red: "red", recovered: "green" };
+
 export function TrendsView({ timeline }: { timeline: Timeline }) {
   const lang = useLang();
-  const [range, setRange] = useState<30 | 90>(30);
+  // 90 days by default: the whole story (change, action, recovery, new baseline) is visible at once.
+  const [range, setRange] = useState<30 | 90>(90);
   const records = useMemo(() => [...(timeline.records ?? [])].sort((a, b) => a.day - b.day), [timeline.records]);
   const lightByDay = useMemo(() => {
     const m = new Map<number, DailyLight>();
@@ -70,19 +76,34 @@ export function TrendsView({ timeline }: { timeline: Timeline }) {
   }, [timeline.lights]);
   const events = useMemo(() => chartEvents(timeline.events), [timeline.events]);
   const rebaseDay = events.filter(isRebaseline).at(-1)?.day ?? null;
+  // Contiguous yellow / red runs, shaded behind every chart so the alert period reads at a glance.
+  const runs = useMemo(() => {
+    const out: Run[] = [];
+    for (const l of [...(timeline.lights ?? [])].sort((a, b) => a.day - b.day)) {
+      if (l.light !== "yellow" && l.light !== "red") continue;
+      const last = out.at(-1);
+      if (last && last.light === l.light && l.day === last.to + 1) last.to = l.day;
+      else out.push({ from: l.day, to: l.day, light: l.light });
+    }
+    return out;
+  }, [timeline.lights]);
 
   const maxDay = records.at(-1)?.day ?? 0;
   const minDay = Math.max(records[0]?.day ?? 1, maxDay - range + 1);
   const shown = records.filter((r) => r.day >= minDay);
   const shownEvents = events.filter((e) => e.day >= minDay && e.day <= maxDay);
+  const shownRuns = runs.filter((r) => r.to >= minDay).map((r) => ({ ...r, from: Math.max(r.from, minDay) }));
+  const lightEvents = (timeline.events ?? []).filter((e) => LIGHT_EVENT_TYPES.has(e.type) && e.day >= minDay && e.day <= maxDay);
+  const listed = [...shownEvents, ...lightEvents].sort((a, b) => a.day - b.day || (LIGHT_EVENT_TYPES.has(a.type) ? 1 : -1));
   // one number per day within the visible range: events on the same day share a marker
   const shownDays = [...new Set(shownEvents.map((e) => e.day))];
   const eventNo = new Map(shownEvents.map((e) => [e, shownDays.indexOf(e.day) + 1]));
 
   const dateOf = useMemo(() => new Map(records.map((r) => [r.day, r.date])), [records]);
 
-  // Baselines: the API's current baseline applies from the latest re-baseline on; before that,
-  // the original baseline is re-estimated from the first 21 days so the band steps honestly.
+  // Baselines: the API's history (`baselines`) says which baseline judged each day. The first one also covers the
+  // days it was estimated from. Older snapshots without the history fall back to a client-side estimate.
+  const segs = useMemo(() => timeline.baselines ?? [], [timeline.baselines]);
   const bands = useMemo(() => {
     const out = {} as Record<Metric, { early: Band | null; current: Band | null }>;
     for (const m of CHART_METRICS) {
@@ -102,7 +123,13 @@ export function TrendsView({ timeline }: { timeline: Timeline }) {
       const rows: Row[] = [];
       for (const r of records) {
         const win = records.filter((x) => x.day > r.day - 7 && x.day <= r.day && x[m] != null).map((x) => x[m] as number);
-        const b = rebaseDay && r.day < rebaseDay ? bands[m].early : bands[m].current;
+        let b: Band | null;
+        if (segs.length) {
+          const sg = segs.find((x) => r.day >= x.from_day && r.day <= x.to_day) ?? (r.day < segs[0].from_day ? segs[0] : segs.at(-1));
+          b = sg?.metrics?.[m] ?? null;
+        } else {
+          b = rebaseDay && r.day < rebaseDay ? bands[m].early : bands[m].current;
+        }
         rows.push({
           day: r.day,
           date: r.date,
@@ -116,7 +143,7 @@ export function TrendsView({ timeline }: { timeline: Timeline }) {
       out[m] = rows;
     }
     return out;
-  }, [records, bands, lightByDay, rebaseDay]);
+  }, [records, bands, lightByDay, rebaseDay, segs]);
 
   const ticks = useMemo(() => {
     const step = range === 30 ? 7 : 21;
@@ -155,16 +182,23 @@ export function TrendsView({ timeline }: { timeline: Timeline }) {
         <Legend />
       </div>
 
-      {shownEvents.length > 0 && (
-        <ol className="flex flex-col gap-1.5 text-[0.9375rem]">
-          {shownEvents.map((e) => {
+      {listed.length > 0 && (
+        <ol className="flex flex-col gap-1.5 text-[0.9375rem]" aria-label={lang === "en" ? "What happened" : "Diễn biến"}>
+          {listed.map((e) => {
+            const lightEv = LIGHT_OF_EVENT[e.type];
             const Icon = EVENT_ICON[e.type] ?? CalendarDays;
             return (
               <li key={`${e.day}-${e.type}`} className="flex items-center gap-2.5">
-                <span className="grid size-6 shrink-0 place-items-center rounded-full border border-ink-2 text-xs font-bold tnum">{eventNo.get(e)}</span>
-                <Icon size={16} className="shrink-0 text-ink-3" aria-hidden />
-                <span className="text-ink-3 tnum">{shortDate(dateOf.get(e.day) ?? "")}</span>
-                <span className="font-medium">
+                {lightEv ? (
+                  <span className="grid size-6 shrink-0 place-items-center">
+                    <StatusShape light={lightEv} size={16} />
+                  </span>
+                ) : (
+                  <span className="grid size-6 shrink-0 place-items-center rounded-full border border-ink-2 text-xs font-bold tnum">{eventNo.get(e)}</span>
+                )}
+                {lightEv ? <span className="w-4 shrink-0" aria-hidden /> : <Icon size={16} className="shrink-0 text-ink-3" aria-hidden />}
+                <span className="w-11 shrink-0 text-ink-3 tnum">{shortDate(dateOf.get(e.day) ?? "")}</span>
+                <span className={lightEv ? "text-ink-2" : "font-medium"}>
                   <T vi={e.label_vi} en={e.label_en} />
                 </span>
               </li>
@@ -183,6 +217,7 @@ export function TrendsView({ timeline }: { timeline: Timeline }) {
             maxDay={maxDay}
             ticks={ticks}
             events={shownEvents}
+            runs={shownRuns}
             eventNo={eventNo}
             dateOf={dateOf}
             lang={lang}
@@ -254,6 +289,13 @@ function Legend() {
         <span className="inline-block h-3 w-5 rounded-sm" style={{ background: "var(--band)" }} aria-hidden />
         <T vi="Khoảng thường ngày (nền ± 1 độ lệch)" en="Usual range (baseline ± 1 SD)" />
       </li>
+      <li className="flex items-center gap-1.5">
+        <span className="inline-flex h-3 w-5 overflow-hidden rounded-sm" aria-hidden>
+          <span className="flex-1" style={{ background: "var(--yellow)", opacity: 0.45 }} />
+          <span className="flex-1" style={{ background: "var(--red)", opacity: 0.4 }} />
+        </span>
+        <T vi="Giai đoạn đèn vàng / đỏ" en="Yellow / red period" />
+      </li>
     </ul>
   );
 }
@@ -265,6 +307,7 @@ function MetricChart({
   maxDay,
   ticks,
   events,
+  runs,
   eventNo,
   dateOf,
   lang,
@@ -275,6 +318,7 @@ function MetricChart({
   maxDay: number;
   ticks: number[];
   events: TimelineEvent[];
+  runs: Run[];
   eventNo: Map<TimelineEvent, number>;
   dateOf: Map<number, string>;
   lang: "vi" | "en";
@@ -361,6 +405,17 @@ function MetricChart({
               tickLine={false}
               allowDataOverflow
             />
+            {runs.map((r) => (
+              <ReferenceArea
+                key={`${r.light}-${r.from}`}
+                x1={r.from - 0.5}
+                x2={r.to + 0.5}
+                fill={r.light === "red" ? "var(--red)" : "var(--yellow)"}
+                fillOpacity={r.light === "red" ? 0.16 : 0.2}
+                stroke="none"
+                ifOverflow="hidden"
+              />
+            ))}
             <Area dataKey="band" type="stepAfter" stroke="none" fill="var(--band)" fillOpacity={1} isAnimationActive={false} connectNulls activeDot={false} />
             <Line dataKey="center" type="stepAfter" stroke="var(--accent)" strokeOpacity={0.55} strokeDasharray="4 4" strokeWidth={1} dot={false} activeDot={false} isAnimationActive={false} />
             <Line dataKey="value" stroke="none" dot={{ r: 2.5, fill: "var(--ink-3)", stroke: "none" }} activeDot={{ r: 5, fill: "var(--ink)", stroke: "var(--surface)", strokeWidth: 2 }} isAnimationActive={false} />

@@ -71,7 +71,30 @@ export interface Today {
   answered: boolean;
   mood: number | null;
   channel?: Channel;
+  /** True when the family_sharing consent is withdrawn: the API withholds the light and summary. */
+  sharing_paused?: boolean;
+  contact?: ContactStatus;
   simulated: boolean;
+}
+
+export interface FamilyContact {
+  id?: number;
+  day: number;
+  date: string;
+  member_id?: string | null;
+  member_name?: string | null;
+  kind: "call" | "visit" | "message" | string;
+  duration_min?: number | null;
+  source?: string;
+  simulated?: boolean;
+}
+
+/** Last family call/visit relative to the latest call day; `nudge` when nobody called for `nudge_after_days`. */
+export interface ContactStatus {
+  last: FamilyContact | null;
+  days_since: number | null;
+  nudge: boolean;
+  nudge_after_days: number;
 }
 
 export interface DailyRecord {
@@ -112,10 +135,22 @@ export interface TimelineEvent {
   label_en: string;
 }
 
+export interface BaselineSegment {
+  /** First day judged against this baseline. */
+  from_day: number;
+  to_day: number;
+  /** Days the baseline was estimated from. */
+  window: [number, number];
+  metrics: Partial<Record<Metric, { center: number; scale: number }>>;
+}
+
 export interface Timeline {
   records: DailyRecord[];
   lights: DailyLight[];
+  /** Baseline in force now (kept for compatibility); `baselines` has the full history. */
   baseline: Partial<Record<Metric, { center: number; scale: number }>>;
+  baselines?: BaselineSegment[];
+  sharing_paused?: boolean;
   events: TimelineEvent[];
   simulated?: boolean;
 }
@@ -125,16 +160,19 @@ export interface Alert {
   day: number;
   date: string;
   type: string;
-  /** API sends the light level ("yellow" | "red"); normalised to info | warning | critical. */
+  /** Light colour as stored ("yellow" | "red"); normalised to info | warning | critical from `severity_level`. */
   severity: "info" | "warning" | "critical" | string;
+  severity_level?: "info" | "warning" | "critical";
   explanation_vi: string;
   explanation_en: string;
   acknowledged: boolean;
 }
 
 export type PhaseKey = "define" | "measure" | "analyze" | "improve" | "control";
+export type PhaseStatus = "done" | "current" | "not_started";
 export interface DmaicPhase {
   phase: PhaseKey;
+  status?: PhaseStatus;
   day_from: number | null;
   day_to: number | null;
   summary_vi: string;
@@ -149,6 +187,16 @@ export interface Dmaic {
   intervention_day?: number | null;
   green_day?: number | null;
   days_to_green?: number | null;
+  /** Family calls + visits per week: before / after the intervention and in the last 14 days. */
+  contact?: {
+    pre_per_week?: number | null;
+    post_per_week?: number | null;
+    recent_per_week?: number | null;
+    pre_window?: [number, number];
+    post_window?: [number, number];
+    recent_window?: [number, number];
+  } | null;
+  sharing_paused?: boolean;
   simulated?: boolean;
 }
 
@@ -191,10 +239,15 @@ export interface RawAccess {
   resource?: string;
   ts?: string;
   at?: string;
+  /** Reads collapsed into this row (one row per actor, action and resource per day). */
+  count?: number;
+  last_ts?: string;
   [k: string]: unknown;
 }
 export interface Privacy {
+  /** Current state per consent purpose (`status`: active | withdrawn | declined). */
   consents: RawConsent[];
+  consent_history?: RawConsent[];
   access_log: RawAccess[];
   data_retention: { audio: string; transcript_days: number; [k: string]: unknown };
   scheduling_active?: boolean;

@@ -14,6 +14,7 @@ def test_compute_cycle_with_intervention():
     assert [p["phase"] for p in c["phases"]] == ["define", "measure", "analyze", "improve", "control"]
     for p in c["phases"]:
         assert p["summary_vi"] and p["summary_en"] and p["day_from"] <= p["day_to"]
+    assert [p["status"] for p in c["phases"]] == ["done", "done", "done", "done", "current"]
     assert c["first_alert_day"] >= 30
     assert c["green_day"] is not None and c["days_to_green"] == c["green_day"] - 40
     e = c["effect"]["speech_rate_sps"]
@@ -25,6 +26,10 @@ def test_compute_cycle_without_intervention():
     recs = series(40)
     c = compute_cycle(recs, evaluate_series(recs), {}, intervention_day=None)
     assert len(c["phases"]) == 5 and c["effect"] == {} and c["new_baseline_day"] is None
+    st = {p["phase"]: p for p in c["phases"]}
+    assert st["analyze"]["status"] == "not_started" and st["analyze"]["day_from"] is None
+    assert st["improve"]["status"] == "not_started" and st["improve"]["day_to"] is None
+    assert st["control"]["status"] == "current" and st["define"]["status"] == "done"
 
 
 def test_evaluation_runs():

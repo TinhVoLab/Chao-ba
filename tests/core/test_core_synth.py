@@ -50,7 +50,23 @@ def test_tu_timeline(personas):
     assert first(p, "red") is None
     assert p["lights"][-1]["light"] == "yellow"
     imp = next(ph for ph in p["dmaic"]["phases"] if ph["phase"] == "improve")
-    assert "thần kinh" in imp["summary_vi"]
+    assert "bác sĩ đánh giá" in imp["summary_vi"] and "thần kinh" not in imp["summary_vi"]
+    assert imp["status"] == "not_started" and imp["day_from"] is None and imp["day_to"] is None
+
+
+def test_hanh_family_contacts_and_calendar():
+    from datetime import date
+    from chaoba.core.synth import generate_persona
+    p = generate_persona("hanh", end_date=date(2026, 3, 10))
+    assert p["records"][-1]["date"] == "2026-03-10" and p["records"][0]["date"] == "2025-12-11"
+    assert p["contacts"][-1]["day"] == 85 and p["contacts"][-1]["date"] == "2026-03-05"
+    c = p["dmaic"]["contact"]
+    assert c["post_per_week"] >= 2 * c["pre_per_week"] and c["recent_per_week"] < c["post_per_week"]
+    imp = next(ph for ph in p["dmaic"]["phases"] if ph["phase"] == "improve")
+    assert "per week" in imp["summary_en"] and imp["status"] == "done"
+    # the anchor only relabels dates
+    q = generate_persona("hanh")
+    assert [r["speech_rate_sps"] for r in q["records"]] == [r["speech_rate_sps"] for r in p["records"]]
 
 
 def test_control_all_green(personas):

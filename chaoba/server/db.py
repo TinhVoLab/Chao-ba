@@ -60,13 +60,22 @@ CREATE TABLE IF NOT EXISTS family_note (
   created_at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS access_log (
   id INTEGER PRIMARY KEY AUTOINCREMENT, elder_id TEXT, actor TEXT NOT NULL, role TEXT, action TEXT NOT NULL,
-  resource TEXT, ts TEXT NOT NULL);
+  resource TEXT, ts TEXT NOT NULL, n INTEGER NOT NULL DEFAULT 1, last_ts TEXT);
+CREATE TABLE IF NOT EXISTS family_contact (
+  id INTEGER PRIMARY KEY AUTOINCREMENT, elder_id TEXT NOT NULL, day INTEGER NOT NULL, date TEXT NOT NULL,
+  member_id TEXT, member_name TEXT, kind TEXT NOT NULL, duration_min INTEGER, source TEXT NOT NULL,
+  simulated INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS ix_contact_elder ON family_contact(elder_id, day);
 CREATE TABLE IF NOT EXISTS care_event (
   id INTEGER PRIMARY KEY AUTOINCREMENT, elder_id TEXT NOT NULL, day INTEGER NOT NULL, type TEXT NOT NULL,
   label_vi TEXT, label_en TEXT);
 CREATE INDEX IF NOT EXISTS ix_alert_elder ON alert(elder_id, day);
 CREATE INDEX IF NOT EXISTS ix_access_elder ON access_log(elder_id, ts);
 """
+
+
+SEVERITY_LEVEL = {"red": "critical", "yellow": "warning", "green": "info", "gray": "info"}
+READ_PREFIX = "read_"  # read actions are de-duplicated per actor / action / resource / day; writes are always logged
 
 
 def now_iso() -> str:
@@ -82,6 +91,10 @@ class Store:
         self.lock = threading.RLock()
         with self.lock:
             self.conn.executescript(DDL)
+            cols = {r[1] for r in self.conn.execute("PRAGMA table_info(access_log)")}
+            for col, ddl in (("n", "INTEGER NOT NULL DEFAULT 1"), ("last_ts", "TEXT")):  # older demo databases
+                if col not in cols:
+                    self.conn.execute(f"ALTER TABLE access_log ADD COLUMN {col} {ddl}")
             self.conn.commit()
 
     # ---------------------------------------------------------------- low level
@@ -169,6 +182,7 @@ class Store:
 
     def alerts(self, elder_id: str) -> list[dict]:
         return [{"id": r["id"], "day": r["day"], "date": r["date"], "type": r["type"], "severity": r["severity"],
+                 "severity_level": SEVERITY_LEVEL.get(r["severity"], "info"),
                  "explanation_vi": r["explanation_vi"], "explanation_en": r["explanation_en"],
                  "acknowledged": bool(r["acknowledged"])}
                 for r in self.q("SELECT * FROM alert WHERE elder_id=? ORDER BY day DESC, id DESC", (elder_id,))]
@@ -181,8 +195,23 @@ class Store:
         return True
 
     # ---------------------------------------------------------------- notes / log / events
+    def date_of_day(self, elder_id: str, day: int | None) -> str | None:
+        """Calendar date of a day index on this elder's calendar (day 1 = first record's date)."""
+        if day is None:
+            return None
+        r = self.one("SELECT day, date FROM metric_daily WHERE elder_id=? ORDER BY day LIMIT 1", (elder_id,))
+        if not r:
+            return None
+        return (datetime.fromisoformat(r["date"]).date() + timedelta(days=int(day) - int(r["day"]))).isoformat()
+
     def notes(self, elder_id: str) -> list[dict]:
-        return [{"id": r["id"], "day": r["day"], "author": r["author"], "text": r["text"],
+        first = self.one("SELECT day, date FROM metric_daily WHERE elder_id=? ORDER BY day LIMIT 1", (elder_id,))
+
+        def date_of(day):
+            if day is None or not first:
+                return None
+            return (datetime.fromisoformat(first["date"]).date() + timedelta(days=int(day) - int(first["day"]))).isoformat()
+        return [{"id": r["id"], "day": r["day"], "date": date_of(r["day"]), "author": r["author"], "text": r["text"],
                  "to_elder": bool(r["to_elder"]), "simulated": bool(r["simulated"]), "created_at": r["created_at"]}
                 for r in self.q("SELECT * FROM family_note WHERE elder_id=? ORDER BY id DESC", (elder_id,))]
 
@@ -193,12 +222,26 @@ class Store:
                                                 1 if simulated else 0, now_iso()))
 
     def log_access(self, elder_id: str | None, actor: str, role: str, action: str, resource: str) -> None:
-        self.x("INSERT INTO access_log(elder_id, actor, role, action, resource, ts) VALUES (?,?,?,?,?,?)",
-               (elder_id, actor, role, action, resource, now_iso()))
+        """Append to the access log. Reads are de-duplicated: one row per actor, action and resource per (UTC) day,
+        with a counter ``n`` and ``last_ts``; writes (notes, acks, consent changes) always get their own row."""
+        ts = now_iso()
+        with self.lock:
+            if action.startswith(READ_PREFIX):
+                r = self.conn.execute(
+                    "SELECT id FROM access_log WHERE elder_id IS ? AND actor=? AND action=? AND resource IS ? "
+                    "AND substr(ts, 1, 10)=? ORDER BY id DESC LIMIT 1",
+                    (elder_id, actor, action, resource, ts[:10])).fetchone()
+                if r:
+                    self.conn.execute("UPDATE access_log SET n=n+1, last_ts=? WHERE id=?", (ts, r["id"]))
+                    self.conn.commit()
+                    return
+            self.conn.execute("INSERT INTO access_log(elder_id, actor, role, action, resource, ts, n, last_ts) "
+                              "VALUES (?,?,?,?,?,?,1,?)", (elder_id, actor, role, action, resource, ts, ts))
+            self.conn.commit()
 
     def access_log(self, elder_id: str, limit: int = 50) -> list[dict]:
-        return [dict(r) for r in self.q("SELECT actor, role, action, resource, ts FROM access_log WHERE elder_id=? "
-                                         "ORDER BY id DESC LIMIT ?", (elder_id, limit))]
+        return [dict(r) for r in self.q("SELECT actor, role, action, resource, ts, n AS count, last_ts FROM access_log "
+                                         "WHERE elder_id=? ORDER BY id DESC LIMIT ?", (elder_id, limit))]
 
     def add_consent(self, elder_id: str, kind: str, granted: bool, by: str | None, note: str | None = None,
                     detail: dict | None = None, ts: str | None = None) -> None:
@@ -214,6 +257,50 @@ class Store:
                       "note": r["note"], "ts": r["ts"]})
             out.append(d)
         return out
+
+    def current_consents(self, elder_id: str) -> list[dict]:
+        """Latest state per consent kind (first-seen order) with ``status`` active | withdrawn | declined."""
+        hist = self.consents(elder_id)
+        order: list[str] = []
+        latest: dict[str, dict] = {}
+        ever: dict[str, bool] = {}
+        first: dict[str, dict] = {}
+        for c in hist:
+            k = c["kind"]
+            if k not in latest:
+                order.append(k)
+                first[k] = c
+            ever[k] = ever.get(k, False) or c["granted"]
+            latest[k] = c
+        out = []
+        for k in order:
+            c = dict(first[k])  # keep the original scope/witness text
+            last = latest[k]
+            c.update({"granted": last["granted"], "granted_by": last["granted_by"], "ts": last["ts"],
+                      "note": last["note"], "changed_by": last["granted_by"] if last is not first[k] else None,
+                      "status": "active" if last["granted"] else ("withdrawn" if ever[k] else "declined")})
+            if last is not first[k]:
+                c["changed_at"] = last["ts"]
+            out.append(c)
+        return out
+
+    def consent_granted(self, elder_id: str, kind: str, default: bool = True) -> bool:
+        r = self.one("SELECT granted FROM consent WHERE elder_id=? AND kind=? ORDER BY id DESC LIMIT 1", (elder_id, kind))
+        return bool(r["granted"]) if r else default
+
+    # ---------------------------------------------------------------- family contact log
+    def add_contact(self, elder_id: str, day: int, date: str, member_id: str | None, member_name: str | None,
+                    kind: str, duration_min: int | None = None, source: str = "app", simulated: bool = False) -> int:
+        return self.x("INSERT INTO family_contact(elder_id, day, date, member_id, member_name, kind, duration_min, "
+                      "source, simulated, created_at) VALUES (?,?,?,?,?,?,?,?,?,?)",
+                      (elder_id, day, date, member_id, member_name, kind, duration_min, source,
+                       1 if simulated else 0, now_iso()))
+
+    def contacts(self, elder_id: str) -> list[dict]:
+        return [{"id": r["id"], "day": r["day"], "date": r["date"], "member_id": r["member_id"],
+                 "member_name": r["member_name"], "kind": r["kind"], "duration_min": r["duration_min"],
+                 "source": r["source"], "simulated": bool(r["simulated"]), "created_at": r["created_at"]}
+                for r in self.q("SELECT * FROM family_contact WHERE elder_id=? ORDER BY day, id", (elder_id,))]
 
     def events(self, elder_id: str) -> list[dict]:
         return [{"day": r["day"], "type": r["type"], "label_vi": r["label_vi"], "label_en": r["label_en"]}

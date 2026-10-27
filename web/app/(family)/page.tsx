@@ -3,7 +3,6 @@ import Link from "next/link";
 import { ArrowRight, Headphones, MessageCircle } from "lucide-react";
 import { getNotes, getProfile, getTimeline, getToday, loadElderContext } from "@/lib/api";
 import { LIGHT_HINT, LIGHT_WORD, MOOD_WORD, SYMPTOM_WORD, kin, longDate, shortDate } from "@/lib/format";
-import type { Note, Today } from "@/lib/types";
 import { normNotes } from "@/lib/normalize";
 import { PageHeader, Disclaimer } from "@/components/PageHeader";
 import { PageSkeleton } from "@/components/Skeletons";
@@ -19,15 +18,6 @@ export default function TodayPage({ searchParams }: PageProps<"/">) {
   );
 }
 
-/** Days since the family last left a note (the API has no family-call log; notes are the proxy). */
-function daysSince(notes: Note[], today: Today): number | null {
-  const days = notes.map((n) => n.day).filter((d): d is number => typeof d === "number");
-  if (days.length) return Math.max(0, today.day - Math.max(...days));
-  const todayMs = Date.parse(`${today.date}T00:00:00Z`);
-  const ms = notes.map((n) => Date.parse(`${(n.date ?? "").slice(0, 10)}T00:00:00Z`)).filter((x) => !Number.isNaN(x));
-  return ms.length ? Math.max(0, Math.round((todayMs - Math.max(...ms)) / 86400000)) : null;
-}
-
 async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["searchParams"] }) {
   const sp = await searchParams;
   const ctx = await loadElderContext(sp.elder);
@@ -37,8 +27,11 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
   const t = today.data;
   const p = profile.data;
   const light = t.light ?? "gray";
-  const word = LIGHT_WORD[light] ?? LIGHT_WORD.gray;
-  const hint = LIGHT_HINT[light] ?? LIGHT_HINT.gray;
+  const paused = t.sharing_paused === true;
+  const word = paused ? { vi: "Đang tạm dừng", en: "Paused" } : (LIGHT_WORD[light] ?? LIGHT_WORD.gray);
+  const hint = paused
+    ? { vi: "Chia sẻ với gia đình đã được rút lại", en: "Sharing with the family was withdrawn" }
+    : (LIGHT_HINT[light] ?? LIGHT_HINT.gray);
   const k = kin(p.honorific);
   const date = longDate(t.date);
   const primary = p.family?.find((f) => f.role === "primary") ?? p.family?.[0];
@@ -91,7 +84,14 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
             </span>
           )}
         </h2>
-        {t.answered ? (
+        {paused ? (
+          <p className="text-lg font-medium">
+            <T vi="Tóm tắt cuộc gọi đang ẩn vì chia sẻ đã tạm dừng." en="Call summaries are hidden while sharing is paused." />{" "}
+            <Link href={`/privacy?elder=${id}`} className="font-semibold text-accent underline underline-offset-2">
+              <T vi="Quyền riêng tư" en="Privacy" />
+            </Link>
+          </p>
+        ) : t.answered ? (
           <>
             <p className="text-lg leading-snug font-medium">
               <T vi={t.summary_vi} en={t.summary_en} />
@@ -130,7 +130,7 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
         phone={p.phone ?? "+84900000000"}
         author={primary?.name ?? "Gia đình"}
         initialNotes={noteList}
-        daysSinceContact={daysSince(noteList, t)}
+        contact={t.contact ?? null}
         live={live}
         todayDate={t.date}
         todayDay={t.day}
