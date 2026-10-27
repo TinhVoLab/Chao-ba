@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { Cpu, Eye, FileText, MicOff, ShieldCheck, ShieldOff, ChartLine, Undo2 } from "lucide-react";
 import type { FamilyMember, Privacy, RawAccess, RawConsent } from "@/lib/types";
 import { longDate, shortDate, vnTime } from "@/lib/format";
-import { viewerFor } from "@/lib/viewer";
+import { currentViewer } from "@/lib/viewer";
 import { SENT_EVENT, postWrite, useOutbox, type PendingWrite } from "@/lib/outbox";
 import { NotSaved } from "./SaveState";
 import { T } from "./T";
@@ -155,8 +155,8 @@ export function PrivacyView({
     const base = `/api/elders/${encodeURIComponent(elderId)}`;
     const path = on ? (kind === "daily_call" ? `${base}/resume` : `${base}/consents/${kind}/grant`) : `${base}/consents/${kind}/withdraw`;
     const body = on
-      ? { requested_by: viewerFor(elderId).name }
-      : { requested_by: viewerFor(elderId).name, confirmed_by_elder_or_proxy: true };
+      ? { requested_by: currentViewer(elderId).name }
+      : { requested_by: currentViewer(elderId).name, confirmed_by_elder_or_proxy: true };
     const r = await postWrite("withdraw", elderId, path, body, { meta: { consent: kind }, queue: !on });
     if (r.state === "saved") {
       setOverride((o) => ({ ...o, [kind]: on ? "active" : "withdrawn" }));
@@ -433,8 +433,8 @@ export function PrivacyView({
               </span>
               <span id="wd-confirm-hint" className="block text-sm text-ink-3">
                 <T
-                  vi={`Ghi nhận: ${viewerFor(elderId).name} yêu cầu, có xác nhận của ${elderVi} hoặc người đại diện.`}
-                  en={`Recorded as: requested by ${viewerFor(elderId).name}, confirmed by ${elderEn} or their representative.`}
+                  vi={`Ghi nhận: ${currentViewer(elderId).name} yêu cầu, có xác nhận của ${elderVi} hoặc người đại diện.`}
+                  en={`Recorded as: requested by ${currentViewer(elderId).name}, confirmed by ${elderEn} or their representative.`}
                 />
               </span>
             </span>

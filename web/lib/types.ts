@@ -268,3 +268,228 @@ export interface Loaded<T> {
   data: T;
   live: boolean;
 }
+
+// ---------------------------------------------------------------- family coordination (/api/elders/{id}/family)
+export interface FamilyMemberRow {
+  id: string;
+  name: string;
+  relation: string;
+  relation_vi: string;
+  role: "primary" | "viewer";
+  city: string | null;
+}
+
+export interface FamilyViewer {
+  member_id: string | null;
+  name: string;
+  role: "primary" | "viewer" | "elder_self";
+  permissions: { full_view: boolean; edit_rota: boolean; manage_tasks: boolean; see_access_log: boolean };
+}
+
+export interface RotaSlot {
+  weekday: number;
+  weekday_vi: string;
+  weekday_en: string;
+  member_id: string | null;
+  member_name: string | null;
+}
+
+export interface Rota {
+  week: RotaSlot[];
+  today: RotaSlot & { date: string; done: boolean; anyone_called: boolean };
+  history: (RotaSlot & {
+    date: string;
+    day: number | null;
+    contacted: boolean;
+    by_assignee: boolean;
+    contacts: { member_name: string; kind: string }[];
+    before_rota: boolean;
+  })[];
+  gap: { days_since: number | null; nudge: boolean; threshold: number; last: FamilyContact | null };
+  created_day: number | null;
+  mine?: { weekdays: number[]; your_turn: boolean; next: { date: string; weekday: number; in_days: number } | null };
+  nudge_vi: string | null;
+  nudge_en: string | null;
+}
+
+export type TaskKind = "appointment" | "medicine" | "visit" | "other";
+
+export interface CareTask {
+  id: number;
+  kind: TaskKind;
+  title_vi: string;
+  title_en: string;
+  assignee_id: string | null;
+  assignee_name: string | null;
+  due_date: string | null;
+  overdue: boolean;
+  done: boolean;
+  done_by: string | null;
+  done_day: number | null;
+  created_by: string | null;
+  created_day: number | null;
+  simulated: boolean;
+}
+
+export interface AskedBy {
+  name: string;
+  date: string | null;
+  member_id: string | null;
+  how: "asked" | "note";
+  you?: boolean;
+}
+
+export interface Suggestion {
+  key: string;
+  source: "call" | "memory" | "synthesis";
+  day: number | null;
+  text_vi: string;
+  text_en: string;
+  asked_by: AskedBy[];
+}
+
+export interface Suggestions {
+  suggestions: Suggestion[];
+  already_asked: Suggestion[];
+  window_from_day: number;
+  sharing_paused: boolean;
+  simulated: boolean;
+}
+
+export interface SynthesisItem {
+  topic: string;
+  label_vi: string;
+  label_en: string;
+  count: number;
+  ai: number;
+  people: string[];
+  sources: number;
+  first_day: number;
+  last_day: number;
+  mentions: { source: "ai" | "note"; who: string; date: string; day: number }[];
+  text_vi: string;
+  text_en: string;
+}
+
+export interface Synthesis {
+  from_day: number;
+  to_day: number;
+  from_date: string;
+  to_date: string;
+  days: number;
+  items: SynthesisItem[];
+  summary_vi: string;
+  summary_en: string;
+  contact_vi: string;
+  contact_en: string;
+  engine: "rules" | "claude";
+  sharing_paused: boolean;
+  simulated: boolean;
+}
+
+export interface AccessPerson {
+  actor: string;
+  role: string;
+  views: number;
+  writes: number;
+  last_ts: string;
+}
+
+export interface FamilyOverview {
+  viewer: FamilyViewer;
+  members: FamilyMemberRow[];
+  rota: Rota;
+  tasks: CareTask[];
+  suggestions: Suggestions;
+  synthesis: Synthesis;
+  access: { days: number; people: AccessPerson[] };
+  sharing_paused: boolean;
+  simulated: boolean;
+}
+
+export type FeedKind = "call" | "note" | "contact" | "alert" | "task" | "event" | "rota" | "gap" | "self_report";
+
+export interface FeedItem {
+  id: string;
+  kind: FeedKind;
+  day: number | null;
+  date: string | null;
+  actor: string | null;
+  title_vi: string;
+  title_en: string;
+  text_vi: string;
+  text_en: string;
+  redacted: boolean;
+  light?: Light | null;
+  severity?: "yellow" | "red";
+  rehearsal?: boolean;
+  to_elder?: boolean;
+  simulated?: boolean;
+  text_lang?: "vi";
+}
+
+export interface FamilyTimeline {
+  items: FeedItem[];
+  upcoming: CareTask[];
+  from_day: number;
+  to_day: number;
+  viewer: FamilyViewer;
+  members: FamilyMemberRow[];
+  sharing_paused: boolean;
+  simulated: boolean;
+}
+
+// ---------------------------------------------------------------- community dashboard (/api/community/overview)
+export interface VisitRow {
+  pid: string;
+  label: string;
+  initials: string;
+  age: number;
+  area: string;
+  light: Light;
+  days_in_state: number;
+  since_date: string | null;
+  reasons_vi: string[];
+  reasons_en: string[];
+  days_since_contact: number | null;
+  missed_contact: boolean;
+  lives_alone: boolean;
+  demo_persona: boolean;
+  group: "red" | "yellow" | "check_in";
+  rank: number;
+}
+
+export interface InterventionRow {
+  intervention: string;
+  label_vi: string;
+  label_en: string;
+  episodes: number;
+  open: number;
+  recovered: number;
+  rate: number | null;
+  median_days_to_green: number | null;
+  enough: boolean;
+}
+
+export interface Community {
+  ward: { name_vi: string; name_en: string; elders: number; sharing: number; not_sharing: number; demo_personas: number };
+  as_of: string;
+  counts: Record<Light, number>;
+  lives_alone: number;
+  missed_contact: number;
+  visit_list: VisitRow[];
+  trend: ({ date: string } & Record<Light, number>)[];
+  interventions: InterventionRow[];
+  method: {
+    recovery_days: number;
+    missed_contact_days: number;
+    checkin_no_contact_days: number;
+    trend_days: number;
+    cohort: { n: number; days: number; seed: number };
+  };
+  association_note_vi: string;
+  association_note_en: string;
+  disclaimer_vi: string;
+  disclaimer_en: string;
+  simulated: boolean;
+}

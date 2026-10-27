@@ -124,7 +124,7 @@ counter (`count`, `last_ts`); writes always get their own row.
   `requested_by` defaults to the `X-Actor` name; both are stored on the consent row.
   Processing for that purpose stops at once: `daily_call` pauses scheduling exactly like an in-call opt-out (`POST /api/calls` → 409);
   `voice_metrics` stores no speech metrics for later calls; `family_sharing` makes today/timeline/alerts/dmaic return no health data
-  (`sharing_paused: true`, light gray); `clinician_sharing` has no clinician view to stop in the prototype. Nothing is deleted.
+  (`sharing_paused: true`, light gray); `clinician_sharing` removes the elder from the community dashboard (`/api/community/overview`). Nothing is deleted.
 - `POST /api/elders/{id}/consents/{type}/grant` re-grants; `POST /api/elders/{id}/resume` = re-grant `daily_call`.
 - `GET /api/evaluation` → evaluation report JSON
 - `POST /api/demo/reset[?elder=hanh]` (only while `CHAOBA_DEMO=1`, else 403) → deletes that elder's (or every elder's)
@@ -140,6 +140,97 @@ counter (`count`, `last_ts`); writes always get their own row.
   duration are calibrated to the persona's current baseline speech rate and pause ratio; the page reports
   `start`/`end = start + duration_sec`.
 - `POST /api/calls/{call_id}/end` → `{metrics: CallMetrics, analysis: CallAnalysis, today: <today shape>, day, simulated, rehearsal}`
+- Elder standing screen (`chaoba/server/elder_ui.py`; the web app's `/screen`; writes are the elder's self-reports, never scored):
+  `GET /api/elders/{id}/screen` → `{date, day, medications:[{name, time, timed, status:"taken"|"not_yet"|null, answered_at}], messages:[to_elder notes, last 7 days], mood_today, game_plays_today, opted_out, simulated}`;
+  `POST|GET /api/elders/{id}/medication_log` `{status:"taken"|"not_yet", medication?, time?}`; `POST|GET /api/elders/{id}/mood_checkin` `{mood:"happy"|"neutral"|"sad"}`;
+  `POST|GET /api/elders/{id}/game_plays` `{game:"ca_dao"|"family_names", item_id, correct, choice?}` (GET `?days=14` → entries/plays + today). `source` = `elder_screen` when `X-Role: elder_self`.
+  `POST /api/demo/reset` also clears these rows. The screen's video call posts a normal `POST /api/elders/{id}/contacts`.
+- **Sổ ký ức (memory book) + prevention activities** (`chaoba/server/memories.py`; tables `memory_story`, `activity_log`;
+  text only, no audio). Role: `X-Role: elder_self` (or `elder`) = the elder; any other role = family.
+  - `GET /api/elders/{id}/memories` → `{elder_id, display_name, name_en, honorific, viewer:"elder"|"family", stories:[Story],
+    themes:[{theme, label_vi, label_en, count}], shared_count, private_count, total, sharing_paused, audio:{stored:false, note_vi, note_en}, simulated}`.
+    Family roles get **only shared stories** (private ones appear only in `private_count`: no title, no text); the elder gets all.
+    While `family_sharing` is withdrawn, family roles get `stories: []`, `sharing_paused: true`.
+    `Story = {id, day, date, question_id, theme, theme_vi, theme_en, era:{label_vi, label_en, decade}, title_vi, title_en, text_vi,
+    text_en, translation:"human"|"llm"|"gist", people:[{vi,en}], places:[str], word_count, shared, consent:{answer:"yes"|"no"|"unclear"|"not_asked",
+    asked_in_call, by, ts, history:[{shared, by, role?, requested_by?, confirmed_by_elder_or_proxy?, ts}]}, source:"call"|"simulated", simulated}`.
+    Themes: childhood, hometown, food, work, love, wedding, family, festivals, hardship, friends.
+  - `GET /api/elders/{id}/memories/export?lang=vi|en|both` → `text/html` printable memoir of the **shared** stories only: title page
+    "Sổ ký ức của Bà Hạnh" / "Memory book of Mrs Hanh", one chapter per theme (era order inside), print CSS, simulated badge.
+  - `POST /api/elders/{id}/memories/{mid}/share` | `/unshare`, body `{confirmed_by_elder_or_proxy?: bool, requested_by?: str}` →
+    `{ok, id, shared, consent}`. Unless `X-Role` is `elder_self`, the body must carry `confirmed_by_elder_or_proxy: true`, else **400**
+    `{"detail":{"error":"confirmation_required", ...}}` (same rule as consent withdrawal); 404 for an unknown story. Each change is appended
+    to `consent.history` and to the access log (`share_memory` / `unshare_memory`).
+  - `GET /api/elders/{id}/activities` → `{games:{played, success_rate, success_rate_first_4_weeks, success_rate_last_4_weeks, current_level (1-3),
+    by_category:[{category, label_vi, label_en, played, success_rate}], trend:[{week, day_from, day_to, played, success_rate, mean_level}]},
+    screen_games:{played, correct_rate, played_last_14_days, by_game} (read from elder_ui's `elder_game_play`), nudges:{delivered, by_category:[{category,
+    label_vi, label_en, count}]}, life_questions:{asked, stories}, associations:[{activity, label_vi, label_en, days_with, days_without,
+    next_day_mood_with, next_day_mood_without, mood_diff, next_day_poor_sleep_with, next_day_poor_sleep_without}], association_note_vi/en
+    ("association, not causation"), improve:{day, date, focus, focus_labels, label_vi, label_en, plan_nudges_delivered, mood_before, mood_after,
+    poor_sleep_before, poor_sleep_after} | null, narrative:{stories, words_early, words_recent, change_pct, note_vi, note_en} | null (exploratory,
+    not used by the light), difficulty_rule_vi/en, simulated}`. Success rate counts a partial answer as ½. `{sharing_paused:true, simulated}` for family
+    roles while `family_sharing` is withdrawn.
+  - `POST /api/calls/{id}/end` additionally returns `memory_book:{story_id, shared, title_vi?, title_en?, game:{category, level, outcome}|null, nudge}`.
+  - Call flow (prompt `ut-thuong-2026.10.3`): story phase = follow-up hook (if any) → today's life-story question (no repeats) → its follow-up →
+    "Bà cho con kể lại chuyện này cho chị Lan nghe được hông?" (yes → shared; no / unclear / not asked → private) → closing: optional memory game
+    (2 days in 3; levels 1-3, a miss makes the next one easier, two successes harder), medication reminder, family message, one habit nudge, goodbye.
+  - Seed: 11 / 11 / 8 simulated stories for hanh / tu / control (mixed shared / private), activity log over the 90 days, and Bà Hạnh's day-44
+    care plan (`care_plan` row: walk + sunlight, water, regular sleep, call an old friend). `POST /api/demo/reset` re-seeds them.
+- **Family coordination** (`chaoba/server/family.py`; tables `care_circle`, `care_rota`, `care_task`, `topic_asked`; family app `/family`).
+  Identity: `X-Actor` is matched (case/diacritics-normalised) to a care-circle member; the effective role is the *lower* of `X-Role`
+  and the member's stored role (`primary` > `viewer`), so a header cannot raise it. `X-Role: elder_self` = the elder.
+  `clinician` / `health_station` → **403** `{"detail":{"error":"family_only",...}}`. Every request is written to the access log.
+  Seeded circles (simulated): hanh = Lan (primary, TP.HCM), Minh (viewer, Hà Nội), Vy (viewer, Bến Tre); tu = Bà Tư (primary), Khoa, Ngân;
+  control = Thảo (primary), Tâm. Weekday indices are Mon=0 … Sun=6.
+  - `GET /api/elders/{id}/family` → `{viewer, members, rota, tasks, suggestions, synthesis, access, sharing_paused, simulated}` (one call for the page).
+    `viewer = {member_id, name, role, permissions:{full_view, edit_rota, manage_tasks, see_access_log}}`;
+    `members = [{id, name, relation, relation_vi, role:"primary"|"viewer", city}]`.
+  - `GET /api/elders/{id}/family/timeline?days=14` (1–120) → `{items:[{id, kind, day, date, actor, title_vi, title_en, text_vi, text_en, redacted,
+    ...}], upcoming:[appointment tasks], from_day, to_day, viewer, members, sharing_paused, simulated}`, newest first.
+    `kind` ∈ `call` (morning-call summary; `light`, `rehearsal`), `note` (`to_elder`; `text_lang:"vi"`), `contact` (`contact_kind`), `alert`
+    (`severity`, `alert_type`, `acknowledged`), `event` (care_event: medication change, doctor visit, re-baseline …; `event_type`), `task`
+    (created / done; `task_id`, `task_kind`), `rota` (rota changed), `self_report` (the elder's own screen taps: medication taken / not yet, mood;
+    `report_kind`; never scored), `gap` (nobody called for ≥ 3 days; `severity:"yellow"`).
+    **Viewer filtering:** other people's notes come back with `redacted:true` and a placeholder text; alert texts have verbatim quotes replaced by
+    `“…”` (`redacted:true`). While `family_sharing` is withdrawn, `call`, `alert`, `event` and `self_report` items are omitted.
+  - `GET /api/elders/{id}/family/synthesis?days=7` → `{from_day, to_day, from_date, to_date, days, items:[{topic, label_vi, label_en, count, ai,
+    people:[names], sources, first_day, last_day, mentions:[{source:"ai"|"note", who, date, day}], text_vi, text_en}], summary_vi, summary_en,
+    contact_vi, contact_en, engine:"rules"|"claude", sharing_paused, simulated}`. Sources: symptom keys of answered day records (AI) + family notes
+    (negation-aware `extract_symptoms`; `to_elder` notes skipped). Topics: pain (body part named, e.g. "đau lưng"), insomnia, dizziness, skipped_meal,
+    fall, sadness, missed_medication. With a key, Claude Haiku rewording must pass `explain.postcheck` (no new numbers, no blocklisted words).
+  - `GET /api/elders/{id}/family/rota` → `{week:[{weekday, weekday_vi, weekday_en, member_id, member_name}], today:{…, date, done, anyone_called},
+    history:[last 7 days: {date, day, member_id, member_name, contacted, by_assignee, contacts:[{member_name, kind}], before_rota}],
+    gap:{days_since, nudge, threshold:3, last}, created_day, mine?:{weekdays, your_turn, next:{date, weekday, in_days}|null}, nudge_vi, nudge_en}`.
+    `your_turn` = today is the viewer's weekday and they have not logged a contact today; `gap` reuses the Today contact status (0 once anyone
+    logged a contact today).
+  - `POST /api/elders/{id}/family/rota` `{assignments:{"0":"lan", "6": null, …}}` → `{ok, …rota}`. Primary only (**403** `primary_only`);
+    422 for a weekday outside 0–6 or an unknown member; `null` clears the day.
+  - `GET /api/elders/{id}/family/tasks?include_done=true` → `{tasks:[Task], kinds, simulated}`;
+    `Task = {id, kind:"appointment"|"medicine"|"visit"|"other", title_vi, title_en, assignee_id, assignee_name, due_date, overdue, done, done_by,
+    done_day, created_by, created_day, simulated}` (tasks created in the app keep the typed title in both fields).
+  - `POST /api/elders/{id}/family/tasks` `{kind, title, assignee_id?, due_date?: "YYYY-MM-DD"}` → `{ok, …Task}` (primary or viewer; 422 on bad kind,
+    empty/long title, unknown assignee, bad date; elder_self 403).
+  - `POST /api/elders/{id}/family/tasks/{task_id}` `{done?, assignee_id?, due_date?, title?}` → `{ok, …Task}`: primary any task; viewer only tasks
+    assigned to or created by them (else **403** `not_allowed`); 404 unknown task. `DELETE …/tasks/{task_id}`: primary or the creator.
+  - `GET /api/elders/{id}/family/suggestions` → `{suggestions:[Suggestion] (≤ 4, fresh), already_asked:[Suggestion], window_from_day, sharing_paused,
+    simulated}`; `Suggestion = {key, source:"call"|"memory"|"synthesis", day, text_vi, text_en, asked_by:[{name, date, member_id, how:"asked"|"note",
+    you}]}`. Keys: `care:<topic>`, `hook:<text>`, `act:<activity>`, `fact:<normalised fact>`.
+  - `POST /api/elders/{id}/family/suggestions/asked` `{topic_key}` → `{ok, topic_key, member_name, day, date}` (moves the topic to `already_asked`
+    for everyone for 7 days).
+  - `GET /api/elders/{id}/family/access?days=7` → `{days, people:[{actor, role, views, writes, last_ts}], simulated}` (the elder sees who looked).
+- **Community dashboard** (`chaoba/server/community.py`; family app `/community`).
+  `GET /api/community/overview` with `X-Role: clinician | health_station` (else **403** `{"detail":{"error":"clinician_only",...}}`) →
+  `{ward:{name_vi:"Phường X, TP.HCM (mô phỏng)", name_en, elders, sharing, not_sharing, demo_personas}, as_of, counts:{red, yellow, green, gray},
+  lives_alone, missed_contact, visit_list:[VisitRow], trend:[{date, red, yellow, green, gray}] (30 days), interventions:[{intervention:
+  "family_calls"|"station_visit"|"clinic_visit"|"none", label_vi, label_en, episodes, open, recovered, rate|null, median_days_to_green|null, enough}],
+  method:{recovery_days:21, missed_contact_days:7, checkin_no_contact_days:10, trend_days:30, cohort:{n:60, days:120, seed:2026}},
+  association_note_vi/en, disclaimer_vi/en, simulated:true}`.
+  `VisitRow = {pid, label:"N.T.H. · 72 · Khu phố 3", initials, age, area, light, days_in_state, since_date, reasons_vi[], reasons_en[],
+  days_since_contact, missed_contact, lives_alone, demo_persona, group:"red"|"yellow"|"check_in", rank}`. Order: red, then yellow (each by days in
+  state ↓, missed contact, lives alone), then `check_in` (green/gray, lives alone, no family contact ≥ 10 days). Pseudonymised: no names, ids or
+  addresses. Ward = 60 elders from `generate_cohort(n=60, days=120, seed=2026)` re-dated to end yesterday + the 3 personas; only elders with active
+  `clinician_sharing` consent appear. Each request logs `read_community` on every sharing persona's access log. Interventions are association
+  only (assigned at random in the simulation).
 - Static elder call page: `GET /call?elder=hanh` (big single button, Web Speech API vi-VN for STT/TTS, WebAudio VAD for timings).
 
 Seed: on startup the server loads personas `hanh`, `tu`, `control` from `chaoba.core.synth` (90 days) plus their

@@ -1,0 +1,716 @@
+{
+ "memories": {
+  "elder_id": "tu",
+  "display_name": "Ông Tư",
+  "name_en": "Mr Tu",
+  "honorific": "ông",
+  "viewer": "family",
+  "stories": [
+   {
+    "id": 12,
+    "day": 3,
+    "date": "2026-08-01",
+    "question_id": "w5",
+    "theme": "work",
+    "theme_vi": "Công việc hồi trẻ",
+    "theme_en": "Working life",
+    "era": {
+     "label_vi": "Năm 1972",
+     "label_en": "1972",
+     "decade": 1970
+    },
+    "title_vi": "Lớp học đầu tiên",
+    "title_en": "My first class",
+    "text_vi": "Năm 1972 tui ra trường sư phạm, được phân về dạy Văn ở trường Lê Quý Đôn. Lớp đầu tiên là lớp mười một, bốn mươi hai đứa, đứa nào cũng lém. Bài đầu tui giảng Truyện Kiều, đọc đoạn Kiều ở lầu Ngưng Bích mà cả lớp im phăng phắc. Tới giờ mấy đứa học trò cũ còn ghé thăm tui mỗi ngày hai mươi tháng mười một.",
+    "text_en": "In 1972 I graduated from teachers' college and was posted to teach literature at Lê Quý Đôn school. My first class was eleventh grade, forty-two pupils, every one a chatterbox. My first lesson was The Tale of Kiều; I read the passage of Kiều at Ngưng Bích tower and the whole class fell silent. To this day some former pupils still visit me every 20 November.",
+    "translation": "human",
+    "people": [
+     {
+      "vi": "học trò",
+      "en": "my pupils"
+     }
+    ],
+    "places": [
+     "trường Lê Quý Đôn"
+    ],
+    "word_count": 69,
+    "shared": true,
+    "consent": {
+     "answer": "yes",
+     "asked_in_call": true,
+     "by": "elder (in call, simulated)",
+     "ts": "2026-08-01",
+     "history": [
+      {
+       "shared": true,
+       "by": "elder (in call, simulated)",
+       "ts": "2026-08-01"
+      }
+     ]
+    },
+    "source": "simulated",
+    "simulated": true
+   },
+   {
+    "id": 13,
+    "day": 10,
+    "date": "2026-08-08",
+    "question_id": "c2",
+    "theme": "childhood",
+    "theme_vi": "Tuổi thơ",
+    "theme_en": "Childhood",
+    "era": {
+     "label_vi": "Tuổi nhỏ (thập niên 1950)",
+     "label_en": "Childhood (1950s)",
+     "decade": 1950
+    },
+    "title_vi": "Những ngày đi học",
+    "title_en": "School days",
+    "text_vi": "Hồi nhỏ tui học trường làng ở Gò Công, đi chân đất băng qua hai cánh đồng. Thầy Ba dạy tui chữ, nghiêm lắm mà thương học trò, mùa mưa còn cho tụi tui ngủ lại nhà thầy. Nhờ thầy mà tui mê văn chương, sau này mới đi làm thầy giáo.",
+    "text_en": "As a boy I went to the village school in Gò Công, walking barefoot across two fields. Teacher Ba taught me to read and write; he was strict but loved his pupils, and in the rainy season he even let us sleep at his house. Thanks to him I fell in love with literature and later became a teacher myself.",
+    "translation": "human",
+    "people": [
+     {
+      "vi": "thầy Ba",
+      "en": "Teacher Ba"
+     }
+    ],
+    "places": [
+     "Gò Công"
+    ],
+    "word_count": 52,
+    "shared": true,
+    "consent": {
+     "answer": "yes",
+     "asked_in_call": true,
+     "by": "elder (in call, simulated)",
+     "ts": "2026-08-08",
+     "history": [
+      {
+       "shared": true,
+       "by": "elder (in call, simulated)",
+       "ts": "2026-08-08"
+      }
+     ]
+    },
+    "source": "simulated",
+    "simulated": true
+   },
+   {
+    "id": 14,
+    "day": 17,
+    "date": "2026-08-15",
+    "question_id": "l1",
+    "theme": "love",
+    "theme_vi": "Chuyện tình",
+    "theme_en": "Love and marriage",
+    "era": {
+     "label_vi": "Năm 1974",
+     "label_en": "1974",
+     "decade": 1970
+    },
+    "title_vi": "Lần đầu gặp nhau",
+    "title_en": "How we met",
+    "text_vi": "Tui gặp bà nhà ở nhà sách Khai Trí trên đường Lê Lợi năm 1974. Bả đang kiếm tập thơ Xuân Diệu, tui đứng kế bên đọc thuộc lòng cho bả nghe một bài. Bả cười, nói ông thầy này nói nhiều quá, vậy mà sáu tháng sau tụi tui cưới.",
+    "text_en": "I met my wife at the Khai Trí bookshop on Lê Lợi street in 1974. She was looking for a book of Xuân Diệu's poems, and I stood beside her and recited one from memory. She laughed and said this teacher talks too much, and yet six months later we were married.",
+    "translation": "human",
+    "people": [
+     {
+      "vi": "bà nhà",
+      "en": "my wife"
+     }
+    ],
+    "places": [
+     "nhà sách Khai Trí, đường Lê Lợi"
+    ],
+    "word_count": 51,
+    "shared": true,
+    "consent": {
+     "answer": "yes",
+     "asked_in_call": true,
+     "by": "elder (in call, simulated)",
+     "ts": "2026-08-15",
+     "history": [
+      {
+       "shared": true,
+       "by": "elder (in call, simulated)",
+       "ts": "2026-08-15"
+      }
+     ]
+    },
+    "source": "simulated",
+    "simulated": true
+   },
+   {
+    "id": 17,
+    "day": 42,
+    "date": "2026-09-09",
+    "question_id": "p1",
+    "theme": "family",
+    "theme_vi": "Nuôi con",
+    "theme_en": "Raising a family",
+    "era": {
+     "label_vi": "Năm 1979",
+     "label_en": "1979",
+     "decade": 1970
+    },
+    "title_vi": "Đứa con đầu lòng",
+    "title_en": "When my first child was born",
+    "text_vi": "Thằng Khoa sinh năm 1979, hồi đó lương thầy giáo ít lắm, bà nhà phải nhận may đồ thêm. Tối tui ẵm nó đi dạo bờ kè, đọc thơ cho nó nghe. Nó lớn lên học kỹ sư chớ hổng chịu học văn như tui.",
+    "text_en": "Khoa was born in 1979; a teacher's salary was tiny then and my wife took in sewing. In the evenings I carried him along the canal embankment and recited poems to him. He grew up to study engineering rather than literature like me.",
+    "translation": "human",
+    "people": [
+     {
+      "vi": "thằng Khoa",
+      "en": "Khoa, my son"
+     },
+     {
+      "vi": "bà nhà",
+      "en": "my wife"
+     }
+    ],
+    "places": [],
+    "word_count": 45,
+    "shared": true,
+    "consent": {
+     "answer": "yes",
+     "asked_in_call": true,
+     "by": "elder (in call, simulated)",
+     "ts": "2026-09-09",
+     "history": [
+      {
+       "shared": true,
+       "by": "elder (in call, simulated)",
+       "ts": "2026-09-09"
+      }
+     ]
+    },
+    "source": "simulated",
+    "simulated": true
+   },
+   {
+    "id": 18,
+    "day": 51,
+    "date": "2026-09-18",
+    "question_id": "f2",
+    "theme": "food",
+    "theme_vi": "Món ăn xưa",
+    "theme_en": "Food and cooking",
+    "era": {
+     "label_vi": "Những năm lập nghiệp (thập niên 1980)",
+     "label_en": "Adult years (1980s)",
+     "decade": 1980
+    },
+    "title_vi": "Món tủ",
+    "title_en": "My signature dish",
+    "text_vi": "Món tủ của tui là cá kho tộ, bà nhà dạy cho. Kho với nước dừa, tiêu nhiều, để lửa riu riu. Thằng Khoa về là đòi ăn món đó.",
+    "text_en": "My signature dish is fish braised in a clay pot; my wife taught me. You braise it with coconut water and plenty of pepper on a very low flame. Whenever Khoa comes home he asks for it.",
+    "translation": "human",
+    "people": [
+     {
+      "vi": "bà nhà",
+      "en": "my wife"
+     },
+     {
+      "vi": "thằng Khoa",
+      "en": "Khoa, my son"
+     }
+    ],
+    "places": [],
+    "word_count": 30,
+    "shared": true,
+    "consent": {
+     "answer": "yes",
+     "asked_in_call": true,
+     "by": "elder (in call, simulated)",
+     "ts": "2026-09-18",
+     "history": [
+      {
+       "shared": true,
+       "by": "elder (in call, simulated)",
+       "ts": "2026-09-18"
+      }
+     ]
+    },
+    "source": "simulated",
+    "simulated": true
+   },
+   {
+    "id": 20,
+    "day": 69,
+    "date": "2026-10-06",
+    "question_id": "h4",
+    "theme": "hometown",
+    "theme_vi": "Quê nhà",
+    "theme_en": "Hometown",
+    "era": {
+     "label_vi": "Tuổi trẻ (thập niên 1970)",
+     "label_en": "Young adulthood (1970s)",
+     "decade": 1970
+    },
+    "title_vi": "Chợ quê",
+    "title_en": "The village market",
+    "text_vi": "Chợ Bến Thành hồi xưa tui hay đi với bà nhà. Mua sách cũ, ờ, ở cái đường gần đó. Lâu quá rồi.",
+    "text_en": "In the old days I often went to Bến Thành market with my wife. We bought second-hand books on a street nearby. It was a long time ago.",
+    "translation": "human",
+    "people": [
+     {
+      "vi": "bà nhà",
+      "en": "my wife"
+     }
+    ],
+    "places": [
+     "chợ Bến Thành"
+    ],
+    "word_count": 23,
+    "shared": true,
+    "consent": {
+     "answer": "yes",
+     "asked_in_call": true,
+     "by": "elder (in call, simulated)",
+     "ts": "2026-10-06",
+     "history": [
+      {
+       "shared": true,
+       "by": "elder (in call, simulated)",
+       "ts": "2026-10-06"
+      }
+     ]
+    },
+    "source": "simulated",
+    "simulated": true
+   },
+   {
+    "id": 21,
+    "day": 78,
+    "date": "2026-10-15",
+    "question_id": "w2",
+    "theme": "work",
+    "theme_vi": "Công việc hồi trẻ",
+    "theme_en": "Working life",
+    "era": {
+     "label_vi": "Những năm lập nghiệp (thập niên 1980)",
+     "label_en": "Adult years (1980s)",
+     "decade": 1980
+    },
+    "title_vi": "Điều tự hào",
+    "title_en": "What I am proud of",
+    "text_vi": "Tui tự hào nhất là học trò. Có đứa giờ làm hiệu trưởng, ờ, ở trường nào đó bên quận năm. Nó hay về thăm.",
+    "text_en": "What I am proudest of is my pupils. One of them is a headmaster now, at some school over in District 5. He often comes to visit.",
+    "translation": "human",
+    "people": [
+     {
+      "vi": "học trò",
+      "en": "my pupils"
+     }
+    ],
+    "places": [],
+    "word_count": 25,
+    "shared": true,
+    "consent": {
+     "answer": "yes",
+     "asked_in_call": true,
+     "by": "elder (in call, simulated)",
+     "ts": "2026-10-15",
+     "history": [
+      {
+       "shared": true,
+       "by": "elder (in call, simulated)",
+       "ts": "2026-10-15"
+      }
+     ]
+    },
+    "source": "simulated",
+    "simulated": true
+   },
+   {
+    "id": 22,
+    "day": 87,
+    "date": "2026-10-24",
+    "question_id": "t2",
+    "theme": "festivals",
+    "theme_vi": "Tết và lễ hội",
+    "theme_en": "Tết and festivals",
+    "era": {
+     "label_vi": "Tuổi nhỏ (thập niên 1950)",
+     "label_en": "Childhood (1950s)",
+     "decade": 1950
+    },
+    "title_vi": "Đồ mới ngày Tết",
+    "title_en": "New clothes for Tết",
+    "text_vi": "Tết hồi nhỏ má may cho tui bộ đồ mới màu xanh. Mặc đi chúc Tết, ờ, vui lắm.",
+    "text_en": "At Tết when I was small, Mother sewed me a new blue outfit. I wore it to pay New Year visits, and it was great fun.",
+    "translation": "human",
+    "people": [
+     {
+      "vi": "má",
+      "en": "my mother"
+     }
+    ],
+    "places": [],
+    "word_count": 19,
+    "shared": true,
+    "consent": {
+     "answer": "yes",
+     "asked_in_call": true,
+     "by": "elder (in call, simulated)",
+     "ts": "2026-10-24",
+     "history": [
+      {
+       "shared": true,
+       "by": "elder (in call, simulated)",
+       "ts": "2026-10-24"
+      }
+     ]
+    },
+    "source": "simulated",
+    "simulated": true
+   }
+  ],
+  "themes": [
+   {
+    "theme": "childhood",
+    "label_vi": "Tuổi thơ",
+    "label_en": "Childhood",
+    "count": 1
+   },
+   {
+    "theme": "hometown",
+    "label_vi": "Quê nhà",
+    "label_en": "Hometown",
+    "count": 1
+   },
+   {
+    "theme": "food",
+    "label_vi": "Món ăn xưa",
+    "label_en": "Food and cooking",
+    "count": 1
+   },
+   {
+    "theme": "work",
+    "label_vi": "Công việc hồi trẻ",
+    "label_en": "Working life",
+    "count": 2
+   },
+   {
+    "theme": "love",
+    "label_vi": "Chuyện tình",
+    "label_en": "Love and marriage",
+    "count": 1
+   },
+   {
+    "theme": "family",
+    "label_vi": "Nuôi con",
+    "label_en": "Raising a family",
+    "count": 1
+   },
+   {
+    "theme": "festivals",
+    "label_vi": "Tết và lễ hội",
+    "label_en": "Tết and festivals",
+    "count": 1
+   }
+  ],
+  "shared_count": 8,
+  "private_count": 3,
+  "total": 11,
+  "sharing_paused": false,
+  "audio": {
+   "stored": false,
+   "note_vi": "Chỉ lưu chữ, không lưu giọng nói. Giữ lại đoạn ghi âm giọng kể là tính năng tương lai, chỉ khi người cao tuổi đồng ý cho từng đoạn.",
+   "note_en": "Text only; no voice is stored. Keeping a voice clip of a story is a future feature, only with the elder's consent for each clip."
+  },
+  "simulated": true
+ },
+ "activities": {
+  "games": {
+   "played": 59,
+   "success_rate": 0.746,
+   "success_rate_first_4_weeks": 0.842,
+   "success_rate_last_4_weeks": 0.583,
+   "current_level": 1,
+   "by_category": [
+    {
+     "category": "ca_dao",
+     "label_vi": "Nối câu ca dao",
+     "label_en": "Finish a folk verse",
+     "played": 23,
+     "success_rate": 0.848
+    },
+    {
+     "category": "naming",
+     "label_vi": "Kể tên theo chủ đề",
+     "label_en": "Name things in a category",
+     "played": 18,
+     "success_rate": 0.75
+    },
+    {
+     "category": "family",
+     "label_vi": "Kể tên con cháu",
+     "label_en": "Name family members",
+     "played": 18,
+     "success_rate": 0.611
+    }
+   ],
+   "trend": [
+    {
+     "week": 1,
+     "day_from": 1,
+     "day_to": 7,
+     "played": 5,
+     "success_rate": 0.9,
+     "mean_level": 2.2
+    },
+    {
+     "week": 2,
+     "day_from": 8,
+     "day_to": 14,
+     "played": 5,
+     "success_rate": 0.8,
+     "mean_level": 2.6
+    },
+    {
+     "week": 3,
+     "day_from": 15,
+     "day_to": 21,
+     "played": 4,
+     "success_rate": 0.75,
+     "mean_level": 2.5
+    },
+    {
+     "week": 4,
+     "day_from": 22,
+     "day_to": 28,
+     "played": 5,
+     "success_rate": 0.9,
+     "mean_level": 3.0
+    },
+    {
+     "week": 5,
+     "day_from": 29,
+     "day_to": 35,
+     "played": 5,
+     "success_rate": 0.6,
+     "mean_level": 3.0
+    },
+    {
+     "week": 6,
+     "day_from": 36,
+     "day_to": 42,
+     "played": 3,
+     "success_rate": 1.0,
+     "mean_level": 2.33
+    },
+    {
+     "week": 7,
+     "day_from": 43,
+     "day_to": 49,
+     "played": 5,
+     "success_rate": 1.0,
+     "mean_level": 3.0
+    },
+    {
+     "week": 8,
+     "day_from": 50,
+     "day_to": 56,
+     "played": 5,
+     "success_rate": 0.5,
+     "mean_level": 2.2
+    },
+    {
+     "week": 9,
+     "day_from": 57,
+     "day_to": 63,
+     "played": 4,
+     "success_rate": 1.0,
+     "mean_level": 2.75
+    },
+    {
+     "week": 10,
+     "day_from": 64,
+     "day_to": 70,
+     "played": 5,
+     "success_rate": 0.6,
+     "mean_level": 2.6
+    },
+    {
+     "week": 11,
+     "day_from": 71,
+     "day_to": 77,
+     "played": 5,
+     "success_rate": 0.6,
+     "mean_level": 1.2
+    },
+    {
+     "week": 12,
+     "day_from": 78,
+     "day_to": 84,
+     "played": 4,
+     "success_rate": 0.75,
+     "mean_level": 2.0
+    },
+    {
+     "week": 13,
+     "day_from": 85,
+     "day_to": 91,
+     "played": 4,
+     "success_rate": 0.375,
+     "mean_level": 1.75
+    }
+   ]
+  },
+  "nudges": {
+   "delivered": 88,
+   "by_category": [
+    {
+     "category": "water",
+     "label_vi": "Uống đủ nước",
+     "label_en": "Drink enough water",
+     "count": 11
+    },
+    {
+     "category": "walk_sun",
+     "label_vi": "Đi bộ, phơi nắng sáng",
+     "label_en": "Morning walk and sunlight",
+     "count": 30
+    },
+    {
+     "category": "chair",
+     "label_vi": "Tập tay chân trên ghế",
+     "label_en": "Chair exercises",
+     "count": 10
+    },
+    {
+     "category": "sleep",
+     "label_vi": "Ngủ đúng giờ",
+     "label_en": "Regular bedtime",
+     "count": 16
+    },
+    {
+     "category": "friend",
+     "label_vi": "Gọi hỏi thăm bạn cũ",
+     "label_en": "Call an old friend",
+     "count": 9
+    },
+    {
+     "category": "club",
+     "label_vi": "Sinh hoạt hội người cao tuổi",
+     "label_en": "Elders' association",
+     "count": 12
+    }
+   ]
+  },
+  "screen_games": {
+   "played": 0,
+   "correct_rate": null,
+   "played_last_14_days": 0,
+   "by_game": [],
+   "source_vi": "Trò chơi bấm trên màn hình đứng (người cao tuổi tự chơi)",
+   "source_en": "Tap games on the standing screen (played by the elder)"
+  },
+  "life_questions": {
+   "asked": 11,
+   "stories": 11
+  },
+  "associations": [
+   {
+    "activity": "nudge:chair",
+    "label_vi": "Tập tay chân trên ghế",
+    "label_en": "Chair exercises",
+    "days_with": 10,
+    "days_without": 75,
+    "next_day_mood_with": 4.5,
+    "next_day_mood_without": 4.09,
+    "mood_diff": 0.41,
+    "next_day_poor_sleep_with": 0.0,
+    "next_day_poor_sleep_without": 0.01
+   },
+   {
+    "activity": "nudge:sleep",
+    "label_vi": "Ngủ đúng giờ",
+    "label_en": "Regular bedtime",
+    "days_with": 16,
+    "days_without": 69,
+    "next_day_mood_with": 4.44,
+    "next_day_mood_without": 4.07,
+    "mood_diff": 0.37,
+    "next_day_poor_sleep_with": 0.06,
+    "next_day_poor_sleep_without": 0.0
+   },
+   {
+    "activity": "game_day",
+    "label_vi": "Ngày có chơi trò nhớ",
+    "label_en": "Days with a memory game",
+    "days_with": 57,
+    "days_without": 28,
+    "next_day_mood_with": 4.21,
+    "next_day_mood_without": 4.0,
+    "mood_diff": 0.21,
+    "next_day_poor_sleep_with": 0.0,
+    "next_day_poor_sleep_without": 0.04
+   },
+   {
+    "activity": "nudge:water",
+    "label_vi": "Uống đủ nước",
+    "label_en": "Drink enough water",
+    "days_with": 11,
+    "days_without": 74,
+    "next_day_mood_with": 4.27,
+    "next_day_mood_without": 4.12,
+    "mood_diff": 0.15,
+    "next_day_poor_sleep_with": 0.0,
+    "next_day_poor_sleep_without": 0.01
+   },
+   {
+    "activity": "nudge:club",
+    "label_vi": "Sinh hoạt hội người cao tuổi",
+    "label_en": "Elders' association",
+    "days_with": 12,
+    "days_without": 73,
+    "next_day_mood_with": 4.08,
+    "next_day_mood_without": 4.15,
+    "mood_diff": -0.07,
+    "next_day_poor_sleep_with": 0.0,
+    "next_day_poor_sleep_without": 0.01
+   },
+   {
+    "activity": "nudge:walk_sun",
+    "label_vi": "Đi bộ, phơi nắng sáng",
+    "label_en": "Morning walk and sunlight",
+    "days_with": 27,
+    "days_without": 58,
+    "next_day_mood_with": 3.96,
+    "next_day_mood_without": 4.22,
+    "mood_diff": -0.26,
+    "next_day_poor_sleep_with": 0.0,
+    "next_day_poor_sleep_without": 0.02
+   },
+   {
+    "activity": "nudge:friend",
+    "label_vi": "Gọi hỏi thăm bạn cũ",
+    "label_en": "Call an old friend",
+    "days_with": 9,
+    "days_without": 76,
+    "next_day_mood_with": 3.67,
+    "next_day_mood_without": 4.2,
+    "mood_diff": -0.53,
+    "next_day_poor_sleep_with": 0.0,
+    "next_day_poor_sleep_without": 0.01
+   }
+  ],
+  "association_note_vi": "Chỉ là liên quan, không phải nhân quả: ngày hôm sau có thể khác vì nhiều lý do khác (thời tiết, thuốc, con cháu ghé thăm). Mẫu nhỏ.",
+  "association_note_en": "Association, not causation: the next day can differ for many other reasons (weather, medication, visits). Small samples.",
+  "improve": null,
+  "narrative": {
+   "stories": 11,
+   "words_early": 52.8,
+   "words_recent": 27.67,
+   "change_pct": -47.6,
+   "note_vi": "Độ dài trung bình các câu chuyện (gồm cả chuyện giữ riêng, chỉ đếm số chữ). Chỉ để tham khảo, không dùng cho đèn hằng ngày.",
+   "note_en": "Average story length (including private stories, word counts only). Exploratory; not used by the daily light."
+  },
+  "difficulty_rule_vi": "Trò chơi tự dễ hơn sau một lần chưa nhớ ra, khó hơn sau hai lần nhớ đúng liền (mức 1–3).",
+  "difficulty_rule_en": "Games get easier after a miss and harder after two successes in a row (levels 1–3).",
+  "simulated": true
+ }
+}

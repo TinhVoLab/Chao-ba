@@ -1,14 +1,16 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { ArrowRight, Headphones, MessageCircle } from "lucide-react";
-import { getNotes, getProfile, getTimeline, getToday, loadElderContext } from "@/lib/api";
-import { LIGHT_HINT, LIGHT_WORD, MOOD_WORD, SYMPTOM_WORD, kin, longDate, shortDate } from "@/lib/format";
+import { ArrowRight, Bell, Headphones, MessageCircle, Pill, Smile } from "lucide-react";
+import { getAlerts, getMedicationLog, getMoodCheckin, getNotes, getProfile, getTimeline, getToday, loadElderContext } from "@/lib/api";
+import { serverViewer } from "@/lib/viewer-server";
+import { LIGHT_HINT, LIGHT_WORD, MOOD_WORD, SYMPTOM_WORD, kin, longDate, shortDate, vnTime } from "@/lib/format";
 import { normNotes } from "@/lib/normalize";
 import { PageHeader, Disclaimer } from "@/components/PageHeader";
 import { PageSkeleton } from "@/components/Skeletons";
 import { StatusShape, lightText, lightTint } from "@/components/StatusShape";
 import { TodayActions } from "@/components/TodayActions";
 import { T } from "@/components/T";
+import { MemoryBookCard } from "@/components/memories/MemoryBookCard";
 
 export default function TodayPage({ searchParams }: PageProps<"/">) {
   return (
@@ -22,7 +24,20 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
   const sp = await searchParams;
   const ctx = await loadElderContext(sp.elder);
   const id = ctx.elder.id;
-  const [today, profile, notes, timeline] = await Promise.all([getToday(id), getProfile(id), getNotes(id), getTimeline(id, 90)]);
+  const [today, profile, notes, timeline, alerts, viewer] = await Promise.all([
+    getToday(id),
+    getProfile(id),
+    getNotes(id),
+    getTimeline(id, 90),
+    getAlerts(id),
+    serverViewer(id),
+  ]);
+  const [medLog, mood] = await Promise.all([getMedicationLog(id), getMoodCheckin(id)]);
+  // Self-reports from the elder's home screen: shown as-is, never scored.
+  const medsToday = (medLog.data?.today ?? []).filter((m) => m.status);
+  const moodToday = mood.data?.today ?? null;
+  // Alerts live under "Thêm / More" in the nav, so unread ones are also surfaced here.
+  const unread = (Array.isArray(alerts.data) ? alerts.data : []).filter((a) => !a.acknowledged);
   const live = ctx.live && today.live && profile.live && notes.live && timeline.live;
   const t = today.data;
   const p = profile.data;
@@ -34,7 +49,6 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
     : (LIGHT_HINT[light] ?? LIGHT_HINT.gray);
   const k = kin(p.honorific);
   const date = longDate(t.date);
-  const primary = p.family?.find((f) => f.role === "primary") ?? p.family?.[0];
   const records = timeline.data.records ?? [];
   const noteList = normNotes(notes.data, records);
   const lights = (timeline.data.lights ?? []).slice(-14);
@@ -57,6 +71,30 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
         simulated={t.simulated !== false || records.some((r) => r.simulated !== false)}
         live={live}
       />
+
+      {unread.length > 0 && (
+        <Link
+          href={`/alerts?elder=${id}`}
+          className="fade-in flex min-h-14 items-center gap-3 rounded-2xl border border-line bg-surface px-4 py-3 transition-colors duration-150 hover:border-line-strong"
+        >
+          <span
+            className={`grid size-10 shrink-0 place-items-center rounded-full ${
+              unread.some((a) => a.severity === "critical" || a.severity === "red") ? "bg-red-tint text-red-ink" : "bg-yellow-tint text-yellow-ink"
+            }`}
+          >
+            <Bell size={20} aria-hidden />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block font-semibold">
+              <T vi={`${unread.length} cảnh báo chưa xem`} en={`${unread.length} unread alert${unread.length > 1 ? "s" : ""}`} />
+            </span>
+            <span className="block truncate text-sm text-ink-3">
+              <T vi={unread[0].explanation_vi} en={unread[0].explanation_en} />
+            </span>
+          </span>
+          <ArrowRight size={18} className="shrink-0 text-ink-3" aria-hidden />
+        </Link>
+      )}
 
       {/* The light */}
       <section aria-labelledby="light-word" className={`fade-in rounded-[28px] ${lightTint(light)} p-5 sm:p-7`}>
@@ -132,13 +170,50 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
         )}
       </section>
 
+      {!paused && (medsToday.length > 0 || moodToday) && (
+        <section aria-label="Tự báo / Self-report" className="flex flex-col gap-1.5 rounded-2xl bg-surface-2 px-4 py-3 text-[0.9375rem]">
+          {medsToday.map((m) => (
+            <p key={m.name} className="flex items-start gap-2">
+              <Pill size={17} className="mt-0.5 shrink-0 text-ink-3" aria-hidden />
+              <span>
+                {m.status === "taken" ? (
+                  <T
+                    vi={`${k.vi[0].toUpperCase()}${k.vi.slice(1)} đã bấm “Đã uống thuốc” (${m.name}) lúc ${vnTime(m.answered_at ?? "")}.`}
+                    en={`${k.en} tapped “Took my medicine” (${m.name}) at ${vnTime(m.answered_at ?? "")}.`}
+                  />
+                ) : (
+                  <T
+                    vi={`${k.vi[0].toUpperCase()}${k.vi.slice(1)} bấm “Chưa uống” (${m.name}) lúc ${vnTime(m.answered_at ?? "")}.`}
+                    en={`${k.en} tapped “Not yet” (${m.name}) at ${vnTime(m.answered_at ?? "")}.`}
+                  />
+                )}
+              </span>
+            </p>
+          ))}
+          {moodToday && (
+            <p className="flex items-start gap-2">
+              <Smile size={17} className="mt-0.5 shrink-0 text-ink-3" aria-hidden />
+              <span>
+                <T
+                  vi={`${k.vi[0].toUpperCase()}${k.vi.slice(1)} tự chọn tâm trạng hôm nay: ${moodToday.label_vi} (${vnTime(moodToday.created_at)}).`}
+                  en={`${k.en} chose today's mood: ${moodToday.label_en} (${vnTime(moodToday.created_at)}).`}
+                />
+              </span>
+            </p>
+          )}
+          <p className="text-xs text-ink-3">
+            <T vi="Tự bấm trên màn hình ở nhà; chỉ để biết, không tính vào đèn." en="Tapped on the home screen; for information only, not counted in the light." />
+          </p>
+        </section>
+      )}
+
       <TodayActions
         key={id}
         elderId={id}
         kinVi={k.vi}
         kinEn={k.en}
         phone={p.phone ?? "+84900000000"}
-        author={primary?.name ?? "Gia đình"}
+        author={viewer.name}
         initialNotes={noteList}
         contact={t.contact ?? null}
         todayDate={t.date}
@@ -174,6 +249,8 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
           </div>
         </section>
       )}
+
+      <MemoryBookCard elderId={id} />
 
       <Link
         href={`/call?elder=${id}`}

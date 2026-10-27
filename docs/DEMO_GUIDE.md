@@ -76,12 +76,15 @@ Every safety layer (spotter, guardrails, output scrub, blocklist) runs in both m
 | `/trends?elder=hanh` | 90 days by default (30-day option): each signal vs the person's usual range (baseline ± 1 SD, the real baseline history from the API so the band steps at the day-77 re-baseline), 7-day average, the yellow/red period shaded behind every chart, numbered markers for medication change (1), doctor visit / care plan (2) and new baseline (3), table view |
 | `/alerts?elder=hanh` | Alerts with explanations; "Seen, I'm on it" acknowledgement |
 | `/dmaic?elder=hanh` | Define → Measure → Analyze → Improve → Control (status from the API: done / current / not started), family calls+visits per week before / after / last 14 days, cycle on the timeline, intervention effect (14 days before / after) |
+| `/memories?elder=hanh` | **Sổ ký ức / Memory book**: shared life stories as chapters by theme (era, people, places; VI/EN), "3 chuyện bà giữ riêng" (count only, no content), **Xuất sổ ký ức** opens the printable memoir `localhost:8000/api/elders/hanh/memories/export?lang=vi` (shared stories only). Linked from Today. The DMAIC page has a **Hoạt động phòng ngừa / Prevention activities** section (memory games with adaptive difficulty, habit nudges, Bà Hạnh's day-44 care plan, "association, not causation") |
+| `/family?elder=hanh` | **Gia đình / Family**: weekly synthesis "Tuần này má nhắc đau lưng 3 lần, với 2 người trong nhà (Lan, Minh) và với Út Thương", before-you-call topics (what a sibling already asked is set aside), call rota (whose turn today, last 7 days, "5 days since anyone called"), care tasks, the shared timeline (filters: All / Family / Út Thương / Self-reported) and "who looked at Mom's information". Switch **Đang xem với tư cách / Viewing as** (under the elder switcher, on every page) between Lan (primary, full view), Minh and Vy (summary view: other people's notes are hidden, quotes removed) |
+| `/community` | **Bảng trạm y tế / Health-station board** (under **Thêm / More**): simulated ward "Phường X, TP.HCM" (60 generated elders + the 3 personas), counts by light, prioritised visit list (red → yellow → check-in; pseudonymised initials · age · area), 30-day ward trend, "which actions coincided with recovery" (association only). Read with `X-Role: health_station` |
 | `/privacy?elder=hanh` | Data retention; consents per purpose with **Withdraw** (confirm dialog; really stops processing via `POST /api/elders/{id}/consents/{type}/withdraw`) and **Turn back on**; "who viewed" access log (one row per person, page and day, with a count) |
-| `/screen?elder=hanh` | 9:16 standing-screen mockup for the elder's home |
+| `/screen?elder=hanh` | **Elder standing screen** (interactive 9:16 web prototype; hardware is phase 2). On a desktop it shows the screen in a device frame with a "Hướng dẫn demo" panel; on a portrait tablet/phone, or with `?kiosk=1`, it fills the screen. Flags: `sim=1` hands-free rehearsal, `typed=1` typed answers, `tts=0` captions only (silent), `lang=en` English, `elder=tu|control`. See *Standing screen* below |
 | `/call` | Links to the elder call page for each elder |
 | `http://localhost:8000/api/evaluation` | Simulated-cohort evaluation JSON (`data/eval/report.md` for the readable version) |
 
-Switch elders with `?elder=hanh|tu|control` or the elder switcher. The VI/EN toggle is in the header.
+Switch elders with `?elder=hanh|tu|control` or the elder switcher. The VI/EN toggle is in the header. On a phone the bottom bar has **Hôm nay · Xu hướng · Gia đình · DMAIC · Thêm**; **Thêm / More** opens Cảnh báo (with an unread badge, also shown as a banner on Today), Sổ ký ức, Riêng tư and Cộng đồng. On a desktop all of them are in the side rail.
 
 ---
 
@@ -112,6 +115,50 @@ Before you start: both servers running and a freshly seeded DB. Open two Chrome 
 - **Consent withdrawal from the app.** Privacy (use Ông Bảy) → **Withdraw** next to "Share daily light and summaries with family" → confirm that Ông Bảy (or his legal proxy) agreed (the API refuses a family withdrawal without `confirmed_by_elder_or_proxy: true`) → Today shows "Paused" and hides the light, summary, trends and alerts. **Turn back on** restores it. Withdrawing "Receive daily check-in calls" pauses calls exactly like the in-call opt-out.
 - **Contact log.** On Today for Bà Hạnh, tap **Gọi má** (on a laptop the `tel:` link does nothing visible): the call is logged, the nudge disappears on reload and "You called Mom today" shows.
 - **Real speech.** Open `/call?elder=hanh` without `sim=1`, allow the microphone, and answer in Vietnamese. Speech is recognised by the browser (Chrome/Edge); pauses are measured by an in-page VAD.
+
+### Family coordination and the health-station board (≈ 60 s, optional)
+
+- **/family?elder=hanh as Lan**: "Each child hears one fragment. Lan heard about Mom's back on the phone, Minh by Zalo,
+  and Út Thương in a morning call. Nobody had the picture; the weekly synthesis puts it together: back pain 3 times, from
+  three sources, ask whether it's better, and if it lasts, a check-up." Point at the rota: "It's Lan's turn today, and
+  nobody has called for 5 days."
+- Switch **Viewing as → Minh**: the notice says he sees the summary view; Lan's and Vy's notes show a lock; the rota says
+  his next turn. The topic "Cây mai sắp ra nụ" sits under "Already covered this week: Lan asked 22/10", so Mom isn't asked
+  the same thing three times. Tick his task "Về thăm má cuối tuần"; it shows as done for everyone.
+- **Thêm → Cộng đồng**: "For a commune health station: 61 people who agreed to share, pseudonymised. Red first, longest
+  first, then those with no family contact and living alone. The recovery table is association only; in this simulation
+  the actions are random, and the page says so." This is the B2G path.
+- Reset: `curl -X POST localhost:8000/api/demo/reset` (also re-seeds the family data).
+
+### Memory book and prevention activities (≈ 45 s, optional)
+
+- In the simulated call (`/call?elder=hanh&sim=1`, or add `&tts=0` for captions only), after the recall game Út Thương asks
+  **one life-story question** (never repeated; e.g. "Hồi nhỏ má của bà hay dạy bà điều gì vậy bà?") and its follow-up, then:
+  *"Bà cho con kể lại chuyện này cho chị Lan nghe được hông bà?"* The simulated elder says yes or "con giữ riêng giùm bà";
+  either way Út Thương confirms it. On two days out of three a short **game** follows (finish a ca dao line, name a few
+  fruits), offered as play; the closing ends with one **habit nudge** (water, morning walk, bedtime, call an old friend…).
+- Say: "Each story becomes a page of a memoir for the grandchildren, but only if she says yes; private stories stay hers.
+  Text only, no voice is kept; keeping a voice clip would be a future opt-in, clip by clip."
+- Open **/memories?elder=hanh**: the new story is there if shared (otherwise the private count went up). Click **Xuất sổ ký
+  ức** for the printable book. Switch to **Ông Tư**: his later stories are shorter and less specific, in line with his drift.
+  It is shown as data, not scored.
+- **DMAIC → Hoạt động phòng ngừa**: games played, recall rate first vs last 4 weeks (Ông Tư 84 % → 58 %, difficulty
+  settled at level 1, so the game stays easy and never feels like a test), nudges by kind, Bà Hạnh's care plan from day 44
+  with mood / poor-sleep before and after, and which activities were followed by better next days, labelled
+  **association, not causation**.
+- Elder-side view (all stories, incl. private): `curl -H 'X-Role: elder_self' localhost:8000/api/elders/hanh/memories`.
+
+### Standing screen (≈ 60 s, optional)
+
+Open `localhost:3000/screen?elder=hanh` (desktop: device frame + demo guide; tablet in portrait or `&kiosk=1`: full screen).
+
+- **Idle:** big clock and date, rotating family photos (generated placeholders), Lan's message from the family app (`to_elder` notes), today's 07:00 medication with **Đã uống thuốc ✓ / Chưa**, a water reminder. Nothing moves on its own except the slow photo fade and Út Thương breathing.
+- **Nói chuyện với Út Thương:** a real call on the same API as `/call` (`POST /api/calls`, `/turns`, `/end`). Add `&sim=1` for a hands-free rehearsal or `&typed=1` to type. The avatar breathes, speaks and listens; "Đang nghe…" shows when the mic is open; big **Kết thúc** ends at once (speech is cancelled, the mic released). After the call, `/today` shows today's day updated.
+- **Emergency:** with `&typed=1`, type `tôi bị tức ngực` → calm full-screen red: "Đã báo cho chị Lan", **Gọi 115** (`tel:115`); the family app gets the red `emergency` alert.
+- **Gọi con Lan:** a clearly labelled *simulated* video call; on connect it posts `POST /api/elders/hanh/contacts` (kind `call`, Lan), so Today's "days since anyone called" resets.
+- **Đã uống thuốc / Hôm nay thấy sao? / Trò chơi ca dao:** stored via `POST /api/elders/{id}/medication_log`, `/mood_checkin`, `/game_plays` (GET returns the history). These are the elder's self-reports: not scored, not diagnostic, and they never change the light. If the API is unreachable, taps are kept on the device and sent later.
+- Sound: in real use Út Thương speaks (vi-VN, rate 0.9) and stops instantly when the call ends or the page is hidden. Add `&tts=0` for captions only.
+- Automated check (silent: `--mute-audio`, `tts=0`, sim/typed modes): `WEB=http://localhost:3000 API=http://localhost:8000 node web/scripts/screen-e2e.mjs` (resets Bà Hạnh, writes `docs/screenshots/screen-*.png`).
 
 ### Caveats to state honestly if asked
 

@@ -16,7 +16,11 @@ Flow of one elder turn (`Orchestrator.handle_turn`):
   8. output scrub (no disease names, no money talk)
 
 Phases: greeting (family greeting + consent) -> wellbeing (sleep, food, feeling) -> recall (free, then cue)
--> story (follow-up hook or life story) -> closing (medication reminder + family message + goodbye, ~4:30).
+-> story (follow-up hook, then today's life-story question for the memory book, its follow-up, and the per-story
+   consent question "Bà cho con kể lại chuyện này cho chị Lan nghe được hông?")
+-> closing (optional short memory game, medication reminder, family message, habit nudge, goodbye, ~4:30).
+The memory-book question, the game and the nudge are optional (DailyContext.life_question / game / nudge); without
+them the call runs exactly as before. See lifestory.py and activities.py.
 """
 from __future__ import annotations
 
@@ -38,6 +42,8 @@ from .prompts import (SYSTEM_PROMPT, PROMPT_VERSION, PHASE_DIRECTIVES, DailyCont
                       default_family_greeting)
 from .textnorm import (normalize, contains_phrase, find_phrase, word_count, strip_diacritics,
                        has_vietnamese_diacritics)
+from .lifestory import share_question, parse_share_answer, share_ack
+from .activities import score_game, game_reaction
 
 log = logging.getLogger("chaoba.agent")
 
@@ -84,6 +90,17 @@ class CallState:
     end_reason: str | None = None
     engine_used: str = "scripted"
     last_client_end: float = 0.0
+    # memory book (life story) + prevention activities
+    life_q_asked: bool = False
+    life_q_follow_used: bool = False
+    story_texts: list[str] = field(default_factory=list)   # elder answers to the life-story question (memoir source)
+    share_stage: str = "none"                # none | asked | done
+    share_answer: str | None = None          # yes | no | unclear  (unclear -> private)
+    game_stage: str = "none"                 # none | asked | done
+    game_text: str = ""
+    game_outcome: str | None = None          # success | partial | miss
+    pending_ack: str | None = None           # share / game acknowledgement said before the next line
+    nudge_said: bool = False
 
     @property
     def ev(self) -> ElderView:
@@ -150,6 +167,24 @@ def plan_step(state: CallState, elder_text: str) -> str:
     el = state.elapsed()
     n_elder = len(state.elder_turns())
 
+    # Memory book: collect the answers to the life-story question; then the per-story consent answer.
+    if (state.phase == "story" and state.life_q_asked and state.share_stage == "none"
+            and state.step in ("story_open", "story_follow", "recall_close")):
+        state.story_texts.append(elder_text)
+    if state.share_stage == "asked":
+        state.share_answer = parse_share_answer(elder_text)
+        state.share_stage = "done"
+        state.pending_ack = share_ack(state.share_answer, state.ctx.profile)
+        return _after_story(state, el)
+    if state.game_stage == "asked":
+        state.game_text = elder_text
+        state.game_outcome = score_game(state.ctx.game, elder_text)
+        state.game_stage = "done"
+        state.pending_ack = game_reaction(state.ctx.game, state.game_outcome, state.ev.honorific,
+                                          f"{state.call_id}:game")
+        state.phase = "closing"
+        return "closing"
+
     # Recall answer bookkeeping
     if state.recall_stage == "asked_free" and state.ctx.recall:
         state.recall_free_text = elder_text
@@ -198,12 +233,32 @@ def plan_step(state: CallState, elder_text: str) -> str:
         state.phase = "story"
 
     if state.phase == "story":
-        if state.story_turns >= MAX_STORY_TURNS:
-            state.phase = "closing"
-            return "closing"
+        # leave room for the consent question and the game when time runs short
+        near_end = state.life_q_asked and state.story_texts and el >= CLOSING_AT_SEC - 45
+        if state.story_turns >= MAX_STORY_TURNS or (near_end and state.story_turns >= 2):
+            return _after_story(state, el)
         state.story_turns += 1
         return "story_open" if state.story_turns == 1 else "story_follow"
 
+    state.phase = "closing"
+    return "closing"
+
+
+def _story_long_enough(state: CallState) -> bool:
+    return sum(word_count(t) for t in state.story_texts) >= 12
+
+
+def _after_story(state: CallState, el: float) -> str:
+    """After the life story: ask the per-story consent (if there is a story), then the game (if any), then close."""
+    if (state.ctx.life_question is not None and state.life_q_asked and state.share_stage == "none"
+            and _story_long_enough(state) and el < CLOSING_AT_SEC):
+        state.share_stage = "asked"
+        state.phase = "story"
+        return "story_share"
+    if state.ctx.game is not None and state.game_stage == "none" and el < CLOSING_AT_SEC - 15:
+        state.game_stage = "asked"
+        state.phase = "closing"
+        return "activity_game"
     state.phase = "closing"
     return "closing"
 
@@ -351,12 +406,21 @@ def medication_reminder(ev: ElderView) -> str:
 def closing_text(state: CallState) -> str:
     ev = state.ev
     h = ev.honorific
-    parts = [f"Dạ, tới giờ con để {h} nghỉ ngơi rồi."]
+    parts = []
+    if state.pending_ack:     # game reaction / "con giữ riêng" said first
+        parts.append(state.pending_ack)
+        state.pending_ack = None
+        parts.append(f"Tới giờ con để {h} nghỉ ngơi rồi.")
+    else:
+        parts.append(f"Dạ, tới giờ con để {h} nghỉ ngơi rồi.")
     med = medication_reminder(ev)
     if med:
         parts.append(med)
     if state.ctx.family_message:
         parts.append(state.ctx.family_message.rstrip(".") + ".")
+    if state.ctx.nudge is not None and not state.emergency:
+        parts.append(state.ctx.nudge.prompt_vi)
+        state.nudge_said = True
     parts.append(f"Con chào {h}, mai con gọi nữa nha {h}.")
     return " ".join(parts)
 
@@ -389,6 +453,19 @@ class ScriptedEngine:
             return text, "recall", False
         if step == "recall_cue" and state.ctx.recall:
             return state.ctx.recall.cue_vi, "recall", False
+        if step == "story_share":
+            q = share_question(state.ctx.profile)
+            if forced:
+                q, state.react_override = f"{react} {q}", None
+            return q, "story", False
+        if step == "activity_game" and state.ctx.game is not None:
+            q = state.ctx.game.prompt_vi
+            # the consent acknowledgement ("con giữ riêng") is never dropped for length
+            lead = state.pending_ack or (react if word_count(f"{react} {q}") <= MAX_WORDS_PER_TURN else "")
+            state.pending_ack = None
+            if forced:
+                lead, state.react_override = f"{state.react_override or react} {lead}".strip(), None
+            return f"{lead} {q}".strip(), "closing", False
         if step == "recall_close":
             praise = _pick(RECALL_PRAISE.get(state.recall_result or "failed", RECALL_PRAISE["failed"]),
                            seed).format(h=h)
@@ -413,11 +490,20 @@ class ScriptedEngine:
     def _story_question(self, state: CallState, seed: str, opening: bool, last: str = "") -> str:
         h = state.ev.honorific
         hooks = state.ctx.followup_hooks
+        lq = state.ctx.life_question
         if opening and hooks:
             hook = hooks[0].rstrip(".?! ")
             q = f"Bữa trước {h} có nói {hook[:1].lower() + hook[1:]}, giờ sao rồi {h}?"
             if word_count(q) <= MAX_WORDS_PER_TURN - 4:
                 return q
+        if lq is not None and not state.life_q_asked:      # memory book: today's life-story question
+            state.life_q_asked = True
+            state.used_texts.append(lq.question_vi)
+            return lq.question_vi
+        if lq is not None and not state.life_q_follow_used:
+            state.life_q_follow_used = True
+            state.used_texts.append(lq.follow_up_vi)
+            return lq.follow_up_vi
         if opening:
             pool = [q.format(h=h) for q in QUESTIONS["story_open"]]
         else:
@@ -470,6 +556,26 @@ class ClaudeEngine:
             "closing": f"Medication reminder to say exactly: \"{medication_reminder(state.ev)}\". "
                        f"Family message: \"{state.ctx.family_message or ''}\".",
         }.get(step, "")
+        lq = state.ctx.life_question
+        if step in ("story_open", "story_follow", "recall_close") and lq is not None:
+            if not state.life_q_asked and (step != "story_open" or not state.ctx.followup_hooks or state.story_turns > 1):
+                state.life_q_asked = True
+                extra += f" Now ask today's life-story question: \"{lq.question_vi}\""
+            elif state.life_q_asked and not state.life_q_follow_used:
+                state.life_q_follow_used = True
+                extra += f" Ask this follow-up (or a natural one about what they said): \"{lq.follow_up_vi}\""
+        if step == "story_share":
+            extra += f" Say exactly: \"{share_question(state.ctx.profile)}\""
+        if step == "activity_game" and state.ctx.game is not None:
+            extra += (f" Say first: \"{state.pending_ack or ''}\" then offer exactly: \"{state.ctx.game.prompt_vi}\"")
+            state.pending_ack = None
+        if step == "closing":
+            if state.pending_ack:
+                extra += f" Start with: \"{state.pending_ack}\"."
+                state.pending_ack = None
+            if state.ctx.nudge is not None:
+                extra += f" Before goodbye say: \"{state.ctx.nudge.prompt_vi}\"."
+                state.nudge_said = True
         return f"{base} {extra} Elapsed {int(state.elapsed())}s. Max {MAX_WORDS_PER_TURN} words, one question."
 
     def _call(self, model: str, state: CallState, messages: list[dict]):
@@ -662,6 +768,7 @@ class Orchestrator:
         #     not advance the plan, and never interrupts the recall answers or the closing.
         if (isinstance(self.engine, ScriptedEngine) and state.recall_stage not in ("asked_free", "asked_cue")
                 and state.phase in ("greeting", "wellbeing", "story") and state.step != "closing"
+                and state.share_stage != "asked"
                 and state.elapsed() < CLOSING_AT_SEC - 30 and not state.react_override):
             fu = symptom_followup(text, state.followed_up, h, h)
             if fu:

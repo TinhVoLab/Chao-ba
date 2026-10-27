@@ -247,3 +247,14 @@ dialog::backdrop {
 .pb-safe {
   padding-bottom: env(safe-area-inset-bottom);
 }
+
+/* "More" sheet on phones (Nav.tsx) */
+.sheet-in {
+  animation: sheetIn 260ms var(--ease-out-quart) both;
+}
+@keyframes sheetIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}

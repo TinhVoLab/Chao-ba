@@ -60,7 +60,10 @@ export function AlertsList({ elderId, initial }: { elderId: string; initial: Ale
       undefined,
       { meta: { alertId: String(id) } },
     );
-    if (r.state === "saved") setAlerts((list) => list.map((a) => (a.id === id ? { ...a, acknowledged: true } : a)));
+    if (r.state === "saved") {
+      setAlerts((list) => list.map((a) => (a.id === id ? { ...a, acknowledged: true } : a)));
+      window.dispatchEvent(new Event("cb-alerts-changed")); // refresh the unread badge in the nav
+    }
     if (r.state === "rejected") setRefused(r.detail);
     setPending(null);
   }

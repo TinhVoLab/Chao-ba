@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Check, CloudOff, MessageSquareHeart, NotebookPen, Phone, PhoneCall, Send, X } from "lucide-react";
 import type { ContactStatus, Note } from "@/lib/types";
-import { viewerFor } from "@/lib/viewer";
+import { currentViewer } from "@/lib/viewer";
 import { useLang, useLocal } from "@/lib/useLang";
 import { SENT_EVENT, postWrite, useOutbox, type PendingWrite } from "@/lib/outbox";
 import { shortDate } from "@/lib/format";
@@ -76,7 +76,7 @@ export function TodayActions({
   /** Log a family call in the contact log (feeds "N days since anyone called" and the DMAIC Improve step). */
   async function logCall() {
     setCallStatus({ state: "saving" });
-    const r = await postWrite("contact", elderId, `${base}/contacts`, { kind: "call", member_id: viewerFor(elderId).memberId }, {
+    const r = await postWrite("contact", elderId, `${base}/contacts`, { kind: "call", member_id: currentViewer(elderId).memberId }, {
       markKey: `cb-called-${elderId}`,
     });
     setCallStatus(r.state === "rejected" ? { state: "rejected", detail: r.detail } : { state: r.state });

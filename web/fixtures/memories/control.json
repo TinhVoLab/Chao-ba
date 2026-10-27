@@ -1,0 +1,612 @@
+{
+ "memories": {
+  "elder_id": "control",
+  "display_name": "Ông Bảy",
+  "name_en": "Mr Bay",
+  "honorific": "ông",
+  "viewer": "family",
+  "stories": [
+   {
+    "id": 23,
+    "day": 6,
+    "date": "2026-08-04",
+    "question_id": "h4",
+    "theme": "hometown",
+    "theme_vi": "Quê nhà",
+    "theme_en": "Hometown",
+    "era": {
+     "label_vi": "Tuổi trẻ (thập niên 1970)",
+     "label_en": "Young adulthood (1970s)",
+     "decade": 1970
+    },
+    "title_vi": "Chợ quê",
+    "title_en": "The village market",
+    "text_vi": "Hồi trẻ tui chèo ghe chở khóm ra chợ nổi Cái Răng bán, ba giờ sáng đã đi. Ghe nào bán gì thì treo lên cây bẹo cho người ta thấy. Bán xong tui ghé ghe hủ tiếu ăn một tô nóng hổi.",
+    "text_en": "As a young man I rowed a boat full of pineapples to the Cái Răng floating market, leaving at three in the morning. Each boat hung what it sold on a tall pole so buyers could see. After selling I stopped at the noodle boat for a steaming bowl.",
+    "translation": "human",
+    "people": [],
+    "places": [
+     "chợ nổi Cái Răng"
+    ],
+    "word_count": 43,
+    "shared": true,
+    "consent": {
+     "answer": "yes",
+     "asked_in_call": true,
+     "by": "elder (in call, simulated)",
+     "ts": "2026-08-04",
+     "history": [
+      {
+       "shared": true,
+       "by": "elder (in call, simulated)",
+       "ts": "2026-08-04"
+      }
+     ]
+    },
+    "source": "simulated",
+    "simulated": true
+   },
+   {
+    "id": 24,
+    "day": 15,
+    "date": "2026-08-13",
+    "question_id": "c1",
+    "theme": "childhood",
+    "theme_vi": "Tuổi thơ",
+    "theme_en": "Childhood",
+    "era": {
+     "label_vi": "Tuổi nhỏ (thập niên 1960)",
+     "label_en": "Childhood (1960s)",
+     "decade": 1960
+    },
+    "title_vi": "Trò chơi tuổi nhỏ",
+    "title_en": "Childhood games",
+    "text_vi": "Hồi nhỏ tui với thằng Sáu Mập hay thả diều trên bờ đê, diều làm bằng giấy tập cũ. Có bữa diều đứt dây bay qua bên kia sông, hai đứa bơi qua lượm. Về bị ba rầy mà vẫn khoái.",
+    "text_en": "As a boy I flew kites on the dyke with my friend Sáu Mập; we made them from old exercise-book paper. One day the string broke and the kite flew across the river, so the two of us swam over to fetch it. Father scolded us when we got home, but we loved it all the same.",
+    "translation": "human",
+    "people": [
+     {
+      "vi": "thằng Sáu Mập",
+      "en": "Sáu Mập, a childhood friend"
+     },
+     {
+      "vi": "ba",
+      "en": "my father"
+     }
+    ],
+    "places": [],
+    "word_count": 41,
+    "shared": true,
+    "consent": {
+     "answer": "yes",
+     "asked_in_call": true,
+     "by": "elder (in call, simulated)",
+     "ts": "2026-08-13",
+     "history": [
+      {
+       "shared": true,
+       "by": "elder (in call, simulated)",
+       "ts": "2026-08-13"
+      }
+     ]
+    },
+    "source": "simulated",
+    "simulated": true
+   },
+   {
+    "id": 25,
+    "day": 23,
+    "date": "2026-08-21",
+    "question_id": "w3",
+    "theme": "work",
+    "theme_vi": "Công việc hồi trẻ",
+    "theme_en": "Working life",
+    "era": {
+     "label_vi": "Năm 1985",
+     "label_en": "1985",
+     "decade": 1980
+    },
+    "title_vi": "Một ngày làm lụng",
+    "title_en": "A working day",
+    "text_vi": "Tui làm ruộng với nuôi cá suốt đời, sáng ra đồng, chiều cho cá ăn. Cái ao sau nhà tui đào năm 1985, nuôi cá tra với cá lóc. Năm nào được mùa là cả nhà mừng.",
+    "text_en": "I have farmed rice and raised fish all my life: fields in the morning, feeding the fish in the afternoon. I dug the pond behind the house in 1985 for pangasius and snakehead. Every good harvest made the whole family happy.",
+    "translation": "human",
+    "people": [],
+    "places": [],
+    "word_count": 37,
+    "shared": true,
+    "consent": {
+     "answer": "yes",
+     "asked_in_call": true,
+     "by": "elder (in call, simulated)",
+     "ts": "2026-08-21",
+     "history": [
+      {
+       "shared": true,
+       "by": "elder (in call, simulated)",
+       "ts": "2026-08-21"
+      }
+     ]
+    },
+    "source": "simulated",
+    "simulated": true
+   },
+   {
+    "id": 27,
+    "day": 47,
+    "date": "2026-09-14",
+    "question_id": "f4",
+    "theme": "food",
+    "theme_vi": "Món ăn xưa",
+    "theme_en": "Food and cooking",
+    "era": {
+     "label_vi": "Tuổi nhỏ (thập niên 1960)",
+     "label_en": "Childhood (1960s)",
+     "decade": 1960
+    },
+    "title_vi": "Trái cây quê nhà",
+    "title_en": "Fruit from home",
+    "text_vi": "Trái cây tui mê nhất là mận hồng đào ở vườn ngoại. Hồi nhỏ leo cây hái, bị kiến vàng cắn sưng tay mà vẫn leo.",
+    "text_en": "My favourite fruit was the rose-apple from my grandmother's orchard. As a boy I climbed the tree to pick them, and even when the weaver ants bit my hands I kept climbing.",
+    "translation": "human",
+    "people": [
+     {
+      "vi": "bà ngoại",
+      "en": "my maternal grandmother"
+     }
+    ],
+    "places": [],
+    "word_count": 26,
+    "shared": true,
+    "consent": {
+     "answer": "yes",
+     "asked_in_call": true,
+     "by": "elder (in call, simulated)",
+     "ts": "2026-09-14",
+     "history": [
+      {
+       "shared": true,
+       "by": "elder (in call, simulated)",
+       "ts": "2026-09-14"
+      }
+     ]
+    },
+    "source": "simulated",
+    "simulated": true
+   },
+   {
+    "id": 28,
+    "day": 58,
+    "date": "2026-09-25",
+    "question_id": "t3",
+    "theme": "festivals",
+    "theme_vi": "Tết và lễ hội",
+    "theme_en": "Tết and festivals",
+    "era": {
+     "label_vi": "Tuổi nhỏ (thập niên 1960)",
+     "label_en": "Childhood (1960s)",
+     "decade": 1960
+    },
+    "title_vi": "Trung thu ngày nhỏ",
+    "title_en": "Mid-Autumn as a child",
+    "text_vi": "Trung thu hồi xưa ba tui làm lồng đèn ông sao bằng tre với giấy kiếng đỏ. Tối rằm tụi nhỏ trong xóm rước đèn đi vòng vòng, vừa đi vừa hát. Giờ cháu nội tui chơi lồng đèn nhựa có nhạc.",
+    "text_en": "For Mid-Autumn my father made star lanterns from bamboo and red cellophane. On the full-moon night the children of the hamlet paraded around with them, singing as we went. Now my grandchildren play with plastic lanterns that play music.",
+    "translation": "human",
+    "people": [
+     {
+      "vi": "ba",
+      "en": "my father"
+     },
+     {
+      "vi": "cháu nội",
+      "en": "my grandchildren"
+     }
+    ],
+    "places": [],
+    "word_count": 42,
+    "shared": true,
+    "consent": {
+     "answer": "yes",
+     "asked_in_call": true,
+     "by": "elder (in call, simulated)",
+     "ts": "2026-09-25",
+     "history": [
+      {
+       "shared": true,
+       "by": "elder (in call, simulated)",
+       "ts": "2026-09-25"
+      }
+     ]
+    },
+    "source": "simulated",
+    "simulated": true
+   },
+   {
+    "id": 29,
+    "day": 72,
+    "date": "2026-10-09",
+    "question_id": "p2",
+    "theme": "family",
+    "theme_vi": "Nuôi con",
+    "theme_en": "Raising a family",
+    "era": {
+     "label_vi": "Những năm lập nghiệp (thập niên 1980)",
+     "label_en": "Adult years (1980s)",
+     "decade": 1980
+    },
+    "title_vi": "Nuôi con ngày xưa",
+    "title_en": "Raising children back then",
+    "text_vi": "Nuôi con Thảo hồi đó cực, tui với bà nhà thay phiên ra đồng. Nó học giỏi, đi học về là phụ cho cá ăn. Giờ nó làm cô giáo, chiều nào cũng ghé ăn cơm với tui.",
+    "text_en": "Raising Thảo was hard; my wife and I took turns working the fields. She did well at school and helped feed the fish when she got home. Now she is a teacher, and she drops by for dinner with me every evening.",
+    "translation": "human",
+    "people": [
+     {
+      "vi": "con Thảo",
+      "en": "Thảo, my daughter"
+     },
+     {
+      "vi": "bà nhà",
+      "en": "my wife"
+     }
+    ],
+    "places": [],
+    "word_count": 38,
+    "shared": true,
+    "consent": {
+     "answer": "yes",
+     "asked_in_call": true,
+     "by": "elder (in call, simulated)",
+     "ts": "2026-10-09",
+     "history": [
+      {
+       "shared": true,
+       "by": "elder (in call, simulated)",
+       "ts": "2026-10-09"
+      }
+     ]
+    },
+    "source": "simulated",
+    "simulated": true
+   }
+  ],
+  "themes": [
+   {
+    "theme": "childhood",
+    "label_vi": "Tuổi thơ",
+    "label_en": "Childhood",
+    "count": 1
+   },
+   {
+    "theme": "hometown",
+    "label_vi": "Quê nhà",
+    "label_en": "Hometown",
+    "count": 1
+   },
+   {
+    "theme": "food",
+    "label_vi": "Món ăn xưa",
+    "label_en": "Food and cooking",
+    "count": 1
+   },
+   {
+    "theme": "work",
+    "label_vi": "Công việc hồi trẻ",
+    "label_en": "Working life",
+    "count": 1
+   },
+   {
+    "theme": "family",
+    "label_vi": "Nuôi con",
+    "label_en": "Raising a family",
+    "count": 1
+   },
+   {
+    "theme": "festivals",
+    "label_vi": "Tết và lễ hội",
+    "label_en": "Tết and festivals",
+    "count": 1
+   }
+  ],
+  "shared_count": 6,
+  "private_count": 2,
+  "total": 8,
+  "sharing_paused": false,
+  "audio": {
+   "stored": false,
+   "note_vi": "Chỉ lưu chữ, không lưu giọng nói. Giữ lại đoạn ghi âm giọng kể là tính năng tương lai, chỉ khi người cao tuổi đồng ý cho từng đoạn.",
+   "note_en": "Text only; no voice is stored. Keeping a voice clip of a story is a future feature, only with the elder's consent for each clip."
+  },
+  "simulated": true
+ },
+ "activities": {
+  "games": {
+   "played": 57,
+   "success_rate": 0.833,
+   "success_rate_first_4_weeks": 0.861,
+   "success_rate_last_4_weeks": 0.824,
+   "current_level": 2,
+   "by_category": [
+    {
+     "category": "ca_dao",
+     "label_vi": "Nối câu ca dao",
+     "label_en": "Finish a folk verse",
+     "played": 23,
+     "success_rate": 0.739
+    },
+    {
+     "category": "naming",
+     "label_vi": "Kể tên theo chủ đề",
+     "label_en": "Name things in a category",
+     "played": 17,
+     "success_rate": 0.882
+    },
+    {
+     "category": "family",
+     "label_vi": "Kể tên con cháu",
+     "label_en": "Name family members",
+     "played": 17,
+     "success_rate": 0.912
+    }
+   ],
+   "trend": [
+    {
+     "week": 1,
+     "day_from": 1,
+     "day_to": 7,
+     "played": 5,
+     "success_rate": 0.8,
+     "mean_level": 1.6
+    },
+    {
+     "week": 2,
+     "day_from": 8,
+     "day_to": 14,
+     "played": 5,
+     "success_rate": 1.0,
+     "mean_level": 3.0
+    },
+    {
+     "week": 3,
+     "day_from": 15,
+     "day_to": 21,
+     "played": 4,
+     "success_rate": 0.875,
+     "mean_level": 3.0
+    },
+    {
+     "week": 4,
+     "day_from": 22,
+     "day_to": 28,
+     "played": 4,
+     "success_rate": 0.75,
+     "mean_level": 3.0
+    },
+    {
+     "week": 5,
+     "day_from": 29,
+     "day_to": 35,
+     "played": 5,
+     "success_rate": 1.0,
+     "mean_level": 2.6
+    },
+    {
+     "week": 6,
+     "day_from": 36,
+     "day_to": 42,
+     "played": 4,
+     "success_rate": 0.5,
+     "mean_level": 2.5
+    },
+    {
+     "week": 7,
+     "day_from": 43,
+     "day_to": 49,
+     "played": 5,
+     "success_rate": 1.0,
+     "mean_level": 1.8
+    },
+    {
+     "week": 8,
+     "day_from": 50,
+     "day_to": 56,
+     "played": 4,
+     "success_rate": 0.75,
+     "mean_level": 3.0
+    },
+    {
+     "week": 9,
+     "day_from": 57,
+     "day_to": 63,
+     "played": 4,
+     "success_rate": 0.75,
+     "mean_level": 1.5
+    },
+    {
+     "week": 10,
+     "day_from": 64,
+     "day_to": 70,
+     "played": 4,
+     "success_rate": 1.0,
+     "mean_level": 2.75
+    },
+    {
+     "week": 11,
+     "day_from": 71,
+     "day_to": 77,
+     "played": 5,
+     "success_rate": 0.8,
+     "mean_level": 2.6
+    },
+    {
+     "week": 12,
+     "day_from": 78,
+     "day_to": 84,
+     "played": 4,
+     "success_rate": 1.0,
+     "mean_level": 3.0
+    },
+    {
+     "week": 13,
+     "day_from": 85,
+     "day_to": 91,
+     "played": 4,
+     "success_rate": 0.5,
+     "mean_level": 2.5
+    }
+   ]
+  },
+  "nudges": {
+   "delivered": 85,
+   "by_category": [
+    {
+     "category": "water",
+     "label_vi": "Uống đủ nước",
+     "label_en": "Drink enough water",
+     "count": 11
+    },
+    {
+     "category": "walk_sun",
+     "label_vi": "Đi bộ, phơi nắng sáng",
+     "label_en": "Morning walk and sunlight",
+     "count": 29
+    },
+    {
+     "category": "chair",
+     "label_vi": "Tập tay chân trên ghế",
+     "label_en": "Chair exercises",
+     "count": 13
+    },
+    {
+     "category": "sleep",
+     "label_vi": "Ngủ đúng giờ",
+     "label_en": "Regular bedtime",
+     "count": 9
+    },
+    {
+     "category": "friend",
+     "label_vi": "Gọi hỏi thăm bạn cũ",
+     "label_en": "Call an old friend",
+     "count": 12
+    },
+    {
+     "category": "club",
+     "label_vi": "Sinh hoạt hội người cao tuổi",
+     "label_en": "Elders' association",
+     "count": 11
+    }
+   ]
+  },
+  "screen_games": {
+   "played": 0,
+   "correct_rate": null,
+   "played_last_14_days": 0,
+   "by_game": [],
+   "source_vi": "Trò chơi bấm trên màn hình đứng (người cao tuổi tự chơi)",
+   "source_en": "Tap games on the standing screen (played by the elder)"
+  },
+  "life_questions": {
+   "asked": 8,
+   "stories": 8
+  },
+  "associations": [
+   {
+    "activity": "nudge:walk_sun",
+    "label_vi": "Đi bộ, phơi nắng sáng",
+    "label_en": "Morning walk and sunlight",
+    "days_with": 26,
+    "days_without": 53,
+    "next_day_mood_with": 4.38,
+    "next_day_mood_without": 4.21,
+    "mood_diff": 0.17,
+    "next_day_poor_sleep_with": 0.0,
+    "next_day_poor_sleep_without": 0.0
+   },
+   {
+    "activity": "nudge:chair",
+    "label_vi": "Tập tay chân trên ghế",
+    "label_en": "Chair exercises",
+    "days_with": 12,
+    "days_without": 67,
+    "next_day_mood_with": 4.25,
+    "next_day_mood_without": 4.27,
+    "mood_diff": -0.02,
+    "next_day_poor_sleep_with": 0.0,
+    "next_day_poor_sleep_without": 0.0
+   },
+   {
+    "activity": "nudge:friend",
+    "label_vi": "Gọi hỏi thăm bạn cũ",
+    "label_en": "Call an old friend",
+    "days_with": 12,
+    "days_without": 67,
+    "next_day_mood_with": 4.25,
+    "next_day_mood_without": 4.27,
+    "mood_diff": -0.02,
+    "next_day_poor_sleep_with": 0.0,
+    "next_day_poor_sleep_without": 0.0
+   },
+   {
+    "activity": "nudge:sleep",
+    "label_vi": "Ngủ đúng giờ",
+    "label_en": "Regular bedtime",
+    "days_with": 9,
+    "days_without": 70,
+    "next_day_mood_with": 4.22,
+    "next_day_mood_without": 4.27,
+    "mood_diff": -0.05,
+    "next_day_poor_sleep_with": 0.0,
+    "next_day_poor_sleep_without": 0.0
+   },
+   {
+    "activity": "game_day",
+    "label_vi": "Ngày có chơi trò nhớ",
+    "label_en": "Days with a memory game",
+    "days_with": 53,
+    "days_without": 26,
+    "next_day_mood_with": 4.25,
+    "next_day_mood_without": 4.31,
+    "mood_diff": -0.06,
+    "next_day_poor_sleep_with": 0.0,
+    "next_day_poor_sleep_without": 0.0
+   },
+   {
+    "activity": "nudge:water",
+    "label_vi": "Uống đủ nước",
+    "label_en": "Drink enough water",
+    "days_with": 10,
+    "days_without": 69,
+    "next_day_mood_with": 4.2,
+    "next_day_mood_without": 4.28,
+    "mood_diff": -0.08,
+    "next_day_poor_sleep_with": 0.0,
+    "next_day_poor_sleep_without": 0.0
+   },
+   {
+    "activity": "nudge:club",
+    "label_vi": "Sinh hoạt hội người cao tuổi",
+    "label_en": "Elders' association",
+    "days_with": 10,
+    "days_without": 69,
+    "next_day_mood_with": 4.1,
+    "next_day_mood_without": 4.29,
+    "mood_diff": -0.19,
+    "next_day_poor_sleep_with": 0.0,
+    "next_day_poor_sleep_without": 0.0
+   }
+  ],
+  "association_note_vi": "Chỉ là liên quan, không phải nhân quả: ngày hôm sau có thể khác vì nhiều lý do khác (thời tiết, thuốc, con cháu ghé thăm). Mẫu nhỏ.",
+  "association_note_en": "Association, not causation: the next day can differ for many other reasons (weather, medication, visits). Small samples.",
+  "improve": null,
+  "narrative": {
+   "stories": 8,
+   "words_early": 39.75,
+   "words_recent": 34.5,
+   "change_pct": -13.2,
+   "note_vi": "Độ dài trung bình các câu chuyện (gồm cả chuyện giữ riêng, chỉ đếm số chữ). Chỉ để tham khảo, không dùng cho đèn hằng ngày.",
+   "note_en": "Average story length (including private stories, word counts only). Exploratory; not used by the daily light."
+  },
+  "difficulty_rule_vi": "Trò chơi tự dễ hơn sau một lần chưa nhớ ra, khó hơn sau hai lần nhớ đúng liền (mức 1–3).",
+  "difficulty_rule_en": "Games get easier after a miss and harder after two successes in a row (levels 1–3).",
+  "simulated": true
+ }
+}

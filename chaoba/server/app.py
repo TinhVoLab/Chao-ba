@@ -27,7 +27,10 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from .db import Store
+from .family import register as register_family, seed_all as seed_family
+from .community import register as register_community
 from .service import Service, llm_enabled, demo_enabled
+from . import memories as memory_book   # Sổ ký ức + prevention activities (memories.py)
 
 LOCALHOST_ORIGIN_RE = r"^https?://(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$"
 
@@ -82,8 +85,11 @@ def create_app(db_path: str | None = None, seed: bool = True) -> FastAPI:
     async def lifespan(app: FastAPI):
         store = Store(db_path)
         svc = Service(store)
+        memory_book.install(svc)   # life-story question / game / nudge in calls; story + activity log at call end
         if seed:
             svc.seed()
+            seed_family(svc)   # simulated care circles, rota, tasks (family.py)
+            memory_book.seed_all(svc)   # simulated stories + activity log
         app.state.svc = svc
         yield
         store.close()
@@ -233,7 +239,10 @@ def create_app(db_path: str | None = None, seed: bool = True) -> FastAPI:
         s = svc(request)
         if elder and elder not in ("hanh", "tu", "control") and not s.elder_or_none(elder):
             raise HTTPException(404, f"unknown elder {elder}")
-        return s.reset(elder)
+        out = s.reset(elder)
+        seed_family(s)
+        memory_book.seed_all(s)
+        return out
 
     @app.get("/api/evaluation")
     def evaluation(request: Request):
@@ -275,6 +284,11 @@ def create_app(db_path: str | None = None, seed: bool = True) -> FastAPI:
     def call_page():
         return FileResponse(STATIC / "call.html", media_type="text/html")
 
+    from .elder_ui import register as register_elder_ui   # elder standing-screen endpoints (/screen in the web app)
+    register_elder_ui(app)
+    register_family(app)      # /api/elders/{id}/family/* (family.py)
+    register_community(app)   # /api/community/* (community.py)
+    memory_book.register(app)   # /api/elders/{id}/memories*, /activities (memories.py)
     return app
 
 

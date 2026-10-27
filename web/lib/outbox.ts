@@ -8,7 +8,7 @@ import { API_BASE } from "./config";
 import { actorHeaders } from "./viewer";
 import { writeLocal } from "./useLang";
 
-export type WriteKind = "contact" | "note" | "ack" | "withdraw";
+export type WriteKind = "contact" | "note" | "ack" | "withdraw" | "task" | "rota" | "asked";
 
 export interface PendingWrite {
   id: string;

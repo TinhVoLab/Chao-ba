@@ -1,17 +1,38 @@
 // Server-side data access. Every read tries the live API first and falls back to the
 // bundled fixtures (offline demo data) when the API is unreachable or errors.
 import { serverApiBase } from "./config";
-import { fixtureElders, fixtureFor } from "./fixtures";
+import { familyFixture, fixtureCommunity, fixtureElders, fixtureFor } from "./fixtures";
 import { normAlerts } from "./normalize";
-import { actorHeaders } from "./viewer";
-import type { Alert, Dmaic, ElderProfile, ElderSummary, Loaded, Note, Privacy, Timeline, Today } from "./types";
+import { actorHeaders, stationHeaders } from "./viewer";
+import { serverViewerId } from "./viewer-server";
+import type {
+  Alert,
+  Community,
+  Dmaic,
+  ElderProfile,
+  ElderSummary,
+  FamilyOverview,
+  FamilyTimeline,
+  Loaded,
+  Note,
+  Privacy,
+  Timeline,
+  Today,
+} from "./types";
 
-async function get<T>(path: string, fallback: () => T, elderId?: string): Promise<Loaded<T>> {
+async function get<T>(
+  path: string,
+  fallback: () => T,
+  elderId?: string,
+  headers?: Record<string, string>,
+  timeoutMs = 3000,
+): Promise<Loaded<T>> {
   try {
     const res = await fetch(`${serverApiBase()}${path}`, {
       cache: "no-store",
-      signal: AbortSignal.timeout(3000),
-      headers: actorHeaders(elderId),
+      signal: AbortSignal.timeout(timeoutMs),
+      // The "Viewing as" member (cookie) for elder-scoped reads; the access log records who looked.
+      headers: headers ?? (elderId ? actorHeaders(elderId, await serverViewerId(elderId)) : {}),
     });
     if (!res.ok) throw new Error(`${res.status}`);
     return { data: (await res.json()) as T, live: true };
@@ -40,6 +61,28 @@ export const getAlerts = async (id: string): Promise<Loaded<Alert[]>> => {
 export const getDmaic = (id: string) => get<Dmaic>(`/api/elders/${e(id)}/dmaic`, () => fixtureFor(id).dmaic, id);
 export const getNotes = (id: string) => get<Note[]>(`/api/elders/${e(id)}/notes`, () => fixtureFor(id).notes, id);
 export const getPrivacy = (id: string) => get<Privacy>(`/api/elders/${e(id)}/privacy`, () => fixtureFor(id).privacy, id);
+
+// Family coordination: what the API returns depends on who is viewing (primary carer vs viewer).
+export const getFamily = async (id: string) => {
+  const member = await serverViewerId(id);
+  return get<FamilyOverview>(`/api/elders/${e(id)}/family`, () => familyFixture(id, member).overview, id);
+};
+export const getFamilyTimeline = async (id: string, days = 14) => {
+  const member = await serverViewerId(id);
+  return get<FamilyTimeline>(`/api/elders/${e(id)}/family/timeline?days=${days}`, () => familyFixture(id, member).timeline, id);
+};
+/** Community dashboard, read as the ward health station (first call builds the simulated ward: allow a bit longer). */
+export const getCommunity = () => get<Community>("/api/community/overview", () => fixtureCommunity, undefined, stationHeaders(), 8000);
+
+// The elder's own taps on the home screen (standing-screen endpoints). Read-only here, never scored; null offline.
+export interface MedicationLog {
+  today: { name: string; time: string; status: "taken" | "not_yet" | null; answered_at: string | null }[];
+}
+export interface MoodCheckin {
+  today: { mood: "happy" | "neutral" | "sad"; label_vi: string; label_en: string; created_at: string } | null;
+}
+export const getMedicationLog = (id: string) => get<MedicationLog | null>(`/api/elders/${e(id)}/medication_log?days=1`, () => null, id);
+export const getMoodCheckin = (id: string) => get<MoodCheckin | null>(`/api/elders/${e(id)}/mood_checkin?days=1`, () => null, id);
 
 /** Loads the elder list + resolves the selected elder in one go. */
 export async function loadElderContext(requested?: string | string[]) {

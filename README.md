@@ -25,7 +25,7 @@ cd web && npm install && npm run dev                      # family app (second t
 
 - Elder call (hands-free simulation): http://localhost:8000/call?elder=hanh&sim=1, then press **Nghe**
 - Elder call (speak Vietnamese yourself): http://localhost:8000/call?elder=hanh
-- Family app: http://localhost:3000/?elder=hanh (Today · Trends · Alerts · DMAIC · Privacy; `/screen` is a phase-2 concept mockup of a home display)
+- Family app: http://localhost:3000/?elder=hanh (Today · Trends · Family · DMAIC · More → Alerts, Memory book, Privacy, Community; `/family` = shared family timeline, weekly synthesis, call rota, care tasks with a "Viewing as" switcher; `/community` = simulated health-station board; `/screen` is the elder's interactive 9:16 standing screen: talk to Út Thương, simulated video call, medication / mood / memory game; hardware is phase 2)
 - Health check: `curl localhost:8000/api/health` → `{"ok":true,"llm":"fallback"}`
 
 Seeded dates are anchored at startup: day 90 = yesterday, so a live call is day 91 today (`CHAOBA_END_DATE=YYYY-MM-DD` pins them).
@@ -62,7 +62,7 @@ Environment: `CHAOBA_CORS_ORIGINS` (origins the API accepts), `NEXT_PUBLIC_API_B
 | `chaoba/core/` | metrics (M1–M3), personal-baseline control chart and light rules, VI/EN explanations, DMAIC cycle, synthetic data, evaluation |
 | `chaoba/agent/` | Út Thương persona and prompts, call orchestrator (scripted + Claude engines), emergency spotter, guardrails, post-call analysis, demo elder simulator, LiveKit SIP adapter (untested sketch) |
 | `chaoba/server/` | FastAPI app, SQLite store, Postgres/Supabase production schema with RLS (`schema.sql`), static elder call page (`static/call.html`) |
-| `web/` | Next.js family app (PWA) and a 9:16 standing-screen mockup (phase-2 concept); offline fixtures in `web/fixtures/` (`node web/scripts/snapshot-fixtures.mjs` against a fresh API) |
+| `web/` | Next.js family app (PWA) and the elder's interactive 9:16 standing screen (`/screen`, `web/components/elder/`, `web/lib/voice/`); offline fixtures in `web/fixtures/` (`node web/scripts/snapshot-fixtures.mjs` against a fresh API) |
 | `Dockerfile`, `web/Dockerfile`, `docker-compose.yml`, `deploy/` | containers (API, standalone Next app, Postgres with the production schema), RLS smoke test `deploy/rls_test.sql`, per-call cost model `deploy/cost_model.py` |
 | `docs/screenshots/` | app screenshots: `app-*.png` = first screen (390×844 @2x), `full/app-*.png` = full page |
 | `data/synth/`, `data/eval/` | generated simulated personas and evaluation report |

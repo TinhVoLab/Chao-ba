@@ -68,7 +68,7 @@ Many older adults live alone or with an elderly spouse. Their adult children oft
 | **Emergency spotter** | Keyword spotter on every utterance before any LLM, plus an LLM tool (`flag_emergency`). Calmly tells the elder to call **115**, ends the call and raises a red alert to the family. | `chaoba/agent/emergency.py` |
 | **Family coordination** | Family app: today's light, trends, alerts with acknowledgement, DMAIC view, notes (including a message read to the elder at the end of the next call), privacy and consent view, access log. | `web/` (Next.js PWA) |
 | **Memory book** | Life facts from calls become tomorrow's recall question and story prompts. | `memory_fact` table, `chaoba/agent/prompts.py` |
-| **Standing screen (phase-2 concept)** | A 9:16 home-display mockup for the elder's house: clock, family photos, captions, two big buttons. A design idea for phase 2, not part of the prototype's scope or price; no camera. | `web/app/screen` |
+| **Standing screen (interactive web prototype; hardware phase 2)** | A 9:16 always-on home screen for the elder, readable at 1–1.5 m, touch-only and voice-first, running in any browser/tablet in kiosk mode: clock, family photos (generated placeholders), the family's `to_elder` messages, today's medication reminder with **Đã uống thuốc / Chưa**, a real conversation with Út Thương on the same call API as the web call page (Web Speech STT/TTS, WebAudio VAD, typed fallback, sim mode, animated non-human avatar, large two-way captions), the acute-emergency screen (Gọi 115, "Đã báo cho chị Lan"), a simulated video call to the primary family member that logs a family contact, a once-a-day mood self-report and a ca dao memory game. Elder taps are self-reports, never scored or diagnostic. Dedicated hardware, camera and real video calling are phase 2. | `web/app/screen`, `web/components/elder/`, `web/lib/voice/`, `chaoba/server/elder_ui.py` |
 
 Hard design rules (from `CONTRACT.md`):
 
@@ -88,7 +88,7 @@ flowchart LR
   subgraph Elder["Elder side"]
     WEB["Web call page<br/>/call?elder=…<br/>Web Speech STT/TTS vi-VN<br/>WebAudio VAD"]
     PHONE["Ordinary phone (PSTN)<br/>production path"]
-    SCREEN["Standing screen 9:16<br/>(phase-2 concept mockup)"]
+    SCREEN["Standing screen 9:16<br/>/screen (interactive web prototype)<br/>same call API + elder_ui endpoints"]
   end
 
   subgraph Voice["Voice transport (production, untested)"]
@@ -128,7 +128,7 @@ flowchart LR
   SVC <--> DB
   SYN -.->|"seed: 3 personas × 90 days"| DB
   FAM -->|"REST (JSON)"| REST
-  SCREEN -.-|"mock data"| FAM
+  SCREEN -->|"text + VAD timings; taps (medication, mood, game, contact)"| REST
 ```
 
 **Tech stack.** Python 3.14, FastAPI, Pydantic, NumPy/pandas, SQLite (prototype), Anthropic SDK (optional). Next.js 16 / React 19 / Tailwind 4 / Recharts PWA for the family app. The production voice path uses LiveKit Agents with SIP, Silero VAD and a vi-VN STT/TTS provider. The production database is Postgres on Supabase with Row Level Security (`chaoba/server/schema.sql`).
@@ -394,6 +394,126 @@ The two other personas show the remaining cases:
 
 ---
 
+### 8.1 Memory book & prevention activities
+
+**Why.** Reminiscence is pleasant cognitive stimulation, gives the family something to keep (a memoir for the
+children and grandchildren), and makes the daily call worth answering. Light, playful memory games and habit nudges
+are low-cost prevention activities, and logging them lets the DMAIC *Improve* step see what was tried.
+
+**In the call** (`chaoba/agent/lifestory.py`, `activities.py`, orchestrator; prompt `ut-thuong-2026.10.3`):
+
+| Step | What Út Thương does |
+|---|---|
+| Story phase | Follows up an earlier hook if there is one, then asks **today's life-story question** from a bank of 41 Southern-Vietnamese questions in 10 themes (childhood, hometown, food, work, love, wedding, raising a family, Tết and festivals, hard times, friends), each with a gentle follow-up. No question is repeated; the least-used theme comes next (never the same theme twice in a row); wording adapts to the profile (spouse word by honorific, the child's name, a teacher-only question); the "hard times" themes are skipped when recent mood is low or the profile lists them in `avoid_themes`. |
+| Per-story consent | After the story: *"Chuyện hay quá. Bà cho con kể lại chuyện này cho chị Lan nghe được hông bà?"* Yes → shared. No, hesitation ("để bà coi lại") or no answer (time ran out) → **private** ("Dạ, con giữ riêng cho bà nha"). |
+| Closing game (2 days in 3) | One short game offered as play: finish a ca dao line, name 2–4 things in a familiar category, or name one's children. Scored deterministically (success / partial / miss). A miss is met with the answer and warmth, never "sai". **Adaptive difficulty** per elder, levels 1–3: a miss → one level easier next time; two successes in a row → one level harder; partial → unchanged. |
+| Closing nudge | One sentence among: drink water, morning walk and sunlight, chair exercises, regular bedtime, call an old friend, the elders' association. Chosen from signals (poor sleep → bedtime; low mood or living alone → social), profile goals, and an active care plan; never the same as the last two. |
+
+**After the call** (`chaoba/server/memories.py`): the story answers become a memoir entry: title, theme, 2–5 sentence
+retelling *in the elder's own voice* (fillers and closers removed), English translation, people, places, era. With a key,
+Claude Opus 5.5 writes it under a JSON schema and is told never to invent names, dates or feelings; without a key a
+rule-based extractor keeps the elder's sentences verbatim (cleaned), finds people / places / years with small lexicons,
+and writes an English *gist* (marked `translation: "gist"`; there is no machine translation without the model). The
+consent answer is stored with the story and every later change is appended to its history. The question, game outcome
+(with level) and nudge go to `activity_log`.
+
+**Privacy.** Text only: there is no audio column, and the call page never sends audio. Keeping a voice clip of a story
+would be a future feature, **per clip, opt-in by the elder**. Family roles see shared stories only, plus a count
+("3 chuyện bà giữ riêng") with no titles or content. Changing a story's sharing needs the elder (`X-Role: elder_self`) or a
+family member's statement that the elder or a legal proxy confirmed it (as for consent withdrawal). Withdrawing
+`family_sharing` hides the memory book and activity summary from the family. The printable export (`/memories/export`)
+contains shared stories only. Memoir entries are retellings the elder chose to keep, so they are not subject to the
+30-day verbatim-quote purge; deletion by the elder is on the roadmap.
+
+**DMAIC Improve.** `GET /activities` reports games played, success rate (first vs last 4 weeks, weekly trend with mean
+level), standing-screen game plays (from `elder_ui.py`), nudges by category, and for each activity the **next-day** mood and
+poor-sleep rate on days with vs without it (≥ 5 days each). These are labelled *association, not causation*: small
+samples, and next-day mood depends on much else (weather, medication, visits). For Bà Hạnh the day-44 care plan (morning
+walk and sunlight, water, regular bedtime, calling an old friend) is logged as a `care_plan` row; later nudges favour it and
+the summary shows mood and poor-sleep days before and after. Average story length (first half vs second half of the stories)
+is reported as an exploratory "narrative" figure only; it does not feed the daily light.
+
+**Simulated data.** Each persona has 8–12 hand-written simulated stories over the 90 days (VI + EN, mixed shared and
+private). Ông Tư's stories after about day 45 are a little shorter and less specific (fewer names and dates, an occasional
+"ờ"), consistent with his slow simulated drift (first four stories ≈ 56 words on average, last four ≈ 23), subtle on purpose. The activity log is generated
+deterministically from each persona's records (game success lower during Bà Hạnh's days 33–44 dip and slowly lower for
+Ông Tư; his difficulty settles at level 1).
+
+**Family app.** `/memories` shows the book as chapters by theme (oldest era first), story cards with era, people and places,
+the private count, a VI/EN toggle, the simulated badge and an "Xuất sổ ký ức / Export memory book" button. The DMAIC page has
+a "Hoạt động phòng ngừa / Prevention activities" section; the Today page links to the book.
+
+### 8.2 Family coordination
+
+**Problem.** Each adult child hears a different fragment: Bà Hạnh tells Lan (daughter, TP.HCM) about her back on the
+phone, mentions it to Út Thương in a morning call, and tells Minh (son, Hà Nội) by Zalo that her back still aches and
+she sleeps badly. Nobody puts the pieces together. `chaoba/server/family.py` adds a family space on top of the
+existing notes, contacts and call records (family app `/family`; API `/api/elders/{id}/family/*`, see `CONTRACT.md`).
+
+- **Care circle and roles.** Each elder has a small care circle (`care_circle`): one **primary** carer (full view) and
+  **viewers** (summary view). Bà Hạnh: Lan (primary, TP.HCM), Minh (son, Hà Nội) and Vy (granddaughter, Bến Tre),
+  all simulated. The app header has a "Đang xem với tư cách / Viewing as" switcher (cookie `cb-viewer`) that sends
+  `X-Actor` / `X-Role`, so the permission difference can be shown live. A header can **lower** but never **raise** the
+  role stored for that member. Viewers see AI call summaries, contacts, tasks, the rota and the weekly synthesis, but
+  other people's notes are replaced by "only the primary carer sees the text", and verbatim quotes (“…”) are removed
+  from alerts. `clinician` / `health_station` get 403 here: the family space is family-only.
+- **Shared timeline.** One feed (newest first) of morning-call summaries with their light, family notes (the existing
+  quick note after a call), family calls/visits, alerts, care events (medication change, doctor visit, re-baseline),
+  task changes, rota changes, the elder's own taps on the home screen (medication taken / mood; shown, never scored),
+  and a "nobody has called for N days" item. While `family_sharing` is withdrawn, everything derived from calls is
+  dropped and only the family's own entries remain.
+- **Weekly synthesis ("AI ghép mảnh rời rạc").** Rule-based and deterministic. Over the last 7 days it collects symptom
+  mentions from two sources: the day records (what Út Thương heard) and family notes, using the same negation-aware
+  lexicon as post-call analysis (`extract_symptoms`; "hổng đau" is not pain, messages *to* the elder are skipped). It
+  groups by topic, names the body part for pain ("đau lưng"), counts distinct sources and writes e.g. "Tuần này má nhắc
+  đau lưng 3 lần, với 2 người trong nhà (Lan, Minh) và với Út Thương … Có thể hỏi má chỗ đau đỡ chưa; nếu đau kéo dài,
+  nên đưa má đi khám." With `ANTHROPIC_API_KEY`, Claude Haiku may reword it through `explain._llm_reword`, accepted only
+  if it passes the same post-check as the daily explanation (no new numbers, no blocklisted diagnostic words);
+  otherwise the rule text is shown (`engine: rules | claude`).
+- **Call rota.** Weekday → member (`care_rota`). The app shows whose turn it is today ("Hôm nay tới lượt bạn gọi má"
+  for the viewer whose day it is), the viewer's next turn, the last 7 days (called by the person on the rota / by
+  someone else / nobody) and the existing contact nudge when nobody has called or visited for 3 days
+  (`CONTACT_NUDGE_DAYS`). Only the primary carer can edit the rota.
+- **Before-you-call suggestions.** Candidates, in order: the week's repeated care topic from the synthesis; follow-up
+  hooks from recent live calls; activities from the last two call summaries ("Hôm qua má kể chuyện chợ Giồng Trôm");
+  recent memory facts and curated profile facts. A topic someone already asked this week (button "Mình hỏi rồi",
+  table `topic_asked`) or mentioned in a note (≥ 2 content keywords) moves to "already covered", with who and when, so
+  the elder is not asked the same thing three times.
+- **Care tasks.** `care_task`: kind (appointment / medicine / visit / other), assignee, due date, done (who, when).
+  Primary can change any task; a viewer can add tasks and change tasks assigned to or created by them.
+- **Who is looking.** `GET /family/access` summarises the access log per person (views, edits, last time), shown on the
+  family page and visible to the elder (`X-Role: elder_self`).
+
+All writes go through the app's outbox (`web/lib/outbox.ts`): "saved" only after the API stored the row, otherwise kept
+on the device and retried. Tests: `tests/server/test_family.py` (rota and nudge, synthesis incl. negation and LLM
+post-check, suggestions de-duplication, task CRUD and permissions, role filtering, self-reports, demo reset).
+
+### 8.3 Community dashboard (health station, B2G)
+
+`chaoba/server/community.py`, family app `/community` (under "Thêm / More"), `GET /api/community/overview` with
+`X-Role: clinician | health_station` (anything else → 403). It shows a **simulated** ward, "Phường X, TP.HCM (mô
+phỏng)": 60 elders from `chaoba.core.synth.generate_cohort(n=60, days=120, seed=2026)` run through the same control
+chart, plus the 3 demo personas, dated so the last day is yesterday.
+
+- **Counts** by light today and the ward's daily light counts over 30 days (stacked bars; light shapes in the legend).
+- **Prioritised visit list.** Red first, then yellow; within each, longer in that state first, then missed family
+  contact (≥ 7 days without a family call/visit), then living alone. A third "check in" group lists green elders who
+  live alone with no family contact for ≥ 10 days. Each row: pseudonym (initials · age · neighbourhood), light and days
+  in that state, up to three plain reasons ("Nói chậm hơn thường ngày", "Không bắt máy 4 ngày"), "lives alone" and
+  "no family contact" chips. No names, addresses, map or external tiles.
+- **Which actions coincided with recovery** (anonymous, pooled). Every yellow/red episode (green → yellow/red → next
+  green) with the action recorded during it (family called more, health-station home visit, doctor visit, none);
+  share back to green within 21 days and median days to green. Episodes whose 21-day window is not over are reported
+  as *open*, not as failures; groups under 5 episodes say "too few". **Association only**: in the simulation the action
+  is assigned at random, so differences between groups are chance by construction; the page says so.
+- **Consent and audit.** Only people whose `clinician_sharing` consent is active appear (≈ 5 % of the simulated cohort
+  is simulated as not sharing and only counted). Each read is written to the access log of each sharing persona, so
+  their privacy page shows "Trạm Y tế Phường X". The light is change relative to the person's own baseline; the list
+  orders outreach and is not a diagnosis or triage score.
+
+Tests: `tests/server/test_community.py` (role gate, ordering and tie-breaks, pseudonymisation, non-diagnostic labels,
+episode detection and censoring, consent withdrawal removes a persona, access log).
+
 ## 9. Data model
 
 Shared types (`chaoba/core/models.py`): `Turn`, `CallMetrics`, `CallAnalysis`, `DailyRecord` (one per elder per day; the unit of the control chart), `DailyLight`.
@@ -417,6 +537,7 @@ Tables (SQLite in the prototype, `chaoba/server/db.py`; the Postgres/Supabase pr
 | `family_contact` | family calls / visits / messages: who, kind, day, date, source (app, simulated) | feeds the contact nudge and the DMAIC Improve/Control steps |
 | `access_log` | family reads and writes: actor, role, action, resource, time. Reads are de-duplicated to one row per actor / action / resource / day with a counter; writes always get a row | |
 | `care_event` | timeline events (medication change, doctor visit, re-baseline…) | prototype only |
+| `care_circle`, `care_rota`, `care_task`, `topic_asked` | family coordination (§8.2): circle members and roles, weekday call rota, care tasks, topics already asked | prototype only (SQLite; not yet in `schema.sql`) |
 
 REST API: see `CONTRACT.md` (including contacts, consent withdraw/grant, resume, baseline history, phase status and alert types). Demo-only extension: `GET /api/calls/{id}/simulate`.
 
@@ -771,8 +892,9 @@ Read this as: the < 100k VND target is reachable on the web, and on the phone on
 
 - **LiveKit/SIP adapter is untested.** `livekit-agents` is not installed and no SIP trunk or STT/TTS credentials exist. PSTN is the intended main channel but is not demonstrated.
 - **Claude mode is not verified against the live API** in this environment. It is unit-tested with a fake client only, and API errors silently fall back to Haiku, then to the scripted engine. Check the `engine` field of the call record to know which engine actually answered.
-- **No authentication in the prototype.** Roles come from unauthenticated `X-Actor` / `X-Role` headers and every caller is treated as the primary carer. RLS exists only in the production schema and has not been tested against a live Supabase instance.
+- **No authentication in the prototype.** Roles come from unauthenticated `X-Actor` / `X-Role` headers (the app's "Viewing as" switcher). Only the family endpoints (§8.2) and the community dashboard (§8.3) act on the role; the original read endpoints (today, timeline, alerts…) still return the same data to any family caller. RLS exists only in the production schema and has not been tested against a live Supabase instance.
 - Active call state is in memory (single process); a server restart drops calls in progress.
+- **Family coordination and the community dashboard are prototype-only.** Their tables are not yet in the Postgres schema / RLS; the "viewer" restriction is enforced by the API from an unauthenticated header (it can lower but not raise a stored role). The weekly synthesis covers only symptom words in the lexicon. The ward is simulated (60 generated elders + 3 personas), interventions in it are assigned at random, and its recovery table shows association, never effect.
 - Retention gaps: `call_analysis` keeps verbatim symptom quotes, and `memory_fact` keeps elder sentences, beyond the 7-day transcript window. Emergency and scam alerts quote the elder verbatim to the family. These need an explicit retention rule.
 - Withdrawing a consent stops processing but does not delete stored data; a "delete my data" request flow is not built. In the prototype the family carer can withdraw on the elder's behalf; production should require the elder (or a documented proxy).
 - Not yet assessed: accessibility for hearing-impaired users, ethnic-minority languages, and elders with established cognitive impairment (who may not consent meaningfully on their own).

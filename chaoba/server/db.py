@@ -100,6 +100,7 @@ class Store:
         self.lock = threading.RLock()
         with self.lock:
             self.conn.executescript(DDL)
+            self.conn.executescript(FAMILY_DDL)  # additive migration (family coordination), defined below
             cols = {r[1] for r in self.conn.execute("PRAGMA table_info(access_log)")}
             for col, ddl in (("n", "INTEGER NOT NULL DEFAULT 1"), ("last_ts", "TEXT")):  # older demo databases
                 if col not in cols:
@@ -410,3 +411,50 @@ class Store:
                                     "NULL AND transcript_expires_at < ? AND transcript_json IS NOT NULL", (now_iso(),))
             self.conn.commit()
             return cur.rowcount
+
+
+# ---------------------------------------------------------------- family coordination (additive migration)
+# Tables for the shared family timeline, call rota, care tasks and "already asked" topics (chaoba/server/family.py).
+# CREATE ... IF NOT EXISTS only, so older demo databases gain them on the next start.
+FAMILY_DDL = """
+CREATE TABLE IF NOT EXISTS care_circle (
+  elder_id TEXT NOT NULL, member_id TEXT NOT NULL, name TEXT NOT NULL, relation TEXT, role TEXT NOT NULL,
+  city TEXT, sort INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (elder_id, member_id));
+CREATE TABLE IF NOT EXISTS care_rota (
+  elder_id TEXT NOT NULL, weekday INTEGER NOT NULL, member_id TEXT NOT NULL, updated_by TEXT, updated_day INTEGER,
+  updated_at TEXT NOT NULL, PRIMARY KEY (elder_id, weekday));
+CREATE TABLE IF NOT EXISTS care_task (
+  id INTEGER PRIMARY KEY AUTOINCREMENT, elder_id TEXT NOT NULL, kind TEXT NOT NULL, title_vi TEXT NOT NULL,
+  title_en TEXT, assignee_id TEXT, due_date TEXT, done INTEGER NOT NULL DEFAULT 0, done_by TEXT, done_day INTEGER,
+  created_by TEXT, created_day INTEGER, simulated INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS ix_task_elder ON care_task(elder_id, done, due_date);
+CREATE TABLE IF NOT EXISTS topic_asked (
+  id INTEGER PRIMARY KEY AUTOINCREMENT, elder_id TEXT NOT NULL, topic_key TEXT NOT NULL, member_id TEXT,
+  member_name TEXT, day INTEGER, date TEXT, simulated INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS family_seed (elder_id TEXT PRIMARY KEY, seeded_at TEXT NOT NULL);
+"""
+ELDER_TABLES = ELDER_TABLES + ("care_circle", "care_rota", "care_task", "topic_asked", "family_seed")
+
+
+
+# ---------------------------------------------------------------- memory book + prevention activities (additive)
+# Appended migration: Store.__init__ runs the module-level DDL, so these tables are created on startup for new and
+# existing databases alike; demo reset clears them through ELDER_TABLES. Logic lives in chaoba/server/memories.py.
+# memory_story: one retold life story per row (text only; there is no audio column). ``shared`` is the elder's
+# per-story consent (default 0 = private); ``consent_json`` keeps how and by whom it was given or changed.
+MEMORY_DDL = """
+CREATE TABLE IF NOT EXISTS memory_story (
+  id INTEGER PRIMARY KEY AUTOINCREMENT, elder_id TEXT NOT NULL, day INTEGER, date TEXT, call_id TEXT,
+  question_id TEXT, theme TEXT, era_json TEXT, title_vi TEXT, title_en TEXT, text_vi TEXT NOT NULL, text_en TEXT,
+  people_json TEXT, places_json TEXT, word_count INTEGER, translation TEXT, shared INTEGER NOT NULL DEFAULT 0,
+  consent_json TEXT, source TEXT NOT NULL, simulated INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL,
+  updated_at TEXT);
+CREATE INDEX IF NOT EXISTS ix_story_elder ON memory_story(elder_id, day);
+CREATE TABLE IF NOT EXISTS activity_log (
+  id INTEGER PRIMARY KEY AUTOINCREMENT, elder_id TEXT NOT NULL, day INTEGER, date TEXT, call_id TEXT,
+  kind TEXT NOT NULL, activity_id TEXT, category TEXT, level INTEGER, outcome TEXT, detail_json TEXT,
+  simulated INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS ix_activity_elder ON activity_log(elder_id, day);
+"""
+DDL += MEMORY_DDL
+ELDER_TABLES += ("memory_story", "activity_log")

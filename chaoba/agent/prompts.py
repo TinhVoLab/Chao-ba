@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from .persona import PERSONA_NAME, MAX_WORDS_PER_TURN, ElderView, family_child_term, family_ref
 from .textnorm import tokens
 
-PROMPT_VERSION = "ut-thuong-2026.10.2"
+PROMPT_VERSION = "ut-thuong-2026.10.3"   # .3: memory book (life-story question + per-story consent) and activities
 
 SYSTEM_PROMPT = f"""Bạn là "{PERSONA_NAME}", trợ lý ảo trò chuyện buổi sáng của dịch vụ Chào Bà, gọi điện hỏi thăm người cao tuổi ở miền Tây Nam Bộ.
 
@@ -44,8 +44,14 @@ The system tells you the current phase in a system note before each reply. Follo
 1. greeting - consent was already asked by the system.
 2. wellbeing - ask about sleep, eating, and how they feel today (one at a time).
 3. recall - ask about the recall fact from 1-2 days ago: free recall first; if they cannot remember, give the cue.
-4. story - follow up on a hook from earlier days, or invite a life story / memory.
-5. closing - remind the medication schedule, pass on the family message if any, say a warm goodbye.
+4. story - follow up on a hook from earlier days, then ask TODAY'S LIFE-STORY QUESTION from the daily context (the memory
+   book: "Sổ ký ức"). Listen, show real interest, ask its follow-up, never correct dates or details. When the system says
+   so, ask whether you may retell this story to the family member named in the context; the elder decides. If they say
+   no or are unsure, say warmly that you will keep it private ("con giữ riêng"). Never pressure.
+5. closing - if the system gives a short game (finish a ca dao line, name a few things), offer it as play ("chơi chút
+   cho vui"), never as a test; whatever the answer, react warmly (give the answer gently if they miss, never say "sai").
+   Then remind the medication schedule, pass on the family message if any, say the habit nudge sentence, and a warm goodbye.
+Nothing is recorded as audio. Stories are kept as text only.
 
 Reply with the spoken sentence only.
 """
@@ -76,6 +82,10 @@ class DailyContext:
     family_message: str | None = None                              # e.g. "Lan nhắn: chủ nhật con về"
     family_greeting: str | None = None                             # recorded greeting text played first
     day: int | None = None
+    # Memory book + prevention (optional; set by the server, see chaoba/server/memories.py)
+    life_question: "object | None" = None                          # lifestory.ChosenQuestion
+    game: "object | None" = None                                   # activities.Activity (kind="game")
+    nudge: "object | None" = None                                  # activities.Activity (kind="nudge")
 
 
 _STOP = {"của", "là", "và", "có", "đã", "đang", "sẽ", "sắp", "cái", "con", "một", "những", "các", "thì", "mà",
@@ -170,6 +180,13 @@ def build_context_block(ctx: DailyContext) -> str:
         ]
     if ctx.family_message:
         lines.append(f"Family message to pass on at the end: {ctx.family_message}")
+    lq = ctx.life_question
+    if lq is not None:
+        lines.append(f"Today's life-story question (memory book): {lq.question_vi} Follow-up: {lq.follow_up_vi}")
+    if ctx.game is not None:
+        lines.append(f"Closing game (play, not a test; level {ctx.game.level}): {ctx.game.prompt_vi}")
+    if ctx.nudge is not None:
+        lines.append(f"Habit nudge to say in the closing: {ctx.nudge.prompt_vi}")
     return "\n".join(lines)
 
 
@@ -180,5 +197,7 @@ PHASE_DIRECTIVES = {
     "recall_cue": "Phase: recall. The elder could not fully recall. Give the cue once, kindly.",
     "recall_close": "Phase: recall finished. Acknowledge kindly (praise if correct; if not, say it's fine), then move to the story phase.",
     "story": "Phase: story. Follow up on a hook or invite a memory / life story. Show interest, ask one open question.",
+    "story_share": "Phase: story. Ask exactly whether you may retell this story to the family (sentence given). No other question.",
+    "activity_game": "Phase: closing activity. Briefly acknowledge, then offer the game exactly as given, as play.",
     "closing": "Phase: closing. Remind the medication schedule, pass on the family message if any, and say goodbye. No question.",
 }

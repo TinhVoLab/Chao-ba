@@ -1,7 +1,9 @@
 import type { ReactNode } from "react";
 import type { ElderSummary } from "@/lib/types";
+import { serverViewer } from "@/lib/viewer-server";
 import { ElderSwitcher } from "./ElderSwitcher";
 import { DataBadges } from "./Badges";
+import { ViewerSwitcher } from "./ViewerSwitcher";
 
 export function PageHeader({
   title,
@@ -19,14 +21,21 @@ export function PageHeader({
   live: boolean;
 }) {
   return (
-    <header className="flex flex-col gap-4 pt-2">
+    <header className="flex flex-col gap-3 pt-2">
       <ElderSwitcher elders={elders} current={current} path={path} />
-      <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-2">
+      <ViewerBar elderId={current} />
+      <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-2 pt-1">
         <h1 className="text-[1.75rem] font-bold leading-tight tracking-tight">{title}</h1>
         <DataBadges simulated={simulated} live={live} />
       </div>
     </header>
   );
+}
+
+/** "Viewing as" for this elder's care circle (cookie read on the server so the first paint is right). */
+async function ViewerBar({ elderId }: { elderId: string }) {
+  const v = await serverViewer(elderId);
+  return <ViewerSwitcher key={`${elderId}-${v.memberId}`} elderId={elderId} memberId={v.memberId} />;
 }
 
 export function Disclaimer() {
