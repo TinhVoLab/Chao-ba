@@ -387,6 +387,7 @@
   async function endCall() {
     if (!callId || ending) return;
     ending = true; inCall = false; vad.listening = false;
+    try { if ("speechSynthesis" in window) speechSynthesis.cancel(); } catch (e) {}  // stop talking at once
     try { rec && rec.abort(); } catch (e) {}
     if (listen.cancel) listen.cancel();
     big.disabled = true; setStatus("Đang lưu kết quả (không lưu ghi âm)…");
@@ -424,6 +425,12 @@
   function resetButton() { big.disabled = false; big.classList.remove("stop"); big.textContent = captions.childElementCount ? "Gọi lại" : "Nghe"; }
 
   big.addEventListener("click", () => { if (inCall) endCall(); else startCall(); });
+  // Closing or leaving the page must silence the assistant even if a reply is still queued.
+  window.addEventListener("pagehide", () => {
+    inCall = false;
+    try { if ("speechSynthesis" in window) speechSynthesis.cancel(); } catch (e) {}
+    if (callId && !ending) { try { navigator.sendBeacon(`/api/calls/${callId}/end`); } catch (e) {} }
+  });
   $("simBtn").addEventListener("click", () => { simulate = !simulate; refreshButtons(); });
   $("typeBtn").addEventListener("click", () => { if (SR && !sttBroken) { typedMode = !typedMode; refreshButtons(); } });
 

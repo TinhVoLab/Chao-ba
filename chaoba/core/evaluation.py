@@ -52,7 +52,7 @@ OPERATIONAL_TYPES = ("missed_calls",)
 FAMILIES = {"chart": METRIC_CODES, **MATCHING_RULES}
 WINDOW_DAYS = 45
 L_GRID = (1.5, 2.0, 2.25, 2.5, 2.75, 3.0, 3.5, 4.0)
-RED_GAP = 1.0           # L_red = L_yellow + 1.0 along the operating curve (default config: 2.5 / 3.5)
+RED_GAP = 1.0           # L_red = L_yellow + 1.0 along the operating curve (default config: 3.0 / 4.0)
 FA_BUDGET = 0.30        # selection constraint: all-rule false alarms per person-month on the dev cohort
 
 

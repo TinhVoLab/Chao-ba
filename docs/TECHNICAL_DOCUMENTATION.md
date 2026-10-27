@@ -220,8 +220,8 @@ Implementation: `chaoba/core/control_chart.py`, `ControlConfig` defaults (verifi
 | `baseline_days` | 21 | baseline window (calendar days from enrolment) |
 | `min_valid` | 14 | valid calls needed; the window extends day by day until reached |
 | `lam` (λ) | 0.3 | EWMA smoothing |
-| `L_yellow` | **2.5** | chart limit, EWMA-sigma units (CONTRACT.md said 2.0, see 5.4) |
-| `L_red` | **3.5** | chart limit (CONTRACT.md said 3.0) |
+| `L_yellow` | **3.0** | chart limit, EWMA-sigma units (CONTRACT.md originally said 2.0, see 5.4) |
+| `L_red` | **4.0** | chart limit (CONTRACT.md originally said 3.0) |
 | `yellow_days` | 3 | consecutive valid days beyond `L_yellow` → yellow |
 | `red_days` | 5 | consecutive valid days beyond `L_red` → red; also used for the multi-metric rule |
 | `recover_days` | 3 | consecutive better valid days before the light steps down |
@@ -252,12 +252,12 @@ A "metric-yellow day" is a valid day with chart statistic ≥ `L_yellow`. Runs c
 |---|---|---|
 | **gray** | baseline not ready (`building_baseline`), or no valid call today (`missed_call` / `invalid_call`) **and** nothing alarming is held | — |
 | **green** | baseline ready, valid call, no rule fired | yes |
-| **yellow** | any metric ≥ 2.5 for ≥ 3 consecutive valid days (`metric_trend`) | yes |
+| **yellow** | any metric ≥ 3.0 for ≥ 3 consecutive valid days (`metric_trend`) | yes |
 | | same symptom reported ≥ 2 times in the last 7 days (`symptom_repeat`) | no |
 | | 2 consecutive unanswered days (`unanswered`) | no |
 | | mood ≤ 2 on ≥ 3 of the last 7 days (`low_mood`) | no |
 | **red** | ≥ 2 metrics each metric-yellow for ≥ 5 days (`multi_metric`) | yes |
-| | one metric ≥ 3.5 for ≥ 5 consecutive valid days (`metric_shift`) | yes |
+| | one metric ≥ 4.0 for ≥ 5 consecutive valid days (`metric_shift`) | yes |
 | | a fall reported today (`fall`) | no |
 | | ≥ 3 distinct symptoms in the last 7 days (`multi_symptom`) | no |
 | | 3 consecutive unanswered days (`unanswered`) | no |
@@ -271,7 +271,7 @@ A "metric-yellow day" is a valid day with chart statistic ≥ `L_yellow`. Runs c
 
 ### 5.4 Why the limits differ from the contract
 
-With five metric channels on the simulated cohort, the contract's 2.0 / 3.0 limits gave about 0.57 false alarms per person-month (per the module docstring). Moving to 2.5 / 3.5 halved that to 0.29 with almost the same sensitivity (§10). `ControlConfig(L_yellow=2.0, L_red=3.0)` reproduces the contract values. The limits were tuned on simulated data and **must be re-tuned on real data** (§15).
+With five metric channels, the contract's 2.0 / 3.0 limits raise too many false alarms: on the held-out simulated cohort L_yellow = 2.0 gives 0.62 alarm episodes per person-month and a 52 % chance rate (§10). The shipped 3.0 / 4.0 were selected on a separate development cohort by a rule fixed in advance (highest chance-corrected sensitivity with ≤ 0.30 false alarms per person-month) and give 0.19 false alarms per person-month on the held-out cohort. `ControlConfig(L_yellow=2.0, L_red=3.0)` reproduces the contract values. The limits were chosen on simulated data and **must be re-tuned on real data** (§15).
 
 ---
 
@@ -303,15 +303,15 @@ Story: a blood-pressure medication change on day 30 is followed by dizziness, po
 | 1–21 | **Measure:** 20 valid calls, 0 missed. Baseline speech rate 4.57 syll/s, mean recall 2.67/3 | gray | |
 | 22 | Personal baseline ready | green | |
 | 30 | Doctor changes BP medication (family note) | green | |
-| 35 | First mention of dizziness when standing up | green | |
+| 35 | First mention of dizziness | green | |
 | **38** | Dizziness mentioned a 2nd time in 7 days | **yellow** | `symptom_repeat` |
-| 40 | Speech-rate trend beyond limit 3 days (−8.6 %) | yellow | `metric_trend`, `symptom_repeat` |
-| 41 | Pause ratio also trending (+21.8 %) | yellow | 2× `metric_trend` |
-| **43** | 3 distinct symptoms in 7 days (dizziness, poor sleep, skipped meal); filler rate +32 % | **red** | `multi_symptom` + trends |
-| **44** | **Improve:** doctor visit, dose adjusted; daughter calls 3×/week (family contact 1.2 → 3.0 per week) | red | `multi_metric`, `metric_shift` (speech rate −14.6 %) |
-| 44–52 | Signals recover; light held red by the lagging EWMA and hysteresis | red → | `recovering` from day 51 |
-| 53–55 | Stepped down | yellow | residual speech-rate trend, `recovering` |
-| **56** | **Back to green, 12 days after the intervention** | green | |
+| 41 | Speech-rate trend beyond the limit for 3 valid days (−11.2 %); poor sleep mentioned | yellow | `metric_trend`, `symptom_repeat` |
+| 42 | Missed call; yellow held (an alarm is never hidden behind gray) | yellow | `missed_call` + held reasons |
+| **43** | 3 distinct symptoms in 7 days (dizziness, poor sleep, skipped meal); filler rate also trending (+32.4 %) | **red** | `multi_symptom` + 2× `metric_trend` |
+| **44** | **Improve:** doctor visit, dose adjusted; daughter calls 3×/week (family contact 1.2 → 3.0 per week) | red | same (speech rate −14.6 %) |
+| 45–49 | Lagging EWMA: speech rate and filler rate beyond L_red for 5 days, pause ratio and MATTR also trending | red | `multi_metric`, `metric_shift` |
+| 51–52 | Signals recover; red held by hysteresis | red | `recovering` |
+| **53** | **Back to green, 9 days after the intervention** | green | |
 | **77** | **Control:** new personal baseline from the stable post-intervention period | green | `rebaseline` |
 | 85 | Last family call; the 3×/week habit has faded (1.0 per week over days 77–90) | green | |
 | 90 | Still green. Today screen: "No one has called Mom for 5 days" | green | |
@@ -320,7 +320,7 @@ Light timeline (days 1–90; `.` gray, `g` green, `Y` yellow, `R` red):
 
 ```
 day  1  ..........  11 ..........  21 .ggggggggg  31 gggggggYYY  41 YYRRRRRRRR
-day 51  RRYYYggggg  61 gg.ggggggg  71 ggggg.gggg  81 gg.ggggggg
+day 51  RRgggggggg  61 gg.ggggggg  71 ggggg.gggg  81 gg.ggggggg
 ```
 
 **Intervention effect** (pre = days 30–43, post = days 51–64; simulated):
@@ -334,11 +334,11 @@ day 51  RRYYYggggg  61 gg.ggggggg  71 ggggg.gggg  81 gg.ggggggg
 | Recall (0–3) | 3.0 | 2.33 | 2.77 | +18.7 % |
 
 What the family read on day 44 (generated by the template, English version):
-> *"Over two weeks she has been speaking slower (about 15% change) and pausing more (about 40% change) compared with her own usual pattern, and mentioned dizziness 3 times. In the last 7 days she mentioned 3 different health complaints: dizziness, poor sleep, skipped meals. Please call her and consider arranging a doctor's visit."*
+> *"Over two weeks she has been speaking slower (about 15% change) and using more fillers ("uh, um") (about 40% change) compared with her own usual pattern, and mentioned dizziness 3 times. In the last 7 days she mentioned 3 different health complaints: dizziness, poor sleep, skipped meals. Please call her and consider arranging a doctor's visit."*
 
 The two other personas show the remaining cases:
 
-- **Ông Tư** (76, HCMC): a slow drift in recall and word use from about day 30. The light turns **yellow on day 65** (story recall −37 %, pause ratio +18 %) and stays yellow to day 90. There is no intervention yet: Analyze is the current phase, Improve is `not_started` and shows the *recommendation*: "arrange a doctor's visit so a doctor can assess, and bring this trend report; family to talk with him more often". The wording deliberately names no specialty or condition: the trend is a reason to see a doctor, not a finding.
+- **Ông Tư** (76, HCMC): a slow drift in recall and word use from about day 30. The light turns **yellow on day 70** (story recall trend, −32 % on day 70, −37 % by day 90: 0 of the last 7 calls recalled fully without hints, usually about 7 of 7) and stays yellow to day 90. There is no intervention yet: Analyze is the current phase, Improve is `not_started` and shows the *recommendation*: "family to call and talk with him more often; if the change persists, bring this trend report to his next routine check-up". The wording deliberately names no specialty or condition: the trend is a reason to talk to a doctor, not a finding.
 - **Ông Bảy** (69, Cần Thơ): the stable control. Green on all 63 monitored days with a valid call; gray only on missed or short-call days.
 
 ---
@@ -443,7 +443,7 @@ REST API: see `CONTRACT.md` (including contacts, consent withdraw/grant, resume,
 
 ### 10.2 Threshold choice and operating curve
 
-Rule fixed before the held-out cohort was scored: on the development cohort, pick the L_yellow (grid 1.5–4.0, L_red = L_yellow + 1) with the highest excess clinical sensitivity among settings with ≤ 0.30 false alarms per person-month. It picked **L_yellow = 3.0 / L_red = 4.0** (development: sensitivity 84.4 %, chance 9.6 %, excess 74.8 %, 0.17 false alarms per person-month). The control chart currently ships with **2.5 / 3.5**, a value set earlier under the uncorrected definition; both are reported below. On the held-out cohort, the corrected analysis favours 3.0. The three demo personas keep their story at 3.0 / 4.0 (Bà Hạnh yellow day 38, red day 43; Ông Tư yellow day 70), so switching is a one-line change in `ControlConfig`.
+Rule fixed before the held-out cohort was scored: on the development cohort, pick the L_yellow (grid 1.5–4.0, L_red = L_yellow + 1) with the highest excess clinical sensitivity among settings with ≤ 0.30 false alarms per person-month. It picked **L_yellow = 3.0 / L_red = 4.0** (development: sensitivity 84.4 %, chance 9.6 %, excess 74.8 %, 0.17 false alarms per person-month). The control chart now ships with **3.0 / 4.0** (`ControlConfig` defaults). An earlier version shipped 2.5 / 3.5, chosen under the uncorrected definition; it is kept in the tables below for comparison. The demo personas are generated at 3.0 / 4.0 (Bà Hạnh yellow day 38, red day 43, green again day 53; Ông Tư yellow from day 70).
 
 ![Operating curve](../data/eval/operating_curve.svg)
 
@@ -452,8 +452,8 @@ Held-out cohort (full table, including the development cohort: `data/eval/operat
 | Baseline | L_yellow | Sensitivity | Chance | Excess | Chart-only sens. | Chart chance | False alarms / p-m |
 |---|---|---|---|---|---|---|---|
 | personal | 2.0 | 91.9 % | 52.3 % | 39.7 % | 84.7 % | 51.5 % | 0.62 |
-| personal | 2.5 (shipped) | 87.1 % | 30.4 % | 56.7 % | 75.8 % | 29.5 % | 0.34 |
-| personal | **3.0 (chosen)** | **79.8 %** | **15.0 %** | **64.9 %** | 56.5 % | 13.7 % | **0.19** |
+| personal | 2.5 (previous default) | 87.1 % | 30.4 % | 56.7 % | 75.8 % | 29.5 % | 0.34 |
+| personal | **3.0 (chosen, shipped)** | **79.8 %** | **15.0 %** | **64.9 %** | 56.5 % | 13.7 % | **0.19** |
 | personal | 3.5 | 71.0 % | 5.9 % | 65.1 % | 39.5 % | 4.6 % | 0.12 |
 | population | 2.5 | 69.4 % | 37.9 % | 31.5 % | 48.4 % | 37.2 % | 0.43 |
 | population | 3.0 | 71.8 % | 31.6 % | 40.1 % | 44.4 % | 30.7 % | 0.34 |
@@ -462,7 +462,7 @@ The table shows why a raw sensitivity number misleads. Lowering the threshold to
 
 ### 10.3 Headline (held-out, simulated)
 
-| Metric | L_yellow 3.0 (chosen on dev) | L_yellow 2.5 (shipped) |
+| Metric | L_yellow 3.0 (chosen on dev, shipped) | L_yellow 2.5 (previous default) |
 |---|---|---|
 | Attributed sensitivity, clinical declines | **79.8 %** (72.6–86.3) | 87.1 % (81.5–92.7) |
 | Chance rate (pseudo-onsets, no decline) | 15.0 % (11.4–18.8) | 30.4 % (25.4–35.8) |
@@ -531,7 +531,7 @@ Recall (0–3 per call) is never shown as a percentage, because "37 % worse reca
 
 ### 10.9 Software verification
 
-- `.venv/bin/pytest -q` → **119 tests pass** (core metrics, control chart, explanations and blocklist, synthetic personas, DMAIC/evaluation, emergency spotter true/false positives including idioms and negation, orchestrator phases, consent/opt-out, scam/medication/diagnosis guardrails, Claude engine with a fake client, server API end-to-end including "no audio anywhere").
+- `.venv/bin/pytest -q` → **174 passed, 3 skipped** (the 3 skipped tests are the Postgres RLS checks in `tests/deploy`, which start a throwaway Postgres container and skip when Docker is not running; the suite covers core metrics, control chart, explanations and blocklist, synthetic personas, DMAIC/evaluation, emergency spotter true/false positives including idioms and negation, orchestrator phases, consent/opt-out, scam/medication/diagnosis guardrails, Claude engine with a fake client, server API end-to-end including "no audio anywhere").
 - A full hands-free simulated web call was run in the browser (Playwright, headless Chromium): recall failed free and succeeded after the cue (score 1), 56 s voiced speech (valid), day 91 appended with today's date, light computed. A typed call was also run end to end (stored as live data; typed answers carry no speech timing, so it counts as a too-short call and its speech metrics are not shown).
 - Family app checked with Playwright on every route × 3 elders × VI/EN at 390×844 and 1280×800 (84 page loads, before and after the live calls): no console errors, no failed requests, no horizontal overflow. Offline (API stopped) the app falls back to the bundled fixtures.
 
@@ -637,7 +637,7 @@ docker compose exec -T postgres psql -U chaoba -d chaoba -v ON_ERROR_STOP=1 -f /
 
 Configuration is by environment variable: `CHAOBA_CORS_ORIGINS` (comma-separated origins the API accepts), `NEXT_PUBLIC_API_BASE` (API address the **browser** uses; baked in at build time), `CHAOBA_API_INTERNAL` (API address the Next **server** uses for server-side reads, e.g. `http://api:8000` inside compose), `CHAOBA_DB`, `CHAOBA_END_DATE`, `ANTHROPIC_API_KEY`.
 
-**Honest scope.** The API still stores data in SQLite. In compose, Postgres is the *production schema target*: it proves the schema and RLS policies load and behave as designed, but the API is not yet wired to it (that port, with Supabase Auth replacing the `X-Actor` header, is the first item on the roadmap). `docker compose config` validates the file; the images were written against the same Python 3.14 / Node 22 toolchain used in development, but the full `docker compose up` and the RLS pytest were **not executed in the build environment** because the Docker daemon was not running there; they are one command away for anyone with Docker.
+**Honest scope.** The API still stores data in SQLite. In compose, Postgres is the *production schema target*: it proves the schema and RLS policies load and behave as designed, but the API is not yet wired to it (that port, with Supabase Auth replacing the `X-Actor` header, is the first item on the roadmap). The stack was run end to end on 27 Oct 2026 (Docker Desktop, Engine 29.1, Compose 5.0): `docker compose up --build -d` built both images, all three services reported healthy, `/api/health` answered, the family app returned 200 and rendered from the API over the compose network, Postgres held the 14 production tables, `rls_test.sql` printed `RLS OK`, and `pytest tests/deploy` passed (3 tests); the stack was then removed with `docker compose down -v`.
 
 **Claude path.** Everything above runs without an API key. The Claude conversation, analysis and rewording paths are covered only by unit tests with a fake client and have never been run against the live API here (no key was available). One command runs a keyed session:
 
@@ -754,9 +754,9 @@ Read this as: the < 100k VND target is reachable on the web, and on the phone on
 
 - **All performance numbers are from simulated data** that we generated, with declines we injected using models we chose. The good sensitivity, the personal-vs-population ablation and the fairness tables show internal consistency, not real-world accuracy. Signal sizes for the three demo personas were tuned so their stories land on target days (the rules were not tuned per persona).
 - **Vietnamese voice and language markers are not clinically validated.** No reference-standard comparison (MoCA, frailty assessment) has been done.
-- **False alarms are not negligible:** 0.29 per person-month (simulated), so about one non-actionable alert every 3–4 months per stable person, and 58 % of stable simulated elders saw at least one in 99 days. Real-world rates may be higher.
-- **Detection is slow by design:** median 19 days after onset (simulated). This is a trend detector, not an acute-event detector; emergencies rely on the spotter and on what the elder says.
-- Limits (2.5 / 3.5) were tuned on the same simulated cohort they are evaluated on.
+- **False alarms are not negligible:** 0.19 (0.16–0.22) alarm episodes per person-month (simulated), so about one non-actionable alert every five months per stable person, and 42 % of stable simulated elders saw at least one in 99 days. Real-world rates may be higher.
+- **Detection is slow by design:** median 24 days after onset (IQR 15–29, simulated). This is a trend detector, not an acute-event detector; emergencies rely on the spotter and on what the elder says.
+- Limits (3.0 / 4.0) were chosen on a simulated development cohort and reported on a held-out simulated cohort from the same generator, so the separation guards against overfitting to one sample, not against a wrong generative model. A clinically matched chance rate of 15 % remains: only the 64.9 % excess is attributable to the decline.
 
 **Measurement**
 

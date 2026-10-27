@@ -24,13 +24,15 @@
     "id": "ba_tu",
     "name": "Bà Tư",
     "relation": "wife",
-    "role": "primary"
+    "role": "primary",
+    "honorific": "bà"
    },
    {
     "id": "khoa",
     "name": "Khoa",
     "relation": "son",
-    "role": "secondary"
+    "role": "secondary",
+    "honorific": "anh"
    }
   ],
   "goals": [
@@ -49,25 +51,12 @@
  "today": {
   "date": "2026-10-26",
   "day": 90,
-  "light": "yellow",
-  "reasons": [
-   {
-    "code": "metric_trend",
-    "metric": "recall_score",
-    "days": 24,
-    "change_pct": -37,
-    "z": 4.199,
-    "level": "yellow"
-   }
-  ],
-  "explanation_vi": "Mấy tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 37% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-  "explanation_en": "Over several weeks he has been recalling earlier conversations less well (about 37% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report.",
-  "summary_vi": "Ông giảng bài cho cháu, kể chuyện học trò cũ. Ông cần gợi ý mới nhớ chuyện hôm trước.",
-  "summary_en": "He helped his grandson with homework and talked about former students. He needed hints to recall the previous chat.",
-  "answered": true,
-  "mood": 4,
+  "is_today": false,
+  "label_vi": "Cuộc gọi hôm qua (26/10)",
+  "label_en": "Yesterday's call (26 Oct)",
+  "calls": 1,
+  "rehearsal": false,
   "channel": "sim",
-  "sharing_paused": false,
   "contact": {
    "last": {
     "id": 58,
@@ -79,13 +68,32 @@
     "duration_min": 6,
     "source": "simulated",
     "simulated": true,
-    "created_at": "2026-10-27T13:58:05+00:00"
+    "created_at": "2026-10-27T14:36:36+00:00"
    },
    "days_since": 1,
    "nudge": false,
    "nudge_after_days": 3
   },
-  "simulated": true
+  "simulated": true,
+  "light": "yellow",
+  "reasons": [
+   {
+    "code": "metric_trend",
+    "metric": "recall_score",
+    "days": 20,
+    "change_pct": -37,
+    "z": 4.199,
+    "level": "yellow"
+   }
+  ],
+  "explanation_vi": "Trong 7 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/7 lần (thường khoảng 7/7). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+  "explanation_en": "In the last 7 calls he recalled the earlier story fully without hints 0 of 7 times (usually about 7 of 7). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up.",
+  "summary_vi": "Ông giảng bài cho cháu, kể chuyện học trò cũ. Ông cần gợi ý mới nhớ chuyện hôm trước.",
+  "summary_en": "He helped his grandson with homework and talked about former students. He needed hints to recall the previous chat.",
+  "answered": true,
+  "mood": 4,
+  "emergency": false,
+  "sharing_paused": false
  },
  "timeline": {
   "records": [
@@ -105,7 +113,8 @@
     "symptoms": {},
     "summary_vi": "Ông đọc báo Tuổi Trẻ, giảng bài cho cháu.",
     "summary_en": "He read the Tuổi Trẻ newspaper and helped his grandson with homework.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -123,7 +132,8 @@
     "symptoms": {},
     "summary_vi": "Ông kể chuyện học trò cũ, uống cà phê với bạn, viết thư pháp.",
     "summary_en": "He talked about former students, had coffee with a friend and practised calligraphy.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -141,7 +151,8 @@
     "symptoms": {},
     "summary_vi": "Ông nghe đài, kể chuyện học trò cũ.",
     "summary_en": "He listened to the radio and talked about former students.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -159,7 +170,8 @@
     "symptoms": {},
     "summary_vi": "Ông tưới chậu lan, chơi cờ tướng ở công viên.",
     "summary_en": "He watered his orchids and played Chinese chess in the park.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -177,7 +189,8 @@
     "symptoms": {},
     "summary_vi": "Ông tưới chậu lan, xem thời sự, uống cà phê với bạn.",
     "summary_en": "He watered his orchids, watched the news and had coffee with a friend.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -195,7 +208,8 @@
     "symptoms": {},
     "summary_vi": "Ông giảng bài cho cháu, xem thời sự, chơi cờ tướng ở công viên.",
     "summary_en": "He helped his grandson with homework, watched the news and played Chinese chess in the park.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -213,7 +227,8 @@
     "symptoms": {},
     "summary_vi": "Ông đi bộ với vợ buổi sáng, chơi cờ tướng ở công viên.",
     "summary_en": "He walked with his wife in the morning and played Chinese chess in the park.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -231,7 +246,8 @@
     "symptoms": {},
     "summary_vi": "Ông nghe đài, đọc báo Tuổi Trẻ, chơi cờ tướng ở công viên.",
     "summary_en": "He listened to the radio, read the Tuổi Trẻ newspaper and played Chinese chess in the park.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -249,7 +265,8 @@
     "symptoms": {},
     "summary_vi": "Ông giảng bài cho cháu, uống cà phê với bạn.",
     "summary_en": "He helped his grandson with homework and had coffee with a friend.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -267,7 +284,8 @@
     "symptoms": {},
     "summary_vi": "Ông giảng bài cho cháu, viết thư pháp, đi bộ với vợ buổi sáng.",
     "summary_en": "He helped his grandson with homework, practised calligraphy and walked with his wife in the morning.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -285,7 +303,8 @@
     "symptoms": {},
     "summary_vi": "Ông uống cà phê với bạn, viết thư pháp.",
     "summary_en": "He had coffee with a friend and practised calligraphy.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -303,7 +322,8 @@
     "symptoms": {},
     "summary_vi": "Ông kể chuyện học trò cũ, tưới chậu lan.",
     "summary_en": "He talked about former students and watered his orchids.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -321,7 +341,8 @@
     "symptoms": {},
     "summary_vi": "Ông đọc báo Tuổi Trẻ, nghe đài.",
     "summary_en": "He read the Tuổi Trẻ newspaper and listened to the radio.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -341,7 +362,8 @@
     },
     "summary_vi": "Cuộc gọi ngắn, ông đang bận nấu cơm.",
     "summary_en": "Short call - he was busy cooking.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -361,7 +383,8 @@
     },
     "summary_vi": "Ông kể chuyện học trò cũ, đọc báo Tuổi Trẻ. Ông than đau lưng.",
     "summary_en": "He talked about former students and read the Tuổi Trẻ newspaper. He complained of back pain.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -379,7 +402,8 @@
     "symptoms": {},
     "summary_vi": "Ông đọc báo Tuổi Trẻ, chơi cờ tướng ở công viên.",
     "summary_en": "He read the Tuổi Trẻ newspaper and played Chinese chess in the park.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -397,7 +421,8 @@
     "symptoms": {},
     "summary_vi": "Ông uống cà phê với bạn, đi bộ với vợ buổi sáng.",
     "summary_en": "He had coffee with a friend and walked with his wife in the morning.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -415,7 +440,8 @@
     "symptoms": {},
     "summary_vi": "Ông xem thời sự, nghe đài, kể chuyện học trò cũ.",
     "summary_en": "He watched the news, listened to the radio and talked about former students.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -433,7 +459,8 @@
     "symptoms": {},
     "summary_vi": "Ông nghe đài, đọc báo Tuổi Trẻ.",
     "summary_en": "He listened to the radio and read the Tuổi Trẻ newspaper.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -451,7 +478,8 @@
     "symptoms": {},
     "summary_vi": "Ông uống cà phê với bạn, tưới chậu lan, đi bộ với vợ buổi sáng.",
     "summary_en": "He had coffee with a friend, watered his orchids and walked with his wife in the morning.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -469,7 +497,8 @@
     "symptoms": {},
     "summary_vi": "Ông giảng bài cho cháu, chơi cờ tướng ở công viên, tưới chậu lan.",
     "summary_en": "He helped his grandson with homework, played Chinese chess in the park and watered his orchids.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -487,7 +516,8 @@
     "symptoms": {},
     "summary_vi": "Ông viết thư pháp, đọc báo Tuổi Trẻ.",
     "summary_en": "He practised calligraphy and read the Tuổi Trẻ newspaper.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -505,7 +535,8 @@
     "symptoms": {},
     "summary_vi": "Ông kể chuyện học trò cũ, chơi cờ tướng ở công viên, uống cà phê với bạn.",
     "summary_en": "He talked about former students, played Chinese chess in the park and had coffee with a friend.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -523,7 +554,8 @@
     "symptoms": {},
     "summary_vi": "Ông đọc báo Tuổi Trẻ, đi bộ với vợ buổi sáng.",
     "summary_en": "He read the Tuổi Trẻ newspaper and walked with his wife in the morning.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -541,7 +573,8 @@
     "symptoms": {},
     "summary_vi": "Ông đọc báo Tuổi Trẻ, nghe đài.",
     "summary_en": "He read the Tuổi Trẻ newspaper and listened to the radio.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -559,7 +592,8 @@
     "symptoms": {},
     "summary_vi": "Ông đọc báo Tuổi Trẻ, xem thời sự.",
     "summary_en": "He read the Tuổi Trẻ newspaper and watched the news.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -577,7 +611,8 @@
     "symptoms": {},
     "summary_vi": "Ông giảng bài cho cháu, chơi cờ tướng ở công viên.",
     "summary_en": "He helped his grandson with homework and played Chinese chess in the park.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -595,7 +630,8 @@
     "symptoms": {},
     "summary_vi": "Ông nghe đài, tưới chậu lan, giảng bài cho cháu.",
     "summary_en": "He listened to the radio, watered his orchids and helped his grandson with homework.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -613,7 +649,8 @@
     "symptoms": {},
     "summary_vi": "Ông nghe đài, viết thư pháp.",
     "summary_en": "He listened to the radio and practised calligraphy.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -631,7 +668,8 @@
     "symptoms": {},
     "summary_vi": "Ông tưới chậu lan, giảng bài cho cháu, chơi cờ tướng ở công viên.",
     "summary_en": "He watered his orchids, helped his grandson with homework and played Chinese chess in the park.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -649,7 +687,8 @@
     "symptoms": {},
     "summary_vi": "Ông đọc báo Tuổi Trẻ, đi bộ với vợ buổi sáng, nghe đài.",
     "summary_en": "He read the Tuổi Trẻ newspaper, walked with his wife in the morning and listened to the radio.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -667,7 +706,8 @@
     "symptoms": {},
     "summary_vi": "Ông giảng bài cho cháu, viết thư pháp, xem thời sự.",
     "summary_en": "He helped his grandson with homework, practised calligraphy and watched the news.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -685,7 +725,8 @@
     "symptoms": {},
     "summary_vi": "Ông đọc báo Tuổi Trẻ, tưới chậu lan.",
     "summary_en": "He read the Tuổi Trẻ newspaper and watered his orchids.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -703,7 +744,8 @@
     "symptoms": {},
     "summary_vi": "Ông viết thư pháp, đi bộ với vợ buổi sáng.",
     "summary_en": "He practised calligraphy and walked with his wife in the morning.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -721,7 +763,8 @@
     "symptoms": {},
     "summary_vi": "Ông uống cà phê với bạn, đọc báo Tuổi Trẻ.",
     "summary_en": "He had coffee with a friend and read the Tuổi Trẻ newspaper.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -739,7 +782,8 @@
     "symptoms": {},
     "summary_vi": "Ông chơi cờ tướng ở công viên, đi bộ với vợ buổi sáng.",
     "summary_en": "He played Chinese chess in the park and walked with his wife in the morning.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -757,7 +801,8 @@
     "symptoms": {},
     "summary_vi": "Ông đi bộ với vợ buổi sáng, nghe đài.",
     "summary_en": "He walked with his wife in the morning and listened to the radio.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -775,7 +820,8 @@
     "symptoms": {},
     "summary_vi": "Ông viết thư pháp, đi bộ với vợ buổi sáng.",
     "summary_en": "He practised calligraphy and walked with his wife in the morning.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -795,7 +841,8 @@
     },
     "summary_vi": "Ông đi bộ với vợ buổi sáng, viết thư pháp, tưới chậu lan. Ông quên uống thuốc buổi sáng.",
     "summary_en": "He walked with his wife in the morning, practised calligraphy and watered his orchids. He forgot the morning medication.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -815,7 +862,8 @@
     },
     "summary_vi": "Ông đi bộ với vợ buổi sáng, uống cà phê với bạn. Ông kể đêm qua khó ngủ.",
     "summary_en": "He walked with his wife in the morning and had coffee with a friend. He said he slept badly last night.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -833,7 +881,8 @@
     "symptoms": {},
     "summary_vi": "Ông không bắt máy.",
     "summary_en": "He did not answer the call.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -851,7 +900,8 @@
     "symptoms": {},
     "summary_vi": "Ông giảng bài cho cháu, xem thời sự, viết thư pháp.",
     "summary_en": "He helped his grandson with homework, watched the news and practised calligraphy.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -869,7 +919,8 @@
     "symptoms": {},
     "summary_vi": "Ông xem thời sự, viết thư pháp, chơi cờ tướng ở công viên.",
     "summary_en": "He watched the news, practised calligraphy and played Chinese chess in the park.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -887,7 +938,8 @@
     "symptoms": {},
     "summary_vi": "Ông viết thư pháp, nghe đài.",
     "summary_en": "He practised calligraphy and listened to the radio.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -905,7 +957,8 @@
     "symptoms": {},
     "summary_vi": "Ông xem thời sự, chơi cờ tướng ở công viên, viết thư pháp.",
     "summary_en": "He watched the news, played Chinese chess in the park and practised calligraphy.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -923,7 +976,8 @@
     "symptoms": {},
     "summary_vi": "Ông nghe đài, đọc báo Tuổi Trẻ.",
     "summary_en": "He listened to the radio and read the Tuổi Trẻ newspaper.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -941,7 +995,8 @@
     "symptoms": {},
     "summary_vi": "Ông nghe đài, xem thời sự.",
     "summary_en": "He listened to the radio and watched the news.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -959,7 +1014,8 @@
     "symptoms": {},
     "summary_vi": "Ông tưới chậu lan, chơi cờ tướng ở công viên.",
     "summary_en": "He watered his orchids and played Chinese chess in the park.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -977,7 +1033,8 @@
     "symptoms": {},
     "summary_vi": "Ông xem thời sự, chơi cờ tướng ở công viên.",
     "summary_en": "He watched the news and played Chinese chess in the park.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -995,7 +1052,8 @@
     "symptoms": {},
     "summary_vi": "Ông đi bộ với vợ buổi sáng, đọc báo Tuổi Trẻ, uống cà phê với bạn.",
     "summary_en": "He walked with his wife in the morning, read the Tuổi Trẻ newspaper and had coffee with a friend.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1013,7 +1071,8 @@
     "symptoms": {},
     "summary_vi": "Ông chơi cờ tướng ở công viên, xem thời sự, uống cà phê với bạn.",
     "summary_en": "He played Chinese chess in the park, watched the news and had coffee with a friend.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1031,7 +1090,8 @@
     "symptoms": {},
     "summary_vi": "Ông chơi cờ tướng ở công viên, nghe đài, viết thư pháp.",
     "summary_en": "He played Chinese chess in the park, listened to the radio and practised calligraphy.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1049,7 +1109,8 @@
     "symptoms": {},
     "summary_vi": "Ông chơi cờ tướng ở công viên, tưới chậu lan, giảng bài cho cháu.",
     "summary_en": "He played Chinese chess in the park, watered his orchids and helped his grandson with homework.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1067,7 +1128,8 @@
     "symptoms": {},
     "summary_vi": "Ông giảng bài cho cháu, kể chuyện học trò cũ.",
     "summary_en": "He helped his grandson with homework and talked about former students.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1085,7 +1147,8 @@
     "symptoms": {},
     "summary_vi": "Ông giảng bài cho cháu, đi bộ với vợ buổi sáng.",
     "summary_en": "He helped his grandson with homework and walked with his wife in the morning.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1103,7 +1166,8 @@
     "symptoms": {},
     "summary_vi": "Ông đọc báo Tuổi Trẻ, chơi cờ tướng ở công viên.",
     "summary_en": "He read the Tuổi Trẻ newspaper and played Chinese chess in the park.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1121,7 +1185,8 @@
     "symptoms": {},
     "summary_vi": "Ông xem thời sự, đọc báo Tuổi Trẻ.",
     "summary_en": "He watched the news and read the Tuổi Trẻ newspaper.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1139,7 +1204,8 @@
     "symptoms": {},
     "summary_vi": "Ông giảng bài cho cháu, uống cà phê với bạn, xem thời sự.",
     "summary_en": "He helped his grandson with homework, had coffee with a friend and watched the news.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1157,7 +1223,8 @@
     "symptoms": {},
     "summary_vi": "Ông xem thời sự, chơi cờ tướng ở công viên.",
     "summary_en": "He watched the news and played Chinese chess in the park.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1175,7 +1242,8 @@
     "symptoms": {},
     "summary_vi": "Ông không bắt máy.",
     "summary_en": "He did not answer the call.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1193,7 +1261,8 @@
     "symptoms": {},
     "summary_vi": "Ông uống cà phê với bạn, viết thư pháp, đi bộ với vợ buổi sáng.",
     "summary_en": "He had coffee with a friend, practised calligraphy and walked with his wife in the morning.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1211,7 +1280,8 @@
     "symptoms": {},
     "summary_vi": "Ông tưới chậu lan, kể chuyện học trò cũ.",
     "summary_en": "He watered his orchids and talked about former students.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1229,7 +1299,8 @@
     "symptoms": {},
     "summary_vi": "Ông chơi cờ tướng ở công viên, uống cà phê với bạn, kể chuyện học trò cũ.",
     "summary_en": "He played Chinese chess in the park, had coffee with a friend and talked about former students.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1247,7 +1318,8 @@
     "symptoms": {},
     "summary_vi": "Ông tưới chậu lan, đọc báo Tuổi Trẻ, đi bộ với vợ buổi sáng.",
     "summary_en": "He watered his orchids, read the Tuổi Trẻ newspaper and walked with his wife in the morning.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1265,7 +1337,8 @@
     "symptoms": {},
     "summary_vi": "Ông uống cà phê với bạn, giảng bài cho cháu.",
     "summary_en": "He had coffee with a friend and helped his grandson with homework.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1283,7 +1356,8 @@
     "symptoms": {},
     "summary_vi": "Ông giảng bài cho cháu, đọc báo Tuổi Trẻ, chơi cờ tướng ở công viên.",
     "summary_en": "He helped his grandson with homework, read the Tuổi Trẻ newspaper and played Chinese chess in the park.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1301,7 +1375,8 @@
     "symptoms": {},
     "summary_vi": "Ông đọc báo Tuổi Trẻ, chơi cờ tướng ở công viên, kể chuyện học trò cũ.",
     "summary_en": "He read the Tuổi Trẻ newspaper, played Chinese chess in the park and talked about former students.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1319,7 +1394,8 @@
     "symptoms": {},
     "summary_vi": "Ông đọc báo Tuổi Trẻ, xem thời sự, chơi cờ tướng ở công viên.",
     "summary_en": "He read the Tuổi Trẻ newspaper, watched the news and played Chinese chess in the park.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1337,7 +1413,8 @@
     "symptoms": {},
     "summary_vi": "Ông tưới chậu lan, viết thư pháp.",
     "summary_en": "He watered his orchids and practised calligraphy.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1355,7 +1432,8 @@
     "symptoms": {},
     "summary_vi": "Ông xem thời sự, uống cà phê với bạn, kể chuyện học trò cũ.",
     "summary_en": "He watched the news, had coffee with a friend and talked about former students.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1373,7 +1451,8 @@
     "symptoms": {},
     "summary_vi": "Ông uống cà phê với bạn, xem thời sự, tưới chậu lan.",
     "summary_en": "He had coffee with a friend, watched the news and watered his orchids.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1391,7 +1470,8 @@
     "symptoms": {},
     "summary_vi": "Ông đọc báo Tuổi Trẻ, giảng bài cho cháu, đi bộ với vợ buổi sáng.",
     "summary_en": "He read the Tuổi Trẻ newspaper, helped his grandson with homework and walked with his wife in the morning.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1409,7 +1489,8 @@
     "symptoms": {},
     "summary_vi": "Ông chơi cờ tướng ở công viên, xem thời sự, kể chuyện học trò cũ.",
     "summary_en": "He played Chinese chess in the park, watched the news and talked about former students.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1427,7 +1508,8 @@
     "symptoms": {},
     "summary_vi": "Ông xem thời sự, kể chuyện học trò cũ, nghe đài.",
     "summary_en": "He watched the news, talked about former students and listened to the radio.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1445,7 +1527,8 @@
     "symptoms": {},
     "summary_vi": "Ông xem thời sự, kể chuyện học trò cũ, nghe đài.",
     "summary_en": "He watched the news, talked about former students and listened to the radio.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1463,7 +1546,8 @@
     "symptoms": {},
     "summary_vi": "Ông nghe đài, đọc báo Tuổi Trẻ, viết thư pháp.",
     "summary_en": "He listened to the radio, read the Tuổi Trẻ newspaper and practised calligraphy.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1481,7 +1565,8 @@
     "symptoms": {},
     "summary_vi": "Ông xem thời sự, giảng bài cho cháu.",
     "summary_en": "He watched the news and helped his grandson with homework.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1499,7 +1584,8 @@
     "symptoms": {},
     "summary_vi": "Ông đọc báo Tuổi Trẻ, xem thời sự.",
     "summary_en": "He read the Tuổi Trẻ newspaper and watched the news.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1517,7 +1603,8 @@
     "symptoms": {},
     "summary_vi": "Ông tưới chậu lan, giảng bài cho cháu, viết thư pháp.",
     "summary_en": "He watered his orchids, helped his grandson with homework and practised calligraphy.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1535,7 +1622,8 @@
     "symptoms": {},
     "summary_vi": "Ông đọc báo Tuổi Trẻ, nghe đài, đi bộ với vợ buổi sáng.",
     "summary_en": "He read the Tuổi Trẻ newspaper, listened to the radio and walked with his wife in the morning.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1553,7 +1641,8 @@
     "symptoms": {},
     "summary_vi": "Ông đi bộ với vợ buổi sáng, đọc báo Tuổi Trẻ, giảng bài cho cháu.",
     "summary_en": "He walked with his wife in the morning, read the Tuổi Trẻ newspaper and helped his grandson with homework.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1571,7 +1660,8 @@
     "symptoms": {},
     "summary_vi": "Ông nghe đài, chơi cờ tướng ở công viên, tưới chậu lan.",
     "summary_en": "He listened to the radio, played Chinese chess in the park and watered his orchids.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1589,7 +1679,8 @@
     "symptoms": {},
     "summary_vi": "Ông nghe đài, đi bộ với vợ buổi sáng, đọc báo Tuổi Trẻ.",
     "summary_en": "He listened to the radio, walked with his wife in the morning and read the Tuổi Trẻ newspaper.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1607,7 +1698,8 @@
     "symptoms": {},
     "summary_vi": "Ông nghe đài, uống cà phê với bạn, đi bộ với vợ buổi sáng.",
     "summary_en": "He listened to the radio, had coffee with a friend and walked with his wife in the morning.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1625,7 +1717,8 @@
     "symptoms": {},
     "summary_vi": "Ông uống cà phê với bạn, nghe đài.",
     "summary_en": "He had coffee with a friend and listened to the radio.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1643,7 +1736,8 @@
     "symptoms": {},
     "summary_vi": "Ông chơi cờ tướng ở công viên, xem thời sự.",
     "summary_en": "He played Chinese chess in the park and watched the news.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1661,7 +1755,8 @@
     "symptoms": {},
     "summary_vi": "Ông kể chuyện học trò cũ, xem thời sự.",
     "summary_en": "He talked about former students and watched the news.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1679,7 +1774,8 @@
     "symptoms": {},
     "summary_vi": "Ông tưới chậu lan, giảng bài cho cháu.",
     "summary_en": "He watered his orchids and helped his grandson with homework.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1697,7 +1793,8 @@
     "symptoms": {},
     "summary_vi": "Ông tưới chậu lan, kể chuyện học trò cũ.",
     "summary_en": "He watered his orchids and talked about former students.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    },
    {
     "elder_id": "tu",
@@ -1715,7 +1812,8 @@
     "symptoms": {},
     "summary_vi": "Ông giảng bài cho cháu, kể chuyện học trò cũ. Ông cần gợi ý mới nhớ chuyện hôm trước.",
     "summary_en": "He helped his grandson with homework and talked about former students. He needed hints to recall the previous chat.",
-    "simulated": true
+    "simulated": true,
+    "emergency": false
    }
   ],
   "lights": [
@@ -2990,17 +3088,8 @@
     "elder_id": "tu",
     "day": 65,
     "date": "2026-10-01",
-    "light": "yellow",
-    "reasons": [
-     {
-      "code": "metric_trend",
-      "metric": "recall_score",
-      "days": 3,
-      "change_pct": -27.3,
-      "z": 2.854,
-      "level": "yellow"
-     }
-    ],
+    "light": "green",
+    "reasons": [],
     "z": {
      "speech_rate_sps": 1.433,
      "pause_ratio": 0.056,
@@ -3009,24 +3098,15 @@
      "recall_score": 2.854
     },
     "baseline_ready": true,
-    "explanation_vi": "Khoảng một tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 27% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over about a week he has been recalling earlier conversations less well (about 27% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
    },
    {
     "elder_id": "tu",
     "day": 66,
     "date": "2026-10-02",
-    "light": "yellow",
-    "reasons": [
-     {
-      "code": "metric_trend",
-      "metric": "recall_score",
-      "days": 4,
-      "change_pct": -32.1,
-      "z": 2.955,
-      "level": "yellow"
-     }
-    ],
+    "light": "green",
+    "reasons": [],
     "z": {
      "speech_rate_sps": 0.987,
      "pause_ratio": 0.696,
@@ -3035,24 +3115,15 @@
      "recall_score": 2.955
     },
     "baseline_ready": true,
-    "explanation_vi": "Hai tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over two weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
    },
    {
     "elder_id": "tu",
     "day": 67,
     "date": "2026-10-03",
-    "light": "yellow",
-    "reasons": [
-     {
-      "code": "metric_trend",
-      "metric": "recall_score",
-      "days": 4,
-      "change_pct": -32.1,
-      "z": 2.955,
-      "level": "yellow"
-     }
-    ],
+    "light": "green",
+    "reasons": [],
     "z": {
      "speech_rate_sps": 1.054,
      "pause_ratio": 0.694,
@@ -3061,24 +3132,15 @@
      "recall_score": 2.955
     },
     "baseline_ready": true,
-    "explanation_vi": "Hai tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over two weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
    },
    {
     "elder_id": "tu",
     "day": 68,
     "date": "2026-10-04",
-    "light": "yellow",
-    "reasons": [
-     {
-      "code": "metric_trend",
-      "metric": "recall_score",
-      "days": 5,
-      "change_pct": -32.1,
-      "z": 3.025,
-      "level": "yellow"
-     }
-    ],
+    "light": "green",
+    "reasons": [],
     "z": {
      "speech_rate_sps": 1.148,
      "pause_ratio": -0.029,
@@ -3087,24 +3149,15 @@
      "recall_score": 3.025
     },
     "baseline_ready": true,
-    "explanation_vi": "Hai tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over two weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
    },
    {
     "elder_id": "tu",
     "day": 69,
     "date": "2026-10-05",
-    "light": "yellow",
-    "reasons": [
-     {
-      "code": "metric_trend",
-      "metric": "recall_score",
-      "days": 6,
-      "change_pct": -32.1,
-      "z": 3.074,
-      "level": "yellow"
-     }
-    ],
+    "light": "green",
+    "reasons": [],
     "z": {
      "speech_rate_sps": 0.527,
      "pause_ratio": 0.186,
@@ -3113,8 +3166,8 @@
      "recall_score": 3.074
     },
     "baseline_ready": true,
-    "explanation_vi": "Hai tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over two weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
    },
    {
     "elder_id": "tu",
@@ -3125,7 +3178,7 @@
      {
       "code": "metric_trend",
       "metric": "recall_score",
-      "days": 7,
+      "days": 3,
       "change_pct": -32.1,
       "z": 3.109,
       "level": "yellow"
@@ -3139,8 +3192,8 @@
      "recall_score": 3.109
     },
     "baseline_ready": true,
-    "explanation_vi": "Hai tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over two weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Trong 6 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/6 lần (thường khoảng 6/6). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+    "explanation_en": "In the last 6 calls he recalled the earlier story fully without hints 0 of 6 times (usually about 6 of 6). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up."
    },
    {
     "elder_id": "tu",
@@ -3151,7 +3204,7 @@
      {
       "code": "metric_trend",
       "metric": "recall_score",
-      "days": 8,
+      "days": 4,
       "change_pct": -32.1,
       "z": 3.133,
       "level": "yellow"
@@ -3165,8 +3218,8 @@
      "recall_score": 3.133
     },
     "baseline_ready": true,
-    "explanation_vi": "Hai tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over two weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Trong 6 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/6 lần (thường khoảng 6/6). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+    "explanation_en": "In the last 6 calls he recalled the earlier story fully without hints 0 of 6 times (usually about 6 of 6). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up."
    },
    {
     "elder_id": "tu",
@@ -3177,7 +3230,7 @@
      {
       "code": "metric_trend",
       "metric": "recall_score",
-      "days": 9,
+      "days": 5,
       "change_pct": -32.1,
       "z": 3.15,
       "level": "yellow"
@@ -3191,8 +3244,8 @@
      "recall_score": 3.15
     },
     "baseline_ready": true,
-    "explanation_vi": "Hai tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over two weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Trong 6 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/6 lần (thường khoảng 6/6). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+    "explanation_en": "In the last 6 calls he recalled the earlier story fully without hints 0 of 6 times (usually about 6 of 6). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up."
    },
    {
     "elder_id": "tu",
@@ -3203,7 +3256,7 @@
      {
       "code": "metric_trend",
       "metric": "recall_score",
-      "days": 10,
+      "days": 6,
       "change_pct": -32.1,
       "z": 3.162,
       "level": "yellow"
@@ -3217,8 +3270,8 @@
      "recall_score": 3.162
     },
     "baseline_ready": true,
-    "explanation_vi": "Hai tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over two weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Trong 6 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/6 lần (thường khoảng 6/6). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+    "explanation_en": "In the last 6 calls he recalled the earlier story fully without hints 0 of 6 times (usually about 6 of 6). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up."
    },
    {
     "elder_id": "tu",
@@ -3229,7 +3282,7 @@
      {
       "code": "metric_trend",
       "metric": "recall_score",
-      "days": 11,
+      "days": 7,
       "change_pct": -32.1,
       "z": 3.17,
       "level": "yellow"
@@ -3243,8 +3296,8 @@
      "recall_score": 3.17
     },
     "baseline_ready": true,
-    "explanation_vi": "Mấy tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over several weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Trong 7 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/7 lần (thường khoảng 7/7). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+    "explanation_en": "In the last 7 calls he recalled the earlier story fully without hints 0 of 7 times (usually about 7 of 7). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up."
    },
    {
     "elder_id": "tu",
@@ -3255,7 +3308,7 @@
      {
       "code": "metric_trend",
       "metric": "recall_score",
-      "days": 12,
+      "days": 8,
       "change_pct": -32.1,
       "z": 3.176,
       "level": "yellow"
@@ -3269,8 +3322,8 @@
      "recall_score": 3.176
     },
     "baseline_ready": true,
-    "explanation_vi": "Mấy tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over several weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Trong 7 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/7 lần (thường khoảng 7/7). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+    "explanation_en": "In the last 7 calls he recalled the earlier story fully without hints 0 of 7 times (usually about 7 of 7). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up."
    },
    {
     "elder_id": "tu",
@@ -3281,7 +3334,7 @@
      {
       "code": "metric_trend",
       "metric": "recall_score",
-      "days": 13,
+      "days": 9,
       "change_pct": -32.1,
       "z": 3.18,
       "level": "yellow"
@@ -3295,8 +3348,8 @@
      "recall_score": 3.18
     },
     "baseline_ready": true,
-    "explanation_vi": "Mấy tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over several weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Trong 7 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/7 lần (thường khoảng 7/7). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+    "explanation_en": "In the last 7 calls he recalled the earlier story fully without hints 0 of 7 times (usually about 7 of 7). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up."
    },
    {
     "elder_id": "tu",
@@ -3307,7 +3360,7 @@
      {
       "code": "metric_trend",
       "metric": "recall_score",
-      "days": 13,
+      "days": 9,
       "change_pct": -32.1,
       "z": 3.18,
       "level": "yellow"
@@ -3321,8 +3374,8 @@
      "recall_score": 3.18
     },
     "baseline_ready": true,
-    "explanation_vi": "Mấy tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over several weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Trong 6 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/6 lần (thường khoảng 6/6). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+    "explanation_en": "In the last 6 calls he recalled the earlier story fully without hints 0 of 6 times (usually about 6 of 6). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up."
    },
    {
     "elder_id": "tu",
@@ -3333,7 +3386,7 @@
      {
       "code": "metric_trend",
       "metric": "recall_score",
-      "days": 14,
+      "days": 10,
       "change_pct": -32.1,
       "z": 3.183,
       "level": "yellow"
@@ -3347,8 +3400,8 @@
      "recall_score": 3.183
     },
     "baseline_ready": true,
-    "explanation_vi": "Mấy tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over several weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Trong 6 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/6 lần (thường khoảng 6/6). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+    "explanation_en": "In the last 6 calls he recalled the earlier story fully without hints 0 of 6 times (usually about 6 of 6). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up."
    },
    {
     "elder_id": "tu",
@@ -3359,7 +3412,7 @@
      {
       "code": "metric_trend",
       "metric": "recall_score",
-      "days": 15,
+      "days": 11,
       "change_pct": -32.1,
       "z": 3.185,
       "level": "yellow"
@@ -3373,8 +3426,8 @@
      "recall_score": 3.185
     },
     "baseline_ready": true,
-    "explanation_vi": "Mấy tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over several weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Trong 6 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/6 lần (thường khoảng 6/6). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+    "explanation_en": "In the last 6 calls he recalled the earlier story fully without hints 0 of 6 times (usually about 6 of 6). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up."
    },
    {
     "elder_id": "tu",
@@ -3385,7 +3438,7 @@
      {
       "code": "metric_trend",
       "metric": "recall_score",
-      "days": 15,
+      "days": 11,
       "change_pct": -32.1,
       "z": 3.185,
       "level": "yellow"
@@ -3399,8 +3452,8 @@
      "recall_score": 3.185
     },
     "baseline_ready": true,
-    "explanation_vi": "Mấy tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over several weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Trong 5 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/5 lần (thường khoảng 5/5). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+    "explanation_en": "In the last 5 calls he recalled the earlier story fully without hints 0 of 5 times (usually about 5 of 5). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up."
    },
    {
     "elder_id": "tu",
@@ -3411,7 +3464,7 @@
      {
       "code": "metric_trend",
       "metric": "recall_score",
-      "days": 16,
+      "days": 12,
       "change_pct": -32.1,
       "z": 3.186,
       "level": "yellow"
@@ -3425,8 +3478,8 @@
      "recall_score": 3.186
     },
     "baseline_ready": true,
-    "explanation_vi": "Mấy tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over several weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Trong 5 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/5 lần (thường khoảng 5/5). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+    "explanation_en": "In the last 5 calls he recalled the earlier story fully without hints 0 of 5 times (usually about 5 of 5). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up."
    },
    {
     "elder_id": "tu",
@@ -3437,7 +3490,7 @@
      {
       "code": "metric_trend",
       "metric": "recall_score",
-      "days": 16,
+      "days": 12,
       "change_pct": -32.1,
       "z": 3.186,
       "level": "yellow"
@@ -3451,8 +3504,8 @@
      "recall_score": 3.186
     },
     "baseline_ready": true,
-    "explanation_vi": "Mấy tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over several weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Trong 4 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/4 lần (thường khoảng 4/4). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+    "explanation_en": "In the last 4 calls he recalled the earlier story fully without hints 0 of 4 times (usually about 4 of 4). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up."
    },
    {
     "elder_id": "tu",
@@ -3463,7 +3516,7 @@
      {
       "code": "metric_trend",
       "metric": "recall_score",
-      "days": 17,
+      "days": 13,
       "change_pct": -32.1,
       "z": 3.187,
       "level": "yellow"
@@ -3477,8 +3530,8 @@
      "recall_score": 3.187
     },
     "baseline_ready": true,
-    "explanation_vi": "Mấy tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over several weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Trong 4 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/4 lần (thường khoảng 4/4). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+    "explanation_en": "In the last 4 calls he recalled the earlier story fully without hints 0 of 4 times (usually about 4 of 4). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up."
    },
    {
     "elder_id": "tu",
@@ -3489,7 +3542,7 @@
      {
       "code": "metric_trend",
       "metric": "recall_score",
-      "days": 18,
+      "days": 14,
       "change_pct": -32.1,
       "z": 3.188,
       "level": "yellow"
@@ -3503,8 +3556,8 @@
      "recall_score": 3.188
     },
     "baseline_ready": true,
-    "explanation_vi": "Mấy tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over several weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Trong 5 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/5 lần (thường khoảng 5/5). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+    "explanation_en": "In the last 5 calls he recalled the earlier story fully without hints 0 of 5 times (usually about 5 of 5). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up."
    },
    {
     "elder_id": "tu",
@@ -3514,16 +3567,8 @@
     "reasons": [
      {
       "code": "metric_trend",
-      "metric": "pause_ratio",
-      "days": 3,
-      "change_pct": 18.4,
-      "z": 2.519,
-      "level": "yellow"
-     },
-     {
-      "code": "metric_trend",
       "metric": "recall_score",
-      "days": 19,
+      "days": 15,
       "change_pct": -32.1,
       "z": 3.188,
       "level": "yellow"
@@ -3537,8 +3582,8 @@
      "recall_score": 3.188
     },
     "baseline_ready": true,
-    "explanation_vi": "Mấy tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% và ngập ngừng, ngừng nghỉ nhiều hơn khoảng 18% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over several weeks he has been recalling earlier conversations less well (about 32% change) and pausing more (about 18% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Trong 5 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/5 lần (thường khoảng 5/5). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+    "explanation_en": "In the last 5 calls he recalled the earlier story fully without hints 0 of 5 times (usually about 5 of 5). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up."
    },
    {
     "elder_id": "tu",
@@ -3549,7 +3594,7 @@
      {
       "code": "metric_trend",
       "metric": "recall_score",
-      "days": 20,
+      "days": 16,
       "change_pct": -32.1,
       "z": 3.188,
       "level": "yellow"
@@ -3563,8 +3608,8 @@
      "recall_score": 3.188
     },
     "baseline_ready": true,
-    "explanation_vi": "Mấy tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over several weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Trong 5 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/5 lần (thường khoảng 5/5). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+    "explanation_en": "In the last 5 calls he recalled the earlier story fully without hints 0 of 5 times (usually about 5 of 5). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up."
    },
    {
     "elder_id": "tu",
@@ -3575,7 +3620,7 @@
      {
       "code": "metric_trend",
       "metric": "recall_score",
-      "days": 21,
+      "days": 17,
       "change_pct": -32.1,
       "z": 3.189,
       "level": "yellow"
@@ -3589,8 +3634,8 @@
      "recall_score": 3.189
     },
     "baseline_ready": true,
-    "explanation_vi": "Mấy tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over several weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Trong 6 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/6 lần (thường khoảng 6/6). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+    "explanation_en": "In the last 6 calls he recalled the earlier story fully without hints 0 of 6 times (usually about 6 of 6). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up."
    },
    {
     "elder_id": "tu",
@@ -3601,7 +3646,7 @@
      {
       "code": "metric_trend",
       "metric": "recall_score",
-      "days": 22,
+      "days": 18,
       "change_pct": -32.1,
       "z": 3.189,
       "level": "yellow"
@@ -3615,8 +3660,8 @@
      "recall_score": 3.189
     },
     "baseline_ready": true,
-    "explanation_vi": "Mấy tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over several weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Trong 6 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/6 lần (thường khoảng 6/6). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+    "explanation_en": "In the last 6 calls he recalled the earlier story fully without hints 0 of 6 times (usually about 6 of 6). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up."
    },
    {
     "elder_id": "tu",
@@ -3627,7 +3672,7 @@
      {
       "code": "metric_trend",
       "metric": "recall_score",
-      "days": 23,
+      "days": 19,
       "change_pct": -32.1,
       "z": 3.189,
       "level": "yellow"
@@ -3641,8 +3686,8 @@
      "recall_score": 3.189
     },
     "baseline_ready": true,
-    "explanation_vi": "Mấy tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 32% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over several weeks he has been recalling earlier conversations less well (about 32% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Trong 7 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/7 lần (thường khoảng 7/7). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+    "explanation_en": "In the last 7 calls he recalled the earlier story fully without hints 0 of 7 times (usually about 7 of 7). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up."
    },
    {
     "elder_id": "tu",
@@ -3653,7 +3698,7 @@
      {
       "code": "metric_trend",
       "metric": "recall_score",
-      "days": 24,
+      "days": 20,
       "change_pct": -37,
       "z": 4.199,
       "level": "yellow"
@@ -3667,8 +3712,8 @@
      "recall_score": 4.199
     },
     "baseline_ready": true,
-    "explanation_vi": "Mấy tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 37% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-    "explanation_en": "Over several weeks he has been recalling earlier conversations less well (about 37% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report."
+    "explanation_vi": "Trong 7 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/7 lần (thường khoảng 7/7). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+    "explanation_en": "In the last 7 calls he recalled the earlier story fully without hints 0 of 7 times (usually about 7 of 7). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up."
    }
   ],
   "baseline": {
@@ -3739,7 +3784,7 @@
     "label_en": "Personal baseline ready"
    },
    {
-    "day": 65,
+    "day": 70,
     "type": "alert_yellow",
     "label_vi": "Đèn vàng: cần hỏi thăm",
     "label_en": "Yellow light: check in"
@@ -3751,13 +3796,13 @@
  "alerts": [
   {
    "id": 3,
-   "day": 65,
-   "date": "2026-10-01",
+   "day": 70,
+   "date": "2026-10-06",
    "type": "metric_trend",
    "severity": "yellow",
    "severity_level": "warning",
-   "explanation_vi": "Khoảng một tuần nay ông nhớ lại chuyện đã kể kém hơn khoảng 27% so với bình thường của ông. Nên gọi hỏi thăm ông nhiều hơn và đưa ông đi khám để bác sĩ đánh giá; mang theo báo cáo xu hướng này.",
-   "explanation_en": "Over about a week he has been recalling earlier conversations less well (about 27% change) compared with his own usual pattern. Consider calling more often and arranging a doctor's visit so a doctor can assess; bring this trend report.",
+   "explanation_vi": "Trong 6 cuộc gọi gần đây, ông tự nhớ lại đầy đủ chuyện đã kể mà không cần gợi ý 0/6 lần (thường khoảng 6/6). Nên gọi trò chuyện với ông thường xuyên hơn. Nếu thay đổi kéo dài, gia đình có thể mang báo cáo xu hướng này khi ông đi khám định kỳ.",
+   "explanation_en": "In the last 6 calls he recalled the earlier story fully without hints 0 of 6 times (usually about 6 of 6). Consider calling him more often. If the change persists, you could bring this trend report to his next routine check-up.",
    "acknowledged": true
   }
  ],
@@ -3776,16 +3821,16 @@
     "status": "done",
     "day_from": 1,
     "day_to": 21,
-    "summary_vi": "20 cuộc gọi hợp lệ trong 21 ngày đầu (0 ngày lỡ cuộc gọi) để lập mức bình thường riêng: tốc độ nói 4,29 âm tiết/giây, điểm nhớ lại trung bình 2,95/3.",
-    "summary_en": "20 valid calls in the first 21 days (0 missed) built the personal baseline: speech rate 4.29 syllables/s, mean recall 2.95/3."
+    "summary_vi": "20 cuộc gọi hợp lệ trong 21 ngày đầu (0 ngày lỡ cuộc gọi) để lập mức bình thường riêng: tốc độ nói 4,29 âm tiết/giây, tự nhớ lại đầy đủ chuyện đã kể (không cần gợi ý) 18/19 cuộc gọi.",
+    "summary_en": "20 valid calls in the first 21 days (0 missed) built the personal baseline: speech rate 4.29 syllables/s; recalled the earlier story fully without hints on 18 of 19 calls."
    },
    {
     "phase": "analyze",
     "status": "current",
-    "day_from": 65,
+    "day_from": 70,
     "day_to": 90,
-    "summary_vi": "Đèn vàng từ ngày 65. Thay đổi so với mức bình thường: nhớ chuyện hôm trước -37%, tỉ lệ ngừng nghỉ +18%.",
-    "summary_en": "Yellow from day 65. Change vs own baseline: story recall (0–3) -37%, pause ratio +18%."
+    "summary_vi": "Đèn vàng từ ngày 70. Tự nhớ lại đầy đủ chuyện đã kể (không cần gợi ý) 0/7 cuộc gọi gần nhất (thường khoảng 7/7).",
+    "summary_en": "Yellow from day 70. Recalled the earlier story fully without hints on 0 of the last 7 calls (usually about 7 of 7)."
    },
    {
     "phase": "improve",
@@ -3800,13 +3845,13 @@
     "status": "not_started",
     "day_from": null,
     "day_to": null,
-    "summary_vi": "Theo dõi liên tục: 41 ngày đèn xanh sau khi có mức bình thường.",
-    "summary_en": "Continuous monitoring: 41 green days since the baseline was set."
+    "summary_vi": "Theo dõi liên tục: 46 ngày đèn xanh sau khi có mức bình thường.",
+    "summary_en": "Continuous monitoring: 46 green days since the baseline was set."
    }
   ],
   "effect": {},
   "new_baseline_day": null,
-  "first_alert_day": 65,
+  "first_alert_day": 70,
   "peak_light": "yellow",
   "intervention_day": null,
   "green_day": null,
@@ -3818,6 +3863,9 @@
     90
    ]
   },
+  "effect_illustrative": false,
+  "effect_note_vi": "",
+  "effect_note_en": "",
   "sharing_paused": false,
   "simulated": true
  },
@@ -3830,7 +3878,7 @@
    "text": "Khoa nhắn: cuối tuần con chở ba đi uống cà phê với mấy bạn cờ.",
    "to_elder": true,
    "simulated": true,
-   "created_at": "2026-10-27T13:58:05+00:00"
+   "created_at": "2026-10-27T14:36:36+00:00"
   },
   {
    "id": 7,
@@ -3840,7 +3888,7 @@
    "text": "Ba quên tên một người bạn cờ quen lâu năm.",
    "to_elder": false,
    "simulated": true,
-   "created_at": "2026-10-27T13:58:05+00:00"
+   "created_at": "2026-10-27T14:36:36+00:00"
   },
   {
    "id": 6,
@@ -3850,7 +3898,7 @@
    "text": "Dạo này ổng hay hỏi lại một chuyện hai lần.",
    "to_elder": false,
    "simulated": true,
-   "created_at": "2026-10-27T13:58:05+00:00"
+   "created_at": "2026-10-27T14:36:36+00:00"
   }
  ],
  "privacy": {
@@ -3868,6 +3916,8 @@
     "note": "Receive daily check-in calls",
     "ts": "2026-07-29",
     "changed_by": null,
+    "requested_by": null,
+    "confirmed_by_elder_or_proxy": null,
     "status": "active"
    },
    {
@@ -3882,6 +3932,8 @@
     "note": "Derive speech timing metrics from text and timings (no audio stored)",
     "ts": "2026-07-29",
     "changed_by": null,
+    "requested_by": null,
+    "confirmed_by_elder_or_proxy": null,
     "status": "active"
    },
    {
@@ -3896,6 +3948,8 @@
     "note": "Share daily light and summaries with family",
     "ts": "2026-07-29",
     "changed_by": null,
+    "requested_by": null,
+    "confirmed_by_elder_or_proxy": null,
     "status": "active"
    },
    {
@@ -3910,6 +3964,8 @@
     "note": "Share report with clinician on family request",
     "ts": "2026-07-29",
     "changed_by": null,
+    "requested_by": null,
+    "confirmed_by_elder_or_proxy": null,
     "status": "active"
    },
    {
@@ -3924,6 +3980,8 @@
     "note": "Use de-identified data for research",
     "ts": "2026-07-29",
     "changed_by": null,
+    "requested_by": null,
+    "confirmed_by_elder_or_proxy": null,
     "status": "declined"
    }
   ],
@@ -3996,69 +4054,71 @@
     "role": "primary",
     "action": "read_privacy",
     "resource": "/api/elders/tu/privacy",
-    "ts": "2026-10-27T13:58:09+00:00",
+    "ts": "2026-10-27T14:36:42+00:00",
     "count": 1,
-    "last_ts": "2026-10-27T13:58:09+00:00"
-   },
-   {
-    "actor": "Bà Tư",
-    "role": "primary",
-    "action": "read_dmaic",
-    "resource": "/api/elders/tu/dmaic",
-    "ts": "2026-10-27T13:58:09+00:00",
-    "count": 1,
-    "last_ts": "2026-10-27T13:58:09+00:00"
-   },
-   {
-    "actor": "Bà Tư",
-    "role": "primary",
-    "action": "read_timeline",
-    "resource": "/api/elders/tu/timeline",
-    "ts": "2026-10-27T13:58:09+00:00",
-    "count": 1,
-    "last_ts": "2026-10-27T13:58:09+00:00"
-   },
-   {
-    "actor": "Bà Tư",
-    "role": "primary",
-    "action": "read_alerts",
-    "resource": "/api/elders/tu/alerts",
-    "ts": "2026-10-27T13:58:09+00:00",
-    "count": 1,
-    "last_ts": "2026-10-27T13:58:09+00:00"
+    "last_ts": "2026-10-27T14:36:42+00:00"
    },
    {
     "actor": "Bà Tư",
     "role": "primary",
     "action": "read_notes",
     "resource": "/api/elders/tu/notes",
-    "ts": "2026-10-27T13:58:09+00:00",
+    "ts": "2026-10-27T14:36:42+00:00",
     "count": 1,
-    "last_ts": "2026-10-27T13:58:09+00:00"
+    "last_ts": "2026-10-27T14:36:42+00:00"
+   },
+   {
+    "actor": "Bà Tư",
+    "role": "primary",
+    "action": "read_alerts",
+    "resource": "/api/elders/tu/alerts",
+    "ts": "2026-10-27T14:36:42+00:00",
+    "count": 1,
+    "last_ts": "2026-10-27T14:36:42+00:00"
+   },
+   {
+    "actor": "Bà Tư",
+    "role": "primary",
+    "action": "read_timeline",
+    "resource": "/api/elders/tu/timeline",
+    "ts": "2026-10-27T14:36:42+00:00",
+    "count": 1,
+    "last_ts": "2026-10-27T14:36:42+00:00"
+   },
+   {
+    "actor": "Bà Tư",
+    "role": "primary",
+    "action": "read_dmaic",
+    "resource": "/api/elders/tu/dmaic",
+    "ts": "2026-10-27T14:36:42+00:00",
+    "count": 1,
+    "last_ts": "2026-10-27T14:36:42+00:00"
    },
    {
     "actor": "Bà Tư",
     "role": "primary",
     "action": "read_today",
     "resource": "/api/elders/tu/today",
-    "ts": "2026-10-27T13:58:09+00:00",
+    "ts": "2026-10-27T14:36:42+00:00",
     "count": 1,
-    "last_ts": "2026-10-27T13:58:09+00:00"
+    "last_ts": "2026-10-27T14:36:42+00:00"
    },
    {
     "actor": "Bà Tư",
     "role": "primary",
     "action": "read_profile",
     "resource": "/api/elders/tu",
-    "ts": "2026-10-27T13:58:09+00:00",
+    "ts": "2026-10-27T14:36:42+00:00",
     "count": 1,
-    "last_ts": "2026-10-27T13:58:09+00:00"
+    "last_ts": "2026-10-27T14:36:42+00:00"
    }
   ],
   "data_retention": {
    "audio": "not stored",
    "transcript_days": 7,
+   "quote_days": 30,
    "metrics": "derived numbers kept while enrolled",
+   "speech_recognition": "web prototype: the browser's speech service (Chrome/Edge send microphone audio to Google); the Chào Bà server receives text and pause timings only",
    "llm_processing": "server-side rules (no LLM)"
   },
   "scheduling_active": true,
@@ -4066,6 +4126,6 @@
  },
  "_snapshot": {
   "from": "http://localhost:8000",
-  "at": "2026-10-27T13:58:09.236Z"
+  "at": "2026-10-27T14:36:42.918Z"
  }
 }

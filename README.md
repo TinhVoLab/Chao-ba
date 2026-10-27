@@ -45,7 +45,7 @@ docker compose up --build    # API :8000, family app :3000, Postgres loading the
 docker compose exec -T postgres psql -U chaoba -d chaoba -v ON_ERROR_STOP=1 -f /deploy/rls_test.sql   # RLS smoke test -> RLS OK
 ```
 
-Environment: `CHAOBA_CORS_ORIGINS` (origins the API accepts), `NEXT_PUBLIC_API_BASE` (API address for the browser, build time), `CHAOBA_API_INTERNAL` (API address for the Next server), `ANTHROPIC_API_KEY` (optional). The API still stores data in SQLite; Postgres is the production schema target, loaded so its Row Level Security can be inspected and tested. The compose stack was validated with `docker compose config` but not started in the build environment (Docker daemon off).
+Environment: `CHAOBA_CORS_ORIGINS` (origins the API accepts), `NEXT_PUBLIC_API_BASE` (API address for the browser, build time), `CHAOBA_API_INTERNAL` (API address for the Next server), `ANTHROPIC_API_KEY` (optional). The API still stores data in SQLite; Postgres is the production schema target, loaded so its Row Level Security can be inspected and tested. Verified on 27 Oct 2026 with Docker Desktop (Engine 29.1, Compose 5.0): all three services report healthy, `/api/health` answers, the family app returns 200 and renders from the API, Postgres has the 14 production tables, `rls_test.sql` prints `RLS OK`, and `.venv/bin/pytest -q tests/deploy` passes (3 tests). If ports 8000/3000/5432 are taken, set `API_PORT`, `WEB_PORT`, `PG_PORT` (and `NEXT_PUBLIC_API_BASE` / `CHAOBA_CORS_ORIGINS` to match).
 
 ## Tests and data
 
