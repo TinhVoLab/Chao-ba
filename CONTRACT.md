@@ -171,7 +171,7 @@ counter (`count`, `last_ts`); writes always get their own row.
     not used by the light), difficulty_rule_vi/en, simulated}`. Success rate counts a partial answer as ½. `{sharing_paused:true, simulated}` for family
     roles while `family_sharing` is withdrawn.
   - `POST /api/calls/{id}/end` additionally returns `memory_book:{story_id, shared, title_vi?, title_en?, game:{category, level, outcome}|null, nudge}`.
-  - Call flow (prompt `ut-thuong-2026.10.3`): story phase = follow-up hook (if any) → today's life-story question (no repeats) → its follow-up →
+  - Call flow (prompt `ut-thuong-2026.10.3`; `.4` adds the family-card relay slot after consent, see below): story phase = follow-up hook (if any) → today's life-story question (no repeats) → its follow-up →
     "Bà cho con kể lại chuyện này cho chị Lan nghe được hông?" (yes → shared; no / unclear / not asked → private) → closing: optional memory game
     (2 days in 3; levels 1-3, a miss makes the next one easier, two successes harder), medication reminder, family message, one habit nudge, goodbye.
   - Seed: 11 / 11 / 8 simulated stories for hanh / tu / control (mixed shared / private), activity log over the 90 days, and Bà Hạnh's day-44
@@ -218,6 +218,54 @@ counter (`count`, `last_ts`); writes always get their own row.
   - `POST /api/elders/{id}/family/suggestions/asked` `{topic_key}` → `{ok, topic_key, member_name, day, date}` (moves the topic to `already_asked`
     for everyone for 7 days).
   - `GET /api/elders/{id}/family/access?days=7` → `{days, people:[{actor, role, views, writes, last_ts}], simulated}` (the elder sees who looked).
+- **Family micro-interactions "Gửi yêu thương"** (`chaoba/server/kudos.py`; table `kudos`; family app Today + `/family`,
+  elder screen `/screen`). Identity as for `/family` (care circle; a header can lower, never raise a role); `X-Role:
+  elder_self` = the elder; `clinician` / `health_station` → **403** `family_only`. All cards are text only.
+  `Kudos = {id, day, date, kind:"checkin"|"love"|"advice"|"care_tip"|"message", template_id|null, icon, sender_id,
+  sender_name, sender_relation, elder_self_vi ("má"/"bà"/"ông": how the elder names herself to this sender), text_vi,
+  text_en, text_lang, custom, health, choices:[{id, vi, en}], status:"sent"|"seen"|"replied", status_vi/en, sent_at,
+  sent_time ("07:20", Vietnam time), seen_at, seen_via:"screen"|"call"|null, replied_at, reply_time, reply:{choice?,
+  choice_vi?, choice_en?, text?, heart?, via, at, simulated}|null, reply_hidden, reply_vi/en ("Má trả lời: Ăn rồi con ·
+  07:42"), heart, redacted, folk_note, story:{id, saved, declined?}|null, simulated}`.
+  - `GET /api/elders/{id}/kudos/catalog` → `{viewer, address_vi, address_en, templates:[{id, kind, icon, health, label_vi,
+    label_en, text_vi, text_en, choices, folk_note}], groups, limit_per_day:6, sent_today, remaining_today, max_text:160,
+    voice_note:{available:false,...}, self_report, can_send, simulated}`; texts follow the sender's relation ("Con nhớ má",
+    "Cháu nhớ bà", "Ba ăn cơm chưa?"). Templates: checkin `ate|slept|feeling|meds`, love `love|miss|goodnight|thanks`,
+    advice `canh_chua|cough|mai`, care_tip `water|sun|walk|rest`.
+  - `POST /api/elders/{id}/kudos` `{kind, template_id? | text?, from?}` → `{ok, kudos, sent_today, remaining_today}`.
+    Family only (elder_self **403** `family_sender_only`); `from` must be the caller (else **403** `not_allowed`).
+    `checkin` / `love` need a template; `advice`, `care_tip`, `message` take a template or 1–160 characters of text.
+    Free text passes `explain.contains_blocked`, the diagnosis-request detector and a medication / dose filter:
+    **422** `{"detail":{"error":"diagnosis_words"|"medical_advice"|"money_topic", "field":"text", message_vi, message_en}}`.
+    At most 6 cards per sender per day: **429** `{"detail":{"error":"daily_limit", limit, message_vi, message_en}}`.
+  - `GET /api/elders/{id}/kudos?box=inbox|sent|family&days=28&pending=0|1` → `{box, items:[Kudos], viewer, date,
+    micro_7d, sent_today, remaining_today, limit_per_day, sharing_paused, self_report, simulated}`. `inbox` = elder_self
+    only (else **403** `elder_only`); with `pending=1` the queue (oldest first): not replied, not snoozed, and one-way cards
+    not yet seen. `sent` = the caller's cards, `family` = everyone's (a `viewer` gets other people's free text as
+    `redacted: true`, "Lời nhắn riêng"); lists are newest first. While `family_sharing` is withdrawn, family roles get
+    check-in answers removed (`reply: null`, `reply_hidden: true`); hearts and advice stay.
+  - `POST /api/elders/{id}/kudos/{kid}/seen` `{via?: "screen"|"call", snooze_minutes?: 1–1440}` (elder_self only) →
+    `{ok, kudos}`. A snoozed card ("Để sau") leaves the screen queue until then; a seen card is no longer relayed in calls.
+  - `POST /api/elders/{id}/kudos/{kid}/reply` `{choice? | text? | heart?, via: "screen"|"call"}` (elder_self only) →
+    `{ok, kudos, can_save}`; `choice` must be one of the card's choices (advice also `call_back`), else **422**; empty → **422**.
+    A heart can be added to an answered card.
+  - `POST /api/elders/{id}/kudos/{kid}/save` `{confirmed_by_elder_or_proxy?, decline?}` → `{ok, id, story_id, title_vi,
+    title_en}`: saves an advice answer as a **shared** memory-book story, theme `advice` ("Lời má dạy: nấu canh chua"; the
+    `/memories` theme label is "Lời má dạy" / "Lời ba dạy"). Unless `X-Role` is `elder_self`, **400**
+    `confirmation_required` without `confirmed_by_elder_or_proxy: true`; **409** `nothing_to_save` if the card is not an
+    answered advice question; idempotent. `{decline: true}` (elder only) records "keep it private".
+  - **Call relay** (prompt `ut-thuong-2026.10.4`): `build_context` adds unseen cards from the last 3 days as
+    `DailyContext.relay`; right after the consent answer the call says them ("Dạ. Cháu Vy gửi thương bà nè. Chị Lan hỏi bà
+    nấu canh chua sao cho ngon, bà chỉ giùm với?", ≤ 2 questions, advice first), takes the next elder turn as the reply and
+    confirms "Dạ, con nhắn lại cho chị Lan liền nha." `POST /api/calls/{id}/end` additionally returns
+    `kudos_relay:[{id, choice?, text?, seen?, reply?}]`; replies are stored with `via: "call"` (`simulated` on rehearsals).
+  - **Never counted as calls.** `today.contact` / `contacts` / rota add `micro_7d` (cards sent in the last 7 days) but
+    `days_since` and `nudge` still count only `family_contact` calls and visits. `GET /dmaic` `contact` adds
+    `micro_pre_per_week`, `micro_post_per_week`, `micro_recent_per_week`, `weekly:[{day_from, day_to, date_from, date_to,
+    calls_visits, micro}]` (6 weeks), `micro_note_vi/en`. The family timeline adds `kind:"kudos"` items (`kudos_id`,
+    `kudos_kind`, `status`, `heart`, `icon`) titled "Lan gửi má: “Má ăn cơm chưa?”" with the reply as text.
+  - Seed: simulated cards with replies for hanh (16, Lan / Minh / Vy, incl. the canh chua answer saved as "Lời má dạy"),
+    tu (5), control (3); none pending. `POST /api/demo/reset` clears and re-seeds them.
 - **Community dashboard** (`chaoba/server/community.py`; family app `/community`).
   `GET /api/community/overview` with `X-Role: clinician | health_station` (else **403** `{"detail":{"error":"clinician_only",...}}`) →
   `{ward:{name_vi:"Phường X, TP.HCM (mô phỏng)", name_en, elders, sharing, not_sharing, demo_personas}, as_of, counts:{red, yellow, green, gray},

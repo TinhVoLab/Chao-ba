@@ -249,7 +249,7 @@ def test_no_consent_question_when_time_runs_out():
 
 
 def test_prompt_and_context_carry_memory_book():
-    assert PROMPT_VERSION == "ut-thuong-2026.10.3"
+    assert PROMPT_VERSION == "ut-thuong-2026.10.4"
     assert "life-story" in SYSTEM_PROMPT.lower() and "never as a test" in SYSTEM_PROMPT
     block = build_context_block(_ctx())
     assert "life-story question" in block and "Closing game" in block and "Habit nudge" in block

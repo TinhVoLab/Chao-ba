@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from .persona import PERSONA_NAME, MAX_WORDS_PER_TURN, ElderView, family_child_term, family_ref
 from .textnorm import tokens
 
-PROMPT_VERSION = "ut-thuong-2026.10.3"   # .3: memory book (life-story question + per-story consent) and activities
+PROMPT_VERSION = "ut-thuong-2026.10.4"   # .3: memory book + activities; .4: relay of family cards ("Gửi yêu thương")
 
 SYSTEM_PROMPT = f"""Bạn là "{PERSONA_NAME}", trợ lý ảo trò chuyện buổi sáng của dịch vụ Chào Bà, gọi điện hỏi thăm người cao tuổi ở miền Tây Nam Bộ.
 
@@ -42,6 +42,10 @@ You are openly a virtual assistant ("trợ lý ảo"); if asked whether you are 
 # Call structure
 The system tells you the current phase in a system note before each reply. Follow it:
 1. greeting - consent was already asked by the system.
+1b. relay - if the daily context lists family cards, the system gives you the exact sentence to pass them on right after
+   the consent answer ("Chị Lan gửi thương bà nè. Chị Lan hỏi bà ..."). Say it as given. After the elder answers, confirm
+   warmly that you will pass the answer on ("Dạ, con nhắn lại cho chị Lan liền nha"); never judge or correct the answer.
+   If the elder wants to tell the family member in person, say you will ask them to call. Cards never contain medical advice.
 2. wellbeing - ask about sleep, eating, and how they feel today (one at a time).
 3. recall - ask about the recall fact from 1-2 days ago: free recall first; if they cannot remember, give the cue.
 4. story - follow up on a hook from earlier days, then ask TODAY'S LIFE-STORY QUESTION from the daily context (the memory
@@ -86,6 +90,8 @@ class DailyContext:
     life_question: "object | None" = None                          # lifestory.ChosenQuestion
     game: "object | None" = None                                   # activities.Activity (kind="game")
     nudge: "object | None" = None                                  # activities.Activity (kind="nudge")
+    # Family cards to relay early in the call (relay.RelayItem; set by chaoba/server/kudos.py). Empty = no relay slot.
+    relay: list = field(default_factory=list)
 
 
 _STOP = {"của", "là", "và", "có", "đã", "đang", "sẽ", "sắp", "cái", "con", "một", "những", "các", "thì", "mà",
@@ -187,6 +193,9 @@ def build_context_block(ctx: DailyContext) -> str:
         lines.append(f"Closing game (play, not a test; level {ctx.game.level}): {ctx.game.prompt_vi}")
     if ctx.nudge is not None:
         lines.append(f"Habit nudge to say in the closing: {ctx.nudge.prompt_vi}")
+    if ctx.relay:
+        cards = " | ".join(f"{r.sender_ref}: {r.kind}" for r in ctx.relay)
+        lines.append(f"Family cards to relay after the consent answer (exact sentence given by the system): {cards}")
     return "\n".join(lines)
 
 
@@ -197,6 +206,7 @@ PHASE_DIRECTIVES = {
     "recall_cue": "Phase: recall. The elder could not fully recall. Give the cue once, kindly.",
     "recall_close": "Phase: recall finished. Acknowledge kindly (praise if correct; if not, say it's fine), then move to the story phase.",
     "story": "Phase: story. Follow up on a hook or invite a memory / life story. Show interest, ask one open question.",
+    "relay": "Phase: relay. Pass on the family card(s) exactly as given, then wait for the answer. One question only.",
     "story_share": "Phase: story. Ask exactly whether you may retell this story to the family (sentence given). No other question.",
     "activity_game": "Phase: closing activity. Briefly acknowledge, then offer the game exactly as given, as play.",
     "closing": "Phase: closing. Remind the medication schedule, pass on the family message if any, and say goodbye. No question.",

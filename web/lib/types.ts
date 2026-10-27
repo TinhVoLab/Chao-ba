@@ -100,6 +100,8 @@ export interface ContactStatus {
   days_since: number | null;
   nudge: boolean;
   nudge_after_days: number;
+  /** Love notes / check-in cards the family sent in the last 7 days (kudos.py); never counted as calls. */
+  micro_7d?: number;
 }
 
 export interface DailyRecord {
@@ -204,6 +206,13 @@ export interface Dmaic {
     pre_window?: [number, number];
     post_window?: [number, number];
     recent_window?: [number, number];
+    /** Micro-contacts (love notes, check-in cards; kudos.py) per week: a separate series, never counted as calls. */
+    micro_pre_per_week?: number | null;
+    micro_post_per_week?: number | null;
+    micro_recent_per_week?: number | null;
+    weekly?: { day_from: number; day_to: number; date_from: string | null; date_to: string | null; calls_visits: number; micro: number }[];
+    micro_note_vi?: string;
+    micro_note_en?: string;
   } | null;
   sharing_paused?: boolean;
   simulated?: boolean;
@@ -407,7 +416,7 @@ export interface FamilyOverview {
   simulated: boolean;
 }
 
-export type FeedKind = "call" | "note" | "contact" | "alert" | "task" | "event" | "rota" | "gap" | "self_report";
+export type FeedKind = "call" | "note" | "contact" | "alert" | "task" | "event" | "rota" | "gap" | "self_report" | "kudos";
 
 export interface FeedItem {
   id: string;
@@ -426,6 +435,11 @@ export interface FeedItem {
   to_elder?: boolean;
   simulated?: boolean;
   text_lang?: "vi";
+  /** kind "kudos" (family love notes, kudos.py) */
+  kudos_id?: number;
+  kudos_kind?: string;
+  status?: "sent" | "seen" | "replied";
+  heart?: boolean;
 }
 
 export interface FamilyTimeline {

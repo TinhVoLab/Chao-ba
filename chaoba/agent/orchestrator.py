@@ -15,7 +15,8 @@ Flow of one elder turn (`Orchestrator.handle_turn`):
   7. engine.reply(state, elder_text)       -> ClaudeEngine (if ANTHROPIC_API_KEY) or ScriptedEngine
   8. output scrub (no disease names, no money talk)
 
-Phases: greeting (family greeting + consent) -> wellbeing (sleep, food, feeling) -> recall (free, then cue)
+Phases: greeting (family greeting + consent) -> [relay of family cards, if any: "Chị Lan gửi thương bà nè. Chị Lan hỏi
+bà ..." (relay.py), the answer is sent back to the family] -> wellbeing (sleep, food, feeling) -> recall (free, then cue)
 -> story (follow-up hook, then today's life-story question for the memory book, its follow-up, and the per-story
    consent question "Bà cho con kể lại chuyện này cho chị Lan nghe được hông?")
 -> closing (optional short memory game, medication reminder, family message, habit nudge, goodbye, ~4:30).
@@ -44,6 +45,7 @@ from .textnorm import (normalize, contains_phrase, find_phrase, word_count, stri
                        has_vietnamese_diacritics)
 from .lifestory import share_question, parse_share_answer, share_ack
 from .activities import score_game, game_reaction
+from . import relay as relay_mod
 
 log = logging.getLogger("chaoba.agent")
 
@@ -101,6 +103,10 @@ class CallState:
     game_outcome: str | None = None          # success | partial | miss
     pending_ack: str | None = None           # share / game acknowledgement said before the next line
     nudge_said: bool = False
+    # family cards relayed in the call (relay.py; DailyContext.relay)
+    relay_stage: str = "none"                # none | asked | done
+    relay_idx: int = 0                       # index of the relay question being asked
+    relay_answers: list[dict] = field(default_factory=list)   # [{item_id|None, announced:[ids], text, choice?, ...}]
 
     @property
     def ev(self) -> ElderView:
@@ -176,6 +182,11 @@ def plan_step(state: CallState, elder_text: str) -> str:
         state.share_stage = "done"
         state.pending_ack = share_ack(state.share_answer, state.ctx.profile)
         return _after_story(state, el)
+    # Family cards (relay.py): record the answer to the relay line, then the next card or carry on.
+    if state.relay_stage == "asked":
+        nxt = _relay_answer(state, elder_text, el)
+        if nxt:
+            return nxt
     if state.game_stage == "asked":
         state.game_text = elder_text
         state.game_outcome = score_game(state.ctx.game, elder_text)
@@ -218,6 +229,11 @@ def plan_step(state: CallState, elder_text: str) -> str:
         state.phase = "closing"
         return "closing"
 
+    if (state.relay_stage == "none" and state.ctx.relay and state.phase in ("greeting", "wellbeing")
+            and el < CLOSING_AT_SEC - 60):
+        state.relay_stage, state.relay_idx, state.phase = "asked", 0, "wellbeing"
+        return "relay"
+
     if state.phase in ("greeting", "wellbeing"):
         remaining = [t for t in WELLBEING_TOPICS if t not in state.wellbeing_done]
         if remaining:
@@ -242,6 +258,32 @@ def plan_step(state: CallState, elder_text: str) -> str:
 
     state.phase = "closing"
     return "closing"
+
+
+def _relay_answer(state: CallState, elder_text: str, el: float) -> str | None:
+    """Store the elder's answer to the current relay line; returns "relay" if another card question follows."""
+    qs, ann = relay_mod.plan(state.ctx.relay)
+    item = qs[state.relay_idx] if state.relay_idx < len(qs) else None
+    ans = relay_mod.parse_answer(item, elder_text)
+    announced = [a.id for a in ann] if state.relay_idx == 0 else []
+    state.relay_answers.append({"item_id": item.id if item else None, "announced": announced, **ans})
+    if item is not None and item.topic in WELLBEING_TOPICS and item.topic not in state.wellbeing_done:
+        state.wellbeing_done.append(item.topic)          # "Lan hỏi bà ăn cơm chưa" covers the food question
+    state.react_override = relay_mod.ack_text(item, ans, state.ev.honorific, ann if item is None else None)
+    state.relay_idx += 1
+    if state.relay_idx < len(qs) and el < CLOSING_AT_SEC - 60:
+        return "relay"
+    state.relay_stage = "done"
+    return None
+
+
+def relay_line(state: CallState) -> str:
+    """What Út Thương says for the current relay step (without the acknowledgement of the previous answer)."""
+    qs, ann = relay_mod.plan(state.ctx.relay)
+    h = state.ev.honorific
+    if state.relay_idx == 0:
+        return relay_mod.first_text(qs, ann, h)
+    return relay_mod.question_text(qs[state.relay_idx], h) if state.relay_idx < len(qs) else ""
 
 
 def _story_long_enough(state: CallState) -> bool:
@@ -453,6 +495,13 @@ class ScriptedEngine:
             return text, "recall", False
         if step == "recall_cue" and state.ctx.recall:
             return state.ctx.recall.cue_vi, "recall", False
+        if step == "relay":
+            text = relay_line(state)
+            if forced:
+                text, state.react_override = f"{react} {text}", None
+            elif state.relay_idx == 0:
+                text = f"Dạ. {text}"
+            return text, "wellbeing", False
         if step == "story_share":
             q = share_question(state.ctx.profile)
             if forced:
@@ -566,6 +615,8 @@ class ClaudeEngine:
                 extra += f" Ask this follow-up (or a natural one about what they said): \"{lq.follow_up_vi}\""
         if step == "story_share":
             extra += f" Say exactly: \"{share_question(state.ctx.profile)}\""
+        if step == "relay":
+            extra += f" Say exactly: \"{relay_line(state)}\""
         if step == "activity_game" and state.ctx.game is not None:
             extra += (f" Say first: \"{state.pending_ack or ''}\" then offer exactly: \"{state.ctx.game.prompt_vi}\"")
             state.pending_ack = None
@@ -768,7 +819,7 @@ class Orchestrator:
         #     not advance the plan, and never interrupts the recall answers or the closing.
         if (isinstance(self.engine, ScriptedEngine) and state.recall_stage not in ("asked_free", "asked_cue")
                 and state.phase in ("greeting", "wellbeing", "story") and state.step != "closing"
-                and state.share_stage != "asked"
+                and state.share_stage != "asked" and state.relay_stage != "asked"
                 and state.elapsed() < CLOSING_AT_SEC - 30 and not state.react_override):
             fu = symptom_followup(text, state.followed_up, h, h)
             if fu:

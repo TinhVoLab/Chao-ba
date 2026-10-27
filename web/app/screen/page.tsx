@@ -109,6 +109,14 @@ async function ScreenContent({ searchParams }: { searchParams: Promise<SP> }) {
             {L("Cuộc gọi video mô phỏng; ghi vào nhật ký liên lạc trong ứng dụng gia đình.", "Simulated video call; logged in the family app's contact log.")}
           </li>
           <li>
+            <b>{L("Lời thương từ gia đình", "Love notes from the family")}</b>{" "}
+            {L(
+              "Gửi “Má ăn cơm chưa?” từ ứng dụng gia đình (Hôm nay → Gửi yêu thương): thẻ hiện ở đây sau vài giây, chạm “Ăn rồi” là gia đình thấy câu trả lời.",
+              "Send “Má ăn cơm chưa?” from the family app (Today → Send some love): the card appears here within seconds; tap an answer and the family sees it.",
+            )}{" "}
+            <Link href={`/?elder=${elderId}`}>{L("Mở ứng dụng gia đình", "Open the family app")}</Link>
+          </li>
+          <li>
             <b>{L("Thuốc, tâm trạng, trò chơi", "Medicine, mood, game")}</b>{" "}
             {L("“Đã uống thuốc”, “Hôm nay thấy sao?”, “Trò chơi ca dao” đều lưu qua API (người cao tuổi tự chọn, không chấm điểm).", "“I took it”, “How are you today?” and the folk-verse game are stored via the API (self-report, never scored).")}
           </li>

@@ -131,3 +131,18 @@ export function saveLocalDay(elderId: string, key: string, value: unknown) {
     /* ignore */
   }
 }
+
+/** Family love notes waiting for the elder ("Gửi yêu thương", kudos.py): oldest first; null when offline. */
+export async function fetchKudosInbox(apiBase: string, elderId: string): Promise<import("@/lib/kudos").Kudos[] | null> {
+  try {
+    const r = await fetch(`${apiBase}/api/elders/${encodeURIComponent(elderId)}/kudos?box=inbox&pending=1&days=7`, {
+      headers: elderHeaders(elderId),
+      cache: "no-store",
+      signal: AbortSignal.timeout(3500),
+    });
+    if (!r.ok) return null;
+    return ((await r.json()) as { items: import("@/lib/kudos").Kudos[] }).items;
+  } catch {
+    return null;
+  }
+}

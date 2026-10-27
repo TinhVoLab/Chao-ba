@@ -3,6 +3,7 @@
 import { serverApiBase } from "./config";
 import { familyFixture, fixtureCommunity, fixtureElders, fixtureFor } from "./fixtures";
 import { normAlerts } from "./normalize";
+import type { KudosCatalog, KudosList } from "./kudos";
 import { actorHeaders, stationHeaders } from "./viewer";
 import { serverViewerId } from "./viewer-server";
 import type {
@@ -83,6 +84,11 @@ export interface MoodCheckin {
 }
 export const getMedicationLog = (id: string) => get<MedicationLog | null>(`/api/elders/${e(id)}/medication_log?days=1`, () => null, id);
 export const getMoodCheckin = (id: string) => get<MoodCheckin | null>(`/api/elders/${e(id)}/mood_checkin?days=1`, () => null, id);
+
+// "Gửi yêu thương" (kudos.py): the tray's catalog and the viewer's sent cards; null offline (the tray says so).
+export const getKudosCatalog = (id: string) => get<KudosCatalog | null>(`/api/elders/${e(id)}/kudos/catalog`, () => null, id);
+export const getKudosList = (id: string, box: "sent" | "family" = "sent") =>
+  get<KudosList | null>(`/api/elders/${e(id)}/kudos?box=${box}&days=28`, () => null, id);
 
 /** Loads the elder list + resolves the selected elder in one go. */
 export async function loadElderContext(requested?: string | string[]) {

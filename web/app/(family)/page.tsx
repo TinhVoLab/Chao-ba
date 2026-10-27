@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { ArrowRight, Bell, Headphones, MessageCircle, Pill, Smile } from "lucide-react";
-import { getAlerts, getMedicationLog, getMoodCheckin, getNotes, getProfile, getTimeline, getToday, loadElderContext } from "@/lib/api";
+import { getAlerts, getKudosCatalog, getKudosList, getMedicationLog, getMoodCheckin, getNotes, getProfile, getTimeline, getToday, loadElderContext } from "@/lib/api";
 import { serverViewer } from "@/lib/viewer-server";
 import { LIGHT_HINT, LIGHT_WORD, MOOD_WORD, SYMPTOM_WORD, kin, longDate, shortDate, vnTime } from "@/lib/format";
 import { normNotes } from "@/lib/normalize";
@@ -11,6 +11,7 @@ import { StatusShape, lightText, lightTint } from "@/components/StatusShape";
 import { TodayActions } from "@/components/TodayActions";
 import { T } from "@/components/T";
 import { MemoryBookCard } from "@/components/memories/MemoryBookCard";
+import { KudosTray } from "@/components/kudos/KudosTray";
 
 export default function TodayPage({ searchParams }: PageProps<"/">) {
   return (
@@ -32,7 +33,12 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
     getAlerts(id),
     serverViewer(id),
   ]);
-  const [medLog, mood] = await Promise.all([getMedicationLog(id), getMoodCheckin(id)]);
+  const [medLog, mood, kudosCatalog, kudosSent] = await Promise.all([
+    getMedicationLog(id),
+    getMoodCheckin(id),
+    getKudosCatalog(id),
+    getKudosList(id, "sent"),
+  ]);
   // Self-reports from the elder's home screen: shown as-is, never scored.
   const medsToday = (medLog.data?.today ?? []).filter((m) => m.status);
   const moodToday = mood.data?.today ?? null;
@@ -218,7 +224,18 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
         contact={t.contact ?? null}
         todayDate={t.date}
         todayDay={t.day}
-      />
+      >
+        {/* "Gửi yêu thương": right under "Gọi má", never instead of it */}
+        <KudosTray
+          key={`${id}-${viewer.memberId}`}
+          elderId={id}
+          kinVi={k.vi}
+          kinEn={k.en}
+          catalog={kudosCatalog.data}
+          initial={kudosSent.data}
+          compact
+        />
+      </TodayActions>
 
       {/* Last 14 days */}
       {lights.length > 0 && (

@@ -696,6 +696,9 @@ def mark_asked(svc: Service, elder_id: str, viewer: Viewer, topic_key: str) -> d
 
 # ====================================================================== timeline
 EVENT_SKIP = ("web_call", "web_call_unanswered", "enrolment")
+# Extra timeline sources registered by other modules: fn(svc, elder_id, viewer, lo, hi) -> [{kind, uid, day, actor,
+# title_vi, title_en, text_vi, text_en, extra}] (kudos.py adds the family cards and the elder's replies).
+TIMELINE_PROVIDERS: list = []
 
 
 def timeline(svc: Service, elder_id: str, viewer: Viewer, days: int = 14) -> dict:
@@ -782,6 +785,14 @@ def timeline(svc: Service, elder_id: str, viewer: Viewer, days: int = 14) -> dic
         if t["done"] and t["done_day"] is not None and lo <= t["done_day"] <= hi:
             add("task", f"{t['id']}-done", t["done_day"], t["done_by"], f"Đã xong: {t['title_vi']}",
                 f"Done: {t['title_en']}", "", "", task_id=t["id"], task_kind=t["kind"], simulated=t["simulated"])
+    for provider in TIMELINE_PROVIDERS:
+        try:
+            for x in provider(svc, elder_id, viewer, lo, hi):
+                add(x["kind"], x["uid"], x["day"], x.get("actor"), x["title_vi"], x["title_en"], x.get("text_vi", ""),
+                    x.get("text_en", ""), **(x.get("extra") or {}))
+                items[-1]["redacted"] = bool((x.get("extra") or {}).get("redacted"))
+        except Exception:   # pragma: no cover - an optional source must never break the timeline
+            pass
     rr = st.one("SELECT updated_by, updated_day FROM care_rota WHERE elder_id=? ORDER BY updated_day DESC LIMIT 1",
                 (elder_id,))
     if rr and rr["updated_day"] is not None and lo <= rr["updated_day"] <= hi:
@@ -790,7 +801,8 @@ def timeline(svc: Service, elder_id: str, viewer: Viewer, days: int = 14) -> dic
     ro = rota(svc, elder_id, viewer)
     if ro["gap"]["nudge"]:
         add("gap", str(hi), hi, None, ro["nudge_vi"] or "", ro["nudge_en"] or "", severity="yellow")
-    order = {"gap": 0, "alert": 1, "call": 2, "self_report": 3, "note": 3, "contact": 4, "task": 5, "event": 6, "rota": 7}
+    order = {"gap": 0, "alert": 1, "call": 2, "self_report": 3, "note": 3, "kudos": 4, "contact": 4, "task": 5, "event": 6,
+             "rota": 7}
     items.sort(key=lambda x: (-(x["day"] or 0), order.get(x["kind"], 9), x["id"]))
     upcoming = [t for t in tasks(svc, elder_id, include_done=False) if t["kind"] == "appointment"]
     return {"items": items, "upcoming": upcoming, "from_day": lo, "to_day": hi, "viewer": viewer.as_dict(),

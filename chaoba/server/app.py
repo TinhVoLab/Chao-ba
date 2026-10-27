@@ -31,6 +31,7 @@ from .family import register as register_family, seed_all as seed_family
 from .community import register as register_community
 from .service import Service, llm_enabled, demo_enabled
 from . import memories as memory_book   # Sổ ký ức + prevention activities (memories.py)
+from . import kudos                     # "Gửi yêu thương": family micro-interactions (kudos.py)
 
 LOCALHOST_ORIGIN_RE = r"^https?://(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$"
 
@@ -86,10 +87,12 @@ def create_app(db_path: str | None = None, seed: bool = True) -> FastAPI:
         store = Store(db_path)
         svc = Service(store)
         memory_book.install(svc)   # life-story question / game / nudge in calls; story + activity log at call end
+        kudos.install(svc)         # relay family cards in calls; micro-contact counts (never counted as calls)
         if seed:
             svc.seed()
             seed_family(svc)   # simulated care circles, rota, tasks (family.py)
             memory_book.seed_all(svc)   # simulated stories + activity log
+            kudos.seed_all(svc)         # simulated family cards + replies (one advice answer saved as "Lời má dạy")
         app.state.svc = svc
         yield
         store.close()
@@ -242,6 +245,7 @@ def create_app(db_path: str | None = None, seed: bool = True) -> FastAPI:
         out = s.reset(elder)
         seed_family(s)
         memory_book.seed_all(s)
+        kudos.seed_all(s)
         return out
 
     @app.get("/api/evaluation")
@@ -289,6 +293,7 @@ def create_app(db_path: str | None = None, seed: bool = True) -> FastAPI:
     register_family(app)      # /api/elders/{id}/family/* (family.py)
     register_community(app)   # /api/community/* (community.py)
     memory_book.register(app)   # /api/elders/{id}/memories*, /activities (memories.py)
+    kudos.register(app)         # /api/elders/{id}/kudos* (kudos.py)
     return app
 
 

@@ -24,7 +24,7 @@ Check:
 
 ```bash
 curl -s localhost:8000/api/health      # {"ok":true,"llm":"fallback"}  (or "claude" with a key)
-.venv/bin/pytest -q                     # 174 passed, 3 skipped (the 3 Postgres RLS tests skip without Docker)
+.venv/bin/pytest -q                     # 262 passed (the 3 Postgres RLS tests also run when Docker is available)
 ```
 
 On first start the server seeds three simulated elders (90 days each, plus a simulated family call/visit log) into `data/runtime/chaoba.db`:
@@ -72,7 +72,7 @@ Every safety layer (spotter, guardrails, output scrub, blocklist) runs in both m
 |---|---|
 | `http://localhost:8000/call?elder=hanh` | **Elder web call page**: one big green button "Nghe", live captions, "Không lưu ghi âm" notice (the server stores no audio) and a footer explaining that speech recognition is the browser's (Google) service, typed-answer mode ("Gõ chữ"), demo toggle "Giả lập người nói (demo)", result card after the call (heading, light, summary, explanation, metrics) |
 | `http://localhost:8000/call?elder=hanh&sim=1` | Same page in **hands-free rehearsal**: a scripted elder answers each question (spoken by the browser TTS in a lower voice and marked "(giả lập)"). Its timings are calibrated to the persona's own baseline speech rate and pause ratio. A rehearsal is stored and shown but **not scored**: the light stays what it was, with the reason "rehearsal, not scored" |
-| `http://localhost:3000/?elder=hanh` | Family app **Today**: light, plain explanation, this morning's call summary, mood, symptoms mentioned, "Gọi má" (logs a call) / quick note, contact nudge "No one has called Mom for 5 days", last 14 days |
+| `http://localhost:3000/?elder=hanh` | Family app **Today**: light, plain explanation, this morning's call summary, mood, symptoms mentioned, "Gọi má" (logs a call) / quick note, contact nudge "No one has called Mom for 5 days", **Gửi yêu thương / Send some love** (one-tap cards with Đã gửi → Má đã xem → Má đã trả lời and the reply inline), last 14 days |
 | `/trends?elder=hanh` | 90 days by default (30-day option): each signal vs the person's usual range (baseline ± 1 SD, the real baseline history from the API so the band steps at the day-77 re-baseline), 7-day average, the yellow/red period shaded behind every chart, numbered markers for medication change (1), doctor visit / care plan (2) and new baseline (3), table view |
 | `/alerts?elder=hanh` | Alerts with explanations; "Seen, I'm on it" acknowledgement |
 | `/dmaic?elder=hanh` | Define → Measure → Analyze → Improve → Control (status from the API: done / current / not started), family calls+visits per week before / after / last 14 days, cycle on the timeline, intervention effect (14 days before / after) |
@@ -147,6 +147,26 @@ Before you start: both servers running and a freshly seeded DB. Open two Chrome 
   with mood / poor-sleep before and after, and which activities were followed by better next days, labelled
   **association, not causation**.
 - Elder-side view (all stories, incl. private): `curl -H 'X-Role: elder_self' localhost:8000/api/elders/hanh/memories`.
+
+### Gửi yêu thương: family love notes (≈ 30 s, optional)
+
+Two windows side by side: (A) family app `localhost:3000/?elder=hanh` (Today) and (B) `localhost:3000/screen?elder=hanh&tts=0`
+(add `&typed=1` to type the advice answer instead of speaking it).
+
+| Time | Do | Say |
+|---|---|---|
+| 0:00–0:08 | A: under **Gọi má**, point at the yellow nudge "Đã 5 ngày chưa ai gọi má. Má đã nhận 5 lời thương tuần này, gọi má một cuộc nữa nha", then tap **Má ăn cơm chưa?** | "Not every day allows a call. One tap sends Mom a small card. But look: the nudge still counts only real calls. Love notes never replace a call." |
+| 0:08–0:18 | B: within ~10 s the card slides in: Lan's photo with a soft ring (no sound), "Con Lan gửi: Má ăn cơm chưa?". Tap **Ăn rồi** | "Huge buttons, readable from her chair. Her answer is a self-report: the family sees it, the light never uses it." |
+| 0:18–0:24 | A: the row turns "Má đã trả lời" with "Má trả lời: Ăn rồi con · 07:42" (reload if needed). Tap **Hỏi ý má → Trồng mai sao cho ra nụ đúng Tết?** | "And this one makes her feel needed: ask for her know-how." |
+| 0:24–0:30 | B: **Nói câu trả lời** (or type), **Gửi cho con Lan**, then "Lưu lời má dạy vào Sổ ký ức?" → **Lưu lại** | "With her yes, the answer becomes a 'Lời má dạy' page in the memory book. On an ordinary phone, Út Thương relays the same cards in the morning call: 'Chị Lan hỏi bà nấu canh chua sao cho ngon?', and passes the answer back." |
+
+- Phone-only relay: send a card, then run `localhost:8000/call?elder=hanh&sim=1&tts=0` → the first line after consent relays it;
+  the reply appears on Today with "(qua cuộc gọi sáng)". A card already seen on the screen is not relayed.
+- Free text with a dose (`Má uống thêm 1 viên thuốc`) is refused kindly; a sender can send 6 cards a day.
+- DMAIC shows micro-contacts per week as a separate series next to calls and visits.
+- Automated check (silent: `--mute-audio`, `tts=0`, speech synthesis stubbed, typed advice):
+  `WEB=http://localhost:3000 API=http://localhost:8000 node web/scripts/kudos-e2e.mjs` (resets Bà Hạnh; writes
+  `docs/screenshots/kudos-*.png`).
 
 ### Standing screen (≈ 60 s, optional)
 

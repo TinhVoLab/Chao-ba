@@ -488,7 +488,64 @@ All writes go through the app's outbox (`web/lib/outbox.ts`): "saved" only after
 on the device and retried. Tests: `tests/server/test_family.py` (rota and nudge, synthesis incl. negation and LLM
 post-check, suggestions de-duplication, task CRUD and permissions, role filtering, self-reports, demo reset).
 
-### 8.3 Community dashboard (health station, B2G)
+### 8.3 Family micro-interactions ("Gửi yêu thương / Send some love")
+
+**Why.** Adult children who live far away often want to show they care between calls but do not have time for a call
+every day, and older adults feel valued when they are *asked* for something, not only checked on. `chaoba/server/kudos.py`
+(table `kudos`, additive migration in `db.py`) lets a family member send a small card with one tap; the elder answers
+with one tap on the standing screen, or by voice when the morning call relays it. API: `/api/elders/{id}/kudos*`
+(`CONTRACT.md`).
+
+- **Card kinds (catalog, personalised to the sender).** *Check-ins* with a structured question and big answer buttons:
+  "Má ăn cơm chưa?" (Ăn rồi / Chưa ăn), "Tối qua má ngủ ngon không?" (Ngon / Hơi khó ngủ / Thức nhiều), "Hôm nay má thấy
+  trong người sao?" (Khỏe / Bình thường / Hơi mệt), "Má uống thuốc chưa?" (Rồi / Chưa). *Love* (one-way, the elder can
+  send a heart back): "Thương má", "Con nhớ má", "Chúc má ngủ ngon", "Cảm ơn má". *Hỏi ý má* (ask the elder's advice):
+  canh chua, a grandchild's cough (labelled as family folk wisdom, not medical advice), mai blossoms on Tết, or free text.
+  *Lời dặn* (caring tip): water on a hot day, 15 minutes of morning sun, a short walk, a midday rest, or free text. *Tự
+  viết*: a short text (voice notes are a future feature). Wording follows the sender's relation: a child writes "Con nhớ
+  má", a grandchild "Cháu nhớ bà", Ông Tư's children say "ba". Each card has a lucide illustration and always its words.
+- **Safety of free text.** Every free-text card passes the explanation blocklist (`explain.contains_blocked`, no
+  diagnostic labels), the call guardrails' diagnosis-request detector, and a medication filter (dose patterns such as
+  "1 viên", "5mg", "liều", "bỏ thuốc"); a refusal is a friendly bilingual 422 ("Chào Bà không chuyển lời khuyên về
+  thuốc…"). Money / OTP talk is refused too, so the elder learns that nobody asks for those here.
+- **Delivery and status.** Đã gửi → Má đã xem → Má đã trả lời, with the reply inline ("Má trả lời: Ăn rồi con · 07:42",
+  "❤ Má gửi thương lại", "Má nói: “…”"). **Standing screen:** a card takes the idle screen (never during a conversation)
+  as a large panel with the sender's photo, a soft visual chime (two rings, three times; no sound), answer buttons
+  ≥ 150 px at 1080 wide, "Gửi thương lại" and "Để sau" (snoozed 2 h). Several cards queue (1 / 3). For an advice
+  question the elder taps "Nói câu trả lời" (the screen's voice listener; typed fallback) or "Để má gọi lại nói", reviews
+  what she said, sends it, and is then asked whether to keep it in the Sổ ký ức; only a yes saves a shared "Lời má dạy"
+  story (memory book theme `advice`). A family member can save it only by confirming the elder agreed (same
+  `confirmed_by_elder_or_proxy` rule as consent withdrawal).
+- **Phone-only package (relay in the call).** `kudos.install` adds the cards the elder has not seen (last 3 days) to the
+  call context. Right after the consent answer, `plan_step` inserts a relay slot (`chaoba/agent/relay.py`): one sentence
+  for one-way cards and the first question ("Dạ. Cháu Vy gửi thương bà nè. Chị Lan hỏi bà nấu canh chua sao cho ngon, bà
+  chỉ giùm với?"), at most two questions (advice first). The elder's next turn is the reply: check-ins are parsed into the
+  card's choice with a negation-aware phrase list ("chưa ăn" → not yet, "thức hoài" → awake a lot), advice is kept as
+  text or as "call back"; Út Thương confirms "Dạ, con nhắn lại cho chị Lan liền nha." A check-in about eating, sleep or
+  feeling also covers that wellbeing question, so it is not asked twice. Answers are stored at call end (`via: call`;
+  `simulated` for a rehearsal). Scripted engine, simulator (a long canh chua answer keeps rehearsal calls well above 45 s
+  of elder speech) and Claude directive ("Say exactly …") all handle the slot; prompt `ut-thuong-2026.10.4`.
+- **Never instead of a call.** Micro-contacts live in their own table; the "N days since anyone called" nudge and the
+  rota still count only real calls and visits. Today adds "Má đã nhận 4 lời thương tuần này, gọi má một cuộc nữa nha"
+  to that nudge, each sender may send at most 6 cards a day (429 `daily_limit`, "…hoặc gọi má một cuộc!"), and the
+  DMAIC Improve contact block shows micro-contacts per week as a **separate series** next to calls/visits
+  (`contact.micro_*_per_week`, `contact.weekly`).
+- **Self-reports, never scored.** Structured answers (ate? slept? feeling? medicine?) are the elder's own report. They
+  are shown to the family and in the shared timeline, but they never enter the daily record, the control chart or the
+  light. While `family_sharing` is withdrawn, family members still see that Mom replied, not what she answered
+  (`reply_hidden`); hearts and advice stay visible. In the timeline a viewer sees other people's free-text cards as "Lời
+  nhắn riêng" (as for notes).
+- **Seed (simulated).** Four weeks for Bà Hạnh (Lan, Minh, Vy; 16 cards with replies, including the canh chua answer
+  saved as "Lời má dạy: nấu canh chua"), lighter histories for Ông Tư and Ông Bảy. Every seeded card is already answered,
+  so no seeded card is relayed. `POST /api/demo/reset` clears and re-seeds.
+
+Tests: `tests/server/test_kudos.py` (catalog, roles, post-check refusals, throttling, consent, timeline, micro-contacts
+vs calls, DMAIC series, memory-book consent, relay in a simulated call with ≥ 45 s elder speech, snooze, reset) and
+`tests/agent/test_agent_relay.py` (answer parsing, relay text, slot placement, no duplicate food question, Claude
+directive). Browser check (muted, `tts=0`, speech synthesis stubbed): `node web/scripts/kudos-e2e.mjs`
+(screenshots `docs/screenshots/kudos-*.png`).
+
+### 8.4 Community dashboard (health station, B2G)
 
 `chaoba/server/community.py`, family app `/community` (under "Thêm / More"), `GET /api/community/overview` with
 `X-Role: clinician | health_station` (anything else → 403). It shows a **simulated** ward, "Phường X, TP.HCM (mô
@@ -538,6 +595,7 @@ Tables (SQLite in the prototype, `chaoba/server/db.py`; the Postgres/Supabase pr
 | `access_log` | family reads and writes: actor, role, action, resource, time. Reads are de-duplicated to one row per actor / action / resource / day with a counter; writes always get a row | |
 | `care_event` | timeline events (medication change, doctor visit, re-baseline…) | prototype only |
 | `care_circle`, `care_rota`, `care_task`, `topic_asked` | family coordination (§8.2): circle members and roles, weekday call rota, care tasks, topics already asked | prototype only (SQLite; not yet in `schema.sql`) |
+| `kudos` | family love-note cards (§8.3): sender, kind, template, text, choices, status (sent / seen / replied), the elder's reply (choice / text / heart, via screen or call), snooze, saved memory-book story | prototype only (SQLite; not yet in `schema.sql`); never counted as a call or visit |
 
 REST API: see `CONTRACT.md` (including contacts, consent withdraw/grant, resume, baseline history, phase status and alert types). Demo-only extension: `GET /api/calls/{id}/simulate`.
 
@@ -652,7 +710,7 @@ Recall (0–3 per call) is never shown as a percentage, because "37 % worse reca
 
 ### 10.9 Software verification
 
-- `.venv/bin/pytest -q` → **174 passed, 3 skipped** (the 3 skipped tests are the Postgres RLS checks in `tests/deploy`, which start a throwaway Postgres container and skip when Docker is not running; the suite covers core metrics, control chart, explanations and blocklist, synthetic personas, DMAIC/evaluation, emergency spotter true/false positives including idioms and negation, orchestrator phases, consent/opt-out, scam/medication/diagnosis guardrails, Claude engine with a fake client, server API end-to-end including "no audio anywhere").
+- `.venv/bin/pytest -q` → **262 passed** on 28 Oct 2026 with Docker running (without Docker the 3 Postgres RLS checks in `tests/deploy`, which start a throwaway Postgres container, are skipped; the suite covers core metrics, control chart, explanations and blocklist, synthetic personas, DMAIC/evaluation, emergency spotter true/false positives including idioms and negation, orchestrator phases, consent/opt-out, scam/medication/diagnosis guardrails, Claude engine with a fake client, server API end-to-end including "no audio anywhere", family love notes and their relay in the call).
 - A full hands-free simulated web call was run in the browser (Playwright, headless Chromium): recall failed free and succeeded after the cue (score 1), 56 s voiced speech (valid), day 91 appended with today's date, light computed. A typed call was also run end to end (stored as live data; typed answers carry no speech timing, so it counts as a too-short call and its speech metrics are not shown).
 - Family app checked with Playwright on every route × 3 elders × VI/EN at 390×844 and 1280×800 (84 page loads, before and after the live calls): no console errors, no failed requests, no horizontal overflow. Offline (API stopped) the app falls back to the bundled fixtures.
 
@@ -892,7 +950,7 @@ Read this as: the < 100k VND target is reachable on the web, and on the phone on
 
 - **LiveKit/SIP adapter is untested.** `livekit-agents` is not installed and no SIP trunk or STT/TTS credentials exist. PSTN is the intended main channel but is not demonstrated.
 - **Claude mode is not verified against the live API** in this environment. It is unit-tested with a fake client only, and API errors silently fall back to Haiku, then to the scripted engine. Check the `engine` field of the call record to know which engine actually answered.
-- **No authentication in the prototype.** Roles come from unauthenticated `X-Actor` / `X-Role` headers (the app's "Viewing as" switcher). Only the family endpoints (§8.2) and the community dashboard (§8.3) act on the role; the original read endpoints (today, timeline, alerts…) still return the same data to any family caller. RLS exists only in the production schema and has not been tested against a live Supabase instance.
+- **No authentication in the prototype.** Roles come from unauthenticated `X-Actor` / `X-Role` headers (the app's "Viewing as" switcher). Only the family endpoints (§8.2), the love-note cards (§8.3) and the community dashboard (§8.4) act on the role; the original read endpoints (today, timeline, alerts…) still return the same data to any family caller. RLS exists only in the production schema and has not been tested against a live Supabase instance.
 - Active call state is in memory (single process); a server restart drops calls in progress.
 - **Family coordination and the community dashboard are prototype-only.** Their tables are not yet in the Postgres schema / RLS; the "viewer" restriction is enforced by the API from an unauthenticated header (it can lower but not raise a stored role). The weekly synthesis covers only symptom words in the lexicon. The ward is simulated (60 generated elders + 3 personas), interventions in it are assigned at random, and its recovery table shows association, never effect.
 - Retention gaps: `call_analysis` keeps verbatim symptom quotes, and `memory_fact` keeps elder sentences, beyond the 7-day transcript window. Emergency and scam alerts quote the elder verbatim to the family. These need an explicit retention rule.

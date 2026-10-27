@@ -50,6 +50,19 @@ AUDIO_NOTE = {"stored": False,
                          "the elder's consent for each clip."}
 
 
+# Themes of the memory book: the life-story themes plus "advice" ("Lời má dạy": answers to a family member's request for
+# the elder's know-how, saved with the elder's consent from the family cards, see kudos.py).
+THEMES = {**ls.THEMES, "advice": ("Lời dạy", "Advice and know-how")}
+THEME_ORDER = ls.THEME_ORDER + ["advice"]
+
+
+def theme_label(theme: str, prof: dict | None = None) -> tuple[str, str]:
+    if theme == "advice" and prof is not None:
+        female = (prof.get("honorific") or "bà").lower() in ("bà", "cô", "dì", "mợ")
+        return ("Lời má dạy", "Mom's advice") if female else ("Lời ba dạy", "Dad's advice")
+    return THEMES.get(theme, (theme, theme))
+
+
 # ============================================================================================ storage
 def add_story(store, elder_id: str, story: dict, day: int | None, date: str | None, *, shared: bool, consent: dict,
               source: str, simulated: bool, call_id: str | None = None) -> int:
@@ -67,7 +80,7 @@ def add_story(store, elder_id: str, story: dict, day: int | None, date: str | No
 
 def _story_row(r) -> dict:
     theme = r["theme"] or "childhood"
-    tvi, ten = ls.THEMES.get(theme, (theme, theme))
+    tvi, ten = THEMES.get(theme, (theme, theme))
     return {"id": r["id"], "day": r["day"], "date": r["date"], "question_id": r["question_id"], "theme": theme,
             "theme_vi": tvi, "theme_en": ten, "era": json.loads(r["era_json"] or "{}"),
             "title_vi": r["title_vi"], "title_en": r["title_en"], "text_vi": r["text_vi"], "text_en": r["text_en"],
@@ -270,12 +283,16 @@ def memories_view(svc, elder_id: str, role: str) -> dict:
     paused = svc.sharing_paused(elder_id) and not elder_view
     visible = stories if elder_view else ([] if paused else [s for s in stories if s["shared"]])
     private_n = sum(1 for s in stories if not s["shared"])
+    prof = svc.store.elder(elder_id) or {}
     themes = []
-    for t in ls.THEME_ORDER:
+    for t in THEME_ORDER:
         n = sum(1 for s in visible if s["theme"] == t)
         if n:
-            themes.append({"theme": t, "label_vi": ls.THEMES[t][0], "label_en": ls.THEMES[t][1], "count": n})
-    prof = svc.store.elder(elder_id) or {}
+            lv, le = theme_label(t, prof)
+            themes.append({"theme": t, "label_vi": lv, "label_en": le, "count": n})
+    for s in visible:
+        if s["theme"] == "advice":
+            s["theme_vi"], s["theme_en"] = theme_label("advice", prof)
     return {"elder_id": elder_id, "display_name": prof.get("display_name"), "name_en": prof.get("name_en"),
             "honorific": (prof.get("honorific") or "bà").lower(),
             "viewer": "elder" if elder_view else "family", "stories": visible, "themes": themes,
@@ -326,12 +343,13 @@ def export_html(svc, elder_id: str, lang: str = "vi") -> str:
 
     chapters = []
     n = 0
-    for t in ls.THEME_ORDER:
+    prof_x = svc.store.elder(elder_id) or {}
+    for t in THEME_ORDER:
         items = sorted([s for s in stories if s["theme"] == t], key=era_key)
         if not items:
             continue
         n += 1
-        tvi, ten = ls.THEMES[t]
+        tvi, ten = theme_label(t, prof_x)
         body = []
         for s in items:
             era = s["era"].get("label_vi" if vi_first else "label_en") or ""

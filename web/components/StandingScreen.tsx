@@ -2,14 +2,17 @@
 // The elder's always-on 9:16 home screen (Gói màn hình đứng): idle clock + family photos + today's reminders,
 // a real voice conversation with Út Thương, a simulated video call to the family, medication confirmation,
 // a once-a-day mood check-in and a gentle ca dao memory game. See components/elder/*.
-import { useCallback, useEffect, useMemo, useState } from "react";
-import type { ElderProfile, Note } from "@/lib/types";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { ElderProfile, FamilyMember, Note } from "@/lib/types";
+import type { Kudos } from "@/lib/kudos";
 import type { TurnReply } from "@/lib/voice/callSession";
 import { stopSpeech } from "@/lib/voice/speech";
 import { IdleView } from "./elder/IdleView";
 import { TalkView, type TalkEnd } from "./elder/TalkView";
 import { EmergencyView, GameView, MoodView, NoticeView, VideoCallView } from "./elder/Panels";
+import { KudosCard, type KudosAnswer } from "./elder/KudosCard";
 import {
+  fetchKudosInbox,
   fetchScreen,
   flushElderOutbox,
   localDay,
@@ -74,6 +77,33 @@ export function StandingScreen({
   const [notice, setNotice] = useState<{ title: string; body?: string } | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [gameSeed, setGameSeed] = useState(0);
+  // Family love notes ("Gửi yêu thương"): a queue shown one at a time on the idle screen, never during a conversation.
+  const [inbox, setInbox] = useState<Kudos[]>([]);
+  const [handled, setHandled] = useState<number[]>([]);
+  const seenRef = useRef<Set<number>>(new Set());
+  const queue = inbox.filter((k) => !handled.includes(k.id));
+  const card = mode === "idle" && emergency === null ? queue[0] ?? null : null;
+
+  const loadInbox = useCallback(async () => {
+    const items = await fetchKudosInbox(apiBase, elderId);
+    if (items) setInbox(items);
+  }, [apiBase, elderId]);
+
+  useEffect(() => {
+    const first = setTimeout(() => void loadInbox(), 0);
+    const id = setInterval(() => void loadInbox(), flags.fast ? 3000 : 10_000);
+    return () => {
+      clearTimeout(first);
+      clearInterval(id);
+    };
+  }, [loadInbox, flags.fast]);
+
+  // The card on screen counts as seen ("Má đã xem" for the family), once.
+  useEffect(() => {
+    if (!card || seenRef.current.has(card.id) || card.status !== "sent") return;
+    seenRef.current.add(card.id);
+    void postElder(apiBase, elderId, `kudos/${card.id}/seen`, { via: "screen" });
+  }, [card, apiBase, elderId]);
 
   const refresh = useCallback(async () => {
     await flushElderOutbox();
@@ -181,6 +211,15 @@ export function StandingScreen({
 
   const flagsTalk = { sim: flags.sim, tts: flags.tts, typed: flags.typed, fast: flags.fast };
 
+  function senderOf(k: Kudos): FamilyMember {
+    const f = (profile.family ?? []).find((m) => m.id === k.sender_id);
+    return f ?? ({ id: k.sender_id ?? k.sender_name, name: k.sender_name, relation: k.sender_relation ?? "daughter", role: "secondary" } as FamilyMember);
+  }
+  const doneWith = (id: number) => setHandled((h) => (h.includes(id) ? h : [...h, id]));
+  async function kudosAnswer(k: Kudos, a: KudosAnswer) {
+    await postElder(apiBase, elderId, `kudos/${k.id}/reply`, { ...a, via: "screen" });
+  }
+
   return (
     <LangCtx.Provider value={flags.lang}>
       <div className={s.screen} lang={flags.lang} data-mode={mode} data-online={online} data-testid="elder-screen">
@@ -199,6 +238,30 @@ export function StandingScreen({
             onGame={() => {
               setGameSeed((x) => x + 1 + new Date().getDate());
               setMode("game");
+            }}
+          />
+        )}
+        {card && (
+          <KudosCard
+            key={card.id}
+            card={card}
+            member={senderOf(card)}
+            index={0}
+            total={queue.length}
+            elderLabel={elderLabel}
+            typed={flags.typed}
+            onAnswer={(a) => kudosAnswer(card, a)}
+            onLater={() => {
+              doneWith(card.id);
+              void postElder(apiBase, elderId, `kudos/${card.id}/seen`, { via: "screen", snooze_minutes: 120 });
+            }}
+            onClose={() => doneWith(card.id)}
+            onSave={async (agree) => {
+              await postElder(apiBase, elderId, `kudos/${card.id}/save`, agree ? {} : { decline: true });
+            }}
+            onDone={() => {
+              doneWith(card.id);
+              void loadInbox();
             }}
           />
         )}

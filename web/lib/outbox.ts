@@ -8,7 +8,7 @@ import { API_BASE } from "./config";
 import { actorHeaders } from "./viewer";
 import { writeLocal } from "./useLang";
 
-export type WriteKind = "contact" | "note" | "ack" | "withdraw" | "task" | "rota" | "asked";
+export type WriteKind = "contact" | "note" | "ack" | "withdraw" | "task" | "rota" | "asked" | "kudos" | "kudos_save";
 
 export interface PendingWrite {
   id: string;
@@ -92,7 +92,8 @@ async function attempt(path: string, body: unknown, headers: Record<string, stri
           : JSON.stringify((json as { detail: unknown }).detail)
         : res.statusText;
     // 408 / 429 / 5xx are transient; other 4xx are a refusal and will not succeed on retry.
-    const retry = res.status >= 500 || res.status === 408 || res.status === 429;
+    // A per-day limit (429 daily_limit, love notes) is a refusal, not congestion: do not queue it.
+    const retry = res.status >= 500 || res.status === 408 || (res.status === 429 && !detail.includes("daily_limit"));
     return { ok: false, retry, status: res.status, detail };
   } catch {
     return { ok: false, retry: true, status: 0, detail: "network" };

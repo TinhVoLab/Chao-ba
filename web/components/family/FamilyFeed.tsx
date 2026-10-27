@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Bell, Bot, CalendarDays, HandHeart, CalendarSync, ListChecks, Lock, NotebookPen, PhoneCall, PhoneOff, Rows3 } from "lucide-react";
+import { Bell, Bot, CalendarDays, HandHeart, CalendarSync, Heart, ListChecks, Lock, NotebookPen, PhoneCall, PhoneOff, Rows3 } from "lucide-react";
 import type { FeedItem, FeedKind } from "@/lib/types";
 import { longDate } from "@/lib/format";
 import { StatusShape } from "../StatusShape";
@@ -16,11 +16,12 @@ const ICON: Record<FeedKind, typeof Bell> = {
   rota: CalendarSync,
   gap: PhoneOff,
   self_report: HandHeart,
+  kudos: Heart,
 };
 
 const FILTERS: { key: string; vi: string; en: string; kinds: FeedKind[] | null }[] = [
   { key: "all", vi: "Tất cả", en: "All", kinds: null },
-  { key: "people", vi: "Cả nhà", en: "Family", kinds: ["note", "contact", "task", "rota", "gap"] },
+  { key: "people", vi: "Cả nhà", en: "Family", kinds: ["note", "contact", "kudos", "task", "rota", "gap"] },
   { key: "ai", vi: "Út Thương", en: "Út Thương", kinds: ["call", "alert", "event"] },
   { key: "self", vi: "Tự báo", en: "Self-reported", kinds: ["self_report"] },
 ];
@@ -102,7 +103,9 @@ function FeedRow({ it }: { it: FeedItem }) {
         ? "bg-red-tint text-red-ink"
         : it.kind === "call"
           ? "bg-accent-tint text-accent"
-          : "bg-surface-2 text-ink-2";
+          : it.kind === "kudos"
+            ? "bg-rose-tint text-rose-ink"
+            : "bg-surface-2 text-ink-2";
   return (
     <li className="flex gap-3 px-3.5 py-3">
       <span className={`grid size-9 shrink-0 place-items-center rounded-full ${tone}`}>

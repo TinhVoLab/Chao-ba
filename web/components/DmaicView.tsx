@@ -392,6 +392,7 @@ function ContactBlock({
           </div>
         ))}
       </div>
+      {c.weekly && c.weekly.length > 0 && <WeeklyContacts c={c} />}
       {fading ? (
         <p className="rounded-xl bg-yellow-tint px-3 py-2 text-[0.9375rem] text-yellow-ink">
           <T
@@ -405,5 +406,55 @@ function ContactBlock({
         </p>
       )}
     </section>
+  );
+}
+
+/** Calls / visits and micro-contacts (love notes, check-in cards) per week, side by side: two separate series. */
+function WeeklyContacts({ c }: { c: NonNullable<Dmaic["contact"]> }) {
+  const weeks = c.weekly ?? [];
+  const max = Math.max(1, ...weeks.map((w) => Math.max(w.calls_visits, w.micro)));
+  const pct = (n: number) => `${Math.max(n ? 6 : 0, (n / max) * 100)}%`;
+  const fmt = (x: number | null | undefined) => (x == null ? "–" : x.toFixed(1));
+  return (
+    <div className="flex flex-col gap-2 rounded-2xl border border-line bg-surface p-3.5" data-testid="weekly-contacts">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <p className="text-sm font-semibold text-ink-2">
+          <T vi="Mỗi tuần: cuộc gọi, ghé thăm và liên lạc nhỏ" en="Each week: calls, visits and micro-contacts" />
+        </p>
+        <p className="flex items-center gap-3 text-xs font-semibold text-ink-2">
+          <span className="flex items-center gap-1.5">
+            <span aria-hidden className="size-2.5 rounded-sm bg-accent" />
+            <T vi="Gọi / thăm" en="Calls / visits" />
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span aria-hidden className="size-2.5 rounded-sm bg-rose" />
+            <T vi="Liên lạc nhỏ" en="Micro-contacts" />
+          </span>
+        </p>
+      </div>
+      <ol className="flex flex-col gap-1.5">
+        {weeks.map((w) => (
+          <li key={w.day_from} className="grid grid-cols-[4.5rem_minmax(0,1fr)] items-center gap-2">
+            <span className="text-xs text-ink-3 tnum">{w.date_from ? shortDate(w.date_from) : ""}</span>
+            <span className="flex flex-col gap-0.5">
+              <span className="flex items-center gap-1.5">
+                <span className="h-2.5 rounded-sm bg-accent" style={{ width: pct(w.calls_visits) }} />
+                <span className="text-xs font-semibold tnum text-ink-2">{w.calls_visits}</span>
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-2.5 rounded-sm bg-rose" style={{ width: pct(w.micro) }} />
+                <span className="text-xs font-semibold tnum text-ink-2">{w.micro}</span>
+              </span>
+            </span>
+          </li>
+        ))}
+      </ol>
+      <p className="text-xs text-ink-3">
+        <T
+          vi={`Liên lạc nhỏ 14 ngày gần đây: ${fmt(c.micro_recent_per_week).replace(".", ",")} lần/tuần. ${c.micro_note_vi ?? ""}`}
+          en={`Micro-contacts, last 14 days: ${fmt(c.micro_recent_per_week)} per week. ${c.micro_note_en ?? ""}`}
+        />
+      </p>
+    </div>
   );
 }

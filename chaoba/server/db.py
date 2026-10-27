@@ -458,3 +458,22 @@ CREATE INDEX IF NOT EXISTS ix_activity_elder ON activity_log(elder_id, day);
 """
 DDL += MEMORY_DDL
 ELDER_TABLES += ("memory_story", "activity_log")
+
+
+# ---------------------------------------------------------------- family micro-interactions (additive)
+# "Gửi yêu thương": small cards an adult child sends the elder (check-in question, a "thương má", a request for the
+# elder's advice, a caring tip, a short text) and the elder's reply (tap on the standing screen, or the answer given
+# when the morning call relays the card). Logic: chaoba/server/kudos.py. Kept apart from family_contact on purpose:
+# a micro-contact never counts as a call or visit (the "N days since anyone called" nudge ignores it).
+KUDOS_DDL = """
+CREATE TABLE IF NOT EXISTS kudos (
+  id INTEGER PRIMARY KEY AUTOINCREMENT, elder_id TEXT NOT NULL, day INTEGER, date TEXT NOT NULL,
+  sender_id TEXT, sender_name TEXT NOT NULL, kind TEXT NOT NULL, template_id TEXT,
+  text_vi TEXT NOT NULL, text_en TEXT, custom INTEGER NOT NULL DEFAULT 0, health INTEGER NOT NULL DEFAULT 0,
+  choices_json TEXT, status TEXT NOT NULL DEFAULT 'sent', seen_at TEXT, seen_via TEXT, snooze_until TEXT,
+  reply_json TEXT, replied_at TEXT, heart INTEGER NOT NULL DEFAULT 0, story_id INTEGER, save_json TEXT,
+  call_id TEXT, simulated INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS ix_kudos_elder ON kudos(elder_id, date);
+"""
+DDL += KUDOS_DDL
+ELDER_TABLES += ("kudos",)

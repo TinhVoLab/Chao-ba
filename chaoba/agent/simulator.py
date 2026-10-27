@@ -197,11 +197,43 @@ def _game_answer(state: CallState, seed: str) -> str:
     return "Để coi... " + ", ".join(picked) + " đó con. Chơi vầy cũng vui ghê."
 
 
+# Answers to family cards relayed in the call (relay.py), in "bà" voice. Advice answers are long on purpose: the elder
+# is being asked for her know-how and enjoys explaining.
+RELAY_LINES = {
+    "ate": "Ăn rồi con, sáng nay bà ăn cháo trắng với hột vịt muối, ăn ngon lắm, biểu nó đừng lo nghen.",
+    "slept": "Ngủ cũng ngon con, tối qua ngủ một giấc tới gần sáng luôn, nói nó yên tâm nha.",
+    "feeling": "Bà thấy khỏe con, sáng ra vườn tưới mấy cây kiểng được, nói nó đừng lo cho bà.",
+    "meds": "Uống rồi con, sáng nay bà uống lúc bảy giờ y như mọi bữa đó.",
+    "canh_chua": "Canh chua phải có me chín nè con, dầm me lấy nước cho chua thanh, cá lóc thì chiên sơ cho chắc thịt, "
+                 "nước sôi mới bỏ thơm với cà chua, rồi bạc hà, đậu bắp, giá bỏ vô sau cùng, nêm chút đường cho dịu, "
+                 "tắt bếp rồi mới rắc ngò om với ngò gai, vậy là thơm phức. Nói con Lan nấu thử đi, có gì gọi bà chỉ.",
+    "mai": "Trồng mai thì tới rằm tháng chạp phải lặt hết lá con, tưới nước cho đều, trời nắng thì bông nở sớm, "
+           "trời lạnh thì tưới nước ấm một chút cho nó kịp Tết. Năm nào bà cũng làm vậy hết.",
+    "cough": "Hồi xưa bà hấp chanh đào với chút mật ong cho tụi nhỏ ngậm, giữ ấm cái cổ, mà ho lâu thì đưa nó đi khám "
+             "nghen con, đừng để lâu.",
+    "advice": "Cái đó dễ mà con, từ từ làm, đừng có gấp, có gì hổng biết thì gọi bà chỉ cho, bà làm hoài mà.",
+    "announce": "Ừ, nói nó bà cũng thương nó lắm, bà khỏe re hà, biểu nó lo làm ăn, rảnh rảnh thì về chơi với bà nghen con.",
+}
+
+
+def _relay_line(state: CallState) -> str:
+    from .relay import plan
+    qs, _ = plan(state.ctx.relay)
+    item = qs[state.relay_idx] if state.relay_idx < len(qs) else None
+    if item is None:
+        return RELAY_LINES["announce"]
+    if item.kind == "advice":
+        return RELAY_LINES.get(item.template_id or "", RELAY_LINES["advice"])
+    return RELAY_LINES.get(item.template_id or "", RELAY_LINES["announce"])
+
+
 def _next_text(state: CallState) -> str:
     h = state.ev.honorific
     seed = f"{state.call_id}:{len(state.turns)}"
     last_agent = next((t.text for t in reversed(state.turns) if t.speaker == "agent"), "")
     n = normalize(last_agent)
+    if state.step == "relay" and state.relay_stage == "asked":
+        return _adapt(_relay_line(state), h)
     if state.phase == "greeting":
         key = "consent"
     elif state.step == "story_share":

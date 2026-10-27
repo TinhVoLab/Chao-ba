@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Check, CloudOff, MessageSquareHeart, NotebookPen, Phone, PhoneCall, Send, X } from "lucide-react";
 import type { ContactStatus, Note } from "@/lib/types";
 import { currentViewer } from "@/lib/viewer";
@@ -34,6 +34,7 @@ export function TodayActions({
   contact,
   todayDate,
   todayDay,
+  children,
 }: {
   elderId: string;
   kinVi: string;
@@ -44,6 +45,8 @@ export function TodayActions({
   contact: ContactStatus | null;
   todayDate: string;
   todayDay: number;
+  /** Rendered right under the call / note buttons (the "Gửi yêu thương" tray). */
+  children?: ReactNode;
 }) {
   const lang = useLang();
   const [open, setOpen] = useState(false);
@@ -150,7 +153,14 @@ export function TodayActions({
             <strong className="font-bold">
               <T vi={`Đã ${contact.days_since} ngày chưa ai gọi ${kinVi}.`} en={`No one has called ${kinEn} for ${contact.days_since} days.`} />
             </strong>{" "}
-            <T vi="Một cuộc gọi 5 phút cũng đủ." en="Five minutes is enough." />
+            {contact.micro_7d ? (
+              <T
+                vi={`${kinVi[0].toUpperCase()}${kinVi.slice(1)} đã nhận ${contact.micro_7d} lời thương tuần này, gọi ${kinVi} một cuộc nữa nha.`}
+                en={`${kinEn} got ${contact.micro_7d} love note${contact.micro_7d > 1 ? "s" : ""} this week; give ${kinEn} a call too.`}
+              />
+            ) : (
+              <T vi="Một cuộc gọi 5 phút cũng đủ." en="Five minutes is enough." />
+            )}
             {contact.last && (
               <span className="mt-0.5 block text-sm opacity-90">
                 <T
@@ -162,6 +172,8 @@ export function TodayActions({
           </span>
         </p>
       ) : null}
+
+      {children}
 
       {open && (
         <form
