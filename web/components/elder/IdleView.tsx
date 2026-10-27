@@ -60,7 +60,7 @@ export function IdleView(p: IdleProps) {
 
   const [h, m, wd, dd, mo] = clock ?? [];
   const time = clock ? `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}` : "--:--";
-  const part = !clock ? null : h < 11 ? ["buổi sáng", "morning"] : h < 13 ? ["buổi trưa", "afternoon"] : h < 18 ? ["buổi chiều", "afternoon"] : ["buổi tối", "evening"];
+  const part = !clock ? null : h < 4 ? ["buổi tối", "evening"] : h < 11 ? ["buổi sáng", "morning"] : h < 13 ? ["buổi trưa", "afternoon"] : h < 18 ? ["buổi chiều", "afternoon"] : ["buổi tối", "evening"];
   const greet = part ? t(`Chào ${part[0]}, ${addressElder(p.profile)}!`, `Good ${part[1]}, ${p.profile.name_en}!`) : " ";
   const date = clock ? t(`${WD[wd]}, ${dd} tháng ${mo + 1}`, `${WD_EN[wd]}, ${dd} ${MON_EN[mo]}`) : " ";
 
