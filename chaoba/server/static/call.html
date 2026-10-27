@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f5132">
+<title>Chào Bà – Cuộc gọi</title>
+<style>
+  :root {
+    --bg: #fbf7ef; --card: #ffffff; --ink: #1d1b16; --muted: #6b6457; --line: #e7dfd0;
+    --agent: #fff4dc; --agent-ink: #4a3500; --elder: #e6f2ea; --elder-ink: #0f3d24;
+    --go: #1a7f45; --go-ink: #ffffff; --stop: #c62828; --stop-ink: #fff;
+    --red: #b3261e; --yellow: #c99400; --green: #1a7f45; --gray: #8a8a8a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14130f; --card: #1f1d18; --ink: #f3efe6; --muted: #b3ab9b; --line: #34302a;
+      --agent: #3a2f14; --agent-ink: #ffe7a8; --elder: #12301f; --elder-ink: #c9f0d6;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink);
+    font-family: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  body { display: flex; justify-content: center; }
+  .app { width: 100%; max-width: 560px; min-height: 100dvh; display: flex; flex-direction: column;
+    padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom)); gap: 12px; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .who { font-size: 30px; font-weight: 800; line-height: 1.1; }
+  .sub { font-size: 18px; color: var(--muted); }
+  .notice { font-size: 17px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px;
+    padding: 6px 12px; white-space: nowrap; }
+  #banner { display: none; background: var(--red); color: #fff; border-radius: 16px; padding: 16px; font-size: 26px;
+    font-weight: 800; line-height: 1.25; }
+  #banner a { color: #fff; display: inline-block; margin-top: 8px; font-size: 30px; }
+  #status { font-size: 22px; color: var(--muted); min-height: 1.4em; text-align: center; }
+  #captions { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 4px 0;
+    min-height: 260px; }
+  .bubble { border-radius: 20px; padding: 14px 18px; font-size: 28px; line-height: 1.35; max-width: 92%; }
+  .bubble small { display: block; font-size: 16px; opacity: .75; margin-bottom: 2px; font-weight: 700; }
+  .agent { background: var(--agent); color: var(--agent-ink); align-self: flex-start; }
+  .elder { background: var(--elder); color: var(--elder-ink); align-self: flex-end; }
+  .interim { opacity: .6; font-style: italic; }
+  #big { width: 100%; min-height: 120px; border: 0; border-radius: 32px; font-size: 44px; font-weight: 800;
+    background: var(--go); color: var(--go-ink); cursor: pointer; box-shadow: 0 6px 0 rgba(0,0,0,.18);
+    touch-action: manipulation; }
+  #big.stop { background: var(--stop); color: var(--stop-ink); }
+  #big:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(0,0,0,.18); }
+  #big:disabled { opacity: .55; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .small { flex: 1; min-height: 52px; border-radius: 14px; border: 1px solid var(--line); background: var(--card);
+    color: var(--ink); font-size: 18px; font-weight: 600; cursor: pointer; }
+  .small[aria-pressed="true"] { outline: 3px solid var(--go); }
+  #typed { display: none; gap: 8px; }
+  #typed input { flex: 1; min-width: 0; font-size: 24px; padding: 12px; border-radius: 14px;
+    border: 2px solid var(--line); background: var(--card); color: var(--ink); }
+  #typed button { font-size: 22px; padding: 0 18px; border-radius: 14px; border: 0; background: var(--go);
+    color: #fff; font-weight: 700; }
+  #meter { height: 8px; border-radius: 4px; background: var(--line); overflow: hidden; }
+  #meter div { height: 100%; width: 0; background: var(--go); transition: width .06s linear; }
+  #result { display: none; background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 16px;
+    font-size: 20px; line-height: 1.4; }
+  .dot { display: inline-block; width: 22px; height: 22px; border-radius: 50%; vertical-align: -3px; margin-right: 6px; }
+  .tag { display: inline-block; font-size: 15px; border: 1px solid var(--line); border-radius: 999px;
+    padding: 2px 10px; color: var(--muted); }
+  .metrics { font-size: 16px; color: var(--muted); margin-top: 8px; }
+  footer { font-size: 14px; color: var(--muted); text-align: center; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div>
+      <div class="who" id="who">Chào Bà</div>
+      <div class="sub" id="whosub">Út Thương – trợ lý ảo</div>
+    </div>
+    <div class="notice" title="Trình duyệt chỉ gửi chữ và thời gian nói. Không có âm thanh nào được lưu.">Không lưu ghi âm</div>
+  </header>
+
+  <div id="banner" role="alert">Đã báo cho gia đình. Nếu nguy cấp, hãy gọi 115 ngay.<br><a href="tel:115">Gọi 115</a></div>
+
+  <div id="captions" aria-live="polite"></div>
+  <div id="meter" aria-hidden="true"><div></div></div>
+  <div id="status">Bấm nút xanh để nghe Út Thương gọi</div>
+
+  <div id="result"></div>
+
+  <button id="big">Nghe</button>
+
+  <div id="typed">
+    <input id="typedInput" placeholder="Gõ câu trả lời…" autocomplete="off" enterkeyhint="send">
+    <button id="typedSend">Gửi</button>
+  </div>
+  <div class="row">
+    <button class="small" id="simBtn" aria-pressed="false">Giả lập người nói (demo)</button>
+    <button class="small" id="typeBtn" aria-pressed="false">Gõ chữ</button>
+  </div>
+  <footer>Chỉ văn bản và mốc thời gian (VAD) được gửi về máy chủ · Chế độ "Giả lập người nói" được lưu là dữ liệu mô phỏng</footer>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const params = new URLSearchParams(location.search);
+  const ELDER = params.get("elder") || "hanh";
+  const API = params.get("api") || "";
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const $ = (id) => document.getElementById(id);
+  const big = $("big"), captions = $("captions"), statusEl = $("status"), banner = $("banner");
+  const meterBar = $("meter").firstElementChild;
+
+  let elder = null, callId = null, t0 = 0, inCall = false, ending = false;
+  let simulate = params.get("sim") === "1";
+  let typedMode = !SR;
+  let honorific = "bà";
+
+  // ------------------------------------------------------------------ UI helpers
+  function setStatus(t) { statusEl.textContent = t; }
+  function bubble(who, text, extra) {
+    const b = document.createElement("div");
+    b.className = "bubble " + who + (extra ? " " + extra : "");
+    const label = who === "agent" ? "Út Thương" : (elder ? elder.display_name : "Bà");
+    b.innerHTML = "<small></small><span></span>";
+    b.querySelector("small").textContent = label + (extra === "sim" ? " (giả lập)" : "");
+    b.querySelector("span").textContent = text;
+    captions.appendChild(b);
+    captions.scrollTop = captions.scrollHeight;
+    return b;
+  }
+  function refreshButtons() {
+    $("simBtn").setAttribute("aria-pressed", String(simulate));
+    $("typeBtn").setAttribute("aria-pressed", String(typedMode));
+    $("typed").style.display = typedMode && !simulate ? "flex" : "none";
+    if (!SR) $("typeBtn").textContent = "Gõ chữ (trình duyệt không hỗ trợ nhận giọng nói)";
+  }
+  // Virtual clock offset: when no TTS engine is available the simulated elder "speaks" instantly, so we advance a
+  // virtual clock by the estimated speaking time to keep turn timings realistic.
+  let clockOffset = 0;
+  const now = () => (performance.now() - t0) / 1000 + clockOffset;
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const words = (t) => (t || "").trim().split(/\s+/).filter(Boolean).length;
+
+  async function api(path, opts) {
+    const r = await fetch(API + path, Object.assign({ headers: { "Content-Type": "application/json",
+      "X-Actor": "elder:" + ELDER, "X-Role": "elder_self" } }, opts || {}));
+    if (!r.ok) throw new Error(path + " " + r.status + " " + (await r.text()));
+    return r.json();
+  }
+
+  // ------------------------------------------------------------------ TTS
+  const HAS_TTS = "speechSynthesis" in window && typeof window.SpeechSynthesisUtterance === "function";
+  let viVoice = null, ttsBroken = !HAS_TTS || params.get("tts") === "0";   // ?tts=0 = captions only (muted)
+  function pickVoice() {
+    try { viVoice = speechSynthesis.getVoices().find(v => /^vi/i.test(v.lang)) || null; } catch (e) { viVoice = null; }
+  }
+  if (HAS_TTS) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+
+  // Resolves with {start, end, spoken}. Degrades to captions-only (short reading pause) when TTS is missing or
+  // silently not working (e.g. headless browsers / no voices): if speech has not started within 1.5 s we stop
+  // waiting for it for the rest of the session.
+  async function captionPause(text) { await sleep(Math.min(4000, Math.max(800, words(text) * 120))); }
+  function speak(text, opt) {
+    opt = opt || {};
+    const clean = text.replace(/^\([^)]*\)\s*/, "");
+    if (ttsBroken) {
+      const s0 = now();
+      return captionPause(text).then(() => ({ start: s0, end: now(), spoken: false }));
+    }
+    return new Promise((resolve) => {
+      let start = null, done = false;
+      const finish = (spoken) => { if (done) return; done = true; resolve({ start: start ?? now(), end: now(), spoken }); };
+      try {
+        const u = new SpeechSynthesisUtterance(clean);
+        u.lang = "vi-VN"; if (viVoice) u.voice = viVoice;
+        u.rate = opt.rate || 0.9; u.pitch = opt.pitch || 1.0;
+        u.onstart = () => { start = now(); };
+        u.onend = () => finish(true); u.onerror = () => finish(start !== null);
+        speechSynthesis.cancel();
+        speechSynthesis.speak(u);
+      } catch (e) { ttsBroken = true; finish(false); return; }
+      setTimeout(() => {
+        if (start === null && !done) {
+          ttsBroken = true;
+          try { speechSynthesis.cancel(); } catch (e) {}
+          const s0 = now();
+          captionPause(text).then(() => { start = s0; finish(false); });
+        }
+      }, 1500);
+      setTimeout(() => finish(true), Math.max(2, words(text) / 2.6) * 1000 + 2500);  // onend sometimes never fires
+    });
+  }
+
+  // ------------------------------------------------------------------ VAD (WebAudio energy; audio never leaves the page)
+  const vad = { ctx: null, an: null, buf: null, timer: null, floor: 0.006, listening: false,
+    uttStart: null, lastVoice: null, silenceStart: null, pauses: [], voicedFrames: 0, onEnd: null };
+  async function initMic() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true,
+        noiseSuppression: true, autoGainControl: true } });
+      vad.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const src = vad.ctx.createMediaStreamSource(stream);
+      vad.an = vad.ctx.createAnalyser(); vad.an.fftSize = 1024;
+      vad.buf = new Float32Array(vad.an.fftSize);
+      src.connect(vad.an);                              // analyser only: nothing is recorded or uploaded
+      vad.timer = setInterval(vadTick, 30);
+      return true;
+    } catch (e) { console.warn("mic unavailable", e); return false; }
+  }
+  function vadTick() {
+    if (!vad.an) return;
+    vad.an.getFloatTimeDomainData(vad.buf);
+    let s = 0; for (let i = 0; i < vad.buf.length; i++) s += vad.buf[i] * vad.buf[i];
+    const rms = Math.sqrt(s / vad.buf.length);
+    const thr = Math.max(0.012, vad.floor * 2.8);
+    const voiced = rms > thr;
+    meterBar.style.width = Math.min(100, rms / 0.12 * 100) + "%";
+    if (!voiced) vad.floor = vad.floor * 0.97 + rms * 0.03;
+    if (!vad.listening) return;
+    const t = now();
+    if (voiced) {
+      vad.voicedFrames++;
+      if (vad.uttStart === null && vad.voicedFrames >= 3) vad.uttStart = t - 0.09;
+      if (vad.silenceStart !== null && vad.uttStart !== null) {
+        const gap = t - vad.silenceStart;
+        if (gap >= 0.4) vad.pauses.push(+gap.toFixed(2));   // server counts 0.4-3 s gaps as pauses
+      }
+      vad.silenceStart = null; vad.lastVoice = t;
+    } else {
+      vad.voicedFrames = 0;
+      if (vad.uttStart !== null && vad.silenceStart === null) vad.silenceStart = t;
+      if (vad.onEnd) vad.onEnd(t);
+    }
+  }
+  function vadReset() { vad.uttStart = null; vad.lastVoice = null; vad.silenceStart = null; vad.pauses = []; vad.voicedFrames = 0; }
+
+  // ------------------------------------------------------------------ STT + turn capture
+  let sttBroken = false;
+  let rec = null, finalText = "", interimText = "", interimBubble = null, listenStarted = 0, lastResultAt = 0;
+  function startRecognition() {
+    if (!SR) return;
+    try { rec && rec.abort(); } catch (e) {}
+    rec = new SR(); rec.lang = "vi-VN"; rec.continuous = true; rec.interimResults = true;
+    rec.onresult = (ev) => {
+      interimText = "";
+      for (let i = ev.resultIndex; i < ev.results.length; i++) {
+        const r = ev.results[i];
+        if (r.isFinal) finalText += (finalText ? " " : "") + r[0].transcript.trim();
+        else interimText += r[0].transcript;
+      }
+      lastResultAt = now();
+      const shown = (finalText + " " + interimText).trim();
+      if (shown) {
+        if (!interimBubble) interimBubble = bubble("elder", shown, "interim");
+        else interimBubble.querySelector("span").textContent = shown;
+        captions.scrollTop = captions.scrollHeight;
+      }
+    };
+    rec.onend = () => { if (vad.listening && inCall) { try { rec.start(); } catch (e) {} } };
+    rec.onerror = (e) => {
+      if (["not-allowed", "service-not-allowed", "network", "audio-capture", "language-not-supported"].includes(e.error)) {
+        sttBroken = true; typedMode = true; refreshButtons();
+        setStatus("Không nghe được giọng nói trên trình duyệt này – xin gõ chữ");
+        if (listen.cancelToTyped) listen.cancelToTyped();
+      }
+    };
+    try { rec.start(); } catch (e) { sttBroken = true; typedMode = true; refreshButtons(); if (listen.cancelToTyped) listen.cancelToTyped(); }
+  }
+
+  function listen() {
+    return new Promise((resolve) => {
+      finalText = ""; interimText = ""; interimBubble = null; vadReset();
+      vad.listening = true; listenStarted = now(); lastResultAt = 0;
+      setStatus("Út Thương đang nghe " + honorific + " nói…");
+      startRecognition();
+      const finish = (text, start, end, pauses) => {
+        if (!vad.listening) return;
+        vad.listening = false; vad.onEnd = null; clearInterval(poll);
+        try { rec && rec.abort(); } catch (e) {}
+        if (interimBubble) interimBubble.remove();
+        resolve({ text, start, end, pauses });
+      };
+      // End of turn: >= 1.5 s of VAD silence after speech AND recognised text (or 3 s more for STT to settle).
+      vad.onEnd = (t) => {
+        if (vad.uttStart === null || vad.silenceStart === null) return;
+        const sil = t - vad.silenceStart;
+        const text = (finalText || "").trim();
+        if ((sil >= 1.5 && text && t - lastResultAt > 0.6) || (sil >= 4.5 && (text || interimText.trim()))) {
+          finish((text || interimText).trim(), vad.uttStart, vad.lastVoice, vad.pauses.slice());
+        }
+      };
+      const poll = setInterval(() => {
+        const t = now();
+        if (!vad.an) {   // no mic analyser: rely on STT result timing only
+          const text = finalText.trim();
+          if (text && t - lastResultAt > 1.6) finish(text, listenStarted, lastResultAt, []);
+        }
+        if (t - listenStarted > 20 && vad.uttStart === null && !finalText) finish("", t, t, []);   // silence
+        if (!inCall || ending) finish("", t, t, []);
+      }, 250);
+      listen.cancel = () => finish("", now(), now(), []);
+      listen.cancelToTyped = () => { if (!vad.listening) return; vad.listening = false; vad.onEnd = null;
+        clearInterval(poll); if (interimBubble) interimBubble.remove(); resolve({ toTyped: true }); };
+    });
+  }
+
+  function typedTurn() {
+    return new Promise((resolve) => {
+      const input = $("typedInput"); input.value = ""; input.focus();
+      let start = null;
+      setStatus("Gõ câu trả lời rồi bấm Gửi");
+      input.oninput = () => { if (start === null) start = now(); };
+      const send = () => {
+        const text = input.value.trim(); if (!text) return;
+        $("typedSend").onclick = null; input.onkeydown = null;
+        const end = now();
+        resolve({ text, start: start ?? end - 2, end, pauses: [] });
+      };
+      $("typedSend").onclick = send;
+      input.onkeydown = (e) => { if (e.key === "Enter") send(); };
+      listen.cancel = () => resolve({ text: "", start: now(), end: now(), pauses: [] });
+    });
+  }
+
+  async function simulatedTurn() {
+    setStatus("Đang giả lập người nói…");
+    const line = await api(`/api/calls/${callId}/simulate`);
+    const b = bubble("elder", line.text, "sim");
+    const t = await speak(line.text, { rate: 0.85, pitch: 0.75 });
+    const pauses = line.pauses || [];
+    if (!t.spoken) {   // no audible TTS: model the utterance duration (~3.8 syllables/s + pauses)
+      const dur = words(line.text) / 3.8 + pauses.reduce((a, b) => a + b, 0);
+      const start = now() + 0.6;
+      clockOffset += dur + 0.6;
+      return { text: line.text, start, end: start + dur, pauses, bubble: b };
+    }
+    return { text: line.text, start: t.start, end: t.end, pauses, bubble: b };
+  }
+
+  // ------------------------------------------------------------------ call loop
+  async function startCall() {
+    inCall = true; ending = false; banner.style.display = "none"; $("result").style.display = "none";
+    captions.innerHTML = "";
+    big.textContent = "Kết thúc"; big.classList.add("stop");
+    if ("speechSynthesis" in window) speechSynthesis.cancel();
+    if (!vad.an && !simulate && !typedMode) {
+      const ok = navigator.mediaDevices && navigator.mediaDevices.getUserMedia ? await initMic() : false;
+      if (!ok) { typedMode = true; refreshButtons(); setStatus("Không mở được micro – xin gõ chữ"); }
+    }
+    if (vad.ctx && vad.ctx.state === "suspended") { try { await vad.ctx.resume(); } catch (e) {} }
+    t0 = performance.now(); clockOffset = 0;
+    let res;
+    try { res = await api("/api/calls", { method: "POST", body: JSON.stringify({ elder_id: ELDER, channel: "web", simulated: !!simulate }) }); }
+    catch (e) { setStatus("Không gọi được: " + e.message); resetButton(); inCall = false; return; }
+    callId = res.call_id;
+    bubble("agent", res.greeting_text);
+    setStatus("Út Thương đang nói…");
+    await speak(res.greeting_text);
+    while (inCall && !ending) {
+      let turn;
+      if (simulate) turn = await simulatedTurn();
+      else if (typedMode) turn = await typedTurn();
+      else turn = await listen();
+      if (!inCall || ending) break;
+      if (turn.toTyped) continue;          // speech recognition unavailable -> loop again in typed mode
+      if (!simulate && turn.text) bubble("elder", turn.text);
+      setStatus("Út Thương đang nghĩ…");
+      let r;
+      try {
+        r = await api(`/api/calls/${callId}/turns`, { method: "POST", body: JSON.stringify({
+          text: turn.text, start: +(turn.start ?? 0).toFixed(2), end: +(turn.end ?? 0).toFixed(2), pauses: turn.pauses || [] }) });
+      } catch (e) { setStatus("Mất kết nối: " + e.message); break; }
+      if (r.emergency) banner.style.display = "block";
+      if (r.reply_text) { bubble("agent", r.reply_text); setStatus("Út Thương đang nói…"); await speak(r.reply_text); }
+      if (r.end_call) break;
+    }
+    await endCall();
+  }
+
+  async function endCall() {
+    if (!callId || ending) return;
+    ending = true; inCall = false; vad.listening = false;
+    try { rec && rec.abort(); } catch (e) {}
+    if (listen.cancel) listen.cancel();
+    big.disabled = true; setStatus("Đang lưu kết quả (không lưu ghi âm)…");
+    try {
+      const r = await api(`/api/calls/${callId}/end`, { method: "POST" });
+      showResult(r);
+      setStatus("Cuộc gọi đã kết thúc. Cảm ơn " + honorific + "!");
+    } catch (e) { setStatus("Không lưu được: " + e.message); }
+    callId = null; resetButton();
+  }
+
+  const LIGHT_VI = { green: "Xanh – ổn định", yellow: "Vàng – nên hỏi thăm", red: "Đỏ – cần liên hệ ngay", gray: "Xám – chưa đủ dữ liệu" };
+  function showResult(r) {
+    const t = r.today || {}, m = r.metrics || {}, a = r.analysis || {};
+    const el = $("result"); el.style.display = "block"; el.innerHTML = "";
+    const h = document.createElement("div");
+    h.innerHTML = `<span class="dot" style="background:var(--${t.light || "gray"})"></span><b></b> <span class="tag"></span>`;
+    h.querySelector("b").textContent = `Ngày ${t.day ?? "?"}: ${LIGHT_VI[t.light] || t.light}`;
+    h.querySelector(".tag").textContent = t.simulated ? "Dữ liệu mô phỏng" : "Cuộc gọi thật";
+    const p1 = document.createElement("p"); p1.textContent = a.summary_vi || t.summary_vi || "";
+    const p2 = document.createElement("p"); p2.textContent = t.explanation_vi || "";
+    const mt = document.createElement("div"); mt.className = "metrics";
+    const f = (x, d) => (x === null || x === undefined) ? "–" : Number(x).toFixed(d);
+    mt.textContent = `Tốc độ nói ${f(m.speech_rate_sps, 2)} âm tiết/giây · Ngừng nghỉ ${f(m.pause_ratio, 2)} · ` +
+      `Từ đệm ${f(m.filled_pause_rate, 3)} · MATTR ${f(m.mattr, 2)} · Nhớ lại ${a.recall_score ?? "–"}/3 · ` +
+      `Thời lượng nói ${f(m.elder_speech_sec, 0)} giây` + (m.valid ? "" : " · (cuộc gọi quá ngắn để đo)");
+    el.append(h, p1, p2, mt);
+    // The result card shrinks the captions box: re-pin captions to the last line before scrolling the page.
+    requestAnimationFrame(() => { captions.scrollTop = captions.scrollHeight; el.scrollIntoView({ behavior: "smooth", block: "end" }); });
+  }
+  function resetButton() { big.disabled = false; big.classList.remove("stop"); big.textContent = captions.childElementCount ? "Gọi lại" : "Nghe"; }
+
+  big.addEventListener("click", () => { if (inCall) endCall(); else startCall(); });
+  $("simBtn").addEventListener("click", () => { simulate = !simulate; refreshButtons(); });
+  $("typeBtn").addEventListener("click", () => { if (SR && !sttBroken) { typedMode = !typedMode; refreshButtons(); } });
+
+  // ------------------------------------------------------------------ boot
+  refreshButtons();
+  api(`/api/elders/${ELDER}`).then((e) => {
+    elder = e; honorific = e.honorific || "bà";
+    $("who").textContent = e.display_name;
+    $("whosub").textContent = `${e.age} tuổi · ${e.province} · Út Thương – trợ lý ảo`;
+    if (e.opted_out) setStatus("Đã ngưng cuộc gọi theo yêu cầu. Gia đình có thể bật lại.");
+  }).catch(() => setStatus("Không tìm thấy hồ sơ “" + ELDER + "”"));
+})();
+</script>
+</body>
+</html>

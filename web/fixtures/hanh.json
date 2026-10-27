@@ -1,0 +1,4614 @@
+{
+ "profile": {
+  "id": "hanh",
+  "display_name": "Bà Hạnh",
+  "name_en": "Mrs Hanh",
+  "honorific": "bà",
+  "self_ref": "con",
+  "age": 72,
+  "province": "Bến Tre",
+  "dialect": "south",
+  "lives_alone": true,
+  "channel_pref": "pstn",
+  "conditions": [
+   "hypertension"
+  ],
+  "medications": [
+   {
+    "name": "Amlodipine 5mg",
+    "time": "07:00"
+   }
+  ],
+  "family": [
+   {
+    "id": "lan",
+    "name": "Lan",
+    "relation": "daughter",
+    "role": "primary"
+   },
+   {
+    "id": "minh",
+    "name": "Minh",
+    "relation": "son",
+    "role": "secondary"
+   }
+  ],
+  "goals": [
+   "Ngủ đủ 6 tiếng",
+   "Uống thuốc huyết áp đúng giờ",
+   "Giữ trí nhớ ổn định"
+  ],
+  "memory_facts": [
+   "Cây mai trước nhà sắp ra nụ",
+   "Con gái Lan làm ở TP.HCM",
+   "Thích nghe cải lương"
+  ],
+  "opted_out": false,
+  "simulated": true
+ },
+ "today": {
+  "date": "2026-11-19",
+  "day": 90,
+  "light": "green",
+  "reasons": [],
+  "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+  "explanation_en": "Today her speech, memory and mood are in line with her usual pattern.",
+  "summary_vi": "Bà làm bánh tét, kể chuyện chợ Giồng Trôm.",
+  "summary_en": "She made bánh tét rice cakes and talked about Giồng Trôm market.",
+  "answered": true,
+  "mood": 5,
+  "channel": "sim",
+  "simulated": true
+ },
+ "timeline": {
+  "records": [
+   {
+    "elder_id": "hanh",
+    "day": 1,
+    "date": "2026-08-22",
+    "channel": "sim",
+    "answered": true,
+    "valid": false,
+    "speech_rate_sps": null,
+    "pause_ratio": null,
+    "filled_pause_rate": null,
+    "mattr": null,
+    "recall_score": null,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Cuộc gọi ngắn, bà đang bận nấu cơm.",
+    "summary_en": "Short call - she was busy cooking.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 2,
+    "date": "2026-08-23",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.5444,
+    "pause_ratio": 0.1132,
+    "filled_pause_rate": 0.0419,
+    "mattr": 0.7182,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Bà kể chuyện hồi con gái còn nhỏ, nấu canh chua, ra vườn hái dừa.",
+    "summary_en": "She told stories about her daughter as a child, cooked sour soup and picked coconuts in the garden.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 3,
+    "date": "2026-08-24",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.3991,
+    "pause_ratio": 0.115,
+    "filled_pause_rate": 0.0467,
+    "mattr": 0.6983,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà nấu canh chua, kể chuyện hồi con gái còn nhỏ, ra vườn hái dừa.",
+    "summary_en": "She cooked sour soup, told stories about her daughter as a child and picked coconuts in the garden.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 4,
+    "date": "2026-08-25",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.8529,
+    "pause_ratio": 0.1022,
+    "filled_pause_rate": 0.0406,
+    "mattr": 0.7122,
+    "recall_score": 3,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Bà kể chuyện hồi con gái còn nhỏ, cho gà ăn.",
+    "summary_en": "She told stories about her daughter as a child and fed the chickens.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 5,
+    "date": "2026-08-26",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.5966,
+    "pause_ratio": 0.1279,
+    "filled_pause_rate": 0.0448,
+    "mattr": 0.7281,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà kể chuyện hồi con gái còn nhỏ, tưới cây mai trước nhà.",
+    "summary_en": "She told stories about her daughter as a child and watered the apricot-blossom tree.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 6,
+    "date": "2026-08-27",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7747,
+    "pause_ratio": 0.1145,
+    "filled_pause_rate": 0.0393,
+    "mattr": 0.7192,
+    "recall_score": 3,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Bà xem cải lương trên tivi, cho gà ăn, ngủ trưa một giấc.",
+    "summary_en": "She watched cải lương opera on TV, fed the chickens and took an afternoon nap.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 7,
+    "date": "2026-08-28",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.358,
+    "pause_ratio": 0.1073,
+    "filled_pause_rate": 0.0435,
+    "mattr": 0.7091,
+    "recall_score": 3,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Bà kể chuyện chợ Giồng Trôm, ngồi nói chuyện với bà Năm hàng xóm.",
+    "summary_en": "She talked about Giồng Trôm market and chatted with her neighbour Mrs Năm.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 8,
+    "date": "2026-08-29",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.4738,
+    "pause_ratio": 0.1218,
+    "filled_pause_rate": 0.0481,
+    "mattr": 0.7056,
+    "recall_score": 3,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Bà kể chuyện chợ Giồng Trôm, ra vườn hái dừa, nấu canh chua.",
+    "summary_en": "She talked about Giồng Trôm market, picked coconuts in the garden and cooked sour soup.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 9,
+    "date": "2026-08-30",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.647,
+    "pause_ratio": 0.1003,
+    "filled_pause_rate": 0.0406,
+    "mattr": 0.715,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà cho gà ăn, làm bánh tét, ra vườn hái dừa.",
+    "summary_en": "She fed the chickens, made bánh tét rice cakes and picked coconuts in the garden.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 10,
+    "date": "2026-08-31",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.4386,
+    "pause_ratio": 0.1139,
+    "filled_pause_rate": 0.0432,
+    "mattr": 0.7074,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà đi lễ chùa buổi sáng, ngồi nói chuyện với bà Năm hàng xóm, ngủ trưa một giấc.",
+    "summary_en": "She went to the pagoda in the morning, chatted with her neighbour Mrs Năm and took an afternoon nap.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 11,
+    "date": "2026-09-01",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7467,
+    "pause_ratio": 0.1097,
+    "filled_pause_rate": 0.045,
+    "mattr": 0.7054,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà ăn cháo cá, xem cải lương trên tivi.",
+    "summary_en": "She had fish porridge and watched cải lương opera on TV.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 12,
+    "date": "2026-09-02",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7212,
+    "pause_ratio": 0.1146,
+    "filled_pause_rate": 0.0451,
+    "mattr": 0.7008,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà xem cải lương trên tivi, kể chuyện hồi con gái còn nhỏ, nấu canh chua.",
+    "summary_en": "She watched cải lương opera on TV, told stories about her daughter as a child and cooked sour soup.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 13,
+    "date": "2026-09-03",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.5988,
+    "pause_ratio": 0.1105,
+    "filled_pause_rate": 0.0491,
+    "mattr": 0.7018,
+    "recall_score": null,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Bà kể chuyện chợ Giồng Trôm, nấu canh chua, tưới cây mai trước nhà.",
+    "summary_en": "She talked about Giồng Trôm market, cooked sour soup and watered the apricot-blossom tree.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 14,
+    "date": "2026-09-04",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.672,
+    "pause_ratio": 0.1163,
+    "filled_pause_rate": 0.0475,
+    "mattr": 0.7016,
+    "recall_score": 3,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Bà ngồi nói chuyện với bà Năm hàng xóm, làm bánh tét, ngủ trưa một giấc.",
+    "summary_en": "She chatted with her neighbour Mrs Năm, made bánh tét rice cakes and took an afternoon nap.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 15,
+    "date": "2026-09-05",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.729,
+    "pause_ratio": 0.1081,
+    "filled_pause_rate": 0.0542,
+    "mattr": 0.7203,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà ngồi nói chuyện với bà Năm hàng xóm, tưới cây mai trước nhà, xem cải lương trên tivi.",
+    "summary_en": "She chatted with her neighbour Mrs Năm, watered the apricot-blossom tree and watched cải lương opera on TV.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 16,
+    "date": "2026-09-06",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7183,
+    "pause_ratio": 0.1053,
+    "filled_pause_rate": 0.0536,
+    "mattr": 0.7182,
+    "recall_score": 2,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Bà tưới cây mai trước nhà, nấu canh chua, ăn cháo cá.",
+    "summary_en": "She watered the apricot-blossom tree, cooked sour soup and had fish porridge.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 17,
+    "date": "2026-09-07",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.4484,
+    "pause_ratio": 0.0925,
+    "filled_pause_rate": 0.0491,
+    "mattr": 0.7102,
+    "recall_score": null,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà ngồi nói chuyện với bà Năm hàng xóm, cho gà ăn.",
+    "summary_en": "She chatted with her neighbour Mrs Năm and fed the chickens.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 18,
+    "date": "2026-09-08",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.2454,
+    "pause_ratio": 0.1076,
+    "filled_pause_rate": 0.0348,
+    "mattr": 0.7119,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà làm bánh tét, cho gà ăn.",
+    "summary_en": "She made bánh tét rice cakes and fed the chickens.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 19,
+    "date": "2026-09-09",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.4857,
+    "pause_ratio": 0.1172,
+    "filled_pause_rate": 0.0545,
+    "mattr": 0.705,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà kể chuyện hồi con gái còn nhỏ, nấu canh chua, ngủ trưa một giấc.",
+    "summary_en": "She told stories about her daughter as a child, cooked sour soup and took an afternoon nap.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 20,
+    "date": "2026-09-10",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.5149,
+    "pause_ratio": 0.1136,
+    "filled_pause_rate": 0.0483,
+    "mattr": 0.6957,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà ngủ trưa một giấc, tưới cây mai trước nhà, kể chuyện chợ Giồng Trôm.",
+    "summary_en": "She took an afternoon nap, watered the apricot-blossom tree and talked about Giồng Trôm market.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 21,
+    "date": "2026-09-11",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.4751,
+    "pause_ratio": 0.1197,
+    "filled_pause_rate": 0.0487,
+    "mattr": 0.7218,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà ra vườn hái dừa, ngồi nói chuyện với bà Năm hàng xóm.",
+    "summary_en": "She picked coconuts in the garden and chatted with her neighbour Mrs Năm.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 22,
+    "date": "2026-09-12",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.4535,
+    "pause_ratio": 0.121,
+    "filled_pause_rate": 0.0438,
+    "mattr": 0.6883,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà tưới cây mai trước nhà, cho gà ăn, ngủ trưa một giấc.",
+    "summary_en": "She watered the apricot-blossom tree, fed the chickens and took an afternoon nap.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 23,
+    "date": "2026-09-13",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.567,
+    "pause_ratio": 0.1187,
+    "filled_pause_rate": 0.0409,
+    "mattr": 0.7205,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà ăn cháo cá, ngồi nói chuyện với bà Năm hàng xóm, ngủ trưa một giấc.",
+    "summary_en": "She had fish porridge, chatted with her neighbour Mrs Năm and took an afternoon nap.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 24,
+    "date": "2026-09-14",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.4214,
+    "pause_ratio": 0.1098,
+    "filled_pause_rate": 0.0478,
+    "mattr": 0.7077,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà xem cải lương trên tivi, kể chuyện chợ Giồng Trôm, kể chuyện hồi con gái còn nhỏ.",
+    "summary_en": "She watched cải lương opera on TV, talked about Giồng Trôm market and told stories about her daughter as a child.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 25,
+    "date": "2026-09-15",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.4315,
+    "pause_ratio": 0.1037,
+    "filled_pause_rate": 0.0546,
+    "mattr": 0.7181,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà xem cải lương trên tivi, làm bánh tét, ngồi nói chuyện với bà Năm hàng xóm.",
+    "summary_en": "She watched cải lương opera on TV, made bánh tét rice cakes and chatted with her neighbour Mrs Năm.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 26,
+    "date": "2026-09-16",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.8255,
+    "pause_ratio": 0.1156,
+    "filled_pause_rate": 0.048,
+    "mattr": 0.7267,
+    "recall_score": 3,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Bà ngủ trưa một giấc, kể chuyện hồi con gái còn nhỏ.",
+    "summary_en": "She took an afternoon nap and told stories about her daughter as a child.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 27,
+    "date": "2026-09-17",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7754,
+    "pause_ratio": 0.1202,
+    "filled_pause_rate": 0.0518,
+    "mattr": 0.7343,
+    "recall_score": 3,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Bà xem cải lương trên tivi, kể chuyện chợ Giồng Trôm, ra vườn hái dừa.",
+    "summary_en": "She watched cải lương opera on TV, talked about Giồng Trôm market and picked coconuts in the garden.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 28,
+    "date": "2026-09-18",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.656,
+    "pause_ratio": 0.114,
+    "filled_pause_rate": 0.0412,
+    "mattr": 0.7188,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà đi lễ chùa buổi sáng, ngủ trưa một giấc, ngồi nói chuyện với bà Năm hàng xóm.",
+    "summary_en": "She went to the pagoda in the morning, took an afternoon nap and chatted with her neighbour Mrs Năm.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 29,
+    "date": "2026-09-19",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.5435,
+    "pause_ratio": 0.1195,
+    "filled_pause_rate": 0.0461,
+    "mattr": 0.7082,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà đi lễ chùa buổi sáng, nấu canh chua.",
+    "summary_en": "She went to the pagoda in the morning and cooked sour soup.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 30,
+    "date": "2026-09-20",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.5738,
+    "pause_ratio": 0.1046,
+    "filled_pause_rate": 0.0386,
+    "mattr": 0.7148,
+    "recall_score": null,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà đi lễ chùa buổi sáng, nấu canh chua, ăn cháo cá.",
+    "summary_en": "She went to the pagoda in the morning, cooked sour soup and had fish porridge.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 31,
+    "date": "2026-09-21",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.3971,
+    "pause_ratio": 0.0985,
+    "filled_pause_rate": 0.0458,
+    "mattr": 0.6894,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà cho gà ăn, ngồi nói chuyện với bà Năm hàng xóm.",
+    "summary_en": "She fed the chickens and chatted with her neighbour Mrs Năm.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 32,
+    "date": "2026-09-22",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.3132,
+    "pause_ratio": 0.1126,
+    "filled_pause_rate": 0.0436,
+    "mattr": 0.7128,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà kể chuyện hồi con gái còn nhỏ, ngồi nói chuyện với bà Năm hàng xóm.",
+    "summary_en": "She told stories about her daughter as a child and chatted with her neighbour Mrs Năm.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 33,
+    "date": "2026-09-23",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.4684,
+    "pause_ratio": 0.1185,
+    "filled_pause_rate": 0.044,
+    "mattr": 0.6936,
+    "recall_score": 2,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Bà tưới cây mai trước nhà, ra vườn hái dừa, kể chuyện chợ Giồng Trôm.",
+    "summary_en": "She watered the apricot-blossom tree, picked coconuts in the garden and talked about Giồng Trôm market.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 34,
+    "date": "2026-09-24",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7015,
+    "pause_ratio": 0.1055,
+    "filled_pause_rate": 0.0478,
+    "mattr": 0.6995,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà kể chuyện chợ Giồng Trôm, làm bánh tét, ăn cháo cá.",
+    "summary_en": "She talked about Giồng Trôm market, made bánh tét rice cakes and had fish porridge.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 35,
+    "date": "2026-09-25",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.3475,
+    "pause_ratio": 0.111,
+    "filled_pause_rate": 0.055,
+    "mattr": 0.7006,
+    "recall_score": 3,
+    "mood": 3,
+    "symptoms": {
+     "dizziness": 1
+    },
+    "summary_vi": "Bà ngồi nói chuyện với bà Năm hàng xóm, ngủ trưa một giấc. Bà nói hơi chóng mặt khi đứng dậy.",
+    "summary_en": "She chatted with her neighbour Mrs Năm and took an afternoon nap. She mentioned feeling dizzy when standing up.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 36,
+    "date": "2026-09-26",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.2487,
+    "pause_ratio": 0.1247,
+    "filled_pause_rate": 0.046,
+    "mattr": 0.6883,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà kể chuyện chợ Giồng Trôm, đi lễ chùa buổi sáng.",
+    "summary_en": "She talked about Giồng Trôm market and went to the pagoda in the morning.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 37,
+    "date": "2026-09-27",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.2487,
+    "pause_ratio": 0.1553,
+    "filled_pause_rate": 0.0472,
+    "mattr": 0.711,
+    "recall_score": 2,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Bà tưới cây mai trước nhà, kể chuyện chợ Giồng Trôm.",
+    "summary_en": "She watered the apricot-blossom tree and talked about Giồng Trôm market.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 38,
+    "date": "2026-09-28",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 3.9922,
+    "pause_ratio": 0.1488,
+    "filled_pause_rate": 0.0612,
+    "mattr": 0.6991,
+    "recall_score": 2,
+    "mood": 3,
+    "symptoms": {
+     "dizziness": 1
+    },
+    "summary_vi": "Bà tưới cây mai trước nhà, xem cải lương trên tivi. Bà nói hơi chóng mặt khi đứng dậy.",
+    "summary_en": "She watered the apricot-blossom tree and watched cải lương opera on TV. She mentioned feeling dizzy when standing up.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 39,
+    "date": "2026-09-29",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 3.8419,
+    "pause_ratio": 0.152,
+    "filled_pause_rate": 0.058,
+    "mattr": 0.7028,
+    "recall_score": 2,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Bà ngủ trưa một giấc, ra vườn hái dừa.",
+    "summary_en": "She took an afternoon nap and picked coconuts in the garden.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 40,
+    "date": "2026-09-30",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 3.8557,
+    "pause_ratio": 0.1303,
+    "filled_pause_rate": 0.0682,
+    "mattr": 0.6962,
+    "recall_score": 2,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Bà xem cải lương trên tivi, ngủ trưa một giấc, ăn cháo cá.",
+    "summary_en": "She watched cải lương opera on TV, took an afternoon nap and had fish porridge.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 41,
+    "date": "2026-10-01",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 3.862,
+    "pause_ratio": 0.1446,
+    "filled_pause_rate": 0.0731,
+    "mattr": 0.6793,
+    "recall_score": 2,
+    "mood": 2,
+    "symptoms": {
+     "dizziness": 1,
+     "insomnia": 1
+    },
+    "summary_vi": "Bà tưới cây mai trước nhà, cho gà ăn. Bà nói hơi chóng mặt khi đứng dậy. Bà kể đêm qua khó ngủ. Giọng bà nghe hơi mệt.",
+    "summary_en": "She watered the apricot-blossom tree and fed the chickens. She mentioned feeling dizzy when standing up. She said she slept badly last night. She sounded a bit tired.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 42,
+    "date": "2026-10-02",
+    "channel": "sim",
+    "answered": false,
+    "valid": false,
+    "speech_rate_sps": null,
+    "pause_ratio": null,
+    "filled_pause_rate": null,
+    "mattr": null,
+    "recall_score": null,
+    "mood": null,
+    "symptoms": {},
+    "summary_vi": "Bà không bắt máy.",
+    "summary_en": "She did not answer the call.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 43,
+    "date": "2026-10-03",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 3.5365,
+    "pause_ratio": 0.1907,
+    "filled_pause_rate": 0.0718,
+    "mattr": 0.6935,
+    "recall_score": 3,
+    "mood": 3,
+    "symptoms": {
+     "dizziness": 1,
+     "skipped_meal": 1
+    },
+    "summary_vi": "Bà kể chuyện chợ Giồng Trôm, kể chuyện hồi con gái còn nhỏ. Bà nói hơi chóng mặt khi đứng dậy. Bà bỏ bữa trưa vì không thấy ngon miệng.",
+    "summary_en": "She talked about Giồng Trôm market and told stories about her daughter as a child. She mentioned feeling dizzy when standing up. She skipped lunch because of poor appetite.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 44,
+    "date": "2026-10-04",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 3.9737,
+    "pause_ratio": 0.1899,
+    "filled_pause_rate": 0.0691,
+    "mattr": 0.6714,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà ngồi nói chuyện với bà Năm hàng xóm, kể chuyện hồi con gái còn nhỏ.",
+    "summary_en": "She chatted with her neighbour Mrs Năm and told stories about her daughter as a child.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 45,
+    "date": "2026-10-05",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.0002,
+    "pause_ratio": 0.1718,
+    "filled_pause_rate": 0.0823,
+    "mattr": 0.6659,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà ngủ trưa một giấc, kể chuyện chợ Giồng Trôm.",
+    "summary_en": "She took an afternoon nap and talked about Giồng Trôm market.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 46,
+    "date": "2026-10-06",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 3.8509,
+    "pause_ratio": 0.1324,
+    "filled_pause_rate": 0.0629,
+    "mattr": 0.699,
+    "recall_score": 2,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Bà cho gà ăn, ngồi nói chuyện với bà Năm hàng xóm.",
+    "summary_en": "She fed the chickens and chatted with her neighbour Mrs Năm.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 47,
+    "date": "2026-10-07",
+    "channel": "sim",
+    "answered": true,
+    "valid": false,
+    "speech_rate_sps": null,
+    "pause_ratio": null,
+    "filled_pause_rate": null,
+    "mattr": null,
+    "recall_score": null,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Cuộc gọi ngắn, bà đang bận nấu cơm.",
+    "summary_en": "Short call - she was busy cooking.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 48,
+    "date": "2026-10-08",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.1212,
+    "pause_ratio": 0.1317,
+    "filled_pause_rate": 0.0596,
+    "mattr": 0.6931,
+    "recall_score": 2,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Bà tưới cây mai trước nhà, làm bánh tét.",
+    "summary_en": "She watered the apricot-blossom tree and made bánh tét rice cakes.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 49,
+    "date": "2026-10-09",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.3114,
+    "pause_ratio": 0.0968,
+    "filled_pause_rate": 0.052,
+    "mattr": 0.6788,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà ra vườn hái dừa, kể chuyện chợ Giồng Trôm, làm bánh tét.",
+    "summary_en": "She picked coconuts in the garden, talked about Giồng Trôm market and made bánh tét rice cakes.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 50,
+    "date": "2026-10-10",
+    "channel": "sim",
+    "answered": false,
+    "valid": false,
+    "speech_rate_sps": null,
+    "pause_ratio": null,
+    "filled_pause_rate": null,
+    "mattr": null,
+    "recall_score": null,
+    "mood": null,
+    "symptoms": {},
+    "summary_vi": "Bà không bắt máy.",
+    "summary_en": "She did not answer the call.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 51,
+    "date": "2026-10-11",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.8008,
+    "pause_ratio": 0.1085,
+    "filled_pause_rate": 0.0382,
+    "mattr": 0.7094,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Bà ngủ trưa một giấc, nấu canh chua.",
+    "summary_en": "She took an afternoon nap and cooked sour soup.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 52,
+    "date": "2026-10-12",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.4671,
+    "pause_ratio": 0.1056,
+    "filled_pause_rate": 0.0337,
+    "mattr": 0.6945,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà đi lễ chùa buổi sáng, ngồi nói chuyện với bà Năm hàng xóm, ăn cháo cá.",
+    "summary_en": "She went to the pagoda in the morning, chatted with her neighbour Mrs Năm and had fish porridge.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 53,
+    "date": "2026-10-13",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.6347,
+    "pause_ratio": 0.1176,
+    "filled_pause_rate": 0.0467,
+    "mattr": 0.7123,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà ra vườn hái dừa, đi lễ chùa buổi sáng, cho gà ăn.",
+    "summary_en": "She picked coconuts in the garden, went to the pagoda in the morning and fed the chickens.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 54,
+    "date": "2026-10-14",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.6764,
+    "pause_ratio": 0.1188,
+    "filled_pause_rate": 0.0527,
+    "mattr": 0.7011,
+    "recall_score": 3,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Bà cho gà ăn, ngủ trưa một giấc, đi lễ chùa buổi sáng.",
+    "summary_en": "She fed the chickens, took an afternoon nap and went to the pagoda in the morning.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 55,
+    "date": "2026-10-15",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.2582,
+    "pause_ratio": 0.1174,
+    "filled_pause_rate": 0.0468,
+    "mattr": 0.703,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà ngủ trưa một giấc, đi lễ chùa buổi sáng, tưới cây mai trước nhà.",
+    "summary_en": "She took an afternoon nap, went to the pagoda in the morning and watered the apricot-blossom tree.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 56,
+    "date": "2026-10-16",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.3502,
+    "pause_ratio": 0.1239,
+    "filled_pause_rate": 0.0565,
+    "mattr": 0.7097,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà kể chuyện chợ Giồng Trôm, nấu canh chua.",
+    "summary_en": "She talked about Giồng Trôm market and cooked sour soup.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 57,
+    "date": "2026-10-17",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.4757,
+    "pause_ratio": 0.1237,
+    "filled_pause_rate": 0.0598,
+    "mattr": 0.6922,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà ăn cháo cá, ngồi nói chuyện với bà Năm hàng xóm, cho gà ăn.",
+    "summary_en": "She had fish porridge, chatted with her neighbour Mrs Năm and fed the chickens.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 58,
+    "date": "2026-10-18",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.6425,
+    "pause_ratio": 0.1233,
+    "filled_pause_rate": 0.0512,
+    "mattr": 0.72,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà cho gà ăn, kể chuyện chợ Giồng Trôm.",
+    "summary_en": "She fed the chickens and talked about Giồng Trôm market.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 59,
+    "date": "2026-10-19",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.4648,
+    "pause_ratio": 0.1086,
+    "filled_pause_rate": 0.0481,
+    "mattr": 0.7035,
+    "recall_score": 2,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Bà ra vườn hái dừa, xem cải lương trên tivi.",
+    "summary_en": "She picked coconuts in the garden and watched cải lương opera on TV.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 60,
+    "date": "2026-10-20",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.493,
+    "pause_ratio": 0.1156,
+    "filled_pause_rate": 0.047,
+    "mattr": 0.699,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Bà tưới cây mai trước nhà, kể chuyện chợ Giồng Trôm.",
+    "summary_en": "She watered the apricot-blossom tree and talked about Giồng Trôm market.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 61,
+    "date": "2026-10-21",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.842,
+    "pause_ratio": 0.1086,
+    "filled_pause_rate": 0.0478,
+    "mattr": 0.7147,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà ăn cháo cá, ngủ trưa một giấc, làm bánh tét.",
+    "summary_en": "She had fish porridge, took an afternoon nap and made bánh tét rice cakes.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 62,
+    "date": "2026-10-22",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.996,
+    "pause_ratio": 0.1246,
+    "filled_pause_rate": 0.0426,
+    "mattr": 0.7177,
+    "recall_score": 3,
+    "mood": 3,
+    "symptoms": {
+     "pain": 1
+    },
+    "summary_vi": "Bà tưới cây mai trước nhà, kể chuyện chợ Giồng Trôm. Bà than đau lưng.",
+    "summary_en": "She watered the apricot-blossom tree and talked about Giồng Trôm market. She complained of back pain.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 63,
+    "date": "2026-10-23",
+    "channel": "sim",
+    "answered": true,
+    "valid": false,
+    "speech_rate_sps": null,
+    "pause_ratio": null,
+    "filled_pause_rate": null,
+    "mattr": null,
+    "recall_score": null,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Cuộc gọi ngắn, bà đang bận nấu cơm.",
+    "summary_en": "Short call - she was busy cooking.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 64,
+    "date": "2026-10-24",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.817,
+    "pause_ratio": 0.119,
+    "filled_pause_rate": 0.0439,
+    "mattr": 0.7126,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà làm bánh tét, ngồi nói chuyện với bà Năm hàng xóm.",
+    "summary_en": "She made bánh tét rice cakes and chatted with her neighbour Mrs Năm.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 65,
+    "date": "2026-10-25",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.5253,
+    "pause_ratio": 0.1176,
+    "filled_pause_rate": 0.0446,
+    "mattr": 0.7223,
+    "recall_score": null,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Bà cho gà ăn, ra vườn hái dừa, xem cải lương trên tivi.",
+    "summary_en": "She fed the chickens, picked coconuts in the garden and watched cải lương opera on TV.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 66,
+    "date": "2026-10-26",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.3903,
+    "pause_ratio": 0.1186,
+    "filled_pause_rate": 0.049,
+    "mattr": 0.7187,
+    "recall_score": null,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà đi lễ chùa buổi sáng, ăn cháo cá, ngủ trưa một giấc.",
+    "summary_en": "She went to the pagoda in the morning, had fish porridge and took an afternoon nap.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 67,
+    "date": "2026-10-27",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.5847,
+    "pause_ratio": 0.1101,
+    "filled_pause_rate": 0.0385,
+    "mattr": 0.7178,
+    "recall_score": null,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Bà ra vườn hái dừa, ăn cháo cá, ngồi nói chuyện với bà Năm hàng xóm.",
+    "summary_en": "She picked coconuts in the garden, had fish porridge and chatted with her neighbour Mrs Năm.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 68,
+    "date": "2026-10-28",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.6473,
+    "pause_ratio": 0.1106,
+    "filled_pause_rate": 0.0469,
+    "mattr": 0.6996,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà ngủ trưa một giấc, ăn cháo cá.",
+    "summary_en": "She took an afternoon nap and had fish porridge.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 69,
+    "date": "2026-10-29",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.4335,
+    "pause_ratio": 0.1112,
+    "filled_pause_rate": 0.0442,
+    "mattr": 0.7146,
+    "recall_score": 2,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Bà nấu canh chua, làm bánh tét, xem cải lương trên tivi.",
+    "summary_en": "She cooked sour soup, made bánh tét rice cakes and watched cải lương opera on TV.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 70,
+    "date": "2026-10-30",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.6792,
+    "pause_ratio": 0.1147,
+    "filled_pause_rate": 0.0491,
+    "mattr": 0.7222,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Bà làm bánh tét, xem cải lương trên tivi.",
+    "summary_en": "She made bánh tét rice cakes and watched cải lương opera on TV.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 71,
+    "date": "2026-10-31",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7869,
+    "pause_ratio": 0.1277,
+    "filled_pause_rate": 0.0413,
+    "mattr": 0.7205,
+    "recall_score": 3,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Bà làm bánh tét, ngủ trưa một giấc.",
+    "summary_en": "She made bánh tét rice cakes and took an afternoon nap.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 72,
+    "date": "2026-11-01",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.8679,
+    "pause_ratio": 0.1213,
+    "filled_pause_rate": 0.0442,
+    "mattr": 0.7364,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Bà cho gà ăn, kể chuyện chợ Giồng Trôm.",
+    "summary_en": "She fed the chickens and talked about Giồng Trôm market.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 73,
+    "date": "2026-11-02",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.6586,
+    "pause_ratio": 0.102,
+    "filled_pause_rate": 0.0372,
+    "mattr": 0.7149,
+    "recall_score": 3,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Bà cho gà ăn, ăn cháo cá, tưới cây mai trước nhà.",
+    "summary_en": "She fed the chickens, had fish porridge and watered the apricot-blossom tree.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 74,
+    "date": "2026-11-03",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.5903,
+    "pause_ratio": 0.0948,
+    "filled_pause_rate": 0.037,
+    "mattr": 0.702,
+    "recall_score": 3,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Bà ra vườn hái dừa, ngồi nói chuyện với bà Năm hàng xóm.",
+    "summary_en": "She picked coconuts in the garden and chatted with her neighbour Mrs Năm.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 75,
+    "date": "2026-11-04",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.8076,
+    "pause_ratio": 0.1035,
+    "filled_pause_rate": 0.0484,
+    "mattr": 0.6957,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà làm bánh tét, tưới cây mai trước nhà.",
+    "summary_en": "She made bánh tét rice cakes and watered the apricot-blossom tree.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 76,
+    "date": "2026-11-05",
+    "channel": "sim",
+    "answered": true,
+    "valid": false,
+    "speech_rate_sps": null,
+    "pause_ratio": null,
+    "filled_pause_rate": null,
+    "mattr": null,
+    "recall_score": null,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Cuộc gọi ngắn, bà đang bận nấu cơm.",
+    "summary_en": "Short call - she was busy cooking.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 77,
+    "date": "2026-11-06",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.5071,
+    "pause_ratio": 0.11,
+    "filled_pause_rate": 0.0458,
+    "mattr": 0.6901,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà tưới cây mai trước nhà, xem cải lương trên tivi, ngủ trưa một giấc.",
+    "summary_en": "She watered the apricot-blossom tree, watched cải lương opera on TV and took an afternoon nap.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 78,
+    "date": "2026-11-07",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.4467,
+    "pause_ratio": 0.1231,
+    "filled_pause_rate": 0.0508,
+    "mattr": 0.7085,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà ăn cháo cá, ngủ trưa một giấc, đi lễ chùa buổi sáng.",
+    "summary_en": "She had fish porridge, took an afternoon nap and went to the pagoda in the morning.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 79,
+    "date": "2026-11-08",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7336,
+    "pause_ratio": 0.1216,
+    "filled_pause_rate": 0.0557,
+    "mattr": 0.7119,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Bà ăn cháo cá, làm bánh tét, nấu canh chua.",
+    "summary_en": "She had fish porridge, made bánh tét rice cakes and cooked sour soup.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 80,
+    "date": "2026-11-09",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.6784,
+    "pause_ratio": 0.1274,
+    "filled_pause_rate": 0.0433,
+    "mattr": 0.7023,
+    "recall_score": null,
+    "mood": 4,
+    "symptoms": {
+     "dizziness": 1
+    },
+    "summary_vi": "Bà cho gà ăn, làm bánh tét. Bà nói hơi chóng mặt khi đứng dậy.",
+    "summary_en": "She fed the chickens and made bánh tét rice cakes. She mentioned feeling dizzy when standing up.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 81,
+    "date": "2026-11-10",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.5761,
+    "pause_ratio": 0.1187,
+    "filled_pause_rate": 0.032,
+    "mattr": 0.7051,
+    "recall_score": 2,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Bà đi lễ chùa buổi sáng, cho gà ăn, xem cải lương trên tivi.",
+    "summary_en": "She went to the pagoda in the morning, fed the chickens and watched cải lương opera on TV.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 82,
+    "date": "2026-11-11",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.641,
+    "pause_ratio": 0.1236,
+    "filled_pause_rate": 0.0513,
+    "mattr": 0.6919,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà ngủ trưa một giấc, tưới cây mai trước nhà.",
+    "summary_en": "She took an afternoon nap and watered the apricot-blossom tree.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 83,
+    "date": "2026-11-12",
+    "channel": "sim",
+    "answered": true,
+    "valid": false,
+    "speech_rate_sps": null,
+    "pause_ratio": null,
+    "filled_pause_rate": null,
+    "mattr": null,
+    "recall_score": null,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Cuộc gọi ngắn, bà đang bận nấu cơm.",
+    "summary_en": "Short call - she was busy cooking.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 84,
+    "date": "2026-11-13",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.6567,
+    "pause_ratio": 0.1123,
+    "filled_pause_rate": 0.0457,
+    "mattr": 0.7121,
+    "recall_score": 3,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Bà đi lễ chùa buổi sáng, kể chuyện chợ Giồng Trôm, nấu canh chua.",
+    "summary_en": "She went to the pagoda in the morning, talked about Giồng Trôm market and cooked sour soup.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 85,
+    "date": "2026-11-14",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.755,
+    "pause_ratio": 0.1333,
+    "filled_pause_rate": 0.0497,
+    "mattr": 0.7242,
+    "recall_score": 3,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Bà làm bánh tét, kể chuyện chợ Giồng Trôm, ăn cháo cá.",
+    "summary_en": "She made bánh tét rice cakes, talked about Giồng Trôm market and had fish porridge.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 86,
+    "date": "2026-11-15",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.8226,
+    "pause_ratio": 0.1338,
+    "filled_pause_rate": 0.0486,
+    "mattr": 0.7131,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà làm bánh tét, đi lễ chùa buổi sáng, kể chuyện hồi con gái còn nhỏ.",
+    "summary_en": "She made bánh tét rice cakes, went to the pagoda in the morning and told stories about her daughter as a child.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 87,
+    "date": "2026-11-16",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.6887,
+    "pause_ratio": 0.0989,
+    "filled_pause_rate": 0.0511,
+    "mattr": 0.7113,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà làm bánh tét, tưới cây mai trước nhà.",
+    "summary_en": "She made bánh tét rice cakes and watered the apricot-blossom tree.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 88,
+    "date": "2026-11-17",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7606,
+    "pause_ratio": 0.1134,
+    "filled_pause_rate": 0.0481,
+    "mattr": 0.6978,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà tưới cây mai trước nhà, làm bánh tét.",
+    "summary_en": "She watered the apricot-blossom tree and made bánh tét rice cakes.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 89,
+    "date": "2026-11-18",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7254,
+    "pause_ratio": 0.1001,
+    "filled_pause_rate": 0.03,
+    "mattr": 0.7137,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Bà ngồi nói chuyện với bà Năm hàng xóm, xem cải lương trên tivi.",
+    "summary_en": "She chatted with her neighbour Mrs Năm and watched cải lương opera on TV.",
+    "simulated": true
+   },
+   {
+    "elder_id": "hanh",
+    "day": 90,
+    "date": "2026-11-19",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.9467,
+    "pause_ratio": 0.1084,
+    "filled_pause_rate": 0.0406,
+    "mattr": 0.6828,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Bà làm bánh tét, kể chuyện chợ Giồng Trôm.",
+    "summary_en": "She made bánh tét rice cakes and talked about Giồng Trôm market.",
+    "simulated": true
+   }
+  ],
+  "lights": [
+   {
+    "elder_id": "hanh",
+    "day": 1,
+    "date": "2026-08-22",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 0,
+      "needed": 14,
+      "day_index": 1,
+      "window": 21
+     },
+     {
+      "code": "invalid_call"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của bà (0/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning her usual voice and routine (0/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 2,
+    "date": "2026-08-23",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 1,
+      "needed": 14,
+      "day_index": 2,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của bà (1/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning her usual voice and routine (1/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 3,
+    "date": "2026-08-24",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 2,
+      "needed": 14,
+      "day_index": 3,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của bà (2/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning her usual voice and routine (2/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 4,
+    "date": "2026-08-25",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 3,
+      "needed": 14,
+      "day_index": 4,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của bà (3/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning her usual voice and routine (3/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 5,
+    "date": "2026-08-26",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 4,
+      "needed": 14,
+      "day_index": 5,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của bà (4/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning her usual voice and routine (4/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 6,
+    "date": "2026-08-27",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 5,
+      "needed": 14,
+      "day_index": 6,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của bà (5/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning her usual voice and routine (5/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 7,
+    "date": "2026-08-28",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 6,
+      "needed": 14,
+      "day_index": 7,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của bà (6/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning her usual voice and routine (6/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 8,
+    "date": "2026-08-29",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 7,
+      "needed": 14,
+      "day_index": 8,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của bà (7/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning her usual voice and routine (7/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 9,
+    "date": "2026-08-30",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 8,
+      "needed": 14,
+      "day_index": 9,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của bà (8/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning her usual voice and routine (8/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 10,
+    "date": "2026-08-31",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 9,
+      "needed": 14,
+      "day_index": 10,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của bà (9/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning her usual voice and routine (9/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 11,
+    "date": "2026-09-01",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 10,
+      "needed": 14,
+      "day_index": 11,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của bà (10/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning her usual voice and routine (10/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 12,
+    "date": "2026-09-02",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 11,
+      "needed": 14,
+      "day_index": 12,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của bà (11/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning her usual voice and routine (11/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 13,
+    "date": "2026-09-03",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 12,
+      "needed": 14,
+      "day_index": 13,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của bà (12/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning her usual voice and routine (12/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 14,
+    "date": "2026-09-04",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 13,
+      "needed": 14,
+      "day_index": 14,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của bà (13/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning her usual voice and routine (13/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 15,
+    "date": "2026-09-05",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 14,
+      "needed": 14,
+      "day_index": 15,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của bà (14/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning her usual voice and routine (14/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 16,
+    "date": "2026-09-06",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 15,
+      "needed": 14,
+      "day_index": 16,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của bà (14/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning her usual voice and routine (14/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 17,
+    "date": "2026-09-07",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 16,
+      "needed": 14,
+      "day_index": 17,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của bà (14/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning her usual voice and routine (14/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 18,
+    "date": "2026-09-08",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 17,
+      "needed": 14,
+      "day_index": 18,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của bà (14/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning her usual voice and routine (14/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 19,
+    "date": "2026-09-09",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 18,
+      "needed": 14,
+      "day_index": 19,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của bà (14/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning her usual voice and routine (14/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 20,
+    "date": "2026-09-10",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 19,
+      "needed": 14,
+      "day_index": 20,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của bà (14/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning her usual voice and routine (14/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 21,
+    "date": "2026-09-11",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 20,
+      "needed": 14,
+      "day_index": 21,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của bà (14/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning her usual voice and routine (14/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 22,
+    "date": "2026-09-12",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.316,
+     "pause_ratio": 0.257,
+     "filled_pause_rate": -0.178,
+     "mattr": 0.904,
+     "recall_score": -0.334
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 23,
+    "date": "2026-09-13",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.23,
+     "pause_ratio": 0.36,
+     "filled_pause_rate": -0.548,
+     "mattr": 0.173,
+     "recall_score": 0.435
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 24,
+    "date": "2026-09-14",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.563,
+     "pause_ratio": 0.13,
+     "filled_pause_rate": -0.223,
+     "mattr": 0.204,
+     "recall_score": -0.03
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 25,
+    "date": "2026-09-15",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.769,
+     "pause_ratio": -0.238,
+     "filled_pause_rate": 0.581,
+     "mattr": -0.215,
+     "recall_score": -0.356
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 26,
+    "date": "2026-09-16",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.149,
+     "pause_ratio": -0.092,
+     "filled_pause_rate": 0.584,
+     "mattr": -0.872,
+     "recall_score": -0.583
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 27,
+    "date": "2026-09-17",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.657,
+     "pause_ratio": 0.166,
+     "filled_pause_rate": 0.908,
+     "mattr": -1.654,
+     "recall_score": -0.743
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 28,
+    "date": "2026-09-18",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.691,
+     "pause_ratio": 0.137,
+     "filled_pause_rate": 0.238,
+     "mattr": -1.545,
+     "recall_score": -0.854
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 29,
+    "date": "2026-09-19",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.411,
+     "pause_ratio": 0.302,
+     "filled_pause_rate": 0.184,
+     "mattr": -1.02,
+     "recall_score": -0.933
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 30,
+    "date": "2026-09-20",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.296,
+     "pause_ratio": -0.087,
+     "filled_pause_rate": -0.49,
+     "mattr": -0.932,
+     "recall_score": -0.933
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 31,
+    "date": "2026-09-21",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.26,
+     "pause_ratio": -0.565,
+     "filled_pause_rate": -0.351,
+     "mattr": 0.205,
+     "recall_score": -0.987
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 32,
+    "date": "2026-09-22",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.876,
+     "pause_ratio": -0.423,
+     "filled_pause_rate": -0.44,
+     "mattr": 0.01,
+     "recall_score": -1.026
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 33,
+    "date": "2026-09-23",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.889,
+     "pause_ratio": -0.123,
+     "filled_pause_rate": -0.469,
+     "mattr": 0.686,
+     "recall_score": -0.049
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 34,
+    "date": "2026-09-24",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.269,
+     "pause_ratio": -0.354,
+     "filled_pause_rate": -0.168,
+     "mattr": 0.91,
+     "recall_score": 0.635
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 35,
+    "date": "2026-09-25",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.79,
+     "pause_ratio": -0.329,
+     "filled_pause_rate": 0.653,
+     "mattr": 1.02,
+     "recall_score": 0.11
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 36,
+    "date": "2026-09-26",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 1.421,
+     "pause_ratio": 0.152,
+     "filled_pause_rate": 0.466,
+     "mattr": 1.618,
+     "recall_score": 0.746
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 37,
+    "date": "2026-09-27",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 1.863,
+     "pause_ratio": 1.526,
+     "filled_pause_rate": 0.436,
+     "mattr": 1.075,
+     "recall_score": 1.191
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 38,
+    "date": "2026-09-28",
+    "light": "yellow",
+    "reasons": [
+     {
+      "code": "symptom_repeat",
+      "symptom": "dizziness",
+      "quotes": 2,
+      "days": 7,
+      "level": "yellow"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": 2.864,
+     "pause_ratio": 2.267,
+     "filled_pause_rate": 1.6,
+     "mattr": 1.199,
+     "recall_score": 1.503
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Tuần này bà 2 lần nhắc chóng mặt. Nên gọi hỏi thăm bà trong hôm nay hoặc ngày mai.",
+    "explanation_en": "This week she mentioned dizziness 2 times. Consider giving her a call today or tomorrow."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 39,
+    "date": "2026-09-29",
+    "light": "yellow",
+    "reasons": [
+     {
+      "code": "symptom_repeat",
+      "symptom": "dizziness",
+      "quotes": 2,
+      "days": 7,
+      "level": "yellow"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": 3.97,
+     "pause_ratio": 2.894,
+     "filled_pause_rate": 2.145,
+     "mattr": 1.129,
+     "recall_score": 1.721
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Tuần này bà 2 lần nhắc chóng mặt. Nên gọi hỏi thăm bà trong hôm nay hoặc ngày mai.",
+    "explanation_en": "This week she mentioned dizziness 2 times. Consider giving her a call today or tomorrow."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 40,
+    "date": "2026-09-30",
+    "light": "yellow",
+    "reasons": [
+     {
+      "code": "metric_trend",
+      "metric": "speech_rate_sps",
+      "days": 3,
+      "change_pct": -8.6,
+      "z": 4.707,
+      "level": "yellow"
+     },
+     {
+      "code": "symptom_repeat",
+      "symptom": "dizziness",
+      "quotes": 2,
+      "days": 7,
+      "level": "yellow"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": 4.707,
+     "pause_ratio": 2.598,
+     "filled_pause_rate": 3.389,
+     "mattr": 1.36,
+     "recall_score": 1.873
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Khoảng một tuần nay bà nói chậm hơn khoảng 9% so với bình thường của bà và 2 lần nhắc chóng mặt. Nên gọi hỏi thăm bà trong hôm nay hoặc ngày mai.",
+    "explanation_en": "Over about a week she has been speaking slower (about 9% change) compared with her own usual pattern, and mentioned dizziness 2 times. Consider giving her a call today or tomorrow."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 41,
+    "date": "2026-10-01",
+    "light": "yellow",
+    "reasons": [
+     {
+      "code": "metric_trend",
+      "metric": "speech_rate_sps",
+      "days": 4,
+      "change_pct": -11.2,
+      "z": 5.207,
+      "level": "yellow"
+     },
+     {
+      "code": "metric_trend",
+      "metric": "pause_ratio",
+      "days": 3,
+      "change_pct": 21.8,
+      "z": 2.875,
+      "level": "yellow"
+     },
+     {
+      "code": "symptom_repeat",
+      "symptom": "dizziness",
+      "quotes": 3,
+      "days": 7,
+      "level": "yellow"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": 5.207,
+     "pause_ratio": 2.875,
+     "filled_pause_rate": 4.675,
+     "mattr": 2.237,
+     "recall_score": 1.98
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hai tuần nay bà nói chậm hơn khoảng 11% và ngập ngừng, ngừng nghỉ nhiều hơn khoảng 22% so với bình thường của bà và 3 lần nhắc chóng mặt. Nên gọi hỏi thăm bà trong hôm nay hoặc ngày mai.",
+    "explanation_en": "Over two weeks she has been speaking slower (about 11% change) and pausing more (about 22% change) compared with her own usual pattern, and mentioned dizziness 3 times. Consider giving her a call today or tomorrow."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 42,
+    "date": "2026-10-02",
+    "light": "yellow",
+    "reasons": [
+     {
+      "code": "metric_trend",
+      "metric": "speech_rate_sps",
+      "days": 4,
+      "change_pct": -11.2,
+      "z": 5.207,
+      "level": "yellow"
+     },
+     {
+      "code": "metric_trend",
+      "metric": "pause_ratio",
+      "days": 3,
+      "change_pct": 21.8,
+      "z": 2.875,
+      "level": "yellow"
+     },
+     {
+      "code": "symptom_repeat",
+      "symptom": "dizziness",
+      "quotes": 2,
+      "days": 7,
+      "level": "yellow"
+     },
+     {
+      "code": "missed_call"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": 5.207,
+     "pause_ratio": 2.875,
+     "filled_pause_rate": 4.675,
+     "mattr": 2.237,
+     "recall_score": 1.98
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hai tuần nay bà nói chậm hơn khoảng 11% và ngập ngừng, ngừng nghỉ nhiều hơn khoảng 22% so với bình thường của bà và 2 lần nhắc chóng mặt. Nên gọi hỏi thăm bà trong hôm nay hoặc ngày mai.",
+    "explanation_en": "Over two weeks she has been speaking slower (about 11% change) and pausing more (about 22% change) compared with her own usual pattern, and mentioned dizziness 2 times. Consider giving her a call today or tomorrow."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 43,
+    "date": "2026-10-03",
+    "light": "red",
+    "reasons": [
+     {
+      "code": "metric_trend",
+      "metric": "speech_rate_sps",
+      "days": 5,
+      "change_pct": -13.8,
+      "z": 6.434,
+      "level": "yellow"
+     },
+     {
+      "code": "metric_trend",
+      "metric": "pause_ratio",
+      "days": 4,
+      "change_pct": 31.8,
+      "z": 4.63,
+      "level": "yellow"
+     },
+     {
+      "code": "metric_trend",
+      "metric": "filled_pause_rate",
+      "days": 3,
+      "change_pct": 32.4,
+      "z": 5.465,
+      "level": "yellow"
+     },
+     {
+      "code": "multi_symptom",
+      "symptoms": [
+       "dizziness",
+       "insomnia",
+       "skipped_meal"
+      ],
+      "count": 3,
+      "quotes": 5,
+      "days": 7,
+      "level": "red"
+     },
+     {
+      "code": "symptom_repeat",
+      "symptom": "dizziness",
+      "quotes": 3,
+      "days": 7,
+      "level": "yellow"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": 6.434,
+     "pause_ratio": 4.63,
+     "filled_pause_rate": 5.465,
+     "mattr": 2.249,
+     "recall_score": 1.052
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hai tuần nay bà nói chậm hơn khoảng 14% và hay “ờ, à” nhiều hơn khoảng 32% so với bình thường của bà và 3 lần nhắc chóng mặt. Trong 7 ngày qua bà nhắc tới 3 chuyện sức khỏe: chóng mặt, mất ngủ, bỏ bữa. Nên gọi hỏi thăm và cân nhắc đưa bà đi khám.",
+    "explanation_en": "Over two weeks she has been speaking slower (about 14% change) and using more fillers (“uh, um”) (about 32% change) compared with her own usual pattern, and mentioned dizziness 3 times. In the last 7 days she mentioned 3 different health complaints: dizziness, poor sleep, skipped meals. Please call her and consider arranging a doctor's visit."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 44,
+    "date": "2026-10-04",
+    "light": "red",
+    "reasons": [
+     {
+      "code": "multi_metric",
+      "metrics": [
+       "speech_rate_sps",
+       "pause_ratio"
+      ],
+      "days": 5,
+      "level": "red",
+      "details": [
+       {
+        "metric": "speech_rate_sps",
+        "days": 6,
+        "change_pct": -14.6
+       },
+       {
+        "metric": "pause_ratio",
+        "days": 5,
+        "change_pct": 40
+       }
+      ]
+     },
+     {
+      "code": "metric_shift",
+      "metric": "speech_rate_sps",
+      "days": 5,
+      "change_pct": -14.6,
+      "z": 6.114,
+      "level": "red"
+     },
+     {
+      "code": "metric_trend",
+      "metric": "pause_ratio",
+      "days": 5,
+      "change_pct": 40,
+      "z": 5.832,
+      "level": "yellow"
+     },
+     {
+      "code": "metric_trend",
+      "metric": "filled_pause_rate",
+      "days": 4,
+      "change_pct": 39.6,
+      "z": 5.79,
+      "level": "yellow"
+     },
+     {
+      "code": "multi_symptom",
+      "symptoms": [
+       "dizziness",
+       "insomnia",
+       "skipped_meal"
+      ],
+      "count": 3,
+      "quotes": 5,
+      "days": 7,
+      "level": "red"
+     },
+     {
+      "code": "symptom_repeat",
+      "symptom": "dizziness",
+      "quotes": 3,
+      "days": 7,
+      "level": "yellow"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": 6.114,
+     "pause_ratio": 5.832,
+     "filled_pause_rate": 5.79,
+     "mattr": 3.194,
+     "recall_score": 1.405
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hai tuần nay bà nói chậm hơn khoảng 15% và ngập ngừng, ngừng nghỉ nhiều hơn khoảng 40% so với bình thường của bà và 3 lần nhắc chóng mặt. Trong 7 ngày qua bà nhắc tới 3 chuyện sức khỏe: chóng mặt, mất ngủ, bỏ bữa. Nên gọi hỏi thăm và cân nhắc đưa bà đi khám.",
+    "explanation_en": "Over two weeks she has been speaking slower (about 15% change) and pausing more (about 40% change) compared with her own usual pattern, and mentioned dizziness 3 times. In the last 7 days she mentioned 3 different health complaints: dizziness, poor sleep, skipped meals. Please call her and consider arranging a doctor's visit."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 45,
+    "date": "2026-10-05",
+    "light": "red",
+    "reasons": [
+     {
+      "code": "multi_metric",
+      "metrics": [
+       "speech_rate_sps",
+       "pause_ratio",
+       "filled_pause_rate"
+      ],
+      "days": 5,
+      "level": "red",
+      "details": [
+       {
+        "metric": "speech_rate_sps",
+        "days": 7,
+        "change_pct": -15.4
+       },
+       {
+        "metric": "pause_ratio",
+        "days": 6,
+        "change_pct": 42.1
+       },
+       {
+        "metric": "filled_pause_rate",
+        "days": 5,
+        "change_pct": 50.5
+       }
+      ]
+     },
+     {
+      "code": "metric_shift",
+      "metric": "speech_rate_sps",
+      "days": 6,
+      "change_pct": -15.4,
+      "z": 5.818,
+      "level": "red"
+     },
+     {
+      "code": "metric_trend",
+      "metric": "pause_ratio",
+      "days": 6,
+      "change_pct": 42.1,
+      "z": 6.06,
+      "level": "yellow"
+     },
+     {
+      "code": "metric_trend",
+      "metric": "filled_pause_rate",
+      "days": 5,
+      "change_pct": 50.5,
+      "z": 7.134,
+      "level": "yellow"
+     },
+     {
+      "code": "multi_symptom",
+      "symptoms": [
+       "dizziness",
+       "insomnia",
+       "skipped_meal"
+      ],
+      "count": 3,
+      "quotes": 4,
+      "days": 7,
+      "level": "red"
+     },
+     {
+      "code": "symptom_repeat",
+      "symptom": "dizziness",
+      "quotes": 2,
+      "days": 7,
+      "level": "yellow"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": 5.818,
+     "pause_ratio": 6.06,
+     "filled_pause_rate": 7.134,
+     "mattr": 4.087,
+     "recall_score": 1.653
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hai tuần nay bà nói chậm hơn khoảng 15% và hay “ờ, à” nhiều hơn khoảng 50% so với bình thường của bà và 2 lần nhắc chóng mặt. Trong 7 ngày qua bà nhắc tới 3 chuyện sức khỏe: chóng mặt, mất ngủ, bỏ bữa. Nên gọi hỏi thăm và cân nhắc đưa bà đi khám.",
+    "explanation_en": "Over two weeks she has been speaking slower (about 15% change) and using more fillers (“uh, um”) (about 50% change) compared with her own usual pattern, and mentioned dizziness 2 times. In the last 7 days she mentioned 3 different health complaints: dizziness, poor sleep, skipped meals. Please call her and consider arranging a doctor's visit."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 46,
+    "date": "2026-10-06",
+    "light": "red",
+    "reasons": [
+     {
+      "code": "multi_metric",
+      "metrics": [
+       "speech_rate_sps",
+       "pause_ratio",
+       "filled_pause_rate"
+      ],
+      "days": 6,
+      "level": "red",
+      "details": [
+       {
+        "metric": "speech_rate_sps",
+        "days": 8,
+        "change_pct": -15.9
+       },
+       {
+        "metric": "pause_ratio",
+        "days": 7,
+        "change_pct": 40
+       },
+       {
+        "metric": "filled_pause_rate",
+        "days": 6,
+        "change_pct": 51.1
+       }
+      ]
+     },
+     {
+      "code": "metric_shift",
+      "metric": "speech_rate_sps",
+      "days": 7,
+      "change_pct": -15.9,
+      "z": 6.014,
+      "level": "red"
+     },
+     {
+      "code": "metric_trend",
+      "metric": "pause_ratio",
+      "days": 7,
+      "change_pct": 40,
+      "z": 4.885,
+      "level": "yellow"
+     },
+     {
+      "code": "metric_shift",
+      "metric": "filled_pause_rate",
+      "days": 5,
+      "change_pct": 51.1,
+      "z": 6.433,
+      "level": "red"
+     },
+     {
+      "code": "metric_trend",
+      "metric": "mattr",
+      "days": 3,
+      "change_pct": -3.2,
+      "z": 3.312,
+      "level": "yellow"
+     },
+     {
+      "code": "multi_symptom",
+      "symptoms": [
+       "dizziness",
+       "insomnia",
+       "skipped_meal"
+      ],
+      "count": 3,
+      "quotes": 4,
+      "days": 7,
+      "level": "red"
+     },
+     {
+      "code": "symptom_repeat",
+      "symptom": "dizziness",
+      "quotes": 2,
+      "days": 7,
+      "level": "yellow"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": 6.014,
+     "pause_ratio": 4.885,
+     "filled_pause_rate": 6.433,
+     "mattr": 3.312,
+     "recall_score": 1.826
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hai tuần nay bà nói chậm hơn khoảng 16% và hay “ờ, à” nhiều hơn khoảng 51% so với bình thường của bà và 2 lần nhắc chóng mặt. Trong 7 ngày qua bà nhắc tới 3 chuyện sức khỏe: chóng mặt, mất ngủ, bỏ bữa. Nên gọi hỏi thăm và cân nhắc đưa bà đi khám.",
+    "explanation_en": "Over two weeks she has been speaking slower (about 16% change) and using more fillers (“uh, um”) (about 51% change) compared with her own usual pattern, and mentioned dizziness 2 times. In the last 7 days she mentioned 3 different health complaints: dizziness, poor sleep, skipped meals. Please call her and consider arranging a doctor's visit."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 47,
+    "date": "2026-10-07",
+    "light": "red",
+    "reasons": [
+     {
+      "code": "multi_metric",
+      "metrics": [
+       "speech_rate_sps",
+       "pause_ratio",
+       "filled_pause_rate"
+      ],
+      "days": 6,
+      "level": "red",
+      "details": [
+       {
+        "metric": "speech_rate_sps",
+        "days": 8,
+        "change_pct": -15.9
+       },
+       {
+        "metric": "pause_ratio",
+        "days": 7,
+        "change_pct": 40
+       },
+       {
+        "metric": "filled_pause_rate",
+        "days": 6,
+        "change_pct": 51.1
+       }
+      ]
+     },
+     {
+      "code": "metric_shift",
+      "metric": "speech_rate_sps",
+      "days": 7,
+      "change_pct": -15.9,
+      "z": 6.014,
+      "level": "red"
+     },
+     {
+      "code": "metric_trend",
+      "metric": "pause_ratio",
+      "days": 7,
+      "change_pct": 40,
+      "z": 4.885,
+      "level": "yellow"
+     },
+     {
+      "code": "metric_shift",
+      "metric": "filled_pause_rate",
+      "days": 5,
+      "change_pct": 51.1,
+      "z": 6.433,
+      "level": "red"
+     },
+     {
+      "code": "metric_trend",
+      "metric": "mattr",
+      "days": 3,
+      "change_pct": -3.2,
+      "z": 3.312,
+      "level": "yellow"
+     },
+     {
+      "code": "multi_symptom",
+      "symptoms": [
+       "dizziness",
+       "insomnia",
+       "skipped_meal"
+      ],
+      "count": 3,
+      "quotes": 4,
+      "days": 7,
+      "level": "red"
+     },
+     {
+      "code": "symptom_repeat",
+      "symptom": "dizziness",
+      "quotes": 2,
+      "days": 7,
+      "level": "yellow"
+     },
+     {
+      "code": "invalid_call"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": 6.014,
+     "pause_ratio": 4.885,
+     "filled_pause_rate": 6.433,
+     "mattr": 3.312,
+     "recall_score": 1.826
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hai tuần nay bà nói chậm hơn khoảng 16% và hay “ờ, à” nhiều hơn khoảng 51% so với bình thường của bà và 2 lần nhắc chóng mặt. Trong 7 ngày qua bà nhắc tới 3 chuyện sức khỏe: chóng mặt, mất ngủ, bỏ bữa. Nên gọi hỏi thăm và cân nhắc đưa bà đi khám.",
+    "explanation_en": "Over two weeks she has been speaking slower (about 16% change) and using more fillers (“uh, um”) (about 51% change) compared with her own usual pattern, and mentioned dizziness 2 times. In the last 7 days she mentioned 3 different health complaints: dizziness, poor sleep, skipped meals. Please call her and consider arranging a doctor's visit."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 48,
+    "date": "2026-10-08",
+    "light": "red",
+    "reasons": [
+     {
+      "code": "multi_metric",
+      "metrics": [
+       "speech_rate_sps",
+       "pause_ratio",
+       "filled_pause_rate"
+      ],
+      "days": 7,
+      "level": "red",
+      "details": [
+       {
+        "metric": "speech_rate_sps",
+        "days": 9,
+        "change_pct": -15
+       },
+       {
+        "metric": "pause_ratio",
+        "days": 8,
+        "change_pct": 37.5
+       },
+       {
+        "metric": "filled_pause_rate",
+        "days": 7,
+        "change_pct": 51.6
+       }
+      ]
+     },
+     {
+      "code": "metric_shift",
+      "metric": "speech_rate_sps",
+      "days": 8,
+      "change_pct": -15,
+      "z": 5.422,
+      "level": "red"
+     },
+     {
+      "code": "metric_shift",
+      "metric": "pause_ratio",
+      "days": 5,
+      "change_pct": 37.5,
+      "z": 4.039,
+      "level": "red"
+     },
+     {
+      "code": "metric_shift",
+      "metric": "filled_pause_rate",
+      "days": 6,
+      "change_pct": 51.6,
+      "z": 5.663,
+      "level": "red"
+     },
+     {
+      "code": "metric_trend",
+      "metric": "mattr",
+      "days": 4,
+      "change_pct": -3.4,
+      "z": 3.019,
+      "level": "yellow"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": 5.422,
+     "pause_ratio": 4.039,
+     "filled_pause_rate": 5.663,
+     "mattr": 3.019,
+     "recall_score": 1.947
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hai tuần nay bà nói chậm hơn khoảng 15% và hay “ờ, à” nhiều hơn khoảng 52% so với bình thường của bà. Nên gọi hỏi thăm và cân nhắc đưa bà đi khám.",
+    "explanation_en": "Over two weeks she has been speaking slower (about 15% change) and using more fillers (“uh, um”) (about 52% change) compared with her own usual pattern. Please call her and consider arranging a doctor's visit."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 49,
+    "date": "2026-10-09",
+    "light": "red",
+    "reasons": [
+     {
+      "code": "multi_metric",
+      "metrics": [
+       "speech_rate_sps",
+       "filled_pause_rate",
+       "mattr"
+      ],
+      "days": 5,
+      "level": "red",
+      "details": [
+       {
+        "metric": "speech_rate_sps",
+        "days": 10,
+        "change_pct": -13.6
+       },
+       {
+        "metric": "filled_pause_rate",
+        "days": 8,
+        "change_pct": 46.5
+       },
+       {
+        "metric": "mattr",
+        "days": 5,
+        "change_pct": -3.8
+       }
+      ]
+     },
+     {
+      "code": "metric_shift",
+      "metric": "speech_rate_sps",
+      "days": 9,
+      "change_pct": -13.6,
+      "z": 4.494,
+      "level": "red"
+     },
+     {
+      "code": "metric_shift",
+      "metric": "filled_pause_rate",
+      "days": 7,
+      "change_pct": 46.5,
+      "z": 4.481,
+      "level": "red"
+     },
+     {
+      "code": "metric_trend",
+      "metric": "mattr",
+      "days": 5,
+      "change_pct": -3.8,
+      "z": 3.419,
+      "level": "yellow"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": 4.494,
+     "pause_ratio": 2.265,
+     "filled_pause_rate": 4.481,
+     "mattr": 3.419,
+     "recall_score": 1.028
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hai tuần nay bà nói chậm hơn khoảng 14% và hay “ờ, à” nhiều hơn khoảng 46% so với bình thường của bà. Nên gọi hỏi thăm và cân nhắc đưa bà đi khám.",
+    "explanation_en": "Over two weeks she has been speaking slower (about 14% change) and using more fillers (“uh, um”) (about 46% change) compared with her own usual pattern. Please call her and consider arranging a doctor's visit."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 50,
+    "date": "2026-10-10",
+    "light": "red",
+    "reasons": [
+     {
+      "code": "multi_metric",
+      "metrics": [
+       "speech_rate_sps",
+       "filled_pause_rate",
+       "mattr"
+      ],
+      "days": 5,
+      "level": "red",
+      "details": [
+       {
+        "metric": "speech_rate_sps",
+        "days": 10,
+        "change_pct": -13.6
+       },
+       {
+        "metric": "filled_pause_rate",
+        "days": 8,
+        "change_pct": 46.5
+       },
+       {
+        "metric": "mattr",
+        "days": 5,
+        "change_pct": -3.8
+       }
+      ]
+     },
+     {
+      "code": "metric_shift",
+      "metric": "speech_rate_sps",
+      "days": 9,
+      "change_pct": -13.6,
+      "z": 4.494,
+      "level": "red"
+     },
+     {
+      "code": "metric_shift",
+      "metric": "filled_pause_rate",
+      "days": 7,
+      "change_pct": 46.5,
+      "z": 4.481,
+      "level": "red"
+     },
+     {
+      "code": "metric_trend",
+      "metric": "mattr",
+      "days": 5,
+      "change_pct": -3.8,
+      "z": 3.419,
+      "level": "yellow"
+     },
+     {
+      "code": "missed_call"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": 4.494,
+     "pause_ratio": 2.265,
+     "filled_pause_rate": 4.481,
+     "mattr": 3.419,
+     "recall_score": 1.028
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hai tuần nay bà nói chậm hơn khoảng 14% và hay “ờ, à” nhiều hơn khoảng 46% so với bình thường của bà. Nên gọi hỏi thăm và cân nhắc đưa bà đi khám.",
+    "explanation_en": "Over two weeks she has been speaking slower (about 14% change) and using more fillers (“uh, um”) (about 46% change) compared with her own usual pattern. Please call her and consider arranging a doctor's visit."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 51,
+    "date": "2026-10-11",
+    "light": "red",
+    "reasons": [
+     {
+      "code": "multi_metric",
+      "metrics": [
+       "speech_rate_sps",
+       "filled_pause_rate",
+       "mattr"
+      ],
+      "days": 5,
+      "level": "red",
+      "details": [
+       {
+        "metric": "speech_rate_sps",
+        "days": 10,
+        "change_pct": -13.6
+       },
+       {
+        "metric": "filled_pause_rate",
+        "days": 8,
+        "change_pct": 46.5
+       },
+       {
+        "metric": "mattr",
+        "days": 5,
+        "change_pct": -3.8
+       }
+      ]
+     },
+     {
+      "code": "metric_shift",
+      "metric": "speech_rate_sps",
+      "days": 9,
+      "change_pct": -13.6,
+      "z": 4.494,
+      "level": "red"
+     },
+     {
+      "code": "metric_shift",
+      "metric": "filled_pause_rate",
+      "days": 7,
+      "change_pct": 46.5,
+      "z": 4.481,
+      "level": "red"
+     },
+     {
+      "code": "metric_trend",
+      "metric": "mattr",
+      "days": 5,
+      "change_pct": -3.8,
+      "z": 3.419,
+      "level": "yellow"
+     },
+     {
+      "code": "metric_trend",
+      "metric": "speech_rate_sps",
+      "days": 11,
+      "change_pct": -10.6,
+      "z": 2.525,
+      "level": "yellow"
+     },
+     {
+      "code": "recovering",
+      "days": 1,
+      "needed": 3
+     }
+    ],
+    "z": {
+     "speech_rate_sps": 2.525,
+     "pause_ratio": 1.42,
+     "filled_pause_rate": 2.485,
+     "mattr": 2.404,
+     "recall_score": 0.385
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Mấy tuần nay bà nói chậm hơn khoảng 11% và hay “ờ, à” nhiều hơn khoảng 46% so với bình thường của bà. Đã có 1 ngày khá hơn, Chào Bà đang theo dõi thêm. Nên gọi hỏi thăm và cân nhắc đưa bà đi khám.",
+    "explanation_en": "Over several weeks she has been speaking slower (about 11% change) and using more fillers (“uh, um”) (about 46% change) compared with her own usual pattern. 1 better day(s) so far; still watching before lowering the light. Please call her and consider arranging a doctor's visit."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 52,
+    "date": "2026-10-12",
+    "light": "red",
+    "reasons": [
+     {
+      "code": "multi_metric",
+      "metrics": [
+       "speech_rate_sps",
+       "filled_pause_rate",
+       "mattr"
+      ],
+      "days": 5,
+      "level": "red",
+      "details": [
+       {
+        "metric": "speech_rate_sps",
+        "days": 10,
+        "change_pct": -13.6
+       },
+       {
+        "metric": "filled_pause_rate",
+        "days": 8,
+        "change_pct": 46.5
+       },
+       {
+        "metric": "mattr",
+        "days": 5,
+        "change_pct": -3.8
+       }
+      ]
+     },
+     {
+      "code": "metric_shift",
+      "metric": "speech_rate_sps",
+      "days": 9,
+      "change_pct": -13.6,
+      "z": 4.494,
+      "level": "red"
+     },
+     {
+      "code": "metric_shift",
+      "metric": "filled_pause_rate",
+      "days": 7,
+      "change_pct": 46.5,
+      "z": 4.481,
+      "level": "red"
+     },
+     {
+      "code": "metric_trend",
+      "metric": "mattr",
+      "days": 5,
+      "change_pct": -3.8,
+      "z": 3.419,
+      "level": "yellow"
+     },
+     {
+      "code": "recovering",
+      "days": 2,
+      "needed": 3
+     }
+    ],
+    "z": {
+     "speech_rate_sps": 2.046,
+     "pause_ratio": 0.73,
+     "filled_pause_rate": 0.706,
+     "mattr": 2.324,
+     "recall_score": -0.065
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hai tuần nay bà nói chậm hơn khoảng 14% và hay “ờ, à” nhiều hơn khoảng 46% so với bình thường của bà. Đã có 2 ngày khá hơn, Chào Bà đang theo dõi thêm. Nên gọi hỏi thăm và cân nhắc đưa bà đi khám.",
+    "explanation_en": "Over two weeks she has been speaking slower (about 14% change) and using more fillers (“uh, um”) (about 46% change) compared with her own usual pattern. 2 better day(s) so far; still watching before lowering the light. Please call her and consider arranging a doctor's visit."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 53,
+    "date": "2026-10-13",
+    "light": "yellow",
+    "reasons": [
+     {
+      "code": "metric_trend",
+      "metric": "speech_rate_sps",
+      "days": 11,
+      "change_pct": -10.6,
+      "z": 2.525,
+      "level": "yellow"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": 1.259,
+     "pause_ratio": 0.653,
+     "filled_pause_rate": 0.562,
+     "mattr": 1.515,
+     "recall_score": 0.624
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Mấy tuần nay bà nói chậm hơn khoảng 11% so với bình thường của bà. Nên gọi hỏi thăm bà trong hôm nay hoặc ngày mai.",
+    "explanation_en": "Over several weeks she has been speaking slower (about 11% change) compared with her own usual pattern. Consider giving her a call today or tomorrow."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 54,
+    "date": "2026-10-14",
+    "light": "yellow",
+    "reasons": [
+     {
+      "code": "metric_trend",
+      "metric": "speech_rate_sps",
+      "days": 11,
+      "change_pct": -10.6,
+      "z": 2.525,
+      "level": "yellow"
+     },
+     {
+      "code": "recovering",
+      "days": 1,
+      "needed": 3
+     }
+    ],
+    "z": {
+     "speech_rate_sps": 0.596,
+     "pause_ratio": 0.64,
+     "filled_pause_rate": 0.969,
+     "mattr": 1.422,
+     "recall_score": 0.102
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Mấy tuần nay bà nói chậm hơn khoảng 11% so với bình thường của bà. Đã có 1 ngày khá hơn, Chào Bà đang theo dõi thêm. Nên gọi hỏi thăm bà trong hôm nay hoặc ngày mai.",
+    "explanation_en": "Over several weeks she has been speaking slower (about 11% change) compared with her own usual pattern. 1 better day(s) so far; still watching before lowering the light. Consider giving her a call today or tomorrow."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 55,
+    "date": "2026-10-15",
+    "light": "yellow",
+    "reasons": [
+     {
+      "code": "metric_trend",
+      "metric": "speech_rate_sps",
+      "days": 11,
+      "change_pct": -10.6,
+      "z": 2.525,
+      "level": "yellow"
+     },
+     {
+      "code": "recovering",
+      "days": 2,
+      "needed": 3
+     }
+    ],
+    "z": {
+     "speech_rate_sps": 1.259,
+     "pause_ratio": 0.583,
+     "filled_pause_rate": 0.755,
+     "mattr": 1.277,
+     "recall_score": -0.263
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Mấy tuần nay bà nói chậm hơn khoảng 11% so với bình thường của bà. Đã có 2 ngày khá hơn, Chào Bà đang theo dõi thêm. Nên gọi hỏi thăm bà trong hôm nay hoặc ngày mai.",
+    "explanation_en": "Over several weeks she has been speaking slower (about 11% change) compared with her own usual pattern. 2 better day(s) so far; still watching before lowering the light. Consider giving her a call today or tomorrow."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 56,
+    "date": "2026-10-16",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 1.476,
+     "pause_ratio": 0.764,
+     "filled_pause_rate": 1.426,
+     "mattr": 0.892,
+     "recall_score": -0.519
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 57,
+    "date": "2026-10-17",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 1.289,
+     "pause_ratio": 0.884,
+     "filled_pause_rate": 2.175,
+     "mattr": 1.363,
+     "recall_score": -0.697
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 58,
+    "date": "2026-10-18",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.708,
+     "pause_ratio": 0.954,
+     "filled_pause_rate": 1.971,
+     "mattr": 0.516,
+     "recall_score": 0.181
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 59,
+    "date": "2026-10-19",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.781,
+     "pause_ratio": 0.505,
+     "filled_pause_rate": 1.566,
+     "mattr": 0.621,
+     "recall_score": 0.795
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 60,
+    "date": "2026-10-20",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.756,
+     "pause_ratio": 0.428,
+     "filled_pause_rate": 1.189,
+     "mattr": 0.886,
+     "recall_score": 0.222
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 61,
+    "date": "2026-10-21",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.204,
+     "pause_ratio": 0.137,
+     "filled_pause_rate": 0.993,
+     "mattr": 0.406,
+     "recall_score": -0.179
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 62,
+    "date": "2026-10-22",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -1.29,
+     "pause_ratio": 0.475,
+     "filled_pause_rate": 0.416,
+     "mattr": -0.056,
+     "recall_score": -0.46
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 63,
+    "date": "2026-10-23",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "invalid_call"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": -1.29,
+     "pause_ratio": 0.475,
+     "filled_pause_rate": 0.416,
+     "mattr": -0.056,
+     "recall_score": -0.46
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Cuộc gọi hôm nay hơi ngắn nên chưa đủ để so sánh với bình thường của bà.",
+    "explanation_en": "Today's call was too short to compare with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 64,
+    "date": "2026-10-24",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -1.568,
+     "pause_ratio": 0.522,
+     "filled_pause_rate": 0.122,
+     "mattr": -0.164,
+     "recall_score": -0.656
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 65,
+    "date": "2026-10-25",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.976,
+     "pause_ratio": 0.508,
+     "filled_pause_rate": -0.025,
+     "mattr": -0.65,
+     "recall_score": -0.656
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 66,
+    "date": "2026-10-26",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.197,
+     "pause_ratio": 0.532,
+     "filled_pause_rate": 0.245,
+     "mattr": -0.838,
+     "recall_score": -0.656
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 67,
+    "date": "2026-10-27",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.176,
+     "pause_ratio": 0.26,
+     "filled_pause_rate": -0.455,
+     "mattr": -0.932,
+     "recall_score": -0.656
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 68,
+    "date": "2026-10-28",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.33,
+     "pause_ratio": 0.087,
+     "filled_pause_rate": -0.234,
+     "mattr": -0.227,
+     "recall_score": -0.794
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 69,
+    "date": "2026-10-29",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.138,
+     "pause_ratio": -0.013,
+     "filled_pause_rate": -0.308,
+     "mattr": -0.368,
+     "recall_score": 0.113
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 70,
+    "date": "2026-10-30",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.196,
+     "pause_ratio": 0.035,
+     "filled_pause_rate": 0.056,
+     "mattr": -0.789,
+     "recall_score": -0.255
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 71,
+    "date": "2026-10-31",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.721,
+     "pause_ratio": 0.509,
+     "filled_pause_rate": -0.35,
+     "mattr": -1.012,
+     "recall_score": -0.513
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 72,
+    "date": "2026-11-01",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -1.307,
+     "pause_ratio": 0.623,
+     "filled_pause_rate": -0.389,
+     "mattr": -1.84,
+     "recall_score": -0.694
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 73,
+    "date": "2026-11-02",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -1.153,
+     "pause_ratio": 0.05,
+     "filled_pause_rate": -1.009,
+     "mattr": -1.511,
+     "recall_score": -0.82
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 74,
+    "date": "2026-11-03",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.86,
+     "pause_ratio": -0.595,
+     "filled_pause_rate": -1.46,
+     "mattr": -0.734,
+     "recall_score": -0.908
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 75,
+    "date": "2026-11-04",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -1.242,
+     "pause_ratio": -0.751,
+     "filled_pause_rate": -0.81,
+     "mattr": 0.077,
+     "recall_score": -0.97
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 76,
+    "date": "2026-11-05",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "invalid_call"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": -1.242,
+     "pause_ratio": -0.751,
+     "filled_pause_rate": -0.81,
+     "mattr": 0.077,
+     "recall_score": -0.97
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Cuộc gọi hôm nay hơi ngắn nên chưa đủ để so sánh với bình thường của bà.",
+    "explanation_en": "Today's call was too short to compare with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 77,
+    "date": "2026-11-06",
+    "light": "green",
+    "reasons": [
+     {
+      "code": "rebaseline",
+      "days": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": 0.279,
+     "pause_ratio": -0.189,
+     "filled_pause_rate": -0.093,
+     "mattr": 1.035,
+     "recall_score": 0.803
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 78,
+    "date": "2026-11-07",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.599,
+     "pause_ratio": 0.121,
+     "filled_pause_rate": 0.263,
+     "mattr": 0.986,
+     "recall_score": 0.377
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 79,
+    "date": "2026-11-08",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.232,
+     "pause_ratio": 0.286,
+     "filled_pause_rate": 0.925,
+     "mattr": 0.808,
+     "recall_score": 0.078
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 80,
+    "date": "2026-11-09",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.088,
+     "pause_ratio": 0.598,
+     "filled_pause_rate": 0.345,
+     "mattr": 1.087,
+     "recall_score": 0.078
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 81,
+    "date": "2026-11-10",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.199,
+     "pause_ratio": 0.523,
+     "filled_pause_rate": -1.013,
+     "mattr": 1.165,
+     "recall_score": 0.858
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 82,
+    "date": "2026-11-11",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.142,
+     "pause_ratio": 0.635,
+     "filled_pause_rate": -0.339,
+     "mattr": 1.775,
+     "recall_score": 0.415
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 83,
+    "date": "2026-11-12",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "invalid_call"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": 0.142,
+     "pause_ratio": 0.635,
+     "filled_pause_rate": -0.339,
+     "mattr": 1.775,
+     "recall_score": 0.415
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Cuộc gọi hôm nay hơi ngắn nên chưa đủ để so sánh với bình thường của bà.",
+    "explanation_en": "Today's call was too short to compare with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 84,
+    "date": "2026-11-13",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.07,
+     "pause_ratio": 0.334,
+     "filled_pause_rate": -0.338,
+     "mattr": 1.352,
+     "recall_score": 0.105
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 85,
+    "date": "2026-11-14",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.183,
+     "pause_ratio": 0.829,
+     "filled_pause_rate": -0.001,
+     "mattr": 0.547,
+     "recall_score": -0.112
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 86,
+    "date": "2026-11-15",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.5,
+     "pause_ratio": 1.193,
+     "filled_pause_rate": 0.142,
+     "mattr": 0.45,
+     "recall_score": 0.725
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 87,
+    "date": "2026-11-16",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.445,
+     "pause_ratio": 0.273,
+     "filled_pause_rate": 0.453,
+     "mattr": 0.458,
+     "recall_score": 0.322
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 88,
+    "date": "2026-11-17",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.555,
+     "pause_ratio": 0.117,
+     "filled_pause_rate": 0.418,
+     "mattr": 1.032,
+     "recall_score": 0.04
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 89,
+    "date": "2026-11-18",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.56,
+     "pause_ratio": -0.44,
+     "filled_pause_rate": -1.13,
+     "mattr": 0.764,
+     "recall_score": 0.831
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   },
+   {
+    "elder_id": "hanh",
+    "day": 90,
+    "date": "2026-11-19",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -1.019,
+     "pause_ratio": -0.55,
+     "filled_pause_rate": -1.321,
+     "mattr": 1.877,
+     "recall_score": 0.397
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay bà nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của bà.",
+    "explanation_en": "Today her speech, memory and mood are in line with her usual pattern."
+   }
+  ],
+  "baseline": {
+   "filled_pause_rate": {
+    "center": 0.0469,
+    "scale": 0.006
+   },
+   "mattr": {
+    "center": 0.7147,
+    "scale": 0.012
+   },
+   "pause_ratio": {
+    "center": 0.1156,
+    "scale": 0.015
+   },
+   "recall_score": {
+    "center": 2.8125,
+    "scale": 0.5
+   },
+   "speech_rate_sps": {
+    "center": 4.6425,
+    "scale": 0.2448
+   }
+  },
+  "events": [
+   {
+    "day": 1,
+    "type": "enrolment",
+    "label_vi": "Bắt đầu cuộc gọi hằng ngày",
+    "label_en": "Daily calls start"
+   },
+   {
+    "day": 22,
+    "type": "baseline_ready",
+    "label_vi": "Đã có mức bình thường riêng",
+    "label_en": "Personal baseline ready"
+   },
+   {
+    "day": 30,
+    "type": "medication_change",
+    "label_vi": "Đổi thuốc huyết áp",
+    "label_en": "Blood-pressure medication changed"
+   },
+   {
+    "day": 38,
+    "type": "alert_yellow",
+    "label_vi": "Đèn vàng: cần hỏi thăm",
+    "label_en": "Yellow light: check in"
+   },
+   {
+    "day": 43,
+    "type": "alert_red",
+    "label_vi": "Đèn đỏ: cần liên hệ ngay",
+    "label_en": "Red light: contact now"
+   },
+   {
+    "day": 44,
+    "type": "doctor_visit",
+    "label_vi": "Đi khám, bác sĩ chỉnh liều thuốc",
+    "label_en": "Doctor visit, medication adjusted"
+   },
+   {
+    "day": 44,
+    "type": "care_plan",
+    "label_vi": "Con gọi bà 3 lần/tuần",
+    "label_en": "Daughter calls 3x/week"
+   },
+   {
+    "day": 56,
+    "type": "recovered",
+    "label_vi": "Đèn xanh trở lại",
+    "label_en": "Back to green"
+   },
+   {
+    "day": 77,
+    "type": "rebaseline",
+    "label_vi": "Lập mức bình thường mới",
+    "label_en": "New baseline set"
+   }
+  ],
+  "simulated": true
+ },
+ "alerts": [
+  {
+   "id": 2,
+   "day": 43,
+   "date": "2026-10-03",
+   "type": "metric_trend",
+   "severity": "red",
+   "explanation_vi": "Hai tuần nay bà nói chậm hơn khoảng 14% và hay “ờ, à” nhiều hơn khoảng 32% so với bình thường của bà và 3 lần nhắc chóng mặt. Trong 7 ngày qua bà nhắc tới 3 chuyện sức khỏe: chóng mặt, mất ngủ, bỏ bữa. Nên gọi hỏi thăm và cân nhắc đưa bà đi khám.",
+   "explanation_en": "Over two weeks she has been speaking slower (about 14% change) and using more fillers (“uh, um”) (about 32% change) compared with her own usual pattern, and mentioned dizziness 3 times. In the last 7 days she mentioned 3 different health complaints: dizziness, poor sleep, skipped meals. Please call her and consider arranging a doctor's visit.",
+   "acknowledged": true
+  },
+  {
+   "id": 1,
+   "day": 38,
+   "date": "2026-09-28",
+   "type": "symptom_repeat",
+   "severity": "yellow",
+   "explanation_vi": "Tuần này bà 2 lần nhắc chóng mặt. Nên gọi hỏi thăm bà trong hôm nay hoặc ngày mai.",
+   "explanation_en": "This week she mentioned dizziness 2 times. Consider giving her a call today or tomorrow.",
+   "acknowledged": true
+  }
+ ],
+ "dmaic": {
+  "phases": [
+   {
+    "phase": "define",
+    "day_from": 1,
+    "day_to": 1,
+    "summary_vi": "Mục tiêu chăm sóc: huyết áp, giấc ngủ và trí nhớ của bà khi sống một mình. Mục tiêu đặt cùng gia đình: Ngủ đủ 6 tiếng; Uống thuốc huyết áp đúng giờ; Giữ trí nhớ ổn định.",
+    "summary_en": "Care goal: blood pressure, sleep and memory while living alone. 3 goals agreed with the family."
+   },
+   {
+    "phase": "measure",
+    "day_from": 1,
+    "day_to": 21,
+    "summary_vi": "20 cuộc gọi hợp lệ trong 21 ngày đầu (0 ngày lỡ cuộc gọi) để lập mức bình thường riêng: tốc độ nói 4,57 âm tiết/giây, điểm nhớ lại trung bình 2,67/3.",
+    "summary_en": "20 valid calls in the first 21 days (0 missed) built the personal baseline: speech rate 4.57 syllables/s, mean recall 2.67/3."
+   },
+   {
+    "phase": "analyze",
+    "day_from": 38,
+    "day_to": 43,
+    "summary_vi": "Đèn vàng từ ngày 38, đỏ từ ngày 43. Thay đổi so với mức bình thường: từ đệm (ờ, à) +32%, tỉ lệ ngừng nghỉ +32%, tốc độ nói -14%. Triệu chứng được nhắc: chóng mặt 4 lần, mất ngủ 1 lần, bỏ bữa 1 lần.",
+    "summary_en": "Yellow from day 38, red from day 43. Change vs own baseline: filler rate +32%, pause ratio +32%, speech rate -14%. Symptoms mentioned: dizziness x4, poor sleep x1, skipped meals x1."
+   },
+   {
+    "phase": "improve",
+    "day_from": 44,
+    "day_to": 56,
+    "summary_vi": "Ngày 44: Gia đình và bác sĩ can thiệp. Tốc độ nói 4,18 → 4,61 âm tiết/giây (+10%). Đèn xanh trở lại sau 12 ngày (ngày 56).",
+    "summary_en": "Day 44: Family and clinician intervention. Speech rate 4.18 → 4.61 syllables/s (+10%). Back to green after 12 days (day 56)."
+   },
+   {
+    "phase": "control",
+    "day_from": 56,
+    "day_to": 90,
+    "summary_vi": "Theo dõi tiếp từ ngày 56; tuân thủ kế hoạch chăm sóc. Ngày 77: lập mức bình thường mới từ giai đoạn ổn định sau can thiệp.",
+    "summary_en": "Monitoring continues from day 56; care plan maintained. Day 77: new personal baseline set from the stable post-intervention period."
+   }
+  ],
+  "effect": {
+   "speech_rate_sps": {
+    "pre": 4.1836,
+    "post": 4.6091,
+    "change_pct": 10.2,
+    "baseline": 4.5705,
+    "pre_window": [
+     30,
+     43
+    ],
+    "post_window": [
+     51,
+     64
+    ]
+   },
+   "pause_ratio": {
+    "pre": 0.1305,
+    "post": 0.1166,
+    "change_pct": -10.7,
+    "baseline": 0.1134,
+    "pre_window": [
+     30,
+     43
+    ],
+    "post_window": [
+     51,
+     64
+    ]
+   },
+   "filled_pause_rate": {
+    "pre": 0.0539,
+    "post": 0.0473,
+    "change_pct": -12.2,
+    "baseline": 0.0459,
+    "pre_window": [
+     30,
+     43
+    ],
+    "post_window": [
+     51,
+     64
+    ]
+   },
+   "mattr": {
+    "pre": 0.6985,
+    "post": 0.7069,
+    "change_pct": 1.2,
+    "baseline": 0.7097,
+    "pre_window": [
+     30,
+     43
+    ],
+    "post_window": [
+     51,
+     64
+    ]
+   },
+   "recall_score": {
+    "pre": 2.3333,
+    "post": 2.7692,
+    "change_pct": 18.7,
+    "baseline": 3,
+    "pre_window": [
+     30,
+     43
+    ],
+    "post_window": [
+     51,
+     64
+    ]
+   }
+  },
+  "new_baseline_day": 77,
+  "first_alert_day": 38,
+  "peak_light": "red",
+  "intervention_day": 44,
+  "green_day": 56,
+  "days_to_green": 12,
+  "simulated": true
+ },
+ "notes": [
+  {
+   "id": 5,
+   "day": 90,
+   "author": "Lan",
+   "text": "Lan nhắn: chủ nhật này con về thăm má, má đừng nấu nhiều nha.",
+   "to_elder": true,
+   "simulated": true,
+   "created_at": "2026-10-27T12:29:05+00:00"
+  },
+  {
+   "id": 4,
+   "day": 60,
+   "author": "Minh",
+   "text": "Má ăn ngủ tốt lại rồi, lại ra vườn tưới cây mai.",
+   "to_elder": false,
+   "simulated": true,
+   "created_at": "2026-10-27T12:29:05+00:00"
+  },
+  {
+   "id": 3,
+   "day": 44,
+   "author": "Lan",
+   "text": "Đã đưa má đi khám, bác sĩ chỉnh lại liều thuốc huyết áp. Con sẽ gọi má 3 lần mỗi tuần.",
+   "to_elder": false,
+   "simulated": true,
+   "created_at": "2026-10-27T12:29:05+00:00"
+  },
+  {
+   "id": 2,
+   "day": 39,
+   "author": "Lan",
+   "text": "Má nói hơi chóng mặt khi đứng dậy, con sẽ để ý thêm.",
+   "to_elder": false,
+   "simulated": true,
+   "created_at": "2026-10-27T12:29:05+00:00"
+  },
+  {
+   "id": 1,
+   "day": 30,
+   "author": "Lan",
+   "text": "Bác sĩ đổi thuốc huyết áp cho má từ tuần này (đổi thuốc huyết áp).",
+   "to_elder": false,
+   "simulated": true,
+   "created_at": "2026-10-27T12:29:05+00:00"
+  }
+ ],
+ "privacy": {
+  "consents": [
+   {
+    "type": "daily_call",
+    "granted": true,
+    "by": "self",
+    "witness": "family",
+    "scope_vi": "Nhận cuộc gọi hỏi thăm hằng ngày",
+    "scope_en": "Receive daily check-in calls",
+    "date": "2026-08-22",
+    "kind": "daily_call",
+    "granted_by": "self",
+    "note": "Receive daily check-in calls",
+    "ts": "2026-08-22"
+   },
+   {
+    "type": "voice_metrics",
+    "granted": true,
+    "by": "self",
+    "scope_vi": "Đo tốc độ nói, ngừng nghỉ từ văn bản và thời gian (không lưu âm thanh)",
+    "scope_en": "Derive speech timing metrics from text and timings (no audio stored)",
+    "date": "2026-08-22",
+    "kind": "voice_metrics",
+    "granted_by": "self",
+    "note": "Derive speech timing metrics from text and timings (no audio stored)",
+    "ts": "2026-08-22"
+   },
+   {
+    "type": "family_sharing",
+    "granted": true,
+    "by": "self",
+    "scope_vi": "Chia sẻ đèn tín hiệu và tóm tắt với con cháu",
+    "scope_en": "Share daily light and summaries with family",
+    "date": "2026-08-22",
+    "kind": "family_sharing",
+    "granted_by": "self",
+    "note": "Share daily light and summaries with family",
+    "ts": "2026-08-22"
+   },
+   {
+    "type": "clinician_sharing",
+    "granted": true,
+    "by": "self",
+    "scope_vi": "Chia sẻ báo cáo với bác sĩ khi gia đình yêu cầu",
+    "scope_en": "Share report with clinician on family request",
+    "date": "2026-08-22",
+    "kind": "clinician_sharing",
+    "granted_by": "self",
+    "note": "Share report with clinician on family request",
+    "ts": "2026-08-22"
+   },
+   {
+    "type": "research_use",
+    "granted": false,
+    "by": "self",
+    "scope_vi": "Dùng dữ liệu ẩn danh cho nghiên cứu",
+    "scope_en": "Use de-identified data for research",
+    "date": "2026-08-22",
+    "kind": "research_use",
+    "granted_by": "self",
+    "note": "Use de-identified data for research",
+    "ts": "2026-08-22"
+   }
+  ],
+  "access_log": [
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_privacy",
+    "resource": "/api/elders/hanh/privacy",
+    "ts": "2026-10-27T12:30:23+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_notes",
+    "resource": "/api/elders/hanh/notes",
+    "ts": "2026-10-27T12:30:23+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_timeline",
+    "resource": "/api/elders/hanh/timeline",
+    "ts": "2026-10-27T12:30:23+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_dmaic",
+    "resource": "/api/elders/hanh/dmaic",
+    "ts": "2026-10-27T12:30:23+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_today",
+    "resource": "/api/elders/hanh/today",
+    "ts": "2026-10-27T12:30:23+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_alerts",
+    "resource": "/api/elders/hanh/alerts",
+    "ts": "2026-10-27T12:30:23+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_profile",
+    "resource": "/api/elders/hanh",
+    "ts": "2026-10-27T12:30:23+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_privacy",
+    "resource": "/api/elders/hanh/privacy",
+    "ts": "2026-10-27T12:29:15+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_notes",
+    "resource": "/api/elders/hanh/notes",
+    "ts": "2026-10-27T12:29:15+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_dmaic",
+    "resource": "/api/elders/hanh/dmaic",
+    "ts": "2026-10-27T12:29:15+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_alerts",
+    "resource": "/api/elders/hanh/alerts",
+    "ts": "2026-10-27T12:29:15+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_timeline",
+    "resource": "/api/elders/hanh/timeline",
+    "ts": "2026-10-27T12:29:15+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_today",
+    "resource": "/api/elders/hanh/today",
+    "ts": "2026-10-27T12:29:09+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_profile",
+    "resource": "/api/elders/hanh",
+    "ts": "2026-10-27T12:29:09+00:00"
+   }
+  ],
+  "data_retention": {
+   "audio": "not stored",
+   "transcript_days": 7,
+   "metrics": "derived numbers kept while enrolled",
+   "llm_processing": "on-device rules (no LLM)"
+  },
+  "scheduling_active": true,
+  "simulated": true
+ },
+ "_snapshot": {
+  "from": "http://localhost:8001",
+  "at": "2026-10-27T12:30:23.297Z"
+ }
+}

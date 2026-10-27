@@ -1,0 +1,11 @@
+# Chào Bà prototype (Python 3.14). No API keys required; Claude is used automatically if ANTHROPIC_API_KEY is set.
+numpy>=2.5
+pandas>=3.1
+fastapi>=0.162
+uvicorn>=0.54
+pydantic>=2.14
+anthropic>=2.3
+httpx>=0.28
+pytest>=9.1
+# Optional, production voice adapter only (NOT installed in the prototype; chaoba/agent/livekit_agent.py is untested):
+# livekit-agents[silero,deepgram,google]~=1.0

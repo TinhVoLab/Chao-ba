@@ -1,0 +1,249 @@
+@import "tailwindcss";
+
+/*
+ * Chào Bà design tokens.
+ * Scene: an adult child glancing at a phone at 7:40 in the morning, in bright
+ * daylight, between other duties; sometimes again late at night in a dim room.
+ * Light theme on warm "rice paper", ink-indigo accent; dark theme is its own palette.
+ * Status colors are reserved for the daily light and always ship with shape + word.
+ */
+:root {
+  color-scheme: light;
+  --bg: oklch(0.972 0.009 85);
+  --surface: oklch(0.992 0.005 85);
+  --surface-2: oklch(0.948 0.012 82);
+  --ink: oklch(0.23 0.02 60);
+  --ink-2: oklch(0.4 0.02 60);
+  --ink-3: oklch(0.52 0.018 62);
+  --line: oklch(0.875 0.014 80);
+  --line-strong: oklch(0.78 0.016 78);
+  --accent: oklch(0.4 0.12 268);
+  --accent-hover: oklch(0.34 0.12 268);
+  --accent-ink: oklch(0.985 0.006 268);
+  --accent-tint: oklch(0.93 0.03 268);
+
+  --green: oklch(0.55 0.13 152);
+  --green-ink: oklch(0.37 0.09 152);
+  --green-tint: oklch(0.935 0.045 150);
+  --yellow: oklch(0.78 0.15 80);
+  --yellow-ink: oklch(0.42 0.09 65);
+  --yellow-tint: oklch(0.945 0.06 88);
+  --red: oklch(0.55 0.19 28);
+  --red-ink: oklch(0.43 0.15 28);
+  --red-tint: oklch(0.935 0.04 25);
+  --gray: oklch(0.66 0.012 80);
+  --gray-ink: oklch(0.42 0.015 70);
+  --gray-tint: oklch(0.935 0.01 80);
+  --on-green: oklch(0.99 0.005 150);
+  --on-yellow: oklch(0.24 0.04 65);
+  --on-red: oklch(0.99 0.005 28);
+
+  --band: oklch(0.4 0.12 268 / 0.11);
+  --shadow: 0 1px 2px oklch(0.3 0.03 70 / 0.06), 0 4px 16px oklch(0.3 0.03 70 / 0.05);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: oklch(0.185 0.012 70);
+  --surface: oklch(0.225 0.013 70);
+  --surface-2: oklch(0.265 0.014 70);
+  --ink: oklch(0.955 0.01 85);
+  --ink-2: oklch(0.82 0.014 80);
+  --ink-3: oklch(0.7 0.016 78);
+  --line: oklch(0.33 0.014 70);
+  --line-strong: oklch(0.42 0.016 70);
+  --accent: oklch(0.78 0.1 268);
+  --accent-hover: oklch(0.84 0.09 268);
+  --accent-ink: oklch(0.2 0.04 268);
+  --accent-tint: oklch(0.3 0.05 268);
+  --green: oklch(0.72 0.15 152);
+  --green-ink: oklch(0.85 0.1 152);
+  --green-tint: oklch(0.29 0.05 152);
+  --yellow: oklch(0.83 0.15 85);
+  --yellow-ink: oklch(0.88 0.11 88);
+  --yellow-tint: oklch(0.31 0.05 80);
+  --red: oklch(0.68 0.18 28);
+  --red-ink: oklch(0.84 0.1 28);
+  --red-tint: oklch(0.3 0.06 28);
+  --gray: oklch(0.6 0.012 80);
+  --gray-ink: oklch(0.8 0.012 80);
+  --gray-tint: oklch(0.28 0.01 70);
+  --on-green: oklch(0.2 0.04 152);
+  --on-red: oklch(0.18 0.04 28);
+  --band: oklch(0.78 0.1 268 / 0.16);
+  --shadow: 0 1px 2px oklch(0 0 0 / 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: oklch(0.185 0.012 70);
+    --surface: oklch(0.225 0.013 70);
+    --surface-2: oklch(0.265 0.014 70);
+    --ink: oklch(0.955 0.01 85);
+    --ink-2: oklch(0.82 0.014 80);
+    --ink-3: oklch(0.7 0.016 78);
+    --line: oklch(0.33 0.014 70);
+    --line-strong: oklch(0.42 0.016 70);
+    --accent: oklch(0.78 0.1 268);
+    --accent-hover: oklch(0.84 0.09 268);
+    --accent-ink: oklch(0.2 0.04 268);
+    --accent-tint: oklch(0.3 0.05 268);
+    --green: oklch(0.72 0.15 152);
+    --green-ink: oklch(0.85 0.1 152);
+    --green-tint: oklch(0.29 0.05 152);
+    --yellow: oklch(0.83 0.15 85);
+    --yellow-ink: oklch(0.88 0.11 88);
+    --yellow-tint: oklch(0.31 0.05 80);
+    --red: oklch(0.68 0.18 28);
+    --red-ink: oklch(0.84 0.1 28);
+    --red-tint: oklch(0.3 0.06 28);
+    --gray: oklch(0.6 0.012 80);
+    --gray-ink: oklch(0.8 0.012 80);
+    --gray-tint: oklch(0.28 0.01 70);
+    --on-green: oklch(0.2 0.04 152);
+    --on-red: oklch(0.18 0.04 28);
+    --band: oklch(0.78 0.1 268 / 0.16);
+    --shadow: 0 1px 2px oklch(0 0 0 / 0.3);
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-tint: var(--accent-tint);
+  --color-green: var(--green);
+  --color-green-ink: var(--green-ink);
+  --color-green-tint: var(--green-tint);
+  --color-yellow: var(--yellow);
+  --color-yellow-ink: var(--yellow-ink);
+  --color-yellow-tint: var(--yellow-tint);
+  --color-red: var(--red);
+  --color-red-ink: var(--red-ink);
+  --color-red-tint: var(--red-tint);
+  --color-gray: var(--gray);
+  --color-gray-ink: var(--gray-ink);
+  --color-gray-tint: var(--gray-tint);
+  --color-on-green: var(--on-green);
+  --color-on-yellow: var(--on-yellow);
+  --color-on-red: var(--on-red);
+  --font-sans: var(--font-vn), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --shadow-soft: var(--shadow);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  background: var(--bg);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "ss01";
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Bilingual text: both languages render; the html[data-lang] flag picks one before paint. */
+html:not([data-lang="en"]) .l-en,
+html[data-lang="en"] .l-vi {
+  display: none !important;
+}
+
+/* Theme-dependent glyphs (theme toggle) */
+.only-dark {
+  display: none;
+}
+:root[data-theme="dark"] .only-dark {
+  display: inline-flex;
+}
+:root[data-theme="dark"] .only-light {
+  display: none;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .only-dark {
+    display: inline-flex;
+  }
+  :root:not([data-theme="light"]) .only-light {
+    display: none;
+  }
+}
+
+/* Lang toggle active state */
+html:not([data-lang="en"]) [data-lang-opt="vi"],
+html[data-lang="en"] [data-lang-opt="en"] {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+::selection {
+  background: var(--accent-tint);
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--surface-2), var(--line), var(--surface-2));
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+  border-radius: 12px;
+}
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 240ms var(--ease-out-quart) both;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+dialog::backdrop {
+  background: oklch(0.2 0.02 60 / 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}

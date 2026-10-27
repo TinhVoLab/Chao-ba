@@ -1,0 +1,32 @@
+[
+ {
+  "id": "control",
+  "display_name": "Ông Bảy",
+  "name_en": "Mr Bay",
+  "age": 69,
+  "province": "Cần Thơ",
+  "light": "green",
+  "opted_out": false,
+  "simulated": true
+ },
+ {
+  "id": "hanh",
+  "display_name": "Bà Hạnh",
+  "name_en": "Mrs Hanh",
+  "age": 72,
+  "province": "Bến Tre",
+  "light": "green",
+  "opted_out": false,
+  "simulated": true
+ },
+ {
+  "id": "tu",
+  "display_name": "Ông Tư",
+  "name_en": "Mr Tu",
+  "age": 76,
+  "province": "TP.HCM",
+  "light": "yellow",
+  "opted_out": false,
+  "simulated": true
+ }
+]

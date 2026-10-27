@@ -1,0 +1,3683 @@
+{
+ "profile": {
+  "id": "control",
+  "display_name": "Ông Bảy",
+  "name_en": "Mr Bay",
+  "honorific": "ông",
+  "self_ref": "con",
+  "age": 69,
+  "province": "Cần Thơ",
+  "dialect": "south",
+  "lives_alone": false,
+  "channel_pref": "pstn",
+  "conditions": [
+   "mild osteoarthritis"
+  ],
+  "medications": [
+   {
+    "name": "Paracetamol 500mg (khi đau)",
+    "time": "as needed"
+   }
+  ],
+  "family": [
+   {
+    "id": "thao",
+    "name": "Thảo",
+    "relation": "daughter",
+    "role": "primary"
+   }
+  ],
+  "goals": [
+   "Đi bộ mỗi chiều",
+   "Ăn uống đều bữa"
+  ],
+  "memory_facts": [
+   "Nuôi cá trong ao sau nhà",
+   "Hay đi chợ nổi Cái Răng"
+  ],
+  "opted_out": false,
+  "simulated": true
+ },
+ "today": {
+  "date": "2026-11-19",
+  "day": 90,
+  "light": "green",
+  "reasons": [],
+  "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+  "explanation_en": "Today his speech, memory and mood are in line with his usual pattern.",
+  "summary_vi": "Ông coi đá banh, uống trà với bạn.",
+  "summary_en": "He watched football and had tea with friends.",
+  "answered": true,
+  "mood": 4,
+  "channel": "sim",
+  "simulated": true
+ },
+ "timeline": {
+  "records": [
+   {
+    "elder_id": "control",
+    "day": 1,
+    "date": "2026-08-22",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 5.1536,
+    "pause_ratio": 0.111,
+    "filled_pause_rate": 0.0441,
+    "mattr": 0.6986,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông ăn cơm với cháu, đi đám giỗ bà con, đi chợ nổi Cái Răng.",
+    "summary_en": "He had a meal with his grandchildren, went to a relative's memorial meal and went to Cái Răng floating market.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 2,
+    "date": "2026-08-23",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 5.1725,
+    "pause_ratio": 0.1159,
+    "filled_pause_rate": 0.0451,
+    "mattr": 0.7153,
+    "recall_score": 2,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông uống trà với bạn, nghe vọng cổ.",
+    "summary_en": "He had tea with friends and listened to vọng cổ songs.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 3,
+    "date": "2026-08-24",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7546,
+    "pause_ratio": 0.1025,
+    "filled_pause_rate": 0.0499,
+    "mattr": 0.7145,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông uống trà với bạn, đi đám giỗ bà con, nghe vọng cổ.",
+    "summary_en": "He had tea with friends, went to a relative's memorial meal and listened to vọng cổ songs.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 4,
+    "date": "2026-08-25",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 5.0369,
+    "pause_ratio": 0.1057,
+    "filled_pause_rate": 0.038,
+    "mattr": 0.7157,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông làm vườn, uống trà với bạn, coi đá banh.",
+    "summary_en": "He worked in the garden, had tea with friends and watched football.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 5,
+    "date": "2026-08-26",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.6625,
+    "pause_ratio": 0.1008,
+    "filled_pause_rate": 0.0309,
+    "mattr": 0.7296,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông đi đám giỗ bà con, uống trà với bạn.",
+    "summary_en": "He went to a relative's memorial meal and had tea with friends.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 6,
+    "date": "2026-08-27",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7704,
+    "pause_ratio": 0.1089,
+    "filled_pause_rate": 0.0462,
+    "mattr": 0.7265,
+    "recall_score": 3,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Ông sửa lại cái xuồng, đi đám giỗ bà con.",
+    "summary_en": "He repaired his boat and went to a relative's memorial meal.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 7,
+    "date": "2026-08-28",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 5.1377,
+    "pause_ratio": 0.0955,
+    "filled_pause_rate": 0.0469,
+    "mattr": 0.7203,
+    "recall_score": null,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông ăn cơm với cháu, đi đám giỗ bà con, làm vườn.",
+    "summary_en": "He had a meal with his grandchildren, went to a relative's memorial meal and worked in the garden.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 8,
+    "date": "2026-08-29",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.6299,
+    "pause_ratio": 0.1099,
+    "filled_pause_rate": 0.0456,
+    "mattr": 0.7054,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông sửa lại cái xuồng, làm vườn.",
+    "summary_en": "He repaired his boat and worked in the garden.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 9,
+    "date": "2026-08-30",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 5.1257,
+    "pause_ratio": 0.1088,
+    "filled_pause_rate": 0.0551,
+    "mattr": 0.7274,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông câu cá ngoài sông, uống trà với bạn, nghe vọng cổ.",
+    "summary_en": "He went fishing on the river, had tea with friends and listened to vọng cổ songs.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 10,
+    "date": "2026-08-31",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.9745,
+    "pause_ratio": 0.1013,
+    "filled_pause_rate": 0.0427,
+    "mattr": 0.706,
+    "recall_score": null,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông cho cá ăn, nghe vọng cổ.",
+    "summary_en": "He fed the fish and listened to vọng cổ songs.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 11,
+    "date": "2026-09-01",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.8549,
+    "pause_ratio": 0.1027,
+    "filled_pause_rate": 0.0475,
+    "mattr": 0.6977,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông sửa lại cái xuồng, uống trà với bạn, đi chợ nổi Cái Răng.",
+    "summary_en": "He repaired his boat, had tea with friends and went to Cái Răng floating market.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 12,
+    "date": "2026-09-02",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 5.0429,
+    "pause_ratio": 0.1091,
+    "filled_pause_rate": 0.0394,
+    "mattr": 0.7241,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông cho cá ăn, đi đám giỗ bà con.",
+    "summary_en": "He fed the fish and went to a relative's memorial meal.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 13,
+    "date": "2026-09-03",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.9577,
+    "pause_ratio": 0.1017,
+    "filled_pause_rate": 0.0381,
+    "mattr": 0.7003,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông uống trà với bạn, đi chợ nổi Cái Răng, đi đám giỗ bà con.",
+    "summary_en": "He had tea with friends, went to Cái Răng floating market and went to a relative's memorial meal.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 14,
+    "date": "2026-09-04",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.821,
+    "pause_ratio": 0.0901,
+    "filled_pause_rate": 0.0352,
+    "mattr": 0.7241,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông ăn cơm với cháu, cho cá ăn, nghe vọng cổ.",
+    "summary_en": "He had a meal with his grandchildren, fed the fish and listened to vọng cổ songs.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 15,
+    "date": "2026-09-05",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.6525,
+    "pause_ratio": 0.0913,
+    "filled_pause_rate": 0.0509,
+    "mattr": 0.712,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông đi chợ nổi Cái Răng, cho cá ăn.",
+    "summary_en": "He went to Cái Răng floating market and fed the fish.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 16,
+    "date": "2026-09-06",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 5.0365,
+    "pause_ratio": 0.0977,
+    "filled_pause_rate": 0.037,
+    "mattr": 0.7128,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông ăn cơm với cháu, cho cá ăn, câu cá ngoài sông.",
+    "summary_en": "He had a meal with his grandchildren, fed the fish and went fishing on the river.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 17,
+    "date": "2026-09-07",
+    "channel": "sim",
+    "answered": true,
+    "valid": false,
+    "speech_rate_sps": null,
+    "pause_ratio": null,
+    "filled_pause_rate": null,
+    "mattr": null,
+    "recall_score": null,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Cuộc gọi ngắn, ông đang bận nấu cơm.",
+    "summary_en": "Short call - he was busy cooking.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 18,
+    "date": "2026-09-08",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7944,
+    "pause_ratio": 0.1031,
+    "filled_pause_rate": 0.0399,
+    "mattr": 0.7054,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông câu cá ngoài sông, đi chợ nổi Cái Răng.",
+    "summary_en": "He went fishing on the river and went to Cái Răng floating market.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 19,
+    "date": "2026-09-09",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.5635,
+    "pause_ratio": 0.1062,
+    "filled_pause_rate": 0.0379,
+    "mattr": 0.7264,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông đi đám giỗ bà con, đi chợ nổi Cái Răng, làm vườn.",
+    "summary_en": "He went to a relative's memorial meal, went to Cái Răng floating market and worked in the garden.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 20,
+    "date": "2026-09-10",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.767,
+    "pause_ratio": 0.1025,
+    "filled_pause_rate": 0.0379,
+    "mattr": 0.6893,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông nghe vọng cổ, đi chợ nổi Cái Răng, đi đám giỗ bà con.",
+    "summary_en": "He listened to vọng cổ songs, went to Cái Răng floating market and went to a relative's memorial meal.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 21,
+    "date": "2026-09-11",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.6514,
+    "pause_ratio": 0.1132,
+    "filled_pause_rate": 0.0322,
+    "mattr": 0.711,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông ăn cơm với cháu, đi đám giỗ bà con, đi chợ nổi Cái Răng.",
+    "summary_en": "He had a meal with his grandchildren, went to a relative's memorial meal and went to Cái Răng floating market.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 22,
+    "date": "2026-09-12",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7084,
+    "pause_ratio": 0.1135,
+    "filled_pause_rate": 0.0354,
+    "mattr": 0.7145,
+    "recall_score": 2,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông uống trà với bạn, cho cá ăn, câu cá ngoài sông.",
+    "summary_en": "He had tea with friends, fed the fish and went fishing on the river.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 23,
+    "date": "2026-09-13",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7584,
+    "pause_ratio": 0.1103,
+    "filled_pause_rate": 0.0326,
+    "mattr": 0.7343,
+    "recall_score": 2,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông đi chợ nổi Cái Răng, làm vườn.",
+    "summary_en": "He went to Cái Răng floating market and worked in the garden.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 24,
+    "date": "2026-09-14",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.8104,
+    "pause_ratio": 0.1115,
+    "filled_pause_rate": 0.0285,
+    "mattr": 0.7032,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông đi chợ nổi Cái Răng, coi đá banh.",
+    "summary_en": "He went to Cái Răng floating market and watched football.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 25,
+    "date": "2026-09-15",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.5142,
+    "pause_ratio": 0.0975,
+    "filled_pause_rate": 0.0386,
+    "mattr": 0.7004,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông ăn cơm với cháu, coi đá banh.",
+    "summary_en": "He had a meal with his grandchildren and watched football.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 26,
+    "date": "2026-09-16",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 5.0286,
+    "pause_ratio": 0.0973,
+    "filled_pause_rate": 0.0286,
+    "mattr": 0.7108,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông coi đá banh, cho cá ăn.",
+    "summary_en": "He watched football and fed the fish.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 27,
+    "date": "2026-09-17",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.854,
+    "pause_ratio": 0.0999,
+    "filled_pause_rate": 0.0405,
+    "mattr": 0.7075,
+    "recall_score": 2,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông câu cá ngoài sông, làm vườn.",
+    "summary_en": "He went fishing on the river and worked in the garden.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 28,
+    "date": "2026-09-18",
+    "channel": "sim",
+    "answered": false,
+    "valid": false,
+    "speech_rate_sps": null,
+    "pause_ratio": null,
+    "filled_pause_rate": null,
+    "mattr": null,
+    "recall_score": null,
+    "mood": null,
+    "symptoms": {},
+    "summary_vi": "Ông không bắt máy.",
+    "summary_en": "He did not answer the call.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 29,
+    "date": "2026-09-19",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7883,
+    "pause_ratio": 0.0996,
+    "filled_pause_rate": 0.0389,
+    "mattr": 0.7278,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông làm vườn, đi đám giỗ bà con.",
+    "summary_en": "He worked in the garden and went to a relative's memorial meal.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 30,
+    "date": "2026-09-20",
+    "channel": "sim",
+    "answered": false,
+    "valid": false,
+    "speech_rate_sps": null,
+    "pause_ratio": null,
+    "filled_pause_rate": null,
+    "mattr": null,
+    "recall_score": null,
+    "mood": null,
+    "symptoms": {},
+    "summary_vi": "Ông không bắt máy.",
+    "summary_en": "He did not answer the call.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 31,
+    "date": "2026-09-21",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.6161,
+    "pause_ratio": 0.1179,
+    "filled_pause_rate": 0.0433,
+    "mattr": 0.6739,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông coi đá banh, sửa lại cái xuồng.",
+    "summary_en": "He watched football and repaired his boat.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 32,
+    "date": "2026-09-22",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7359,
+    "pause_ratio": 0.083,
+    "filled_pause_rate": 0.0361,
+    "mattr": 0.7233,
+    "recall_score": 2,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông đi đám giỗ bà con, đi chợ nổi Cái Răng.",
+    "summary_en": "He went to a relative's memorial meal and went to Cái Răng floating market.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 33,
+    "date": "2026-09-23",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.6017,
+    "pause_ratio": 0.09,
+    "filled_pause_rate": 0.0348,
+    "mattr": 0.7252,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông uống trà với bạn, làm vườn.",
+    "summary_en": "He had tea with friends and worked in the garden.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 34,
+    "date": "2026-09-24",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.3487,
+    "pause_ratio": 0.1027,
+    "filled_pause_rate": 0.0286,
+    "mattr": 0.7191,
+    "recall_score": 2,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông coi đá banh, nghe vọng cổ, sửa lại cái xuồng.",
+    "summary_en": "He watched football, listened to vọng cổ songs and repaired his boat.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 35,
+    "date": "2026-09-25",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.9827,
+    "pause_ratio": 0.1086,
+    "filled_pause_rate": 0.0407,
+    "mattr": 0.7212,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông coi đá banh, sửa lại cái xuồng, nghe vọng cổ.",
+    "summary_en": "He watched football, repaired his boat and listened to vọng cổ songs.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 36,
+    "date": "2026-09-26",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.8051,
+    "pause_ratio": 0.1176,
+    "filled_pause_rate": 0.0389,
+    "mattr": 0.7312,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông làm vườn, cho cá ăn.",
+    "summary_en": "He worked in the garden and fed the fish.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 37,
+    "date": "2026-09-27",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 5.2475,
+    "pause_ratio": 0.1072,
+    "filled_pause_rate": 0.0408,
+    "mattr": 0.7118,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông sửa lại cái xuồng, ăn cơm với cháu, cho cá ăn.",
+    "summary_en": "He repaired his boat, had a meal with his grandchildren and fed the fish.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 38,
+    "date": "2026-09-28",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.9025,
+    "pause_ratio": 0.1166,
+    "filled_pause_rate": 0.0348,
+    "mattr": 0.7258,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông ăn cơm với cháu, nghe vọng cổ, đi chợ nổi Cái Răng.",
+    "summary_en": "He had a meal with his grandchildren, listened to vọng cổ songs and went to Cái Răng floating market.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 39,
+    "date": "2026-09-29",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.8338,
+    "pause_ratio": 0.0943,
+    "filled_pause_rate": 0.0306,
+    "mattr": 0.7209,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông đi đám giỗ bà con, làm vườn, nghe vọng cổ.",
+    "summary_en": "He went to a relative's memorial meal, worked in the garden and listened to vọng cổ songs.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 40,
+    "date": "2026-09-30",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 5.2495,
+    "pause_ratio": 0.1053,
+    "filled_pause_rate": 0.0366,
+    "mattr": 0.7133,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {
+     "pain": 1
+    },
+    "summary_vi": "Ông cho cá ăn, câu cá ngoài sông, ăn cơm với cháu. Ông than đau lưng.",
+    "summary_en": "He fed the fish, went fishing on the river and had a meal with his grandchildren. He complained of back pain.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 41,
+    "date": "2026-10-01",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 5.029,
+    "pause_ratio": 0.1046,
+    "filled_pause_rate": 0.0391,
+    "mattr": 0.6881,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông uống trà với bạn, câu cá ngoài sông, sửa lại cái xuồng.",
+    "summary_en": "He had tea with friends, went fishing on the river and repaired his boat.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 42,
+    "date": "2026-10-02",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 5.1787,
+    "pause_ratio": 0.0999,
+    "filled_pause_rate": 0.0409,
+    "mattr": 0.7211,
+    "recall_score": null,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông nghe vọng cổ, uống trà với bạn.",
+    "summary_en": "He listened to vọng cổ songs and had tea with friends.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 43,
+    "date": "2026-10-03",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.5424,
+    "pause_ratio": 0.0984,
+    "filled_pause_rate": 0.0319,
+    "mattr": 0.7283,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông câu cá ngoài sông, cho cá ăn, ăn cơm với cháu.",
+    "summary_en": "He went fishing on the river, fed the fish and had a meal with his grandchildren.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 44,
+    "date": "2026-10-04",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7147,
+    "pause_ratio": 0.1157,
+    "filled_pause_rate": 0.0335,
+    "mattr": 0.7438,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông đi chợ nổi Cái Răng, coi đá banh, đi đám giỗ bà con.",
+    "summary_en": "He went to Cái Răng floating market, watched football and went to a relative's memorial meal.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 45,
+    "date": "2026-10-05",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.8645,
+    "pause_ratio": 0.1177,
+    "filled_pause_rate": 0.0369,
+    "mattr": 0.7301,
+    "recall_score": 2,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Ông cho cá ăn, coi đá banh, ăn cơm với cháu.",
+    "summary_en": "He fed the fish, watched football and had a meal with his grandchildren.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 46,
+    "date": "2026-10-06",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.9025,
+    "pause_ratio": 0.0909,
+    "filled_pause_rate": 0.0297,
+    "mattr": 0.7142,
+    "recall_score": null,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông ăn cơm với cháu, coi đá banh, cho cá ăn.",
+    "summary_en": "He had a meal with his grandchildren, watched football and fed the fish.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 47,
+    "date": "2026-10-07",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.741,
+    "pause_ratio": 0.0923,
+    "filled_pause_rate": 0.0358,
+    "mattr": 0.7228,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông làm vườn, đi đám giỗ bà con.",
+    "summary_en": "He worked in the garden and went to a relative's memorial meal.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 48,
+    "date": "2026-10-08",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7866,
+    "pause_ratio": 0.0936,
+    "filled_pause_rate": 0.0377,
+    "mattr": 0.6883,
+    "recall_score": 2,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Ông câu cá ngoài sông, đi chợ nổi Cái Răng.",
+    "summary_en": "He went fishing on the river and went to Cái Răng floating market.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 49,
+    "date": "2026-10-09",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.9786,
+    "pause_ratio": 0.0973,
+    "filled_pause_rate": 0.0358,
+    "mattr": 0.7068,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông đi chợ nổi Cái Răng, uống trà với bạn, cho cá ăn.",
+    "summary_en": "He went to Cái Răng floating market, had tea with friends and fed the fish.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 50,
+    "date": "2026-10-10",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.542,
+    "pause_ratio": 0.1064,
+    "filled_pause_rate": 0.0421,
+    "mattr": 0.7202,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông câu cá ngoài sông, cho cá ăn.",
+    "summary_en": "He went fishing on the river and fed the fish.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 51,
+    "date": "2026-10-11",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.9391,
+    "pause_ratio": 0.0961,
+    "filled_pause_rate": 0.0428,
+    "mattr": 0.7264,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông câu cá ngoài sông, ăn cơm với cháu, đi chợ nổi Cái Răng.",
+    "summary_en": "He went fishing on the river, had a meal with his grandchildren and went to Cái Răng floating market.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 52,
+    "date": "2026-10-12",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.9001,
+    "pause_ratio": 0.1053,
+    "filled_pause_rate": 0.0431,
+    "mattr": 0.7178,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông làm vườn, uống trà với bạn, coi đá banh.",
+    "summary_en": "He worked in the garden, had tea with friends and watched football.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 53,
+    "date": "2026-10-13",
+    "channel": "sim",
+    "answered": true,
+    "valid": false,
+    "speech_rate_sps": null,
+    "pause_ratio": null,
+    "filled_pause_rate": null,
+    "mattr": null,
+    "recall_score": null,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Cuộc gọi ngắn, ông đang bận nấu cơm.",
+    "summary_en": "Short call - he was busy cooking.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 54,
+    "date": "2026-10-14",
+    "channel": "sim",
+    "answered": false,
+    "valid": false,
+    "speech_rate_sps": null,
+    "pause_ratio": null,
+    "filled_pause_rate": null,
+    "mattr": null,
+    "recall_score": null,
+    "mood": null,
+    "symptoms": {},
+    "summary_vi": "Ông không bắt máy.",
+    "summary_en": "He did not answer the call.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 55,
+    "date": "2026-10-15",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.9973,
+    "pause_ratio": 0.0934,
+    "filled_pause_rate": 0.0386,
+    "mattr": 0.7211,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông uống trà với bạn, sửa lại cái xuồng, ăn cơm với cháu.",
+    "summary_en": "He had tea with friends, repaired his boat and had a meal with his grandchildren.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 56,
+    "date": "2026-10-16",
+    "channel": "sim",
+    "answered": false,
+    "valid": false,
+    "speech_rate_sps": null,
+    "pause_ratio": null,
+    "filled_pause_rate": null,
+    "mattr": null,
+    "recall_score": null,
+    "mood": null,
+    "symptoms": {},
+    "summary_vi": "Ông không bắt máy.",
+    "summary_en": "He did not answer the call.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 57,
+    "date": "2026-10-17",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.8774,
+    "pause_ratio": 0.0952,
+    "filled_pause_rate": 0.0384,
+    "mattr": 0.7353,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông câu cá ngoài sông, uống trà với bạn.",
+    "summary_en": "He went fishing on the river and had tea with friends.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 58,
+    "date": "2026-10-18",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.8466,
+    "pause_ratio": 0.1065,
+    "filled_pause_rate": 0.0436,
+    "mattr": 0.7265,
+    "recall_score": null,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông coi đá banh, câu cá ngoài sông.",
+    "summary_en": "He watched football and went fishing on the river.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 59,
+    "date": "2026-10-19",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7351,
+    "pause_ratio": 0.12,
+    "filled_pause_rate": 0.0448,
+    "mattr": 0.7395,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông coi đá banh, đi chợ nổi Cái Răng, sửa lại cái xuồng.",
+    "summary_en": "He watched football, went to Cái Răng floating market and repaired his boat.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 60,
+    "date": "2026-10-20",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 5.0333,
+    "pause_ratio": 0.1047,
+    "filled_pause_rate": 0.0459,
+    "mattr": 0.7621,
+    "recall_score": null,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông uống trà với bạn, đi đám giỗ bà con, nghe vọng cổ.",
+    "summary_en": "He had tea with friends, went to a relative's memorial meal and listened to vọng cổ songs.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 61,
+    "date": "2026-10-21",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.6221,
+    "pause_ratio": 0.1078,
+    "filled_pause_rate": 0.0454,
+    "mattr": 0.7509,
+    "recall_score": null,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông đi chợ nổi Cái Răng, đi đám giỗ bà con, câu cá ngoài sông.",
+    "summary_en": "He went to Cái Răng floating market, went to a relative's memorial meal and went fishing on the river.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 62,
+    "date": "2026-10-22",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.5801,
+    "pause_ratio": 0.106,
+    "filled_pause_rate": 0.0401,
+    "mattr": 0.7161,
+    "recall_score": null,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Ông cho cá ăn, ăn cơm với cháu, đi chợ nổi Cái Răng.",
+    "summary_en": "He fed the fish, had a meal with his grandchildren and went to Cái Răng floating market.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 63,
+    "date": "2026-10-23",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.6942,
+    "pause_ratio": 0.0954,
+    "filled_pause_rate": 0.0488,
+    "mattr": 0.7238,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông đi chợ nổi Cái Răng, uống trà với bạn.",
+    "summary_en": "He went to Cái Răng floating market and had tea with friends.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 64,
+    "date": "2026-10-24",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.6541,
+    "pause_ratio": 0.0996,
+    "filled_pause_rate": 0.0544,
+    "mattr": 0.7049,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông đi đám giỗ bà con, nghe vọng cổ.",
+    "summary_en": "He went to a relative's memorial meal and listened to vọng cổ songs.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 65,
+    "date": "2026-10-25",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.6128,
+    "pause_ratio": 0.095,
+    "filled_pause_rate": 0.0529,
+    "mattr": 0.705,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông đi đám giỗ bà con, coi đá banh.",
+    "summary_en": "He went to a relative's memorial meal and watched football.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 66,
+    "date": "2026-10-26",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.891,
+    "pause_ratio": 0.0869,
+    "filled_pause_rate": 0.0481,
+    "mattr": 0.7034,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông nghe vọng cổ, làm vườn, uống trà với bạn.",
+    "summary_en": "He listened to vọng cổ songs, worked in the garden and had tea with friends.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 67,
+    "date": "2026-10-27",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 5.1401,
+    "pause_ratio": 0.1087,
+    "filled_pause_rate": 0.0507,
+    "mattr": 0.7045,
+    "recall_score": 3,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Ông đi chợ nổi Cái Răng, câu cá ngoài sông, đi đám giỗ bà con.",
+    "summary_en": "He went to Cái Răng floating market, went fishing on the river and went to a relative's memorial meal.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 68,
+    "date": "2026-10-28",
+    "channel": "sim",
+    "answered": false,
+    "valid": false,
+    "speech_rate_sps": null,
+    "pause_ratio": null,
+    "filled_pause_rate": null,
+    "mattr": null,
+    "recall_score": null,
+    "mood": null,
+    "symptoms": {},
+    "summary_vi": "Ông không bắt máy.",
+    "summary_en": "He did not answer the call.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 69,
+    "date": "2026-10-29",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.9389,
+    "pause_ratio": 0.1034,
+    "filled_pause_rate": 0.037,
+    "mattr": 0.7149,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông câu cá ngoài sông, sửa lại cái xuồng, uống trà với bạn.",
+    "summary_en": "He went fishing on the river, repaired his boat and had tea with friends.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 70,
+    "date": "2026-10-30",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 5.0021,
+    "pause_ratio": 0.1064,
+    "filled_pause_rate": 0.0341,
+    "mattr": 0.7127,
+    "recall_score": null,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông làm vườn, nghe vọng cổ.",
+    "summary_en": "He worked in the garden and listened to vọng cổ songs.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 71,
+    "date": "2026-10-31",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.9439,
+    "pause_ratio": 0.0971,
+    "filled_pause_rate": 0.0423,
+    "mattr": 0.7102,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông cho cá ăn, nghe vọng cổ, sửa lại cái xuồng.",
+    "summary_en": "He fed the fish, listened to vọng cổ songs and repaired his boat.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 72,
+    "date": "2026-11-01",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.8101,
+    "pause_ratio": 0.1094,
+    "filled_pause_rate": 0.0393,
+    "mattr": 0.7392,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông sửa lại cái xuồng, câu cá ngoài sông, cho cá ăn.",
+    "summary_en": "He repaired his boat, went fishing on the river and fed the fish.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 73,
+    "date": "2026-11-02",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.6962,
+    "pause_ratio": 0.1107,
+    "filled_pause_rate": 0.0356,
+    "mattr": 0.7027,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông sửa lại cái xuồng, làm vườn, uống trà với bạn.",
+    "summary_en": "He repaired his boat, worked in the garden and had tea with friends.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 74,
+    "date": "2026-11-03",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7182,
+    "pause_ratio": 0.0889,
+    "filled_pause_rate": 0.0387,
+    "mattr": 0.7202,
+    "recall_score": null,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông đi đám giỗ bà con, coi đá banh, ăn cơm với cháu.",
+    "summary_en": "He went to a relative's memorial meal, watched football and had a meal with his grandchildren.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 75,
+    "date": "2026-11-04",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.8281,
+    "pause_ratio": 0.0844,
+    "filled_pause_rate": 0.0416,
+    "mattr": 0.7237,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông làm vườn, đi chợ nổi Cái Răng.",
+    "summary_en": "He worked in the garden and went to Cái Răng floating market.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 76,
+    "date": "2026-11-05",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.6419,
+    "pause_ratio": 0.088,
+    "filled_pause_rate": 0.0358,
+    "mattr": 0.7092,
+    "recall_score": 3,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Ông uống trà với bạn, sửa lại cái xuồng.",
+    "summary_en": "He had tea with friends and repaired his boat.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 77,
+    "date": "2026-11-06",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 5.3054,
+    "pause_ratio": 0.1042,
+    "filled_pause_rate": 0.0322,
+    "mattr": 0.7008,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông đi chợ nổi Cái Răng, câu cá ngoài sông.",
+    "summary_en": "He went to Cái Răng floating market and went fishing on the river.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 78,
+    "date": "2026-11-07",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.8627,
+    "pause_ratio": 0.1215,
+    "filled_pause_rate": 0.0494,
+    "mattr": 0.7162,
+    "recall_score": 3,
+    "mood": 3,
+    "symptoms": {},
+    "summary_vi": "Ông ăn cơm với cháu, sửa lại cái xuồng.",
+    "summary_en": "He had a meal with his grandchildren and repaired his boat.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 79,
+    "date": "2026-11-08",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7026,
+    "pause_ratio": 0.1176,
+    "filled_pause_rate": 0.0429,
+    "mattr": 0.7118,
+    "recall_score": 2,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông sửa lại cái xuồng, coi đá banh.",
+    "summary_en": "He repaired his boat and watched football.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 80,
+    "date": "2026-11-09",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.6046,
+    "pause_ratio": 0.118,
+    "filled_pause_rate": 0.0371,
+    "mattr": 0.7255,
+    "recall_score": null,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông cho cá ăn, đi chợ nổi Cái Răng.",
+    "summary_en": "He fed the fish and went to Cái Răng floating market.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 81,
+    "date": "2026-11-10",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.5765,
+    "pause_ratio": 0.0964,
+    "filled_pause_rate": 0.0413,
+    "mattr": 0.7299,
+    "recall_score": 2,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông cho cá ăn, đi chợ nổi Cái Răng.",
+    "summary_en": "He fed the fish and went to Cái Răng floating market.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 82,
+    "date": "2026-11-11",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7796,
+    "pause_ratio": 0.1004,
+    "filled_pause_rate": 0.0496,
+    "mattr": 0.7303,
+    "recall_score": 3,
+    "mood": 5,
+    "symptoms": {},
+    "summary_vi": "Ông uống trà với bạn, sửa lại cái xuồng, câu cá ngoài sông.",
+    "summary_en": "He had tea with friends, repaired his boat and went fishing on the river.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 83,
+    "date": "2026-11-12",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.7262,
+    "pause_ratio": 0.0904,
+    "filled_pause_rate": 0.041,
+    "mattr": 0.7465,
+    "recall_score": null,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông đi đám giỗ bà con, câu cá ngoài sông, cho cá ăn.",
+    "summary_en": "He went to a relative's memorial meal, went fishing on the river and fed the fish.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 84,
+    "date": "2026-11-13",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.8943,
+    "pause_ratio": 0.0954,
+    "filled_pause_rate": 0.0436,
+    "mattr": 0.7067,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông đi đám giỗ bà con, uống trà với bạn, đi chợ nổi Cái Răng.",
+    "summary_en": "He went to a relative's memorial meal, had tea with friends and went to Cái Răng floating market.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 85,
+    "date": "2026-11-14",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.817,
+    "pause_ratio": 0.0988,
+    "filled_pause_rate": 0.0452,
+    "mattr": 0.7259,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông đi đám giỗ bà con, sửa lại cái xuồng, cho cá ăn.",
+    "summary_en": "He went to a relative's memorial meal, repaired his boat and fed the fish.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 86,
+    "date": "2026-11-15",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 5.0418,
+    "pause_ratio": 0.1029,
+    "filled_pause_rate": 0.0383,
+    "mattr": 0.7129,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông đi chợ nổi Cái Răng, câu cá ngoài sông.",
+    "summary_en": "He went to Cái Răng floating market and went fishing on the river.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 87,
+    "date": "2026-11-16",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.9755,
+    "pause_ratio": 0.1074,
+    "filled_pause_rate": 0.0391,
+    "mattr": 0.7185,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông nghe vọng cổ, ăn cơm với cháu.",
+    "summary_en": "He listened to vọng cổ songs and had a meal with his grandchildren.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 88,
+    "date": "2026-11-17",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.9639,
+    "pause_ratio": 0.1108,
+    "filled_pause_rate": 0.0378,
+    "mattr": 0.6988,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông uống trà với bạn, đi đám giỗ bà con.",
+    "summary_en": "He had tea with friends and went to a relative's memorial meal.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 89,
+    "date": "2026-11-18",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 5.0296,
+    "pause_ratio": 0.1136,
+    "filled_pause_rate": 0.0415,
+    "mattr": 0.721,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông sửa lại cái xuồng, làm vườn.",
+    "summary_en": "He repaired his boat and worked in the garden.",
+    "simulated": true
+   },
+   {
+    "elder_id": "control",
+    "day": 90,
+    "date": "2026-11-19",
+    "channel": "sim",
+    "answered": true,
+    "valid": true,
+    "speech_rate_sps": 4.9697,
+    "pause_ratio": 0.1071,
+    "filled_pause_rate": 0.0407,
+    "mattr": 0.7184,
+    "recall_score": 3,
+    "mood": 4,
+    "symptoms": {},
+    "summary_vi": "Ông coi đá banh, uống trà với bạn.",
+    "summary_en": "He watched football and had tea with friends.",
+    "simulated": true
+   }
+  ],
+  "lights": [
+   {
+    "elder_id": "control",
+    "day": 1,
+    "date": "2026-08-22",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 1,
+      "needed": 14,
+      "day_index": 1,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của ông (1/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning his usual voice and routine (1/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "control",
+    "day": 2,
+    "date": "2026-08-23",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 2,
+      "needed": 14,
+      "day_index": 2,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của ông (2/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning his usual voice and routine (2/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "control",
+    "day": 3,
+    "date": "2026-08-24",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 3,
+      "needed": 14,
+      "day_index": 3,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của ông (3/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning his usual voice and routine (3/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "control",
+    "day": 4,
+    "date": "2026-08-25",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 4,
+      "needed": 14,
+      "day_index": 4,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của ông (4/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning his usual voice and routine (4/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "control",
+    "day": 5,
+    "date": "2026-08-26",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 5,
+      "needed": 14,
+      "day_index": 5,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của ông (5/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning his usual voice and routine (5/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "control",
+    "day": 6,
+    "date": "2026-08-27",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 6,
+      "needed": 14,
+      "day_index": 6,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của ông (6/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning his usual voice and routine (6/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "control",
+    "day": 7,
+    "date": "2026-08-28",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 7,
+      "needed": 14,
+      "day_index": 7,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của ông (7/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning his usual voice and routine (7/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "control",
+    "day": 8,
+    "date": "2026-08-29",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 8,
+      "needed": 14,
+      "day_index": 8,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của ông (8/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning his usual voice and routine (8/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "control",
+    "day": 9,
+    "date": "2026-08-30",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 9,
+      "needed": 14,
+      "day_index": 9,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của ông (9/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning his usual voice and routine (9/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "control",
+    "day": 10,
+    "date": "2026-08-31",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 10,
+      "needed": 14,
+      "day_index": 10,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của ông (10/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning his usual voice and routine (10/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "control",
+    "day": 11,
+    "date": "2026-09-01",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 11,
+      "needed": 14,
+      "day_index": 11,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của ông (11/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning his usual voice and routine (11/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "control",
+    "day": 12,
+    "date": "2026-09-02",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 12,
+      "needed": 14,
+      "day_index": 12,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của ông (12/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning his usual voice and routine (12/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "control",
+    "day": 13,
+    "date": "2026-09-03",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 13,
+      "needed": 14,
+      "day_index": 13,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của ông (13/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning his usual voice and routine (13/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "control",
+    "day": 14,
+    "date": "2026-09-04",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 14,
+      "needed": 14,
+      "day_index": 14,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của ông (14/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning his usual voice and routine (14/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "control",
+    "day": 15,
+    "date": "2026-09-05",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 15,
+      "needed": 14,
+      "day_index": 15,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của ông (14/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning his usual voice and routine (14/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "control",
+    "day": 16,
+    "date": "2026-09-06",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 16,
+      "needed": 14,
+      "day_index": 16,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của ông (14/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning his usual voice and routine (14/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "control",
+    "day": 17,
+    "date": "2026-09-07",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 16,
+      "needed": 14,
+      "day_index": 17,
+      "window": 21
+     },
+     {
+      "code": "invalid_call"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của ông (14/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning his usual voice and routine (14/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "control",
+    "day": 18,
+    "date": "2026-09-08",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 17,
+      "needed": 14,
+      "day_index": 18,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của ông (14/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning his usual voice and routine (14/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "control",
+    "day": 19,
+    "date": "2026-09-09",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 18,
+      "needed": 14,
+      "day_index": 19,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của ông (14/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning his usual voice and routine (14/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "control",
+    "day": 20,
+    "date": "2026-09-10",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 19,
+      "needed": 14,
+      "day_index": 20,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của ông (14/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning his usual voice and routine (14/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "control",
+    "day": 21,
+    "date": "2026-09-11",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "building_baseline",
+      "days": 20,
+      "needed": 14,
+      "day_index": 21,
+      "window": 21
+     }
+    ],
+    "z": {
+     "speech_rate_sps": null,
+     "pause_ratio": null,
+     "filled_pause_rate": null,
+     "mattr": null,
+     "recall_score": null
+    },
+    "baseline_ready": false,
+    "explanation_vi": "Chào Bà đang làm quen với giọng nói và nhịp sinh hoạt bình thường của ông (14/14 ngày). Chưa so sánh được, gia đình cứ yên tâm.",
+    "explanation_en": "Chào Bà is still learning his usual voice and routine (14/14 days). No comparison yet."
+   },
+   {
+    "elder_id": "control",
+    "day": 22,
+    "date": "2026-09-12",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.239,
+     "pause_ratio": 0.359,
+     "filled_pause_rate": -0.47,
+     "mattr": -0.031,
+     "recall_score": 0.78
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 23,
+    "date": "2026-09-13",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.314,
+     "pause_ratio": 0.502,
+     "filled_pause_rate": -1.022,
+     "mattr": -0.778,
+     "recall_score": 1.327
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 24,
+    "date": "2026-09-14",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.27,
+     "pause_ratio": 0.643,
+     "filled_pause_rate": -1.735,
+     "mattr": -0.162,
+     "recall_score": 1.709
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 25,
+    "date": "2026-09-15",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.785,
+     "pause_ratio": 0.267,
+     "filled_pause_rate": -1.43,
+     "mattr": 0.372,
+     "recall_score": 0.973
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 26,
+    "date": "2026-09-16",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.199,
+     "pause_ratio": -0.003,
+     "filled_pause_rate": -2.013,
+     "mattr": 0.365,
+     "recall_score": 0.458
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 27,
+    "date": "2026-09-17",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.11,
+     "pause_ratio": -0.104,
+     "filled_pause_rate": -1.473,
+     "mattr": 0.481,
+     "recall_score": 1.101
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 28,
+    "date": "2026-09-18",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "missed_call"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": 0.11,
+     "pause_ratio": -0.104,
+     "filled_pause_rate": -1.473,
+     "mattr": 0.481,
+     "recall_score": 1.101
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông chưa bắt máy nên chưa có thông tin mới.",
+    "explanation_en": "He did not answer today, so there is no new information."
+   },
+   {
+    "elder_id": "control",
+    "day": 29,
+    "date": "2026-09-19",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.168,
+     "pause_ratio": -0.184,
+     "filled_pause_rate": -1.222,
+     "mattr": -0.182,
+     "recall_score": 0.548
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 30,
+    "date": "2026-09-20",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "missed_call"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": 0.168,
+     "pause_ratio": -0.184,
+     "filled_pause_rate": -1.222,
+     "mattr": -0.182,
+     "recall_score": 0.548
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông chưa bắt máy nên chưa có thông tin mới.",
+    "explanation_en": "He did not answer today, so there is no new information."
+   },
+   {
+    "elder_id": "control",
+    "day": 31,
+    "date": "2026-09-21",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.526,
+     "pause_ratio": 0.379,
+     "filled_pause_rate": -0.696,
+     "mattr": 1.329,
+     "recall_score": 0.161
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 32,
+    "date": "2026-09-22",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.556,
+     "pause_ratio": -0.409,
+     "filled_pause_rate": -0.902,
+     "mattr": 0.577,
+     "recall_score": 0.893
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 33,
+    "date": "2026-09-23",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.825,
+     "pause_ratio": -0.723,
+     "filled_pause_rate": -1.149,
+     "mattr": -0.019,
+     "recall_score": 0.402
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 34,
+    "date": "2026-09-24",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 1.478,
+     "pause_ratio": -0.513,
+     "filled_pause_rate": -1.816,
+     "mattr": -0.213,
+     "recall_score": 1.062
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 35,
+    "date": "2026-09-25",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.768,
+     "pause_ratio": -0.166,
+     "filled_pause_rate": -1.319,
+     "mattr": -0.426,
+     "recall_score": 0.52
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 36,
+    "date": "2026-09-26",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.598,
+     "pause_ratio": 0.382,
+     "filled_pause_rate": -1.115,
+     "mattr": -0.941,
+     "recall_score": 0.141
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 37,
+    "date": "2026-09-27",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.336,
+     "pause_ratio": 0.413,
+     "filled_pause_rate": -0.82,
+     "mattr": -0.591,
+     "recall_score": -0.124
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 38,
+    "date": "2026-09-28",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.354,
+     "pause_ratio": 0.753,
+     "filled_pause_rate": -1.092,
+     "mattr": -0.859,
+     "recall_score": -0.31
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 39,
+    "date": "2026-09-29",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.24,
+     "pause_ratio": 0.236,
+     "filled_pause_rate": -1.617,
+     "mattr": -0.867,
+     "recall_score": -0.44
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 40,
+    "date": "2026-09-30",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.926,
+     "pause_ratio": 0.246,
+     "filled_pause_rate": -1.506,
+     "mattr": -0.594,
+     "recall_score": -0.531
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 41,
+    "date": "2026-10-01",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -1,
+     "pause_ratio": 0.23,
+     "filled_pause_rate": -1.23,
+     "mattr": 0.52,
+     "recall_score": -0.595
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 42,
+    "date": "2026-10-02",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -1.328,
+     "pause_ratio": 0.059,
+     "filled_pause_rate": -0.893,
+     "mattr": 0.091,
+     "recall_score": -0.595
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 43,
+    "date": "2026-10-03",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.385,
+     "pause_ratio": -0.111,
+     "filled_pause_rate": -1.374,
+     "mattr": -0.473,
+     "recall_score": 0.364
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 44,
+    "date": "2026-10-04",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.043,
+     "pause_ratio": 0.356,
+     "filled_pause_rate": -1.583,
+     "mattr": -1.436,
+     "recall_score": 1.035
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 45,
+    "date": "2026-10-05",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.079,
+     "pause_ratio": 0.75,
+     "filled_pause_rate": -1.459,
+     "mattr": -1.608,
+     "recall_score": 1.505
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 46,
+    "date": "2026-10-06",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.174,
+     "pause_ratio": 0.119,
+     "filled_pause_rate": -1.945,
+     "mattr": -1.146,
+     "recall_score": 1.505
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 47,
+    "date": "2026-10-07",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.057,
+     "pause_ratio": -0.276,
+     "filled_pause_rate": -1.8,
+     "mattr": -1.137,
+     "recall_score": 0.831
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 48,
+    "date": "2026-10-08",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.134,
+     "pause_ratio": -0.508,
+     "filled_pause_rate": -1.547,
+     "mattr": 0.133,
+     "recall_score": 1.362
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 49,
+    "date": "2026-10-09",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.165,
+     "pause_ratio": -0.545,
+     "filled_pause_rate": -1.521,
+     "mattr": 0.344,
+     "recall_score": 0.73
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 50,
+    "date": "2026-10-10",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.43,
+     "pause_ratio": -0.263,
+     "filled_pause_rate": -1.001,
+     "mattr": 0.001,
+     "recall_score": 0.288
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 51,
+    "date": "2026-10-11",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.114,
+     "pause_ratio": -0.414,
+     "filled_pause_rate": -0.581,
+     "mattr": -0.467,
+     "recall_score": -0.021
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 52,
+    "date": "2026-10-12",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.034,
+     "pause_ratio": -0.209,
+     "filled_pause_rate": -0.263,
+     "mattr": -0.479,
+     "recall_score": -0.238
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 53,
+    "date": "2026-10-13",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "invalid_call"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": -0.034,
+     "pause_ratio": -0.209,
+     "filled_pause_rate": -0.263,
+     "mattr": -0.479,
+     "recall_score": -0.238
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Cuộc gọi hôm nay hơi ngắn nên chưa đủ để so sánh với bình thường của ông.",
+    "explanation_en": "Today's call was too short to compare with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 54,
+    "date": "2026-10-14",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "missed_call"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": -0.034,
+     "pause_ratio": -0.209,
+     "filled_pause_rate": -0.263,
+     "mattr": -0.479,
+     "recall_score": -0.238
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông chưa bắt máy nên chưa có thông tin mới.",
+    "explanation_en": "He did not answer today, so there is no new information."
+   },
+   {
+    "elder_id": "control",
+    "day": 55,
+    "date": "2026-10-15",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.318,
+     "pause_ratio": -0.468,
+     "filled_pause_rate": -0.399,
+     "mattr": -0.608,
+     "recall_score": -0.389
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 56,
+    "date": "2026-10-16",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "missed_call"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": -0.318,
+     "pause_ratio": -0.468,
+     "filled_pause_rate": -0.399,
+     "mattr": -0.608,
+     "recall_score": -0.389
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông chưa bắt máy nên chưa có thông tin mới.",
+    "explanation_en": "He did not answer today, so there is no new information."
+   },
+   {
+    "elder_id": "control",
+    "day": 57,
+    "date": "2026-10-17",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.295,
+     "pause_ratio": -0.588,
+     "filled_pause_rate": -0.511,
+     "mattr": -1.219,
+     "recall_score": 0.508
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 58,
+    "date": "2026-10-18",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.222,
+     "pause_ratio": -0.29,
+     "filled_pause_rate": -0.174,
+     "mattr": -1.324,
+     "recall_score": 0.508
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 59,
+    "date": "2026-10-19",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.034,
+     "pause_ratio": 0.376,
+     "filled_pause_rate": 0.157,
+     "mattr": -1.874,
+     "recall_score": 0.132
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 60,
+    "date": "2026-10-20",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.336,
+     "pause_ratio": 0.324,
+     "filled_pause_rate": 0.476,
+     "mattr": -3.087,
+     "recall_score": 0.132
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 61,
+    "date": "2026-10-21",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.162,
+     "pause_ratio": 0.393,
+     "filled_pause_rate": 0.66,
+     "mattr": -3.526,
+     "recall_score": 0.132
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 62,
+    "date": "2026-10-22",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.589,
+     "pause_ratio": 0.38,
+     "filled_pause_rate": 0.366,
+     "mattr": -2.558,
+     "recall_score": 0.132
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 63,
+    "date": "2026-10-23",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.677,
+     "pause_ratio": 0.012,
+     "filled_pause_rate": 0.854,
+     "mattr": -2.162,
+     "recall_score": -0.13
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 64,
+    "date": "2026-10-24",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.812,
+     "pause_ratio": -0.103,
+     "filled_pause_rate": 1.642,
+     "mattr": -1.193,
+     "recall_score": -0.314
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 65,
+    "date": "2026-10-25",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.983,
+     "pause_ratio": -0.34,
+     "filled_pause_rate": 2.073,
+     "mattr": -0.518,
+     "recall_score": -0.443
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 66,
+    "date": "2026-10-26",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.591,
+     "pause_ratio": -0.78,
+     "filled_pause_rate": 1.993,
+     "mattr": 0.013,
+     "recall_score": -0.533
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 67,
+    "date": "2026-10-27",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.143,
+     "pause_ratio": -0.349,
+     "filled_pause_rate": 2.144,
+     "mattr": 0.344,
+     "recall_score": -0.596
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 68,
+    "date": "2026-10-28",
+    "light": "gray",
+    "reasons": [
+     {
+      "code": "missed_call"
+     }
+    ],
+    "z": {
+     "speech_rate_sps": -0.143,
+     "pause_ratio": -0.349,
+     "filled_pause_rate": 2.144,
+     "mattr": 0.344,
+     "recall_score": -0.596
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông chưa bắt máy nên chưa có thông tin mới.",
+    "explanation_en": "He did not answer today, so there is no new information."
+   },
+   {
+    "elder_id": "control",
+    "day": 69,
+    "date": "2026-10-29",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.286,
+     "pause_ratio": -0.228,
+     "filled_pause_rate": 1.158,
+     "mattr": 0.195,
+     "recall_score": -0.64
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 70,
+    "date": "2026-10-30",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.503,
+     "pause_ratio": -0.041,
+     "filled_pause_rate": 0.237,
+     "mattr": 0.171,
+     "recall_score": -0.64
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 71,
+    "date": "2026-10-31",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.547,
+     "pause_ratio": -0.225,
+     "filled_pause_rate": 0.246,
+     "mattr": 0.246,
+     "recall_score": -0.671
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 72,
+    "date": "2026-11-01",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.332,
+     "pause_ratio": 0.063,
+     "filled_pause_rate": 0.013,
+     "mattr": -0.764,
+     "recall_score": -0.693
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 73,
+    "date": "2026-11-02",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.029,
+     "pause_ratio": 0.308,
+     "filled_pause_rate": -0.445,
+     "mattr": -0.133,
+     "recall_score": -0.708
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 74,
+    "date": "2026-11-03",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.241,
+     "pause_ratio": -0.259,
+     "filled_pause_rate": -0.519,
+     "mattr": -0.333,
+     "recall_score": -0.708
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 75,
+    "date": "2026-11-04",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.187,
+     "pause_ratio": -0.807,
+     "filled_pause_rate": -0.339,
+     "mattr": -0.602,
+     "recall_score": -0.719
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 76,
+    "date": "2026-11-05",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.492,
+     "pause_ratio": -1.07,
+     "filled_pause_rate": -0.676,
+     "mattr": -0.258,
+     "recall_score": -0.726
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 77,
+    "date": "2026-11-06",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.517,
+     "pause_ratio": -0.705,
+     "filled_pause_rate": -1.198,
+     "mattr": 0.29,
+     "recall_score": -0.731
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 78,
+    "date": "2026-11-07",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.407,
+     "pause_ratio": 0.136,
+     "filled_pause_rate": -0.193,
+     "mattr": 0.11,
+     "recall_score": -0.735
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 79,
+    "date": "2026-11-08",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.036,
+     "pause_ratio": 0.593,
+     "filled_pause_rate": -0.008,
+     "mattr": 0.145,
+     "recall_score": 0.266
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 80,
+    "date": "2026-11-09",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.405,
+     "pause_ratio": 0.927,
+     "filled_pause_rate": -0.34,
+     "mattr": -0.333,
+     "recall_score": 0.266
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 81,
+    "date": "2026-11-10",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.765,
+     "pause_ratio": 0.429,
+     "filled_pause_rate": -0.238,
+     "mattr": -0.829,
+     "recall_score": 0.967
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 82,
+    "date": "2026-11-11",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.643,
+     "pause_ratio": 0.215,
+     "filled_pause_rate": 0.495,
+     "mattr": -1.19,
+     "recall_score": 0.454
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 83,
+    "date": "2026-11-12",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.656,
+     "pause_ratio": -0.273,
+     "filled_pause_rate": 0.322,
+     "mattr": -2.037,
+     "recall_score": 0.454
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 84,
+    "date": "2026-11-13",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.355,
+     "pause_ratio": -0.445,
+     "filled_pause_rate": 0.409,
+     "mattr": -1.171,
+     "recall_score": 0.095
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 85,
+    "date": "2026-11-14",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": 0.287,
+     "pause_ratio": -0.45,
+     "filled_pause_rate": 0.597,
+     "mattr": -1.269,
+     "recall_score": -0.157
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 86,
+    "date": "2026-11-15",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.174,
+     "pause_ratio": -0.315,
+     "filled_pause_rate": 0.179,
+     "mattr": -0.861,
+     "recall_score": -0.333
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 87,
+    "date": "2026-11-16",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.375,
+     "pause_ratio": -0.068,
+     "filled_pause_rate": -0.05,
+     "mattr": -0.78,
+     "recall_score": -0.456
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 88,
+    "date": "2026-11-17",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.495,
+     "pause_ratio": 0.22,
+     "filled_pause_rate": -0.314,
+     "mattr": -0.002,
+     "recall_score": -0.542
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 89,
+    "date": "2026-11-18",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.699,
+     "pause_ratio": 0.516,
+     "filled_pause_rate": -0.204,
+     "mattr": -0.271,
+     "recall_score": -0.602
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   },
+   {
+    "elder_id": "control",
+    "day": 90,
+    "date": "2026-11-19",
+    "light": "green",
+    "reasons": [],
+    "z": {
+     "speech_rate_sps": -0.732,
+     "pause_ratio": 0.504,
+     "filled_pause_rate": -0.19,
+     "mattr": -0.364,
+     "recall_score": -0.645
+    },
+    "baseline_ready": true,
+    "explanation_vi": "Hôm nay ông nói chuyện, trí nhớ và tâm trạng vẫn như bình thường của ông.",
+    "explanation_en": "Today his speech, memory and mood are in line with his usual pattern."
+   }
+  ],
+  "baseline": {
+   "filled_pause_rate": {
+    "center": 0.0413,
+    "scale": 0.0064
+   },
+   "mattr": {
+    "center": 0.7137,
+    "scale": 0.0139
+   },
+   "pause_ratio": {
+    "center": 0.1029,
+    "scale": 0.015
+   },
+   "recall_score": {
+    "center": 2.7778,
+    "scale": 0.5
+   },
+   "speech_rate_sps": {
+    "center": 4.8379,
+    "scale": 0.2758
+   }
+  },
+  "events": [
+   {
+    "day": 1,
+    "type": "enrolment",
+    "label_vi": "Bắt đầu cuộc gọi hằng ngày",
+    "label_en": "Daily calls start"
+   },
+   {
+    "day": 22,
+    "type": "baseline_ready",
+    "label_vi": "Đã có mức bình thường riêng",
+    "label_en": "Personal baseline ready"
+   }
+  ],
+  "simulated": true
+ },
+ "alerts": [],
+ "dmaic": {
+  "phases": [
+   {
+    "phase": "define",
+    "day_from": 1,
+    "day_to": 1,
+    "summary_vi": "Mục tiêu chăm sóc: sức khỏe chung khi tuổi cao. Mục tiêu đặt cùng gia đình: Đi bộ mỗi chiều; Ăn uống đều bữa.",
+    "summary_en": "Care goal: general wellbeing in later life. 2 goals agreed with the family."
+   },
+   {
+    "phase": "measure",
+    "day_from": 1,
+    "day_to": 21,
+    "summary_vi": "20 cuộc gọi hợp lệ trong 21 ngày đầu (0 ngày lỡ cuộc gọi) để lập mức bình thường riêng: tốc độ nói 4,84 âm tiết/giây, điểm nhớ lại trung bình 2,78/3.",
+    "summary_en": "20 valid calls in the first 21 days (0 missed) built the personal baseline: speech rate 4.84 syllables/s, mean recall 2.78/3."
+   },
+   {
+    "phase": "analyze",
+    "day_from": 22,
+    "day_to": 90,
+    "summary_vi": "Không có thay đổi kéo dài so với mức bình thường của người thân.",
+    "summary_en": "No sustained change from the person's own baseline."
+   },
+   {
+    "phase": "improve",
+    "day_from": 90,
+    "day_to": 90,
+    "summary_vi": "Đề xuất: Tiếp tục gọi hằng ngày như bình thường.",
+    "summary_en": "Recommended: Continue daily calls as usual."
+   },
+   {
+    "phase": "control",
+    "day_from": 22,
+    "day_to": 90,
+    "summary_vi": "Theo dõi liên tục: 63 ngày đèn xanh sau khi có mức bình thường.",
+    "summary_en": "Continuous monitoring: 63 green days since the baseline was set."
+   }
+  ],
+  "effect": {},
+  "new_baseline_day": null,
+  "first_alert_day": null,
+  "peak_light": null,
+  "intervention_day": null,
+  "green_day": null,
+  "days_to_green": null,
+  "simulated": true
+ },
+ "notes": [
+  {
+   "id": 10,
+   "day": 90,
+   "author": "Thảo",
+   "text": "Thảo nhắn: chiều nay con ghé ăn cơm với ba.",
+   "to_elder": true,
+   "simulated": true,
+   "created_at": "2026-10-27T12:29:05+00:00"
+  },
+  {
+   "id": 9,
+   "day": 50,
+   "author": "Thảo",
+   "text": "Ba khỏe, tuần này đi đám giỗ bên ngoại.",
+   "to_elder": false,
+   "simulated": true,
+   "created_at": "2026-10-27T12:29:05+00:00"
+  }
+ ],
+ "privacy": {
+  "consents": [
+   {
+    "type": "daily_call",
+    "granted": true,
+    "by": "self",
+    "witness": "family",
+    "scope_vi": "Nhận cuộc gọi hỏi thăm hằng ngày",
+    "scope_en": "Receive daily check-in calls",
+    "date": "2026-08-22",
+    "kind": "daily_call",
+    "granted_by": "self",
+    "note": "Receive daily check-in calls",
+    "ts": "2026-08-22"
+   },
+   {
+    "type": "voice_metrics",
+    "granted": true,
+    "by": "self",
+    "scope_vi": "Đo tốc độ nói, ngừng nghỉ từ văn bản và thời gian (không lưu âm thanh)",
+    "scope_en": "Derive speech timing metrics from text and timings (no audio stored)",
+    "date": "2026-08-22",
+    "kind": "voice_metrics",
+    "granted_by": "self",
+    "note": "Derive speech timing metrics from text and timings (no audio stored)",
+    "ts": "2026-08-22"
+   },
+   {
+    "type": "family_sharing",
+    "granted": true,
+    "by": "self",
+    "scope_vi": "Chia sẻ đèn tín hiệu và tóm tắt với con cháu",
+    "scope_en": "Share daily light and summaries with family",
+    "date": "2026-08-22",
+    "kind": "family_sharing",
+    "granted_by": "self",
+    "note": "Share daily light and summaries with family",
+    "ts": "2026-08-22"
+   },
+   {
+    "type": "clinician_sharing",
+    "granted": true,
+    "by": "self",
+    "scope_vi": "Chia sẻ báo cáo với bác sĩ khi gia đình yêu cầu",
+    "scope_en": "Share report with clinician on family request",
+    "date": "2026-08-22",
+    "kind": "clinician_sharing",
+    "granted_by": "self",
+    "note": "Share report with clinician on family request",
+    "ts": "2026-08-22"
+   },
+   {
+    "type": "research_use",
+    "granted": false,
+    "by": "self",
+    "scope_vi": "Dùng dữ liệu ẩn danh cho nghiên cứu",
+    "scope_en": "Use de-identified data for research",
+    "date": "2026-08-22",
+    "kind": "research_use",
+    "granted_by": "self",
+    "note": "Use de-identified data for research",
+    "ts": "2026-08-22"
+   }
+  ],
+  "access_log": [
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_privacy",
+    "resource": "/api/elders/control/privacy",
+    "ts": "2026-10-27T12:30:23+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_notes",
+    "resource": "/api/elders/control/notes",
+    "ts": "2026-10-27T12:30:23+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_timeline",
+    "resource": "/api/elders/control/timeline",
+    "ts": "2026-10-27T12:30:23+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_alerts",
+    "resource": "/api/elders/control/alerts",
+    "ts": "2026-10-27T12:30:23+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_today",
+    "resource": "/api/elders/control/today",
+    "ts": "2026-10-27T12:30:23+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_dmaic",
+    "resource": "/api/elders/control/dmaic",
+    "ts": "2026-10-27T12:30:23+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_profile",
+    "resource": "/api/elders/control",
+    "ts": "2026-10-27T12:30:23+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_dmaic",
+    "resource": "/api/elders/control/dmaic",
+    "ts": "2026-10-27T12:29:58+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_dmaic",
+    "resource": "/api/elders/control/dmaic",
+    "ts": "2026-10-27T12:29:32+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_timeline",
+    "resource": "/api/elders/control/timeline",
+    "ts": "2026-10-27T12:29:32+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_alerts",
+    "resource": "/api/elders/control/alerts",
+    "ts": "2026-10-27T12:29:32+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_notes",
+    "resource": "/api/elders/control/notes",
+    "ts": "2026-10-27T12:29:32+00:00"
+   },
+   {
+    "actor": "family:primary",
+    "role": "primary",
+    "action": "read_dmaic",
+    "resource": "/api/elders/control/dmaic",
+    "ts": "2026-10-27T12:29:15+00:00"
+   }
+  ],
+  "data_retention": {
+   "audio": "not stored",
+   "transcript_days": 7,
+   "metrics": "derived numbers kept while enrolled",
+   "llm_processing": "on-device rules (no LLM)"
+  },
+  "scheduling_active": true,
+  "simulated": true
+ },
+ "_snapshot": {
+  "from": "http://localhost:8001",
+  "at": "2026-10-27T12:30:23.328Z"
+ }
+}
