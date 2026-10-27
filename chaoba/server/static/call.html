@@ -66,6 +66,11 @@
     padding: 2px 10px; color: var(--muted); }
   .metrics { font-size: 16px; color: var(--muted); margin-top: 8px; }
   footer { font-size: 14px; color: var(--muted); text-align: center; }
+  #engineRow { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 10px; }
+  #engineBadge[data-engine="gemini"] { border-color: var(--go); color: var(--go); font-weight: 700; }
+  #engineBadge[data-state="fallback"] { border-color: var(--yellow); color: var(--ink); }
+  #engineNote { font-size: 16px; color: var(--muted); text-align: center; }
+  #engineNote:empty { display: none; }
 </style>
 </head>
 <body>
@@ -75,8 +80,12 @@
       <div class="who" id="who">Chào Bà</div>
       <div class="sub" id="whosub">Út Thương – trợ lý ảo</div>
     </div>
-    <div class="notice" title="Máy chủ Chào Bà chỉ nhận chữ và mốc thời gian nói; không nhận và không lưu ghi âm. Nhận dạng giọng nói dùng dịch vụ của trình duyệt (Google).">Không lưu ghi âm</div>
+    <div class="notice" id="noRec" title="Máy chủ Chào Bà chỉ nhận chữ và mốc thời gian nói; không nhận và không lưu ghi âm. Nhận dạng giọng nói dùng dịch vụ của trình duyệt (Google).">Không lưu ghi âm</div>
   </header>
+  <div id="engineRow">
+    <span class="notice" id="engineBadge" data-engine="browser" data-state="idle" data-testid="engine-badge">Giọng: trình duyệt</span>
+    <span id="engineNote" role="status" data-testid="engine-note"></span>
+  </div>
 
   <div id="banner" role="alert">Đã báo cho gia đình. Nếu nguy cấp, hãy gọi 115 ngay.<br><a href="tel:115">Gọi 115</a></div>
 
@@ -100,7 +109,8 @@
   </div>
   <footer id="privacy">Nhận dạng giọng nói dùng dịch vụ của trình duyệt (Google); máy chủ Chào Bà không nhận và không lưu ghi âm, chỉ nhận chữ và mốc thời gian nói ·
     Speech recognition uses the browser's service (Chrome/Edge send microphone audio to Google); the Chào Bà server never receives or stores audio, only text and pause timings ·
-    Chế độ "Giả lập người nói" là diễn tập: lưu là dữ liệu mô phỏng và không tính điểm</footer>
+    Chế độ "Giả lập người nói" là diễn tập: lưu là dữ liệu mô phỏng và không tính điểm ·
+    <span id="geminiPrivacy" hidden>Giọng Gemini Live (?engine=gemini): âm thanh cuộc gọi đi qua máy chủ Chào Bà tới Google (Gemini) để nhận dạng và đọc, xử lý ở nước ngoài; không lưu ghi âm · Gemini Live voice: call audio is streamed via the Chào Bà server to Google (Gemini), processed outside Vietnam; no audio is stored</span></footer>
 </div>
 
 <script>
@@ -109,6 +119,9 @@
   const params = new URLSearchParams(location.search);
   const ELDER = params.get("elder") || "hanh";
   const API = params.get("api") || "";
+  const ENGINE = (params.get("engine") || "").toLowerCase();       // "gemini" | "browser" | "" (server default)
+  const MUTE = params.get("mute") === "1";                         // tests: never produce sound (no TTS, no audio out)
+  const HALF_DUPLEX = params.get("duplex") === "half";             // Gemini: no mic upstream while Út Thương talks
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   const $ = (id) => document.getElementById(id);
   const big = $("big"), captions = $("captions"), statusEl = $("status"), banner = $("banner");
@@ -154,7 +167,7 @@
 
   // ------------------------------------------------------------------ TTS
   const HAS_TTS = "speechSynthesis" in window && typeof window.SpeechSynthesisUtterance === "function";
-  let viVoice = null, ttsBroken = !HAS_TTS || params.get("tts") === "0";   // ?tts=0 = captions only (muted)
+  let viVoice = null, ttsBroken = !HAS_TTS || params.get("tts") === "0" || MUTE;   // ?tts=0 / ?mute=1 = captions only
   function pickVoice() {
     try { viVoice = speechSynthesis.getVoices().find(v => /^vi/i.test(v.lang)) || null; } catch (e) { viVoice = null; }
   }
@@ -204,6 +217,7 @@
         noiseSuppression: true, autoGainControl: true } });
       vad.ctx = new (window.AudioContext || window.webkitAudioContext)();
       const src = vad.ctx.createMediaStreamSource(stream);
+      vad.src = src; vad.stream = stream;
       vad.an = vad.ctx.createAnalyser(); vad.an.fftSize = 1024;
       vad.buf = new Float32Array(vad.an.fftSize);
       src.connect(vad.an);                              // analyser only: nothing is recorded or uploaded
@@ -220,6 +234,7 @@
     const voiced = rms > thr;
     meterBar.style.width = Math.min(100, rms / 0.12 * 100) + "%";
     if (!voiced) vad.floor = vad.floor * 0.97 + rms * 0.03;
+    if (live) liveVad(voiced, now());
     if (!vad.listening) return;
     const t = now();
     if (voiced) {
@@ -342,6 +357,166 @@
     return { text: line.text, start, end, pauses, bubble: b };
   }
 
+
+  // ------------------------------------------------------------------ Gemini Live engine (optional, ?engine=gemini)
+  // Browser <-> Chào Bà server WebSocket <-> Gemini Live. Up: 16 kHz 16-bit PCM mic frames (AudioWorklet) + VAD
+  // events + typed/simulated lines. Down: 24 kHz PCM audio + transcripts + control messages (CONTRACT.md "Voice
+  // WebSocket"). The server runs our safety checks on the transcripts; nothing is stored. With ?mute=1 no audio output
+  // is ever created: playback is only timed.
+  const engineBadge = $("engineBadge"), engineNote = $("engineNote");
+  function setEngine(engine, state, note) {
+    engineBadge.dataset.engine = engine; engineBadge.dataset.state = state;
+    const st = { connecting: " · đang kết nối…", live: " · đã kết nối", fallback: " · dự phòng" }[state] || "";
+    engineBadge.textContent = (engine === "gemini" ? "Giọng: Gemini Live" : "Giọng: trình duyệt") + st;
+    if (note !== undefined) engineNote.textContent = note;
+    $("geminiPrivacy").hidden = engine !== "gemini";
+    if (engine === "gemini") $("noRec").title = "Không lưu ghi âm. Âm thanh cuộc gọi đi qua máy chủ Chào Bà tới Google (Gemini) để nhận dạng và đọc.";
+  }
+
+  class PcmPlayer {
+    constructor(rate, muted) { this.rate = rate; this.muted = muted; this.ctx = null; this.next = 0; this.vEnd = 0; this.srcs = new Set(); }
+    push(buf) {
+      const n = buf.byteLength >> 1, dur = n / this.rate;
+      if (this.muted) { const t = performance.now() / 1000; this.vEnd = Math.max(this.vEnd, t) + dur; return; }
+      if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: this.rate });
+      const i16 = new Int16Array(buf, 0, n), ab = this.ctx.createBuffer(1, n, this.rate), ch = ab.getChannelData(0);
+      for (let i = 0; i < n; i++) ch[i] = i16[i] / 32768;
+      const s = this.ctx.createBufferSource(); s.buffer = ab; s.connect(this.ctx.destination);
+      const st = Math.max(this.ctx.currentTime + 0.04, this.next); s.start(st); this.next = st + dur;
+      this.srcs.add(s); s.onended = () => this.srcs.delete(s);
+    }
+    remaining() {
+      if (this.muted) return Math.max(0, this.vEnd - performance.now() / 1000);
+      return this.ctx ? Math.max(0, this.next - this.ctx.currentTime) : 0;
+    }
+    flush() { this.srcs.forEach((s) => { try { s.stop(); } catch (e) {} }); this.srcs.clear(); this.next = 0; this.vEnd = 0; }
+    async drained(maxMs) { const t0 = performance.now(); while (this.remaining() > 0.05 && performance.now() - t0 < maxMs) await sleep(100); }
+    close() { this.flush(); try { this.ctx && this.ctx.close(); } catch (e) {} this.ctx = null; }
+  }
+
+  const WORKLET = `class P extends AudioWorkletProcessor{constructor(){super();this.r=sampleRate/16000;this.t=0;this.s=0;this.c=0;this.b=new Int16Array(1600);this.n=0}
+process(i){const x=i[0]&&i[0][0];if(!x)return true;for(let k=0;k<x.length;k++){this.s+=x[k];this.c++;this.t+=1;if(this.t>=this.r){this.t-=this.r;
+let v=this.s/this.c;v=v<-1?-1:v>1?1:v;this.b[this.n++]=v<0?v*32768:v*32767;this.s=0;this.c=0;if(this.n===1600){this.port.postMessage(this.b.buffer,[this.b.buffer]);
+this.b=new Int16Array(1600);this.n=0}}}return true}}registerProcessor("chaoba-pcm16",P);`;
+
+  let live = null;   // {ws, player, node, inSpeech, silFrom, agentBubble, elderBubble, finished}
+  function liveSend(obj) { if (live && live.ws && live.ws.readyState === 1) live.ws.send(typeof obj === "string" || obj instanceof ArrayBuffer ? obj : JSON.stringify(obj)); }
+  function liveVad(voiced, t) {
+    if (!live || simulate || typedMode) return;
+    if (voiced) {
+      live.silFrom = null; live.vf = (live.vf || 0) + 1;
+      if (!live.inSpeech && live.vf >= 3) { live.inSpeech = true; liveSend({ type: "vad", state: "speech", t: +(t - 0.09).toFixed(2) }); }
+    } else {
+      live.vf = 0;
+      if (!live.inSpeech) return;
+      if (live.silFrom === null) live.silFrom = t;
+      else if (t - live.silFrom >= 0.3) { live.inSpeech = false; liveSend({ type: "vad", state: "silence", t: +live.silFrom.toFixed(2) }); live.silFrom = null; }
+    }
+  }
+  async function startMicStream() {
+    if (!vad.ctx || !vad.src || !vad.ctx.audioWorklet) return false;
+    try {
+      const url = URL.createObjectURL(new Blob([WORKLET], { type: "application/javascript" }));
+      await vad.ctx.audioWorklet.addModule(url);
+      const node = new AudioWorkletNode(vad.ctx, "chaoba-pcm16", { numberOfInputs: 1, numberOfOutputs: 0 });
+      node.port.onmessage = (e) => { if (!live || live.finished) return; if (HALF_DUPLEX && live.player.remaining() > 0.05) return; liveSend(e.data); };
+      vad.src.connect(node);                         // mic -> worklet only; the worklet has no audio output
+      live.node = node;
+      return true;
+    } catch (e) { console.warn("mic stream unavailable", e); return false; }
+  }
+  function liveCaption(who, text, final) {
+    const key = who === "agent" ? "agentBubble" : "elderBubble";
+    if (!text) return;
+    if (!live[key]) live[key] = bubble(who, text, final ? "" : "interim");
+    live[key].querySelector("span").textContent = text;
+    live[key].classList.toggle("interim", !final);
+    if (final) live[key] = null;
+    captions.scrollTop = captions.scrollHeight;
+  }
+  function stopLive() {
+    if (!live) return;
+    live.finished = true;
+    try { live.node && live.node.disconnect(); } catch (e) {}
+    try { live.ws && live.ws.close(); } catch (e) {}
+    try { live.player.close(); } catch (e) {}
+    live = null;
+  }
+  function wsUrl(path) {
+    const base = API ? new URL(API, location.href) : new URL(location.href);
+    return (base.protocol === "https:" ? "wss://" : "ws://") + base.host + path;
+  }
+
+  // Resolves "ended" (server ended the call: save via /end), "fallback" (no greeting yet: browser voice from the start)
+  // or "fallback-after-greeting" (continue the same call with the browser pipeline).
+  function runGemini(voice) {
+    setEngine("gemini", "connecting", "");
+    setStatus("Đang kết nối giọng Gemini Live…");
+    return new Promise((resolve) => {
+      let ready = false, greeted = false, done = false, nextTurnBusy = false;
+      live = { ws: new WebSocket(wsUrl(voice.ws)), player: new PcmPlayer(voice.output_rate || 24000, MUTE),
+               inSpeech: false, silFrom: null, agentBubble: null, elderBubble: null, finished: false };
+      const L = live;
+      L.ws.binaryType = "arraybuffer";
+      const finish = async (how, note) => {
+        if (done) return; done = true;
+        if (how !== "ended" && inCall && !ending) setEngine("browser", "fallback", note || "Mất kết nối Gemini Live – chuyển sang giọng trình duyệt");
+        if (how === "ended") await L.player.drained(20000);
+        stopLive();
+        resolve(how === "ended" ? "ended" : (greeted ? "fallback-after-greeting" : "fallback"));
+      };
+      const elderTurn = async () => {          // after Út Thương finished talking (and playback drained)
+        if (nextTurnBusy || done) return; nextTurnBusy = true;
+        await L.player.drained(30000);
+        nextTurnBusy = false;
+        if (done || !inCall || ending) return;
+        liveSend({ type: "playback", state: "idle" });
+        if (simulate) {
+          setStatus("Đang giả lập người nói…");
+          const line = await api(`/api/calls/${callId}/simulate`);
+          const t = await speak(line.text, { rate: 0.85, pitch: 0.75 });
+          const pauses = line.pauses || [];
+          const dur = line.duration_sec || (words(line.text) / 3.8 + pauses.reduce((a, b) => a + b, 0));
+          const start = t.spoken ? t.start : now() + 0.6, end = start + dur;
+          if (end > now()) clockOffset += end - now();
+          liveSend({ type: "text", text: line.text, start: +start.toFixed(2), end: +end.toFixed(2), pauses });
+        } else if (typedMode) {
+          const turn = await typedTurn();
+          if (turn.text) liveSend({ type: "text", text: turn.text, start: +turn.start.toFixed(2), end: +turn.end.toFixed(2), pauses: [] });
+        } else {
+          setStatus("Út Thương đang nghe " + honorific + " nói… (" + honorific + " nói chen vào lúc nào cũng được)");
+        }
+      };
+      L.ws.onmessage = async (ev) => {
+        if (typeof ev.data !== "string") { L.player.push(ev.data); setStatus("Út Thương đang nói…"); return; }
+        let m; try { m = JSON.parse(ev.data); } catch (e) { return; }
+        if (m.type === "ready") {
+          ready = true; setEngine("gemini", "live", "");
+          if (!simulate && !typedMode && vad.an) { if (!(await startMicStream())) { typedMode = true; refreshButtons(); } }
+        } else if (m.type === "transcript") {
+          if (m.who === "agent") greeted = true;
+          liveCaption(m.who, m.text, !!m.final);
+        } else if (m.type === "interrupt") {
+          L.player.flush();                               // barge-in / safety: Út Thương stops at once
+        } else if (m.type === "turn") {
+          if (m.emergency) { banner.style.display = "block"; $("concern").style.display = "none"; }
+          else if (m.tier === "non_acute") $("concern").style.display = "block";
+        } else if (m.type === "agent_done") {
+          elderTurn();
+        } else if (m.type === "say") {                    // safety message in the browser's own voice (fallback)
+          liveCaption("agent", m.text, true); await speak(m.text);
+        } else if (m.type === "ended") {
+          finish("ended");
+        } else if (m.type === "fallback" || m.type === "error") {
+          finish("fallback", m.note_vi);
+        }
+      };
+      L.ws.onerror = () => finish("fallback");
+      L.ws.onclose = () => { if (!done) finish("fallback"); };
+      // A hard stop from the big button resolves through endCall -> stopLive -> onclose.
+    });
+  }
+
   // ------------------------------------------------------------------ call loop
   async function startCall() {
     inCall = true; ending = false; banner.style.display = "none"; $("concern").style.display = "none";
@@ -356,12 +531,23 @@
     if (vad.ctx && vad.ctx.state === "suspended") { try { await vad.ctx.resume(); } catch (e) {} }
     t0 = performance.now(); clockOffset = 0;
     let res;
-    try { res = await api("/api/calls", { method: "POST", body: JSON.stringify({ elder_id: ELDER, channel: "web", simulated: !!simulate }) }); }
+    try { res = await api("/api/calls", { method: "POST", body: JSON.stringify(Object.assign({ elder_id: ELDER, channel: "web", simulated: !!simulate }, ENGINE ? { engine: ENGINE } : {})) }); }
     catch (e) { setStatus("Không gọi được: " + e.message); resetButton(); inCall = false; return; }
     callId = res.call_id;
-    bubble("agent", res.greeting_text);
-    setStatus("Út Thương đang nói…");
-    await speak(res.greeting_text);
+    let greeted = false;
+    const voice = res.voice || {};
+    if (voice.engine === "gemini-live") {
+      const how = await runGemini(voice);
+      if (how === "ended" || !inCall || ending) { await endCall(); return; }
+      greeted = how === "fallback-after-greeting";
+    } else {
+      setEngine("browser", "idle", voice.note_vi || "");
+    }
+    if (!greeted) {
+      bubble("agent", res.greeting_text);
+      setStatus("Út Thương đang nói…");
+      await speak(res.greeting_text);
+    }
     while (inCall && !ending) {
       let turn;
       if (simulate) turn = await simulatedTurn();
@@ -387,6 +573,7 @@
   async function endCall() {
     if (!callId || ending) return;
     ending = true; inCall = false; vad.listening = false;
+    stopLive();
     try { if ("speechSynthesis" in window) speechSynthesis.cancel(); } catch (e) {}  // stop talking at once
     try { rec && rec.abort(); } catch (e) {}
     if (listen.cancel) listen.cancel();
@@ -428,6 +615,7 @@
   // Closing or leaving the page must silence the assistant even if a reply is still queued.
   window.addEventListener("pagehide", () => {
     inCall = false;
+    stopLive();
     try { if ("speechSynthesis" in window) speechSynthesis.cancel(); } catch (e) {}
     if (callId && !ending) { try { navigator.sendBeacon(`/api/calls/${callId}/end`); } catch (e) {} }
   });

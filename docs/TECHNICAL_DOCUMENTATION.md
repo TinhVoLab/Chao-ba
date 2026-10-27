@@ -103,7 +103,10 @@ flowchart LR
     SCR["ScriptedEngine<br/>(no key)"]
     CL["ClaudeEngine<br/>Sonnet 5.5 → Haiku 5.5 → scripted"]
     ANA["Post-call analysis<br/>rule-based | Claude Opus 5.5<br/>structured output"]
+    LIVE["Voice WS /ws/voice (optional)<br/>gemini_live.py bridge<br/>safety on live transcripts"]
   end
+
+  GEM["Gemini Live (optional)<br/>gemini-3.8-live<br/>Developer API or Vertex AI"]
 
   subgraph Core["Analytics core: chaoba/core"]
     MET["metrics.py<br/>M1–M3 per call"]
@@ -128,10 +131,13 @@ flowchart LR
   SVC <--> DB
   SYN -.->|"seed: 3 personas × 90 days"| DB
   FAM -->|"REST (JSON)"| REST
+  WEB -.->|"engine=gemini: 16 kHz PCM + VAD events (stream-through)"| LIVE
+  LIVE <-.->|"audio + transcripts + tool calls"| GEM
+  LIVE -->|"next_step → Service.turn"| SVC
   SCREEN -->|"text + VAD timings; taps (medication, mood, game, contact)"| REST
 ```
 
-**Tech stack.** Python 3.14, FastAPI, Pydantic, NumPy/pandas, SQLite (prototype), Anthropic SDK (optional). Next.js 16 / React 19 / Tailwind 4 / Recharts PWA for the family app. The production voice path uses LiveKit Agents with SIP, Silero VAD and a vi-VN STT/TTS provider. The production database is Postgres on Supabase with Row Level Security (`chaoba/server/schema.sql`).
+**Tech stack.** Python 3.14, FastAPI, Pydantic, NumPy/pandas, SQLite (prototype), Anthropic SDK (optional), Google GenAI SDK (optional Gemini Live voice engine, §7.4). Next.js 16 / React 19 / Tailwind 4 / Recharts PWA for the family app. The production voice path uses LiveKit Agents with SIP, Silero VAD and a vi-VN STT/TTS provider. The production database is Postgres on Supabase with Row Level Security (`chaoba/server/schema.sql`).
 
 ### 3.2 One call, end to end
 
@@ -376,6 +382,51 @@ The two other personas show the remaining cases:
 - The static persona prompt is **cached** (`cache_control`). Per-call context (profile, goals, medication schedule, last 3 summaries, hooks, recall question/cue/hidden answer, family message) goes in a second, uncached system block. The per-turn phase directive is appended last, so the cached prefix stays byte-stable.
 - **Layer-2 emergency**: a strict `flag_emergency` tool (category enum + verbatim quote). The LLM can *add* an emergency the keyword list missed; it cannot remove a Layer-1 hit.
 - These paths are covered by unit tests with a fake client (cache control, tool call, fallback chain, scrubbing). They have **not** been exercised against the live API in this environment (§15).
+
+### 7.4 Gemini Live voice engine (optional)
+
+**What it is.** An optional *voice I/O engine* for the two web channels (the `/call` page and the `/screen` talk view). It replaces the browser's speech recognition + `speechSynthesis` with one low-latency, full-duplex Gemini Live session (native audio, barge-in). It is **off by default** and available only when Google credentials are configured; the browser pipeline stays the default and the fallback. Select it per call with `?engine=gemini` (query parameter on `/call` and `/screen`, sent as `POST /api/calls {"engine":"gemini"}`) or for all web calls with `CHAOBA_VOICE_ENGINE=gemini`. Code: `chaoba/agent/gemini_live.py` (bridge), `chaoba/server/voice.py` (WebSocket), `chaoba/agent/gemini_fake.py` (offline fake), `web/lib/voice/geminiVoice.ts` + `callSession.ts`, `chaoba/server/static/call.html`. Protocol: CONTRACT.md, *Voice WebSocket*.
+
+**Architecture: server-side proxy.** `browser ⇄ WS /ws/voice/{call_id} (FastAPI) ⇄ Gemini Live (google-genai async, client.aio.live.connect)`. The page streams 16 kHz 16-bit PCM from an AudioWorklet (no audio output node) and plays the 24 kHz PCM it gets back; it also sends the existing WebAudio VAD's speech/silence transitions as JSON on the same socket. We chose the proxy over browser-direct ephemeral tokens because **the safety interception must run on our server**, on the live transcripts, before and while the model speaks, and because no key (long- or short-lived) then reaches the browser. Ephemeral tokens (Developer API, `v1beta`, default 30 min / 1 min new-session window) would save one network hop; that is a later optimisation if the benchmark shows the proxy hop matters.
+
+**Our orchestrator stays the brain.** Gemini gets the persona and safety rules (`SYSTEM_PROMPT`, shared with the Claude engine), live-call rules ("RESPOND IN VIETNAMESE…", Southern register, ≤ 20 words, one question, openly a virtual assistant) and today's context block **without the hidden recall answer** (`build_context_block(hide_recall_answer=True)`: the model gets only the recall question and cue; scoring stays on the server). It also gets four function tools:
+
+| Tool | What the server does |
+|---|---|
+| `next_step()` (blocking; the model must call it after every elder utterance) | takes the elder's words (Gemini input transcription, or the typed/simulated line) + VAD timings → `Service.turn` = `Orchestrator.handle_turn` (emergency tiers, opt-out, consent, scam / medication / diagnosis guardrails, planner, recall scoring, relay cards, memory book, game, closing) → returns `{mode, line, phase, end_call_after}`. `mode:"exact"` = say word for word (every safety/guardrail reply, relay cards, recall question and cue, story-share consent, game, closing with the medication reminder); `"adapt"` = the model may warm up the short reaction but keeps the question; `"silent"`. Lines come from `LiveLineEngine` (the deterministic scripted engine) |
+| `report_answer(kind, value)` | stored in the voice metadata only (the server scores answers itself) |
+| `flag_emergency(category, quote, acute)` | layer 2, as with Claude (`Orchestrator.handle_flag`): acute → 115 message + red alert + end; non-acute → one confirming question + red "check in today" |
+| `end_call()` | accepted only in the closing step; the call ends after the goodbye audio |
+
+**Safety interception (deterministic, on our server).**
+1. *Input:* every input-transcription chunk is scanned with the layer-1 emergency spotter as it streams. On an **acute** hit the bridge stops forwarding model audio, tells the page to flush its playback (`interrupt`), ends the mic stream to Gemini (`audio_stream_end`, so the elder's next words cannot barge in on the safety message), records the turn through `Service.turn` (same red alert, same tier logic as the browser pipeline) and makes Gemini say the fixed message with an explicit "[HỆ THỐNG – KHẨN] … Nói đúng nguyên văn: «…»" (`send_client_content(turn_complete=True)` interrupts any generation). If Gemini has not started saying it within 3 s, the page says it with its own TTS (`say`). Non-acute, third-party, scam, diagnosis, medication and opt-out outcomes come back through `next_step` as `exact` lines, so every tier behaves as in the browser pipeline.
+2. *Output:* every output-transcription chunk is post-checked with the same blocklist as the output scrub (`guardrails.forbidden_in_reply`). A forbidden phrase interrupts the model (`interrupt` to the page, audio dropped) and the neutral fallback sentence is said instead; the violation is logged (`voice_json.violations`) and the transcript keeps the correction. Because transcription trails the audio slightly, a few syllables may already have been heard: this is a correction, not a guarantee, which is why the instructions, `exact` lines and the closed tool loop come first.
+3. If the model answers without calling `next_step`, the bridge still runs the turn through the orchestrator and says safety/guardrail/closing lines exactly (`missed_next_step` is counted).
+
+**Metrics.** Elder turn text = Gemini input transcription (or the typed line); turn `start`/`end`/`pauses` = the page's WebAudio VAD transitions (same VAD as the browser pipeline; gaps ≥ 0.4 s count as pauses). The call ends through the existing `POST /api/calls/{id}/end` (metrics, analysis, memory book, kudos relay, lights). `call_session.engine = "gemini-live"`, and `call_session.voice_json` keeps the model id, voice, time to first audio, **per-turn latency (end of elder speech → first audio byte)** with p50/p90, token usage by modality, interruptions, violations and any fallback. Audio is relayed frame by frame and only counted (`audio_in_bytes`, `audio_out_bytes`, `audio_stored:false`); a test scans every table for binary data.
+
+**Fallback.** Connection failure, missing credentials or a dropped session → `{"type":"fallback"}` (or a closed socket) → the page continues **the same call** on the browser pipeline (`POST /turns`) and shows "Giọng: trình duyệt · dự phòng" with a note. Session limits (15 min audio-only, ~10 min per connection, `go_away` warning) are far above our ≤ 5:30 calls, so session resumption is not used.
+
+**Configuration** (current names from the docs below, checked 28 Oct 2026):
+
+| Setting | Default | Notes |
+|---|---|---|
+| `GEMINI_API_KEY` | – | Gemini Developer API (`genai.Client(api_key=…)`); `GOOGLE_API_KEY` also accepted |
+| `GOOGLE_GENAI_USE_VERTEXAI`, `GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_LOCATION` | –, –, `us-central1` | Vertex AI with Application Default Credentials (`genai.Client(vertexai=True, project, location)`); the 3.8 Live model page lists `us`, `eu` and `us-central1` |
+| `CHAOBA_VOICE_ENGINE` | `browser` | `gemini` makes Gemini Live the default for web calls (only when credentials exist) |
+| `CHAOBA_GEMINI_MODEL` | `gemini-3.8-live` | GA on Vertex (24 Sep 2026); Developer API docs call it the default for low-latency voice agents. Legacy: `gemini-3.1-flash-live-preview`; `gemini-2.5-flash-native-audio-preview-12-2025` is also priced |
+| `CHAOBA_GEMINI_VOICE` | `Sulafat` ("Warm") | any of the 30 Live voices (e.g. Achernar "Soft", Vindemiatrix "Gentle", Kore "Firm") |
+| `CHAOBA_GEMINI_LANGUAGE_CODE` | unset | the Developer API docs say native-audio models choose the language themselves and don't accept an explicit code, so the system instruction pins Vietnamese; Vertex lists `vi-VN` under `speech_config.language_code`: set `vi-VN` to send it |
+| `CHAOBA_GEMINI_SILENCE_MS` | 1000 | server VAD end-of-speech silence (`realtime_input_config.automatic_activity_detection`, end sensitivity LOW); docs recommend 500–800 ms, we start longer because elders pause mid-sentence; barge-in via `START_OF_ACTIVITY_INTERRUPTS` |
+| `CHAOBA_GEMINI_FAKE` | unset | `1` = offline fake session (tests, muted demo), `fail` = always fails (fallback demo) |
+
+**Southern accent.** The Live voices are not region-specific. Whether `Sulafat` (or another voice) sounds acceptable to Southern elders, and how well input transcription handles miền Tây speech, **must be judged by human listeners**; no benchmark here measures it.
+
+**Go/no-go benchmark** (`scripts/voice_bench.py`). With credentials it runs N full simulated calls and the nine safety probes (three acute, non-acute, third party, scam, diagnosis, medication, opt-out) through the real stack, and reports time to first audio, per-turn latency p50/p90, what Gemini actually said, compliance (`next_step` use, violations), token usage by modality and an estimated **cost per 4-minute call** from the published price table (Gemini 3.8 Live, Standard: input $0.75 text / $3.00 audio per 1M tokens, output $4.50 text / $12.00 audio; or $0.005/min audio in and $0.018/min audio out ⇒ ≈ $0.056 for 4 min in + 2 min out; **to verify**, Vertex prices are listed separately). Elder turns are sent as text because no Vietnamese TTS is available to the harness, so its latency excludes end-of-speech detection. Without credentials it exits with code 2 and instructions; `--fake` dry-runs the harness.
+
+**Verification status.** Everything above is tested offline against a fake Gemini session that speaks the protocol with real `google.genai.types` messages (`tests/server/test_voice_gemini.py`: tool calls drive all phases; the recall answer never reaches the model; an emergency in the streaming input transcription interrupts the model and raises the red alert; a forbidden output phrase is interrupted and corrected; scam/diagnosis said exactly; barge-in; VAD timings; connect failure → fallback on the same call; credentials detection for both modes; no audio persisted; the WebSocket end to end) and in a muted browser (`web/scripts/voice-e2e.mjs`: `/screen` and `/call` full calls, emergency, WebSocket failure → browser voice). **It has not run against the real Gemini API** (no credentials on the build machine). To verify with credentials: `voice_bench.py`; tool-calling compliance in Vietnamese; transcription quality for Southern speech; real latency and echo behaviour with speakers (Chrome's echo cancellation with Web Audio playback; `?duplex=half` stops the upstream mic while Út Thương talks); `language_code` acceptance; actual token usage and price.
+
+Docs used: [Live API overview](https://ai.google.dev/gemini-api/docs/live), [Get started with the GenAI SDK](https://ai.google.dev/gemini-api/docs/live-api/get-started-sdk), [Capabilities (transcription, voice, VAD, interruption)](https://ai.google.dev/gemini-api/docs/live-api/capabilities), [Tool use / function calling](https://ai.google.dev/gemini-api/docs/live-api/tools), [Session management](https://ai.google.dev/gemini-api/docs/live-api/session-management), [Ephemeral tokens](https://ai.google.dev/gemini-api/docs/ephemeral-tokens), [Pricing](https://ai.google.dev/gemini-api/docs/pricing), [Vertex: Gemini 3.8 Live model](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/gemini/3-8-live), [Vertex: configure language and voice](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/live-api/configure-language-voice); SDK `google-genai==2.33.0` (PyPI).
 
 ---
 
@@ -710,7 +761,8 @@ Recall (0–3 per call) is never shown as a percentage, because "37 % worse reca
 
 ### 10.9 Software verification
 
-- `.venv/bin/pytest -q` → **262 passed** on 28 Oct 2026 with Docker running (without Docker the 3 Postgres RLS checks in `tests/deploy`, which start a throwaway Postgres container, are skipped; the suite covers core metrics, control chart, explanations and blocklist, synthetic personas, DMAIC/evaluation, emergency spotter true/false positives including idioms and negation, orchestrator phases, consent/opt-out, scam/medication/diagnosis guardrails, Claude engine with a fake client, server API end-to-end including "no audio anywhere", family love notes and their relay in the call).
+- `.venv/bin/pytest -q` → **281 passed** on 28 Oct 2026 with Docker running (without Docker the 3 Postgres RLS checks in `tests/deploy`, which start a throwaway Postgres container, are skipped; the suite covers core metrics, control chart, explanations and blocklist, synthetic personas, DMAIC/evaluation, emergency spotter true/false positives including idioms and negation, orchestrator phases, consent/opt-out, scam/medication/diagnosis guardrails, Claude engine with a fake client, server API end-to-end including "no audio anywhere", family love notes and their relay in the call, and the optional Gemini Live voice engine against an offline fake session: tool-driven phases, hidden recall answer, streaming emergency interception, output correction, fallback, credentials, no audio persisted).
+- `web/scripts/voice-e2e.mjs` (muted Chromium, `?mute=1`, AudioContext blocked, API with `CHAOBA_GEMINI_FAKE=1`): `/screen` and `/call` full calls on Gemini Live reach the end and update the day, emergency path, WebSocket failure → browser voice on the same call (18 checks passed on 28 Oct 2026).
 - A full hands-free simulated web call was run in the browser (Playwright, headless Chromium): recall failed free and succeeded after the cue (score 1), 56 s voiced speech (valid), day 91 appended with today's date, light computed. A typed call was also run end to end (stored as live data; typed answers carry no speech timing, so it counts as a too-short call and its speech metrics are not shown).
 - Family app checked with Playwright on every route × 3 elders × VI/EN at 390×844 and 1280×800 (84 page loads, before and after the live calls): no console errors, no failed requests, no horizontal overflow. Offline (API stopped) the app falls back to the bundled fixtures.
 
@@ -744,7 +796,8 @@ Clinical safety is *human-in-the-loop by design*. Chào Bà never takes a clinic
 
 ### 11.3 Data minimisation and retention
 
-- **No raw audio reaches or is stored by the Chào Bà server.** The page's VAD only reads signal levels locally. There is no audio column in either schema, and a server test asserts this.
+- **No raw audio reaches or is stored by the Chào Bà server** in the default (browser) voice engine. The page's VAD only reads signal levels locally. There is no audio column in either schema, and a server test asserts this.
+- **Optional Gemini Live engine (§7.4), opt-in only:** when a call uses `engine=gemini`, the call audio (mic up, voice down) is streamed **through** the Chào Bà server to Google (Gemini Developer API or Vertex AI) for recognition and speech. The server relays it frame by frame and only counts bytes; it never writes audio to disk or the database (a test scans every table for binary data). Google processes the audio under its API terms. The call page, the standing screen and `GET /api/elders/{id}/privacy` (`data_retention.voice_engine`) say so; the greeting's "con hổng ghi âm đâu" (no recording is kept) stays true.
 - **Speech recognition in the web prototype is the browser's service, and it is not local.** Chrome and Edge implement `webkitSpeechRecognition` by streaming microphone audio to the vendor's cloud (Google for Chrome), under that vendor's terms. The call page says so ("Nhận dạng giọng nói dùng dịch vụ của trình duyệt (Google); máy chủ Chào Bà không nhận và không lưu ghi âm"). Typed mode ("Gõ chữ") avoids it. We therefore do **not** claim that no audio leaves the device in the prototype.
 - **Production path:** telephone audio (LiveKit SIP) is transcribed by a **self-hosted** Vietnamese ASR (PhoWhisper or Whisper fine-tuned on Vietnamese) on our own Vietnam-region servers. Audio frames live only in memory for the duration of the transcription and are discarded afterwards; only text plus timings are written.
 - **Transcripts** (text + timings) expire after **7 days**. They are purged on startup and after each call (prototype) or by a daily `pg_cron` job (production).
@@ -771,6 +824,7 @@ RLS uses helper functions `app_role()`, `can_read()` and `clinician_shared()` (t
 ### 11.5 Cross-border processing and Vietnamese law
 
 - **No-key mode**: the Chào Bà server sends nothing to third parties. In the web prototype, however, the browser's own speech recognition sends microphone audio to the browser vendor (Google for Chrome) unless typed mode is used (§11.3); the production telephone path uses self-hosted ASR instead.
+- **Gemini Live voice engine (optional, §7.4)** sends the elder's **voice audio** plus the per-call context (as for Claude, without the hidden recall answer) to Google, processed outside Vietnam (Developer API, or the chosen Vertex AI region: `us`, `eu`, `us-central1` for `gemini-3.8-live` today). Voice is biometric-adjacent and health-related, so this is a cross-border transfer of sensitive personal data: it needs the elder's explicit consent for this processing (a separate consent purpose before any pilot), the same transfer documentation, and a check of Google's data-use and retention terms for the chosen tier. Until then it stays a demo option, off by default.
 - **Claude mode** sends transcript text and the per-call context (first name, honorific, age, province, medication schedule, family first names, recent summaries) to Anthropic's API, outside Vietnam. That is a **cross-border transfer of health-related personal data**. Before any real deployment we plan to:
   - minimise and pseudonymise the context (no full names, coarse location);
   - evaluate whether a domestic or in-region LLM, or fully scripted conversation with only post-call analysis via an LLM, meets quality needs;
@@ -873,6 +927,7 @@ What this shows:
 - **On the phone, telephony dominates** (≈ 80 % of scenario C). With LLM cost reduced to Haiku (≈ US$0.003 per call), the model choice barely matters any more; scenario D (no LLM at all) saves only ≈ 2,000 VND per month. The phone target is met either at **5 calls a week**, or with daily calls if domestic outbound minutes cost **≤ ≈ 500 VND/min**. Whether that rate is obtainable is the first question for the pilot's procurement step.
 - **Sonnet + Opus + international voice (B) is about 2.4× the target** even before telephony, so it is a quality benchmark, not a price point.
 - Caching: the persona prompt (≈ 1,300 estimated tokens) is close to the minimum cacheable prefix length, which depends on the model; if it does not cache, scenario C's LLM cost rises by about US$0.001 per call, which does not change any conclusion.
+- **Optional Gemini Live voice engine (web, §7.4), not in the table above:** at the published per-minute audio prices for Gemini 3.8 Live (Standard tier: $0.005/min in, $0.018/min out; to verify), a 4-minute call with the mic streamed throughout and ≈ 2 minutes of Út Thương speaking costs ≈ US$0.056 in voice I/O (≈ 1,460 VND), ≈ 44,000 VND per person-month at 30 calls, on top of scenario A's analysis cost; token-priced context resent per turn can add to this. `scripts/voice_bench.py` measures the real usage per call with a key.
 - Not included: payment fees, customer support, family-side SMS/Zalo notifications, retries for unanswered calls (each unanswered attempt costs telephony for its ring time), and VAT. These are measured per call in the usability pilot (§13) and replace this model.
 
 ---
@@ -949,6 +1004,7 @@ Read this as: the < 100k VND target is reachable on the web, and on the phone on
 **Engineering**
 
 - **LiveKit/SIP adapter is untested.** `livekit-agents` is not installed and no SIP trunk or STT/TTS credentials exist. PSTN is the intended main channel but is not demonstrated.
+- **The Gemini Live voice engine (§7.4) is not verified against the live API.** It is tested only against an offline fake session (pytest) and in a muted browser; latency, Vietnamese tool-calling compliance, Southern-speech transcription, the voice's accent, echo behaviour and cost must be measured with `scripts/voice_bench.py` and human listeners before any use with elders. When it is on, call audio goes to Google (§11.5).
 - **Claude mode is not verified against the live API** in this environment. It is unit-tested with a fake client only, and API errors silently fall back to Haiku, then to the scripted engine. Check the `engine` field of the call record to know which engine actually answered.
 - **No authentication in the prototype.** Roles come from unauthenticated `X-Actor` / `X-Role` headers (the app's "Viewing as" switcher). Only the family endpoints (§8.2), the love-note cards (§8.3) and the community dashboard (§8.4) act on the role; the original read endpoints (today, timeline, alerts…) still return the same data to any family caller. RLS exists only in the production schema and has not been tested against a live Supabase instance.
 - Active call state is in memory (single process); a server restart drops calls in progress.

@@ -15,9 +15,12 @@ viability & path to pilot. Every workstream should make its part demonstrable ag
 - No raw audio is stored anywhere, and the Chào Bà server never receives audio: the call page sends only text + VAD
   timings. (The web prototype's speech recognition is the browser's Web Speech API, which in Chrome/Edge streams the
   microphone to the vendor's cloud; the page says so. Production: self-hosted PhoWhisper/Whisper, audio discarded
-  after transcription.)
+  after transcription.) **Exception, opt-in only:** the optional Gemini Live voice engine (`engine=gemini`, needs Google
+  credentials) streams call audio *through* the server to Google; it is relayed frame by frame and never stored (no
+  audio column, no file); the page and the privacy endpoint say so.
 - Python 3.14 venv at `.venv` (`.venv/bin/python`, `.venv/bin/pytest`). Installed: numpy, pandas,
-  fastapi, uvicorn, pydantic, anthropic, pytest, httpx. Add deps to `requirements.txt` if you need more.
+  fastapi, uvicorn, pydantic, anthropic, pytest, httpx, google-genai (pinned 2.33.0; optional Gemini Live engine).
+  Add deps to `requirements.txt` if you need more.
 - Stay inside your own directories (ownership below). Shared types live in `chaoba/core/models.py`
   (owned by the lead; ask before changing).
 
@@ -96,7 +99,7 @@ All responses JSON; every elder-scoped response includes `"simulated": bool`.
 Identity (no login in the prototype): the app sends `X-Actor` (percent-encoded name, e.g. `Lan`) and `X-Role`
 (`primary`); defaults `family:primary` / `primary`. Reads are logged once per actor / action / resource / day with a
 counter (`count`, `last_ts`); writes always get their own row.
-- `GET /api/health` → `{"ok":true,"llm":"claude"|"fallback"}`
+- `GET /api/health` → `{"ok":true,"llm":"claude"|"fallback","voice":"browser"|"gemini"}` (`voice` = default voice engine of web calls)
 - `GET /api/elders` → `[{id, display_name, name_en, age, province, light, simulated}]`
 - `GET /api/elders/{id}` → elder profile
 - `GET /api/elders/{id}/today` → `{date, day, is_today, label_vi, label_en, calls, rehearsal, emergency, light, reasons, explanation_vi, explanation_en, summary_vi, summary_en, answered, mood, channel, sharing_paused, contact:{last, days_since, nudge, nudge_after_days}, simulated}`
@@ -129,7 +132,11 @@ counter (`count`, `last_ts`); writes always get their own row.
 - `GET /api/evaluation` → evaluation report JSON
 - `POST /api/demo/reset[?elder=hanh]` (only while `CHAOBA_DEMO=1`, else 403) → deletes that elder's (or every elder's)
   rows and re-seeds: `{ok, reset:"hanh"|"all", elders:[...], today:{elder_id: date}}`
-- `POST /api/calls` `{elder_id, channel:"web", simulated?: bool}` → `{call_id, greeting_text, phase, engine, prompt_version, day, notice_vi, notice_en}`
+- `POST /api/calls` `{elder_id, channel:"web", simulated?: bool, engine?: "gemini"|"browser"}` → `{call_id, greeting_text, phase, engine,
+  prompt_version, day, notice_vi, notice_en, voice}`. `engine` (request) picks the voice engine; default `CHAOBA_VOICE_ENGINE`
+  (`browser`). `voice` = `{engine:"browser", requested, note_vi?, note_en?, reason?}` or, when Gemini Live is configured,
+  `{engine:"gemini-live", requested:"gemini", model, voice, mode:"developer"|"vertex"|"fake", input_rate:16000, output_rate:24000,
+  ws:"/ws/voice/{call_id}"}` (then the response's `engine` is `gemini-live`). Never contains a key.
 - `POST /api/calls/{call_id}/turns` `{text, start, end, pauses:[...]}` → `{reply_text, phase, emergency:bool, end_call:bool, event, tier}`
   `tier` ∈ `acute` (115 advised, family alerted now, call ends; `emergency: true`) | `non_acute` (the elder's own event
   clearly in the past: one confirming question, red `health_concern` alert, no 115; a "yes" escalates to `acute`) |
@@ -139,7 +146,8 @@ counter (`count`, `last_ts`); writes always get their own row.
 - `GET /api/calls/{call_id}/simulate` (demo) → `{text, pauses, duration_sec, target_sps, simulated:true}`: pauses and
   duration are calibrated to the persona's current baseline speech rate and pause ratio; the page reports
   `start`/`end = start + duration_sec`.
-- `POST /api/calls/{call_id}/end` → `{metrics: CallMetrics, analysis: CallAnalysis, today: <today shape>, day, simulated, rehearsal}`
+- `POST /api/calls/{call_id}/end` → `{metrics: CallMetrics, analysis: CallAnalysis, today: <today shape>, day, simulated, rehearsal, voice?}`
+  (`voice` only for Gemini Live calls: the stored voice metadata, see *Voice WebSocket*)
 - Elder standing screen (`chaoba/server/elder_ui.py`; the web app's `/screen`; writes are the elder's self-reports, never scored):
   `GET /api/elders/{id}/screen` → `{date, day, medications:[{name, time, timed, status:"taken"|"not_yet"|null, answered_at}], messages:[to_elder notes, last 7 days], mood_today, game_plays_today, opted_out, simulated}`;
   `POST|GET /api/elders/{id}/medication_log` `{status:"taken"|"not_yet", medication?, time?}`; `POST|GET /api/elders/{id}/mood_checkin` `{mood:"happy"|"neutral"|"sad"}`;
@@ -294,6 +302,48 @@ or typed. Notes/contacts posted from the app get today's day index on the elder'
 **Retention:** transcripts 7 days; verbatim quotes in alerts (“…”) and in stored call analyses (symptom quotes,
 follow-up hooks, new-fact sentences) are replaced by "[đã xoá sau 30 ngày]" after 30 days (purged on startup and after
 every call).
+
+## Voice WebSocket (optional Gemini Live engine; chaoba/server/voice.py, chaoba/agent/gemini_live.py)
+
+Server-side proxy: browser ↔ `WS /ws/voice/{call_id}` ↔ Gemini Live (google-genai async). The browser never sees a key.
+Credentials: `GEMINI_API_KEY` (Gemini Developer API) or `GOOGLE_GENAI_USE_VERTEXAI=true` + `GOOGLE_CLOUD_PROJECT`
+(+ `GOOGLE_CLOUD_LOCATION`, default `us-central1`) with Application Default Credentials; `CHAOBA_GEMINI_FAKE=1` = offline fake
+(tests), `=fail` = always fails (fallback demo). Settings: `CHAOBA_VOICE_ENGINE`, `CHAOBA_GEMINI_MODEL` (`gemini-3.8-live`),
+`CHAOBA_GEMINI_VOICE` (`Sulafat`), `CHAOBA_GEMINI_LANGUAGE_CODE` (unset; `vi-VN` to send it), `CHAOBA_GEMINI_SILENCE_MS` (1000).
+
+- `GET /api/voice/config` → `{default_engine, configured_default, gemini:{available, mode, reason, model, voice, input_rate, output_rate}}`
+- Open the socket only for a call whose `POST /api/calls` returned `voice.engine == "gemini-live"`; otherwise the server sends
+  `{"type":"error","error":"unknown_call"}` and closes (4404).
+- **Browser → server**
+  - binary: raw 16-bit little-endian mono PCM, 16 kHz (≈100 ms frames). Relayed to Gemini, counted, never stored.
+  - `{"type":"vad","state":"speech"|"silence","t":sec}`: WebAudio VAD transitions on the page clock (seconds since call start;
+    silence sent after ≥ 0.3 s). The server turns them into the elder turn's `start`/`end`/`pauses` (gaps ≥ 0.4 s).
+  - `{"type":"text","text":str,"start"?:sec,"end"?:sec,"pauses"?:[sec]}`: typed or simulated elder line (no audio).
+  - `{"type":"playback","state":"idle"}`: the page finished playing Út Thương's audio (silence timer starts).
+  - `{"type":"end"}`: stop (the page then calls `POST /api/calls/{id}/end` as usual).
+- **Server → browser**
+  - binary: raw 16-bit little-endian mono PCM, 24 kHz, Út Thương's voice. Play in order; drop the queue on `interrupt`.
+  - `{"type":"ready","engine":"gemini-live","model","voice","input_rate":16000,"output_rate":24000}`
+  - `{"type":"transcript","who":"agent"|"elder","text","final":bool,"greeting"?:true}`: captions (Gemini input/output
+    transcription, or the typed line). Interim updates replace the current caption until `final`.
+  - `{"type":"turn", ...}`: same fields as `POST /turns` (`reply_text, phase, emergency, end_call, event, tier`) once the
+    orchestrator has processed an elder turn (banner on `emergency`, concern note on `tier:"non_acute"`).
+  - `{"type":"interrupt","reason":"barge_in"|"safety"|"correction"}`: stop playback at once.
+  - `{"type":"agent_done"}`: Út Thương finished a turn (the page sends the next typed/simulated line after playback).
+  - `{"type":"say","text","reason":"safety_fallback"}`: Gemini did not start the safety message in time; say it with the
+    browser's own TTS (then `ended` follows).
+  - `{"type":"ended","reason":"completed"|"emergency"|"client_end","end_reason"}`: drain playback, then `POST /end`.
+  - `{"type":"fallback","reason","note_vi","note_en"}`: Gemini unavailable (connect failure, disconnect, no credentials):
+    continue the **same call** with the browser pipeline (`POST /turns`), show the note. A closed socket means the same.
+- Gemini tools (declared by the server): `next_step()` → `{mode:"exact"|"adapt"|"silent", line, phase, end_call_after}`,
+  `report_answer(kind, value)`, `flag_emergency(category, quote, acute)` (layer 2, `Orchestrator.handle_flag`), `end_call()`.
+  The recall answer is never sent to the model (`build_context_block(hide_recall_answer=True)`).
+- Voice metadata (`call_session.voice_json`, also `voice` in `/end`): `{engine:"gemini-live", model, voice, language_code, mode,
+  silence_ms, time_to_first_audio_ms, latency_ms:[per turn, end of elder speech → first audio byte], latency_p50_ms,
+  latency_p90_ms, usage:{prompt_tokens, response_tokens, total_tokens, prompt_by_modality, response_by_modality}, tool_calls,
+  interruptions, violations:[{match, text, t}], model_reports, missed_next_step, audio_in_bytes, audio_out_bytes,
+  audio_stored:false, fallback, safety_tts_fallback, end_reason}`. `call_session.engine` = `gemini-live` (or
+  `gemini-live>browser` after a fallback).
 
 ## Alert types and severities
 `severity` is the light colour (`yellow` | `red`); `severity_level` maps it for clients: `red` → `critical`,

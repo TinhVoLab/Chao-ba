@@ -77,6 +77,13 @@ async function CallContent({ searchParams }: { searchParams: PageProps<"/call">[
           en="A real call appends a new, non-simulated day for that person, compared against the simulated baseline."
         />
       </p>
+      <p className="flex items-start gap-2 text-sm text-ink-3">
+        <ShieldCheck size={16} className="mt-0.5 shrink-0" aria-hidden />
+        <T
+          vi="Tuỳ chọn giọng Gemini Live (thêm ?engine=gemini, chỉ khi máy chủ có khoá Google): âm thanh cuộc gọi đi qua máy chủ Chào Bà tới Google để nhận dạng và đọc, xử lý ở nước ngoài; vẫn không lưu ghi âm."
+          en="Optional Gemini Live voice (add ?engine=gemini; only when the server has Google credentials): call audio is streamed through the Chào Bà server to Google for recognition and speech, processed outside Vietnam; still no recording is kept."
+        />
+      </p>
     </div>
   );
 }

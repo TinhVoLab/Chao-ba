@@ -11,6 +11,9 @@ Environment:
   CHAOBA_CORS_ORIGINS  comma-separated allowed origins (e.g. "https://app.chaoba.vn"). Unset: any http(s) origin on
                        localhost / 127.0.0.1 / [::1], any port (development).
   CHAOBA_DEMO          "1" (default) enables demo-only endpoints (POST /api/demo/reset); set "0" in production.
+  CHAOBA_VOICE_ENGINE  "browser" (default) | "gemini": default voice engine of web calls (Gemini Live only when
+                       credentials exist: GEMINI_API_KEY, or GOOGLE_GENAI_USE_VERTEXAI=true + GOOGLE_CLOUD_PROJECT);
+                       see chaoba/agent/gemini_live.py for CHAOBA_GEMINI_* settings.
 """
 from __future__ import annotations
 
@@ -32,6 +35,8 @@ from .community import register as register_community
 from .service import Service, llm_enabled, demo_enabled
 from . import memories as memory_book   # Sổ ký ức + prevention activities (memories.py)
 from . import kudos                     # "Gửi yêu thương": family micro-interactions (kudos.py)
+from chaoba.agent import gemini_live
+from . import voice as voice_mod        # optional Gemini Live voice engine: /ws/voice/{call_id} (voice.py)
 
 LOCALHOST_ORIGIN_RE = r"^https?://(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$"
 
@@ -51,6 +56,7 @@ class CallStart(BaseModel):
     elder_id: str
     channel: str = "web"
     simulated: bool = False  # true when the elder side is scripted (demo sim mode)
+    engine: str | None = None  # voice engine: "gemini" | "browser" (default: CHAOBA_VOICE_ENGINE, else "browser")
 
 
 class TurnIn(BaseModel):
@@ -125,7 +131,8 @@ def create_app(db_path: str | None = None, seed: bool = True) -> FastAPI:
 
     @app.get("/api/health")
     def health():
-        return {"ok": True, "llm": "claude" if llm_enabled() else "fallback"}
+        return {"ok": True, "llm": "claude" if llm_enabled() else "fallback",
+                "voice": gemini_live.public_voice_config()["default_engine"]}
 
     @app.get("/api/elders")
     def elders(request: Request):
@@ -260,7 +267,7 @@ def create_app(db_path: str | None = None, seed: bool = True) -> FastAPI:
             raise HTTPException(404, f"unknown elder {body.elder_id}")
         if p.get("opted_out"):
             raise HTTPException(409, "elder opted out of daily calls (POST /api/elders/{id}/resume to re-enable)")
-        return s.start_call(body.elder_id, body.channel, body.simulated)
+        return s.start_call(body.elder_id, body.channel, body.simulated, body.engine)
 
     @app.post("/api/calls/{call_id}/turns")
     def turn(request: Request, call_id: str, body: TurnIn):
@@ -294,6 +301,7 @@ def create_app(db_path: str | None = None, seed: bool = True) -> FastAPI:
     register_community(app)   # /api/community/* (community.py)
     memory_book.register(app)   # /api/elders/{id}/memories*, /activities (memories.py)
     kudos.register(app)         # /api/elders/{id}/kudos* (kudos.py)
+    voice_mod.register(app)     # /api/voice/config, WebSocket /ws/voice/{call_id} (voice.py, gemini_live.py)
     return app
 
 

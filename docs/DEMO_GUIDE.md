@@ -23,8 +23,8 @@ cd web && npm install && npm run dev
 Check:
 
 ```bash
-curl -s localhost:8000/api/health      # {"ok":true,"llm":"fallback"}  (or "claude" with a key)
-.venv/bin/pytest -q                     # 262 passed (the 3 Postgres RLS tests also run when Docker is available)
+curl -s localhost:8000/api/health      # {"ok":true,"llm":"fallback","voice":"browser"}  (or "claude" with a key)
+.venv/bin/pytest -q                     # 281 passed (the 3 Postgres RLS tests also run when Docker is available)
 ```
 
 On first start the server seeds three simulated elders (90 days each, plus a simulated family call/visit log) into `data/runtime/chaoba.db`:
@@ -63,6 +63,30 @@ The endpoint exists only while `CHAOBA_DEMO=1` (the default for the prototype); 
 **Speech recognition.** The elder call page uses the browser's Web Speech API. In Chrome and Edge this **streams the microphone audio to the browser vendor's cloud (Google for Chrome)**; the Chào Bà server itself never receives or stores audio, only text and pause timings. The page says this in its footer. Use typed mode ("Gõ chữ") or sim mode if that matters for your audience. Production calls go over the phone to a self-hosted Vietnamese ASR (PhoWhisper/Whisper) that discards audio after transcription.
 
 Every safety layer (spotter, guardrails, output scrub, blocklist) runs in both modes. The response of `POST /api/calls` contains `engine` (`scripted` / `claude`). If a Claude request fails, the call silently continues on the scripted engine, and the engine actually used is stored with the call. **The Claude path has been tested only with a fake client, not against the live API.**
+
+### Optional: Gemini Live voice engine (`engine=gemini`)
+
+An optional voice engine for the `/call` page and the `/screen` talk view: Gemini Live hears and speaks (full duplex, the elder can interrupt), our orchestrator still decides every line and runs every safety check on the live transcripts (TECHNICAL_DOCUMENTATION.md §7.4). Audio goes **through our server to Google** and is never stored. Off by default; the browser voice stays the fallback.
+
+1. Credentials, either mode (never put them in the web app; only the API server reads them):
+
+   ```bash
+   # (a) Gemini Developer API
+   export GEMINI_API_KEY=...                      # from Google AI Studio
+
+   # (b) Vertex AI with Application Default Credentials
+   gcloud auth application-default login          # or GOOGLE_APPLICATION_CREDENTIALS=/path/sa.json
+   export GOOGLE_GENAI_USE_VERTEXAI=true GOOGLE_CLOUD_PROJECT=<project-id> GOOGLE_CLOUD_LOCATION=us-central1
+   ```
+
+   Optional: `CHAOBA_VOICE_ENGINE=gemini` (default for every web call), `CHAOBA_GEMINI_MODEL` (default `gemini-3.8-live`), `CHAOBA_GEMINI_VOICE` (default `Sulafat`), `CHAOBA_GEMINI_LANGUAGE_CODE=vi-VN`, `CHAOBA_GEMINI_SILENCE_MS` (default 1000).
+2. Start the API as usual in the same terminal, then check `curl -s localhost:8000/api/voice/config` → `"gemini":{"available":true,"mode":"developer"|"vertex",...}`.
+3. Open http://localhost:8000/call?elder=hanh&engine=gemini (or `/screen?elder=hanh&engine=gemini` in the web app) and press **Nghe**. The badge reads **"Giọng: Gemini Live · đã kết nối"**; speak, and interrupt Út Thương to hear her stop. If Gemini cannot be reached the badge switches to "Giọng: trình duyệt · dự phòng" and the same call continues on the browser voice.
+4. Go/no-go numbers (latency p50/p90, time to first audio, what Gemini said for each safety probe, token usage, cost per 4-minute call): `.venv/bin/python scripts/voice_bench.py --calls 3` → `data/runtime/voice_bench.json`. Without credentials it exits with instructions; `--fake` dry-runs it.
+
+**Not yet verified with real credentials** (none on the build machine): everything is tested against an offline fake session (`CHAOBA_GEMINI_FAKE=1`) and in a muted browser (`web/scripts/voice-e2e.mjs`). Whether the voice sounds right to Southern elders must be judged by people. Tell the audience that with this engine on, call audio is processed by Google outside Vietnam.
+
+**Muted rehearsal without a key** (no sound, no network): `CHAOBA_GEMINI_FAKE=1 .venv/bin/uvicorn chaoba.server.app:app --port 8000`, then `http://localhost:8000/call?elder=hanh&engine=gemini&sim=1&mute=1` shows the Gemini badge and runs a whole call on the fake (digital-silence audio frames + transcripts). `CHAOBA_GEMINI_FAKE=fail` demonstrates the fallback.
 
 ---
 

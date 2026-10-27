@@ -844,6 +844,41 @@ class Orchestrator:
             state.phase = "closing"
         return self._finish(state, reply, event_note, end_call)
 
+    def handle_flag(self, state: CallState, text: str, category: str, quote: str, acute: bool,
+                    start: float | None = None, end: float | None = None,
+                    pauses: list[float] | None = None) -> TurnResult:
+        """Layer-2 emergency raised by a voice model's `flag_emergency` tool (Gemini Live engine).
+
+        Records the elder turn (if any text), lets the layer-1 spotter win when it fires, else applies the same tiers as
+        ClaudeEngine: acute (or self-harm) -> 115 instruction and end; non-acute -> one confirming question."""
+        if state.ended:
+            return TurnResult(reply_text="", phase=state.phase, emergency=state.emergency, end_call=True)
+        text = (text or "").strip()
+        h = state.ev.honorific
+        if text:
+            prev_end = state.turns[-1].end if state.turns else 0.0
+            s = float(start) if start is not None else prev_end + 0.8
+            e = float(end) if end is not None else s + max(1.0, word_count(text) / 3.0)
+            state.turns.append(Turn(speaker="elder", text=text, start=s, end=e,
+                                    pauses=[float(p) for p in (pauses or [])]))
+            state.last_client_end = max(state.last_client_end, e)
+            hit1 = spot(text, h)
+            if hit1 and hit1.tier == "acute":
+                return self._acute(state, hit1)
+        cat = category if category in set(FLAG_EMERGENCY_TOOL["input_schema"]["properties"]["category"]["enum"]) \
+            else "other"
+        is_acute = bool(acute) or cat == "self_harm"
+        hit = EmergencyHit(category=cat, keyword="(llm)", quote=str(quote or text), tier="acute" if is_acute else
+                           "non_acute", time="unknown" if is_acute else "past")
+        if is_acute:
+            state.emergency = True
+            state.emergency_hits.append(hit.to_dict() | {"layer": 2})
+            state.end_reason = "emergency"
+            return self._finish(state, emergency_reply(cat, h, state.ev.family_ref), "emergency", True, hit)
+        state.concern_hits.append(hit.to_dict() | {"layer": 2})
+        state.awaiting_confirm = hit.to_dict() | {"layer": 2}
+        return self._finish(state, non_acute_reply(cat, h), "health_concern", False, hit)
+
     def _acute(self, state: CallState, hit: EmergencyHit) -> TurnResult:
         state.emergency = True
         state.emergency_hits.append(hit.to_dict() | {"layer": 1})

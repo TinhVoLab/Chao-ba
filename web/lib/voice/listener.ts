@@ -50,6 +50,12 @@ export class Listener {
   private rec: SpeechRecognitionLike | null = null;
   private cancelFn: (() => void) | null = null;
   private toTypedFn: (() => void) | null = null;
+  private src: MediaStreamAudioSourceNode | null = null;
+  // Continuous VAD transitions for the Gemini Live engine (speech / silence after >= 0.3 s), independent of listen().
+  private monitor: ((state: "speech" | "silence", t: number) => void) | null = null;
+  private mFrames = 0;
+  private mInSpeech = false;
+  private mSilFrom: number | null = null;
   sttBroken = false;
 
   constructor(
@@ -76,6 +82,7 @@ export class Listener {
       const AC = window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       this.ctx = new AC();
       const src = this.ctx.createMediaStreamSource(this.stream);
+      this.src = src;
       this.an = this.ctx.createAnalyser();
       this.an.fftSize = 1024;
       this.buf = new Float32Array(new ArrayBuffer(this.an.fftSize * 4));
@@ -104,6 +111,8 @@ export class Listener {
     this.ctx?.close().catch(() => undefined);
     this.ctx = null;
     this.an = null;
+    this.src = null;
+    this.monitor = null;
     this.hooks.onLevel?.(0);
   }
 
@@ -117,6 +126,7 @@ export class Listener {
     const voiced = rms > thr;
     this.hooks.onLevel?.(Math.min(1, rms / 0.12));
     if (!voiced) this.floor = this.floor * 0.97 + rms * 0.03;
+    if (this.monitor) this.monitorTick(voiced, this.now());
     if (!this.listening) return;
     const t = this.now();
     if (voiced) {
@@ -132,6 +142,39 @@ export class Listener {
       this.voicedFrames = 0;
       if (this.uttStart !== null && this.silenceStart === null) this.silenceStart = t;
       this.onVadTick?.(t);
+    }
+  }
+
+  /** Microphone graph, for the Gemini Live engine's PCM capture worklet (null without a mic). */
+  get audio(): { ctx: AudioContext; source: MediaStreamAudioSourceNode } | null {
+    return this.ctx && this.src ? { ctx: this.ctx, source: this.src } : null;
+  }
+
+  /** Reports VAD transitions continuously (Gemini Live engine: elder turn timings and pauses). */
+  setVoiceMonitor(cb: ((state: "speech" | "silence", t: number) => void) | null): void {
+    this.monitor = cb;
+    this.mFrames = 0;
+    this.mInSpeech = false;
+    this.mSilFrom = null;
+  }
+
+  private monitorTick(voiced: boolean, t: number) {
+    if (voiced) {
+      this.mSilFrom = null;
+      this.mFrames++;
+      if (!this.mInSpeech && this.mFrames >= 3) {
+        this.mInSpeech = true;
+        this.monitor?.("speech", +(t - 0.09).toFixed(2));
+      }
+      return;
+    }
+    this.mFrames = 0;
+    if (!this.mInSpeech) return;
+    if (this.mSilFrom === null) this.mSilFrom = t;
+    else if (t - this.mSilFrom >= 0.3) {
+      this.mInSpeech = false;
+      this.monitor?.("silence", +this.mSilFrom.toFixed(2));
+      this.mSilFrom = null;
     }
   }
 

@@ -32,6 +32,8 @@ export interface ScreenFlags {
   tts: boolean;
   typed: boolean;
   fast: boolean;
+  engine?: "gemini" | "browser"; // ?engine= voice engine (default: server's CHAOBA_VOICE_ENGINE)
+  mute?: boolean; // ?mute=1 tests: no sound at all
 }
 
 type Mode = "idle" | "talk" | "video" | "mood" | "game" | "notice";
@@ -209,7 +211,7 @@ export function StandingScreen({
     await postElder(apiBase, elderId, "contacts", { kind: "call", member_id: callee.id, member_name: callee.name });
   }
 
-  const flagsTalk = { sim: flags.sim, tts: flags.tts, typed: flags.typed, fast: flags.fast };
+  const flagsTalk = { sim: flags.sim, tts: flags.tts, typed: flags.typed, fast: flags.fast, engine: flags.engine, mute: flags.mute };
 
   function senderOf(k: Kudos): FamilyMember {
     const f = (profile.family ?? []).find((m) => m.id === k.sender_id);

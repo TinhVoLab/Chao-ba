@@ -27,7 +27,7 @@ cd web && npm install && npm run dev                      # family app (second t
 - Elder call (speak Vietnamese yourself): http://localhost:8000/call?elder=hanh
 - Family app: http://localhost:3000/?elder=hanh (Today · Trends · Family · DMAIC · More → Alerts, Memory book, Privacy, Community; `/family` = shared family timeline, weekly synthesis, call rota, care tasks with a "Viewing as" switcher; `/community` = simulated health-station board; `/screen` is the elder's interactive 9:16 standing screen: talk to Út Thương, simulated video call, medication / mood / memory game, family love notes; hardware is phase 2)
 - **Gửi yêu thương / Send some love** (Today and `/family`): one-tap cards from the children ("Má ăn cơm chưa?", "Thương má", "Hỏi ý má" for her know-how, caring tips); the elder answers with a tap on the standing screen or by voice when the morning call relays them; replies show inline and in the shared timeline, advice answers can become a "Lời má dạy" memory-book page with her consent. Free text is checked (no diagnoses, no medication advice), 6 cards per sender per day, answers are self-reports never scored, and micro-contacts are counted apart from calls (the "nobody called" nudge ignores them)
-- Health check: `curl localhost:8000/api/health` → `{"ok":true,"llm":"fallback"}`
+- Health check: `curl localhost:8000/api/health` → `{"ok":true,"llm":"fallback","voice":"browser"}`
 
 Seeded dates are anchored at startup: day 90 = yesterday, so a live call is day 91 today (`CHAOBA_END_DATE=YYYY-MM-DD` pins them).
 
@@ -47,6 +47,26 @@ docker compose exec -T postgres psql -U chaoba -d chaoba -v ON_ERROR_STOP=1 -f /
 ```
 
 Environment: `CHAOBA_CORS_ORIGINS` (origins the API accepts), `NEXT_PUBLIC_API_BASE` (API address for the browser, build time), `CHAOBA_API_INTERNAL` (API address for the Next server), `ANTHROPIC_API_KEY` (optional). The API still stores data in SQLite; Postgres is the production schema target, loaded so its Row Level Security can be inspected and tested. Verified on 27 Oct 2026 with Docker Desktop (Engine 29.1, Compose 5.0): all three services report healthy, `/api/health` answers, the family app returns 200 and renders from the API, Postgres has the 14 production tables, `rls_test.sql` prints `RLS OK`, and `.venv/bin/pytest -q tests/deploy` passes (3 tests). If ports 8000/3000/5432 are taken, set `API_PORT`, `WEB_PORT`, `PG_PORT` (and `NEXT_PUBLIC_API_BASE` / `CHAOBA_CORS_ORIGINS` to match).
+
+## Configuration
+
+All optional; the prototype runs with none of them.
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `CHAOBA_DB` | `data/runtime/chaoba.db` | SQLite path |
+| `CHAOBA_END_DATE` | yesterday | pin the seeded calendar (day 90 = this date) |
+| `CHAOBA_CORS_ORIGINS` | localhost, any port | allowed browser origins |
+| `CHAOBA_DEMO` | `1` | demo-only endpoints (`POST /api/demo/reset`); `0` in production |
+| `ANTHROPIC_API_KEY` | – | Claude conversation, analysis and rewording (deterministic fallbacks without it) |
+| `CHAOBA_VOICE_ENGINE` | `browser` | `gemini` = Gemini Live voice for web calls by default (per call: `?engine=gemini`) |
+| `GEMINI_API_KEY` | – | Gemini Live via the Gemini Developer API |
+| `GOOGLE_GENAI_USE_VERTEXAI`, `GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_LOCATION` | –, –, `us-central1` | Gemini Live via Vertex AI with Application Default Credentials |
+| `CHAOBA_GEMINI_MODEL`, `CHAOBA_GEMINI_VOICE`, `CHAOBA_GEMINI_LANGUAGE_CODE`, `CHAOBA_GEMINI_SILENCE_MS` | `gemini-3.8-live`, `Sulafat`, unset, `1000` | Gemini Live settings |
+| `CHAOBA_GEMINI_FAKE` | – | `1` = offline fake Gemini session (tests, muted demo); `fail` = always fails (fallback demo) |
+| `NEXT_PUBLIC_API_BASE`, `CHAOBA_API_INTERNAL` | `http://localhost:8000` | API address for the browser (build time) and for the Next server |
+
+**Optional Gemini Live voice engine** (`?engine=gemini` on `/call` and `/screen`): full-duplex Gemini voice through a server-side WebSocket proxy, with our orchestrator and safety checks still in charge; call audio then goes through our server to Google and is never stored. Tested only against an offline fake; see [docs/DEMO_GUIDE.md](docs/DEMO_GUIDE.md) and TECHNICAL_DOCUMENTATION.md §7.4. Go/no-go benchmark: `scripts/voice_bench.py`.
 
 ## Tests and data
 

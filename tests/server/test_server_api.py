@@ -33,7 +33,7 @@ def run_simulated_call(c, elder="hanh"):
 
 
 def test_health_and_seed(client):
-    assert client.get("/api/health").json() == {"ok": True, "llm": "fallback"}
+    assert client.get("/api/health").json() == {"ok": True, "llm": "fallback", "voice": "browser"}
     elders = client.get("/api/elders").json()
     assert {e["id"] for e in elders} == {"hanh", "tu", "control"}
     assert all(e["simulated"] and e["light"] in ("green", "yellow", "red", "gray") for e in elders)

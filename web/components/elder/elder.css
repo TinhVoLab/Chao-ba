@@ -690,7 +690,16 @@
   justify-content: space-between;
   gap: calc(20 * var(--k));
 }
+.es-talkChips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: calc(12 * var(--k));
+  min-width: 0;
+}
 .es-talkTitle {
+  flex: 1 1 auto;
+  min-width: 0;
   font-size: calc(46 * var(--k));
   font-weight: 700;
   color: var(--ink-2);
@@ -703,6 +712,16 @@
   border: calc(3 * var(--k)) solid var(--line);
   font-size: calc(32 * var(--k));
   font-weight: 700;
+  color: var(--ink-2);
+}
+.es-chip[data-engine="gemini"][data-state="live"] {
+  border-color: var(--jade);
+  color: var(--ink);
+}
+.es-engineNote {
+  margin: 0;
+  font-size: calc(30 * var(--k));
+  line-height: 1.3;
   color: var(--ink-2);
 }
 .es-chipSolid {

@@ -150,12 +150,25 @@ def opt_out_cancel(h: str = "bà") -> str:
 _SAFE_FALLBACK = "Dạ, con nghe {h} nói rồi. {H} kể thêm cho con nghe với?"
 
 
-def scrub_reply(reply: str, h: str = "bà") -> str:
-    """Last line of defence on agent output: no disease names, no money requests."""
+def forbidden_in_reply(reply: str) -> str | None:
+    """The forbidden phrase found in agent output (disease name / money-code talk), or None.
+
+    Used by ``scrub_reply`` and by the Gemini Live post-check on the streaming output transcription."""
     n = normalize(reply)
     for w in FORBIDDEN_IN_REPLY:
         if contains_phrase(n, w):
-            return _SAFE_FALLBACK.format(h=h, H=h.capitalize())
-    if re.search(r"\b(otp|số tài khoản|mật khẩu)\b", n):
-        return _SAFE_FALLBACK.format(h=h, H=h.capitalize())
+            return w
+    m = re.search(r"\b(otp|số tài khoản|mật khẩu)\b", n)
+    return m.group(1) if m else None
+
+
+def safe_fallback(h: str = "bà") -> str:
+    """Neutral sentence said instead of (or to correct) a reply that broke an output rule."""
+    return _SAFE_FALLBACK.format(h=h, H=h.capitalize())
+
+
+def scrub_reply(reply: str, h: str = "bà") -> str:
+    """Last line of defence on agent output: no disease names, no money requests."""
+    if forbidden_in_reply(reply):
+        return safe_fallback(h)
     return reply.strip()

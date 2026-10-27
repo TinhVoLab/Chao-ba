@@ -16,6 +16,7 @@ from chaoba.core import control_chart, explain as explain_mod, metrics as metric
 from chaoba.agent.analysis import analyze_call
 from chaoba.agent.emergency import CATEGORY_VI, CATEGORY_EN
 from chaoba.agent.orchestrator import Orchestrator, CallState, default_engine
+from chaoba.agent import gemini_live
 from chaoba.agent.persona import ElderView, with_family_honorifics
 from chaoba.agent.prompts import (DailyContext, PROMPT_VERSION, recall_from_fact, default_family_greeting,
                                   content_keywords)
@@ -135,6 +136,10 @@ class Service:
         self.sim_calls: set[str] = set()
         self._eval_cache: dict | None = None
         self._lock = threading.RLock()
+        # Voice engine per call: calls on the Gemini Live engine use an orchestrator whose engine writes the lines that
+        # Gemini voices (gemini_live.LiveLineEngine); every other call uses self.orch.
+        self.call_orch: dict[str, Orchestrator] = {}
+        self._live_orch: Orchestrator | None = None
 
     # ================================================================== seed
     def seed(self) -> None:
@@ -468,7 +473,8 @@ class Service:
                                    "speech_recognition": ("web prototype: the browser's speech service (Chrome/Edge "
                                                           "send microphone audio to Google); the Chào Bà server "
                                                           "receives text and pause timings only"),
-                                   "llm_processing": "claude" if llm_enabled() else "server-side rules (no LLM)"},
+                                   "llm_processing": "claude" if llm_enabled() else "server-side rules (no LLM)",
+                                   "voice_engine": gemini_live.privacy_note()},
                 "scheduling_active": not p.get("opted_out", False),
                 "simulated": self.is_simulated(elder_id)}
 
@@ -572,24 +578,58 @@ class Service:
         return DailyContext(elder=ev, profile=prof, last_summaries=summaries, followup_hooks=hooks[:3], recall=recall,
                             family_message=msg, family_greeting=default_family_greeting(ev), day=day)
 
-    def start_call(self, elder_id: str, channel: str = "web", simulated: bool = False) -> dict:
+    def orch_for(self, call_id: str) -> Orchestrator:
+        return self.call_orch.get(call_id, self.orch)
+
+    def is_live_call(self, call_id: str) -> bool:
+        """True when this call was started on the Gemini Live voice engine."""
+        return call_id in self.call_orch
+
+    def start_call(self, elder_id: str, channel: str = "web", simulated: bool = False,
+                   voice_engine: str | None = None) -> dict:
         ctx = self.build_context(elder_id)
         call_id = uuid.uuid4().hex[:12]
         if simulated:
             self.sim_calls.add(call_id)
-        state, greeting = self.orch.start(ctx, call_id, channel)
+        voice = gemini_live.choose_engine(voice_engine, channel)
+        orch = self.orch
+        if voice["engine"] == "gemini-live":
+            if self._live_orch is None:
+                self._live_orch = Orchestrator(gemini_live.LiveLineEngine())
+            orch = self._live_orch
+            voice["ws"] = f"/ws/voice/{call_id}"
+        state, greeting = orch.start(ctx, call_id, channel)
         with self._lock:
             self.active[call_id] = state
-        self.store.save_call(call_id, elder_id, channel, now_iso(), PROMPT_VERSION, self.orch.engine.name)
-        return {"call_id": call_id, "greeting_text": greeting, "phase": state.phase, "engine": self.orch.engine.name,
-                "prompt_version": PROMPT_VERSION, "day": ctx.day, "notice_vi": "Không lưu ghi âm",
-                "notice_en": "No audio is recorded"}
+            if orch is not self.orch:
+                self.call_orch[call_id] = orch
+        self.store.save_call(call_id, elder_id, channel, now_iso(), PROMPT_VERSION, orch.engine.name)
+        notice_vi, notice_en = "Không lưu ghi âm", "No audio is recorded"
+        if voice["engine"] == "gemini-live":
+            notice_vi = "Không lưu ghi âm · giọng nói xử lý qua Google Gemini"
+            notice_en = "No audio is recorded · voice processed by Google Gemini"
+        return {"call_id": call_id, "greeting_text": greeting, "phase": state.phase, "engine": orch.engine.name,
+                "prompt_version": PROMPT_VERSION, "day": ctx.day, "notice_vi": notice_vi,
+                "notice_en": notice_en, "voice": voice}
 
     def turn(self, call_id: str, text: str, start: float | None, end: float | None, pauses: list[float]) -> dict:
         state = self.active.get(call_id)
         if state is None:
             raise KeyError(call_id)
-        res = self.orch.handle_turn(state, text, start, end, pauses)
+        res = self.orch_for(call_id).handle_turn(state, text, start, end, pauses)
+        return self._turn_out(call_id, state, res)
+
+    def flag_emergency(self, call_id: str, text: str, category: str, quote: str, acute: bool,
+                       start: float | None = None, end: float | None = None,
+                       pauses: list[float] | None = None) -> dict:
+        """Layer-2 emergency from a voice model's tool call (Gemini Live): same alerts as a layer-1 turn."""
+        state = self.active.get(call_id)
+        if state is None:
+            raise KeyError(call_id)
+        res = self.orch_for(call_id).handle_flag(state, text, category, quote, acute, start, end, pauses)
+        return self._turn_out(call_id, state, res)
+
+    def _turn_out(self, call_id: str, state: CallState, res) -> dict:
         eid = state.ctx.elder.id
         if res.emergency and call_id not in self.alerted_calls:
             self.alerted_calls.add(call_id)
@@ -720,9 +760,13 @@ class Service:
         self.store.purge_quotes()
         result = {"metrics": asdict(m), "analysis": asdict(analysis), "today": self.today(eid),
                   "day": day, "simulated": sim, "rehearsal": bool(sim and rec is not None)}
+        voice = self.store.call_voice(call_id)
+        if voice:
+            result["voice"] = voice
         with self._lock:
             self.results[call_id] = result
             self.active.pop(call_id, None)
+            self.call_orch.pop(call_id, None)
         return result
 
     def _opt_out_alert(self, eid: str, prof: dict, day: int, date: str, call_id: str) -> None:

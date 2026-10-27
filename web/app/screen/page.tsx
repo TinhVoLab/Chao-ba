@@ -65,6 +65,8 @@ async function ScreenContent({ searchParams }: { searchParams: Promise<SP> }) {
     tts: one(sp.tts) !== "0",
     typed: one(sp.typed) === "1",
     fast: one(sp.fast) === "1",
+    engine: one(sp.engine) === "gemini" ? "gemini" : one(sp.engine) === "browser" ? "browser" : undefined,
+    mute: one(sp.mute) === "1",
   };
   const kiosk = one(sp.kiosk) === "1";
   const en = flags.lang === "en";

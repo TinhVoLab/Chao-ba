@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Keyboard, Mic, PhoneOff, Send } from "lucide-react";
-import { CallSession, type CallPhase, type Caption, type EndResult, type TurnReply } from "@/lib/voice/callSession";
+import { CallSession, type CallPhase, type Caption, type EndResult, type EngineState, type TurnReply } from "@/lib/voice/callSession";
 import { Avatar, type AvatarState } from "./Avatar";
 import { cap, useT } from "./util";
 import s from "./classes";
@@ -25,7 +25,7 @@ export function TalkView({
   elderId: string;
   elderLabel: string; // "bà Hạnh"
   calleeAgent: string | null; // "chị Lan"
-  flags: { sim: boolean; tts: boolean; typed: boolean; fast: boolean };
+  flags: { sim: boolean; tts: boolean; typed: boolean; fast: boolean; engine?: "gemini" | "browser"; mute?: boolean };
   onReply: (r: TurnReply) => void;
   onEnded: (e: TalkEnd) => void;
 }) {
@@ -36,6 +36,7 @@ export function TalkView({
   const [typedMode, setTypedMode] = useState(flags.typed);
   const [concern, setConcern] = useState(false);
   const [draft, setDraft] = useState("");
+  const [engine, setEngine] = useState<EngineState>({ engine: flags.engine === "gemini" ? "gemini" : "browser", state: "idle" });
   const avatarRef = useRef<HTMLDivElement>(null);
   const sessionRef = useRef<CallSession | null>(null);
   const disposeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -52,10 +53,12 @@ export function TalkView({
     }
     if (!sessionRef.current) {
       const session = new CallSession(
-        { apiBase, elderId, sim: flags.sim, tts: flags.tts, typed: flags.typed, fast: flags.fast },
+        { apiBase, elderId, sim: flags.sim, tts: flags.tts, typed: flags.typed, fast: flags.fast, engine: flags.engine, mute: flags.mute },
         {
           phase: setPhase,
-          caption: (c) => setCaptions((cs) => [...cs.slice(-5), c]),
+          // live transcripts (Gemini Live) update their caption in place
+          caption: (c) => setCaptions((cs) => (cs.some((x) => x.id === c.id) ? cs.map((x) => (x.id === c.id ? c : x)) : [...cs.slice(-5), c])),
+          engine: setEngine,
           interim: setInterim,
           level: (v) => avatarRef.current?.style.setProperty("--lvl", v.toFixed(3)),
           reply: (r) => {
@@ -76,7 +79,7 @@ export function TalkView({
         sessionRef.current = null;
       }, 0);
     };
-  }, [apiBase, elderId, flags.sim, flags.tts, flags.typed, flags.fast]);
+  }, [apiBase, elderId, flags.sim, flags.tts, flags.typed, flags.fast, flags.engine, flags.mute]);
 
   const avatarState: AvatarState =
     phase === "speaking" ? "speaking" : phase === "listening" || phase === "typing" ? "listening" : phase === "thinking" || phase === "connecting" || phase === "saving" ? "thinking" : "idle";
@@ -102,8 +105,25 @@ export function TalkView({
     <div className={s.talk}>
       <header className={s.talkTop}>
         <p className={s.talkTitle}>{t("Trò chuyện với Út Thương", "Talking with Út Thương")}</p>
-        {flags.sim && <span className={s.chip}>{t("Diễn tập · giả lập", "Rehearsal · simulated")}</span>}
+        <span className={s.talkChips}>
+          {flags.sim && <span className={s.chip}>{t("Diễn tập · giả lập", "Rehearsal · simulated")}</span>}
+          <span className={s.chip} data-engine={engine.engine} data-state={engine.state} data-testid="engine-badge" title={engine.model}>
+            {engine.engine === "gemini" ? t("Giọng: Gemini Live", "Voice: Gemini Live") : t("Giọng: trình duyệt", "Voice: browser")}
+            {engine.state === "connecting" ? t(" · đang kết nối…", " · connecting…") : engine.state === "fallback" ? t(" · dự phòng", " · fallback") : ""}
+          </span>
+        </span>
       </header>
+      {engine.note && (
+        <p className={s.engineNote} role="status" data-testid="engine-note">
+          {engine.note}
+        </p>
+      )}
+      {engine.engine === "gemini" && engine.state === "live" && (
+        <p className={s.engineNote} data-testid="engine-hint">
+          {t(`${cap(elderLabel)} nói chen vào lúc nào cũng được, Út Thương sẽ ngừng nghe. Âm thanh xử lý qua Google Gemini, không lưu ghi âm.`,
+            "You can interrupt at any time; Út Thương stops and listens. Audio is processed by Google Gemini; nothing is recorded.")}
+        </p>
+      )}
 
       <div className={s.talkStage}>
         <Avatar ref={avatarRef} state={avatarState} className={s.avatarBig} label={status[phase]} />
@@ -121,7 +141,7 @@ export function TalkView({
 
       <div className={s.captions} aria-live="polite" data-testid="captions">
         {shown.map((c, i) => (
-          <div key={c.id} className={s.cap} data-who={c.who} data-old={i < shown.length - 1 && shown.length > 1}>
+          <div key={c.id} className={s.cap} data-who={c.who} data-old={i < shown.length - 1 && shown.length > 1} data-interim={c.interim || undefined}>
             <span className={s.capWho}>{c.who === "agent" ? "Út Thương" : cap(elderLabel) + (c.sim ? t(" (giả lập)", " (simulated)") : "")}</span>
             <span className={s.capText}>{c.text}</span>
           </div>

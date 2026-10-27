@@ -162,8 +162,11 @@ def default_family_greeting(ev: ElderView) -> str | None:
     return f"({ev.family_primary} nhắn) {term} ơi, {me} nè. {term} nói chuyện với Út Thương vui nha."
 
 
-def build_context_block(ctx: DailyContext) -> str:
-    """Per-call context. Uncached; placed after the cached system prompt."""
+def build_context_block(ctx: DailyContext, hide_recall_answer: bool = False) -> str:
+    """Per-call context. Uncached; placed after the cached system prompt.
+
+    ``hide_recall_answer=True`` (Gemini Live engine) leaves the hidden recall answer out entirely: the model only gets
+    the question and the cue, the answer stays on the server where the recall is scored."""
     ev = ctx.elder
     p = ctx.profile
     meds = "; ".join(f"{m.get('name')} lúc {m.get('time')}" for m in ev.medications) or "không có"
@@ -182,8 +185,9 @@ def build_context_block(ctx: DailyContext) -> str:
         lines += [
             f"Recall question: {ctx.recall.question_vi}",
             f"Recall cue (only after a failed free recall): {ctx.recall.cue_vi}",
-            f"HIDDEN recall answer (never say it first): {ctx.recall.fact_vi}",
         ]
+        if not hide_recall_answer:
+            lines.append(f"HIDDEN recall answer (never say it first): {ctx.recall.fact_vi}")
     if ctx.family_message:
         lines.append(f"Family message to pass on at the end: {ctx.family_message}")
     lq = ctx.life_question

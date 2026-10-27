@@ -101,6 +101,9 @@ class Store:
         with self.lock:
             self.conn.executescript(DDL)
             self.conn.executescript(FAMILY_DDL)  # additive migration (family coordination), defined below
+            ccols = {r[1] for r in self.conn.execute("PRAGMA table_info(call_session)")}
+            if "voice_json" not in ccols:   # voice engine metadata (engine, model, latencies; never audio)
+                self.conn.execute("ALTER TABLE call_session ADD COLUMN voice_json TEXT")
             cols = {r[1] for r in self.conn.execute("PRAGMA table_info(access_log)")}
             for col, ddl in (("n", "INTEGER NOT NULL DEFAULT 1"), ("last_ts", "TEXT")):  # older demo databases
                 if col not in cols:
@@ -355,6 +358,14 @@ class Store:
                "transcript_expires_at=?, engine=? WHERE id=?",
                (day, now_iso(), status, end_reason, 1 if emergency else 0, json.dumps(transcript, ensure_ascii=False),
                 exp, engine, call_id))
+
+    def set_call_voice(self, call_id: str, voice: dict) -> None:
+        """Voice-engine metadata of a call (engine, model id, per-turn latency, token usage). Never audio."""
+        self.x("UPDATE call_session SET voice_json=? WHERE id=?", (json.dumps(voice, ensure_ascii=False), call_id))
+
+    def call_voice(self, call_id: str) -> dict | None:
+        r = self.one("SELECT voice_json FROM call_session WHERE id=?", (call_id,))
+        return json.loads(r["voice_json"]) if r and r["voice_json"] else None
 
     def save_analysis(self, call_id: str, elder_id: str, day: int | None, analysis: dict, metrics: dict) -> None:
         self.x("INSERT OR REPLACE INTO call_analysis(call_id, elder_id, day, analysis_json, metrics_json, created_at)"
