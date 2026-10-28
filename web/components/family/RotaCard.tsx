@@ -37,6 +37,8 @@ export function RotaCard({
   const pending = useOutbox(elderId).some((p) => p.kind === "rota");
   const today = rota.today;
   const mine = rota.mine;
+  const days = rota.gap.days_since ?? rota.gap.threshold;
+  const overdue = rota.gap.nudge && !today.done;
 
   async function save() {
     setStatus({ state: "saving" });
@@ -63,13 +65,20 @@ export function RotaCard({
         )}
       </div>
 
-      {/* Today */}
+      {/* Today: one banner. "Nobody called for N days" is merged into it, never stacked as a second one. */}
       {mine?.your_turn ? (
-        <p className="flex items-start gap-3 rounded-2xl bg-accent px-4 py-3 text-accent-ink" role="status">
+        <p className={`flex items-start gap-3 rounded-2xl px-4 py-3 ${overdue ? "bg-yellow-tint text-yellow-ink" : "bg-accent text-accent-ink"}`} role="status" data-testid="rota-today">
           <PhoneCall size={20} className="mt-0.5 shrink-0" aria-hidden />
           <span>
             <strong className="block font-bold">
-              <T vi={`Hôm nay tới lượt bạn gọi ${kinVi}.`} en={`It's your turn to call ${kinEn} today.`} />
+              {overdue ? (
+                <T
+                  vi={`Hôm nay tới lượt bạn, và đã ${days} ngày chưa ai gọi ${kinVi}.`}
+                  en={`It's your turn today, and nobody has called ${kinEn} for ${days} days.`}
+                />
+              ) : (
+                <T vi={`Hôm nay tới lượt bạn gọi ${kinVi}.`} en={`It's your turn to call ${kinEn} today.`} />
+              )}
             </strong>
             <span className="text-sm opacity-90">
               <T vi="Gọi xong, bấm “Gọi” ở trang Hôm nay để cả nhà biết." en="After the call, tap “Call” on Today so everyone knows." />
@@ -77,30 +86,36 @@ export function RotaCard({
           </span>
         </p>
       ) : (
-        <p className={`rounded-2xl px-4 py-3 ${today.done ? "bg-green-tint text-green-ink" : "bg-surface-2 text-ink"}`} role="status">
-          {today.member_name ? (
-            today.done ? (
-              <T vi={`Hôm nay ${today.member_name} đã gọi ${kinVi}.`} en={`${today.member_name} has called ${kinEn} today.`} />
-            ) : (
-              <T vi={`Hôm nay (${today.weekday_vi}) tới lượt ${today.member_name}.`} en={`Today (${today.weekday_en}) is ${today.member_name}'s turn.`} />
-            )
-          ) : (
-            <T vi="Hôm nay chưa ai nhận lượt gọi." en="Nobody is down to call today." />
-          )}
-          {mine?.next && !mine.your_turn && (
-            <span className="block text-sm text-ink-2">
-              <T
-                vi={`Lượt của bạn: ${SHORT_VI[mine.next.weekday]}, ${shortDate(mine.next.date)}${mine.next.in_days === 1 ? " (mai)" : ""}.`}
-                en={`Your turn: ${SHORT_EN[mine.next.weekday]} ${shortDate(mine.next.date)}${mine.next.in_days === 1 ? " (tomorrow)" : ""}.`}
-              />
+        <p
+          className={`flex items-start gap-3 rounded-2xl px-4 py-3 ${
+            today.done ? "bg-green-tint text-green-ink" : overdue ? "bg-yellow-tint text-yellow-ink" : "bg-surface-2 text-ink"
+          }`}
+          role="status"
+          data-testid="rota-today"
+        >
+          {overdue && <PhoneCall size={18} className="mt-0.5 shrink-0" aria-hidden />}
+          <span>
+            <span className={`block ${overdue ? "font-semibold" : ""}`}>
+              {overdue && <T vi={`Đã ${days} ngày chưa ai gọi ${kinVi}. `} en={`Nobody has called ${kinEn} for ${days} days. `} />}
+              {today.member_name ? (
+                today.done ? (
+                  <T vi={`Hôm nay ${today.member_name} đã gọi ${kinVi}.`} en={`${today.member_name} has called ${kinEn} today.`} />
+                ) : (
+                  <T vi={`Hôm nay (${today.weekday_vi}) tới lượt ${today.member_name}.`} en={`Today (${today.weekday_en}) is ${today.member_name}'s turn.`} />
+                )
+              ) : (
+                <T vi="Hôm nay chưa ai nhận lượt gọi." en="Nobody is down to call today." />
+              )}
             </span>
-          )}
-        </p>
-      )}
-      {rota.gap.nudge && rota.nudge_vi && (
-        <p className="flex items-start gap-3 rounded-2xl bg-yellow-tint px-4 py-3 font-medium text-yellow-ink" role="status">
-          <PhoneCall size={18} className="mt-0.5 shrink-0" aria-hidden />
-          <T vi={rota.nudge_vi} en={rota.nudge_en ?? rota.nudge_vi} />
+            {mine?.next && (
+              <span className="block text-sm opacity-85">
+                <T
+                  vi={`Lượt của bạn: ${SHORT_VI[mine.next.weekday]}, ${shortDate(mine.next.date)}${mine.next.in_days === 1 ? " (mai)" : ""}.`}
+                  en={`Your turn: ${SHORT_EN[mine.next.weekday]} ${shortDate(mine.next.date)}${mine.next.in_days === 1 ? " (tomorrow)" : ""}.`}
+                />
+              </span>
+            )}
+          </span>
         </p>
       )}
 

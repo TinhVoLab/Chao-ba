@@ -22,7 +22,7 @@ export async function MemoryBookCard({ elderId }: { elderId: string }) {
           <span className="block font-semibold">
             <T vi={`Sổ ký ức · ${m.stories.length} chuyện ${h} kể`} en={`Memory book · ${m.stories.length} stories`} />
           </span>
-          <span className="block truncate text-sm text-ink-3">
+          <span className="line-clamp-2 text-sm text-ink-3 wrap-anywhere" title={latest ? `${latest.title_vi} / ${latest.title_en}` : undefined}>
             {latest ? (
               <T vi={`Mới nhất: ${latest.title_vi}`} en={`Latest: ${latest.title_en}`} />
             ) : (

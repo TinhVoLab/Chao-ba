@@ -399,6 +399,9 @@ export interface Synthesis {
 export interface AccessPerson {
   actor: string;
   role: string;
+  /** Display name (family.py `access`): the actor, or the elder's kin name for `elder_self` ("Má (chính bà)"). */
+  label_vi?: string;
+  label_en?: string;
   views: number;
   writes: number;
   last_ts: string;

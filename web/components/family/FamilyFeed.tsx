@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Bell, Bot, CalendarDays, HandHeart, CalendarSync, Heart, ListChecks, Lock, NotebookPen, PhoneCall, PhoneOff, Rows3 } from "lucide-react";
+import { Bell, Bot, CalendarDays, ChevronDown, HandHeart, CalendarSync, Heart, ListChecks, Lock, NotebookPen, PhoneCall, PhoneOff, Rows3 } from "lucide-react";
 import type { FeedItem, FeedKind } from "@/lib/types";
 import { longDate } from "@/lib/format";
 import { StatusShape } from "../StatusShape";
@@ -26,8 +26,29 @@ const FILTERS: { key: string; vi: string; en: string; kinds: FeedKind[] | null }
   { key: "self", vi: "Tự báo", en: "Self-reported", kinds: ["self_report"] },
 ];
 
+type Entry = { kind: "item"; it: FeedItem } | { kind: "kudos"; actor: string; items: FeedItem[] };
+
+/** Within one day, love notes from the same sender become one row (“Lan gửi má 5 lời thương · má trả lời 3”), placed
+ *  where the newest one was. A single note stays a normal row. */
+function groupKudos(list: FeedItem[]): Entry[] {
+  const out: Entry[] = [];
+  const at = new Map<string, number>();
+  for (const it of list) {
+    if (it.kind !== "kudos" || !it.actor) {
+      out.push({ kind: "item", it });
+      continue;
+    }
+    const i = at.get(it.actor);
+    if (i == null) {
+      at.set(it.actor, out.length);
+      out.push({ kind: "kudos", actor: it.actor, items: [it] });
+    } else (out[i] as Extract<Entry, { kind: "kudos" }>).items.push(it);
+  }
+  return out.map((e) => (e.kind === "kudos" && e.items.length === 1 ? { kind: "item", it: e.items[0] } : e));
+}
+
 /** "Dòng thời gian chung": AI summaries, notes, calls/visits, alerts, tasks and care events in one feed. */
-export function FamilyFeed({ items, fromDate }: { items: FeedItem[]; fromDate: string | null }) {
+export function FamilyFeed({ items, fromDate, kinVi, kinEn }: { items: FeedItem[]; fromDate: string | null; kinVi: string; kinEn: string }) {
   const [filter, setFilter] = useState("all");
   const [allDays, setAllDays] = useState(false);
   const kinds = FILTERS.find((f) => f.key === filter)?.kinds;
@@ -68,9 +89,13 @@ export function FamilyFeed({ items, fromDate }: { items: FeedItem[]; fromDate: s
                 <T vi={d.vi} en={d.en} />
               </h3>
               <ul className="flex flex-col divide-y divide-line rounded-2xl border border-line bg-surface">
-                {list.map((it) => (
-                  <FeedRow key={it.id} it={it} />
-                ))}
+                {groupKudos(list).map((e) =>
+                  e.kind === "item" ? (
+                    <FeedRow key={e.it.id} it={e.it} />
+                  ) : (
+                    <KudosGroup key={`kg-${date}-${e.actor}`} actor={e.actor} items={e.items} kinVi={kinVi} kinEn={kinEn} />
+                  ),
+                )}
               </ul>
             </li>
           );
@@ -91,6 +116,46 @@ export function FamilyFeed({ items, fromDate }: { items: FeedItem[]; fromDate: s
         </p>
       )}
     </section>
+  );
+}
+
+function KudosGroup({ actor, items, kinVi, kinEn }: { actor: string; items: FeedItem[]; kinVi: string; kinEn: string }) {
+  const [open, setOpen] = useState(false);
+  const replied = items.filter((i) => i.status === "replied").length;
+  const id = `kg-${items[0].id}`;
+  return (
+    <li data-testid="feed-kudos-group">
+      <div className="flex gap-3 px-3.5 py-3">
+        <span className="grid size-9 shrink-0 place-items-center rounded-full bg-rose-tint text-rose-ink">
+          <Heart size={17} aria-hidden />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="font-semibold leading-snug">
+            <T
+              vi={`${actor} gửi ${kinVi} ${items.length} lời thương${replied ? ` · ${kinVi} trả lời ${replied}` : ""}`}
+              en={`${actor} sent ${kinEn} ${items.length} love notes${replied ? ` · ${kinEn} replied to ${replied}` : ""}`}
+            />
+          </p>
+          <button
+            type="button"
+            aria-expanded={open}
+            aria-controls={id}
+            onClick={() => setOpen((o) => !o)}
+            className="-ml-1 mt-0.5 inline-flex min-h-11 items-center gap-1 rounded-full px-1 text-sm font-semibold text-accent"
+          >
+            <ChevronDown size={16} className={`transition-transform duration-150 ${open ? "rotate-180" : ""}`} aria-hidden />
+            {open ? <T vi="Thu gọn" en="Show less" /> : <T vi="Xem từng lời" en="Show each" />}
+          </button>
+        </div>
+      </div>
+      {open && (
+        <ul id={id} className="fade-in ml-[3.75rem] mb-2 mr-2 flex flex-col divide-y divide-line rounded-xl bg-surface-2">
+          {items.map((it) => (
+            <FeedRow key={it.id} it={it} />
+          ))}
+        </ul>
+      )}
+    </li>
   );
 }
 

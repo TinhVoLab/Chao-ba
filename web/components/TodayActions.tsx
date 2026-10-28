@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, type ReactNode } from "react";
-import { Check, CloudOff, MessageSquareHeart, NotebookPen, Phone, PhoneCall, Send, X } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Check, ChevronDown, ChevronUp, CloudOff, MessageSquareHeart, NotebookPen, Phone, PhoneCall, Send, X } from "lucide-react";
 import type { ContactStatus, Note } from "@/lib/types";
 import { currentViewer } from "@/lib/viewer";
 import { useLang, useLocal } from "@/lib/useLang";
@@ -8,6 +9,11 @@ import { SENT_EVENT, postWrite, useOutbox, type PendingWrite } from "@/lib/outbo
 import { shortDate } from "@/lib/format";
 import { NotSaved, SaveRefused } from "./SaveState";
 import { T } from "./T";
+import { ClampText } from "./today/ClampText";
+
+/** Recent notes on Today: a few, then a short expand, then the Family page for the rest. */
+const NOTES_FIRST = 3;
+const NOTES_MAX = 8;
 
 const PRESETS: { vi: string; en: string; logsCall?: boolean }[] = [
   { vi: "Đã gọi, {k} khỏe", en: "Called, {K} is fine", logsCall: true },
@@ -45,7 +51,7 @@ export function TodayActions({
   contact: ContactStatus | null;
   todayDate: string;
   todayDay: number;
-  /** Rendered right under the call / note buttons (the "Gửi yêu thương" tray). */
+  /** Rendered under the call / note buttons, the nudge and the quick-note form, above the recent notes (kudos strip). */
   children?: ReactNode;
 }) {
   const lang = useLang();
@@ -55,6 +61,7 @@ export function TodayActions({
   const [status, setStatus] = useState<SaveStatus>({ state: "idle" });
   const [callStatus, setCallStatus] = useState<SaveStatus>({ state: "idle" });
   const [toElder, setToElder] = useState(false);
+  const [allNotes, setAllNotes] = useState(false);
   const pending = useOutbox(elderId);
   // Set only after the API stored the contact row (directly, or later from the outbox).
   const calledAt = useLocal(`cb-called-${elderId}`);
@@ -118,7 +125,7 @@ export function TodayActions({
         <a
           href={`tel:${phone}`}
           onClick={logCall}
-          className="flex min-h-16 items-center justify-center gap-2.5 rounded-2xl bg-accent px-4 text-lg font-bold text-accent-ink shadow-soft transition-colors duration-150 hover:bg-accent-hover active:translate-y-px"
+          className="flex min-h-16 items-center justify-center gap-2 whitespace-nowrap rounded-2xl bg-accent px-3 text-base font-bold min-[360px]:gap-2.5 min-[360px]:px-4 min-[360px]:text-lg text-accent-ink shadow-soft transition-colors duration-150 hover:bg-accent-hover active:translate-y-px"
         >
           <Phone size={22} aria-hidden />
           <T vi={`Gọi ${kinVi}`} en={`Call ${kinEn}`} />
@@ -149,7 +156,7 @@ export function TodayActions({
       ) : contact?.nudge && contact.days_since != null ? (
         <p className="flex items-start gap-3 rounded-xl bg-yellow-tint px-4 py-3 text-yellow-ink" role="status">
           <PhoneCall size={20} className="mt-0.5 shrink-0" aria-hidden />
-          <span>
+          <span className="min-w-0 wrap-anywhere">
             <strong className="font-bold">
               <T vi={`Đã ${contact.days_since} ngày chưa ai gọi ${kinVi}.`} en={`No one has called ${kinEn} for ${contact.days_since} days.`} />
             </strong>{" "}
@@ -172,8 +179,6 @@ export function TodayActions({
           </span>
         </p>
       ) : null}
-
-      {children}
 
       {open && (
         <form
@@ -251,33 +256,63 @@ export function TodayActions({
         {status.state === "rejected" && <SaveRefused detail={status.detail} className="fade-in" />}
       </div>
 
+      {children}
+
       {shownNotes.length > 0 && (
         <div>
           <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-ink-3">
             <T vi="Ghi chú gần đây" en="Recent notes" />
           </h2>
-          <ul className="divide-y divide-line">
-            {shownNotes.slice(0, 3).map((n, i) => (
+          <ul className="divide-y divide-line" data-testid="recent-notes">
+            {shownNotes.slice(0, allNotes ? NOTES_MAX : NOTES_FIRST).map((n, i) => (
               <li key={`${n.id ?? i}-${n.created_at ?? ""}`} className="flex gap-3 py-2.5">
                 <span className="w-12 shrink-0 pt-0.5 text-sm text-ink-3 tnum">{n.date ? shortDate(n.date) : ""}</span>
-                <p className="min-w-0">
-                  <span className="font-semibold">{n.author}:</span> {n.text}
-                  {n.to_elder && (
-                    <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-accent-tint px-2 py-px align-middle text-xs font-semibold text-accent">
-                      <MessageSquareHeart size={12} aria-hidden />
-                      <T vi={`nhắn cho ${kinVi}`} en={`to ${kinEn}`} />
-                    </span>
-                  )}
-                  {n.pending && (
-                    <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-yellow-tint px-2 py-px align-middle text-xs font-semibold text-yellow-ink">
-                      <CloudOff size={12} aria-hidden />
-                      <T vi="chưa lưu, giữ trên máy này" en="not saved, kept on this device" />
-                    </span>
-                  )}
-                </p>
+                <div className="min-w-0 flex-1">
+                  <ClampText lines={3}>
+                    <span className="font-semibold">{n.author}:</span> {n.text}
+                    {n.to_elder && (
+                      <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-accent-tint px-2 py-px align-middle text-xs font-semibold text-accent">
+                        <MessageSquareHeart size={12} aria-hidden />
+                        <T vi={`nhắn cho ${kinVi}`} en={`to ${kinEn}`} />
+                      </span>
+                    )}
+                    {n.pending && (
+                      <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-yellow-tint px-2 py-px align-middle text-xs font-semibold text-yellow-ink">
+                        <CloudOff size={12} aria-hidden />
+                        <T vi="chưa lưu, giữ trên máy này" en="not saved, kept on this device" />
+                      </span>
+                    )}
+                  </ClampText>
+                </div>
               </li>
             ))}
           </ul>
+          {shownNotes.length > NOTES_FIRST && (
+            <div className="flex flex-wrap items-center gap-x-4">
+              <button
+                type="button"
+                onClick={() => setAllNotes((a) => !a)}
+                aria-expanded={allNotes}
+                className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-accent"
+              >
+                {allNotes ? <ChevronUp size={16} aria-hidden /> : <ChevronDown size={16} aria-hidden />}
+                {allNotes ? (
+                  <T vi="Thu gọn" en="Show less" />
+                ) : (
+                  <T
+                    vi={`Xem thêm ${Math.min(NOTES_MAX, shownNotes.length) - NOTES_FIRST}`}
+                    en={`Show ${Math.min(NOTES_MAX, shownNotes.length) - NOTES_FIRST} more`}
+                  />
+                )}
+              </button>
+              {shownNotes.length > NOTES_MAX && (
+                <Link href={`/family?elder=${encodeURIComponent(elderId)}&tab=timeline`} className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-accent">
+                  <T vi={`Cả ${shownNotes.length} ghi chú ở trang Gia đình`} en={`All ${shownNotes.length} notes on Family`} />
+                  <ArrowRight size={16} aria-hidden />
+                </Link>
+              )}
+            </div>
+          )}
         </div>
       )}
     </section>

@@ -4,7 +4,7 @@
 //
 // Never makes a sound: Chromium runs with --mute-audio, /screen uses ?tts=0, and speechSynthesis.speak is replaced by
 // a no-op before any page script runs. The elder's advice answer is typed (?typed=1), so no microphone is needed.
-// Flow: family sends "Má ăn cơm chưa?" → /screen shows the card → tap "Ăn rồi" → family Today shows the reply;
+// Flow: family sends "Má ăn cơm chưa?" → /screen shows the card → tap "Ăn rồi" → the Family tray (?tab=checkin) shows the reply;
 // advice question → typed answer → saved as "Lời má dạy" after consent; free text with a dose is refused; a simulated
 // phone call relays a pending card and records the reply. 390 px and 1280 px, Vietnamese and English, no console
 // errors, no horizontal overflow. Writes docs/screenshots/kudos-*.png. Calls POST /api/demo/reset?elder=hanh first.
@@ -137,14 +137,27 @@ async function elderSizes(page, label) {
 }
 
 await fetch(`${API}/api/demo/reset?elder=hanh`, { method: "POST" });
+const TRAY = "/family?elder=hanh&tab=checkin"; // the full "Gửi yêu thương" tray (Today only has the compact strip)
 
 // ---------------------------------------------------------------- 1. family sends "Má ăn cơm chưa?" (390 px, VI)
 const phone = await context({ width: 390, height: 844 });
-let today = await family(phone, "/?elder=hanh", "today-390");
-check((await today.locator('[data-testid="kudos-tray"] button').count()) >= 11, "today: tray with quick cards");
-check(await today.isVisible("text=Đã 5 ngày chưa ai gọi má."), "today: the 'nobody called' nudge still counts only calls");
-check(await today.isVisible("text=lời thương tuần này, gọi má một cuộc nữa nha"), "today: nudge mentions this week's love notes");
-await noOverflow(today, "today 390");
+// Today shows a compact strip (4 love cards + latest reply + link); the full tray is on Family → "Hỏi thăm".
+const todayPage = await phone.newPage();
+watch(todayPage, "today-390");
+await todayPage.goto(`${WEB}/?elder=hanh`, { waitUntil: "networkidle" });
+await todayPage.waitForSelector('[data-testid="kudos-quick"]');
+check((await todayPage.locator('[data-testid="kudos-quick"] button').count()) === 4, "today: compact strip with 4 love cards");
+check(
+  (await todayPage.getAttribute('[data-testid="kudos-quick-all"]', "href"))?.includes("tab=checkin"),
+  "today: strip links to the full tray on Family",
+);
+check(await todayPage.isVisible("text=Đã 5 ngày chưa ai gọi má."), "today: the 'nobody called' nudge still counts only calls");
+check(await todayPage.isVisible("text=lời thương tuần này, gọi má một cuộc nữa nha"), "today: nudge mentions this week's love notes");
+await noOverflow(todayPage, "today 390");
+await todayPage.close();
+let today = await family(phone, TRAY, "tray-390");
+check((await today.locator('[data-testid="kudos-tray"] button').count()) >= 11, "family: tray with quick cards");
+await noOverflow(today, "family tray 390");
 await trayShot(today, "family-tray");
 await today.click('[data-testid="kudos-ate"]');
 await today.waitForSelector('[data-testid="kudos-flash"]');
@@ -167,7 +180,7 @@ await scr.waitForSelector('[data-testid="kudos-card"]', { state: "detached", tim
 check(await scr.isVisible('[data-testid="btn-talk"]'), "screen: back to the idle screen after answering");
 await scr.close();
 
-today = await family(phone, "/?elder=hanh", "today-reply");
+today = await family(phone, TRAY, "tray-reply");
 const reply = await today.locator('[data-testid="kudos-reply"]').first().textContent();
 check(/Má trả lời: Ăn rồi con · \d\d:\d\d/.test(reply), `today: reply inline (“${reply}”)`);
 await trayShot(today, "family-reply");
@@ -193,7 +206,7 @@ await scr.waitForSelector('[data-testid="kudos-done"]');
 await scr.close();
 const mem = await (await fetch(`${API}/api/elders/hanh/memories`, { headers: hdr("Lan") })).json();
 check(mem.stories.some((s) => s.title_vi === "Lời má dạy: chăm mai ra nụ đúng Tết" && s.shared), "memory book: 'Lời má dạy' saved after the elder agreed");
-today = await family(phone, "/?elder=hanh", "today-advice");
+today = await family(phone, TRAY, "tray-advice");
 check(await today.isVisible("text=Đã lưu vào Sổ ký ức: Lời má dạy"), "today: advice answer shown and marked saved");
 
 // ---------------------------------------------------------------- 4. free text with a dose is refused kindly
@@ -235,8 +248,14 @@ check(await fam.isVisible("text=Sent by the family"), "family (EN): family list"
 await noOverflow(fam, "family 1280 EN");
 await trayShot(fam, "family-page-en");
 await fam.screenshot({ path: join(OUT, "kudos-family-1280-en.png"), fullPage: false });
-const feed = fam.locator("text=Lan to Mom:").first();
+// The shared timeline is its own tab (?tab=timeline); same-day notes from one sender fold into "Lan sent Mom N love notes".
+const famTl = await desk.newPage();
+watch(famTl, "family-timeline-en");
+await famTl.goto(`${WEB}/family?elder=hanh&tab=timeline`, { waitUntil: "networkidle" });
+await famTl.waitForSelector('[data-testid="family-tab-timeline"][aria-current="page"]');
+const feed = famTl.locator("text=/Lan (to|sent) Mom/").first();
 check((await feed.count()) > 0, "family (EN): love notes in the shared timeline");
+await noOverflow(famTl, "family timeline 1280 EN");
 const dm = await desk.newPage();
 watch(dm, "dmaic-en");
 await dm.goto(`${WEB}/dmaic?elder=hanh`, { waitUntil: "networkidle" });
@@ -244,9 +263,9 @@ await dm.waitForSelector('[data-testid="weekly-contacts"]');
 await dm.locator('[data-testid="weekly-contacts"]').scrollIntoViewIfNeeded();
 await dm.locator('[data-testid="weekly-contacts"]').screenshot({ path: join(OUT, "kudos-dmaic-weekly.png") });
 await noOverflow(dm, "dmaic 1280 EN");
-const todayEn = await family(await context({ width: 390, height: 844 }, "en"), "/?elder=hanh", "today-390-en");
-check(await todayEn.isVisible("text=Send some love"), "today (EN 390): tray in English");
-await noOverflow(todayEn, "today 390 EN");
+const todayEn = await family(await context({ width: 390, height: 844 }, "en"), TRAY, "tray-390-en");
+check(await todayEn.isVisible("text=Send some love"), "family (EN 390): tray in English");
+await noOverflow(todayEn, "family tray 390 EN");
 await trayShot(todayEn, "family-tray-en");
 const scrEn = await screen(await context({ width: 540, height: 960 }, "en"), "screen-en", "&lang=en");
 await fetch(`${API}/api/elders/hanh/kudos`, { method: "POST", headers: hdr("Minh"), body: JSON.stringify({ kind: "love", template_id: "miss" }) });

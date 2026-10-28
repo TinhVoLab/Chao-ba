@@ -49,6 +49,7 @@ export function ViewerSwitcher({ elderId, memberId }: { elderId: string; memberI
         aria-expanded={open}
         aria-haspopup="listbox"
         aria-controls="viewer-list"
+        title={me.name}
         className={`flex min-h-11 w-full items-center gap-2.5 rounded-2xl border border-line bg-surface px-3 py-1.5 text-left transition-colors duration-150 hover:border-line-strong sm:w-auto ${
           pending ? "opacity-60" : ""
         }`}
@@ -91,7 +92,7 @@ export function ViewerSwitcher({ elderId, memberId }: { elderId: string; memberI
                     {m.role === "primary" ? <UserRound size={16} aria-hidden /> : <Eye size={16} aria-hidden />}
                   </span>
                   <span className="min-w-0 flex-1 leading-tight">
-                    <span className="block font-semibold">
+                    <span className="block font-semibold wrap-anywhere">
                       {m.name}{" "}
                       <span className="font-normal text-ink-3">
                         · <T vi={`${m.relVi}, ${m.city}`} en={`${m.relEn}, ${m.city}`} />

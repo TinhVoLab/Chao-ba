@@ -257,6 +257,19 @@ dialog::backdrop {
   display: none;
 }
 
+/* Sideways scrollers (elder switcher): the edge that hides more items fades out (set data-more-left/right). */
+.hscroll-fade {
+  --fade-l: 0px;
+  --fade-r: 0px;
+  mask-image: linear-gradient(to right, transparent, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent);
+}
+.hscroll-fade[data-more-left] {
+  --fade-l: 3rem;
+}
+.hscroll-fade[data-more-right] {
+  --fade-r: 3rem;
+}
+
 .pb-safe {
   padding-bottom: env(safe-area-inset-bottom);
 }

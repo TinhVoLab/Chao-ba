@@ -72,6 +72,11 @@ export const getFamilyTimeline = async (id: string, days = 14) => {
   const member = await serverViewerId(id);
   return get<FamilyTimeline>(`/api/elders/${e(id)}/family/timeline?days=${days}`, () => familyFixture(id, member).timeline, id);
 };
+/** "Who has been looking" (per-person summary of the access log), shown on the Privacy page. */
+export const getFamilyAccess = async (id: string, days = 7) => {
+  const member = await serverViewerId(id);
+  return get<FamilyOverview["access"]>(`/api/elders/${e(id)}/family/access?days=${days}`, () => familyFixture(id, member).overview.access, id);
+};
 /** Community dashboard, read as the ward health station (first call builds the simulated ward: allow a bit longer). */
 export const getCommunity = () => get<Community>("/api/community/overview", () => fixtureCommunity, undefined, stationHeaders(), 8000);
 

@@ -4,20 +4,21 @@ const WD_VI = ["Chủ nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm
 const WD_EN = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const MON_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-function parse(iso: string): Date | null {
+function parse(iso: string | null | undefined): Date | null {
+  if (!iso) return null;
   const d = new Date(iso.length === 10 ? `${iso}T00:00:00Z` : iso);
   return Number.isNaN(d.getTime()) ? null : d;
 }
 
-export function shortDate(iso: string): string {
+export function shortDate(iso: string | null | undefined): string {
   const d = parse(iso);
-  if (!d) return iso;
+  if (!d) return iso ?? "";
   return `${String(d.getUTCDate()).padStart(2, "0")}/${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
 }
 
-export function longDate(iso: string): { vi: string; en: string } {
+export function longDate(iso: string | null | undefined): { vi: string; en: string } {
   const d = parse(iso);
-  if (!d) return { vi: iso, en: iso };
+  if (!d) return { vi: iso ?? "", en: iso ?? "" };
   return {
     vi: `${WD_VI[d.getUTCDay()]}, ${d.getUTCDate()}/${d.getUTCMonth() + 1}`,
     en: `${WD_EN[d.getUTCDay()]}, ${d.getUTCDate()} ${MON_EN[d.getUTCMonth()]}`,
@@ -25,7 +26,7 @@ export function longDate(iso: string): { vi: string; en: string } {
 }
 
 /** Time in Vietnam (UTC+7) for an ISO timestamp. */
-export function vnTime(iso: string): string {
+export function vnTime(iso: string | null | undefined): string {
   const d = parse(iso);
   if (!d) return "";
   const t = new Date(d.getTime() + 7 * 3600_000);

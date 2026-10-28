@@ -16,8 +16,9 @@ export function SectionTitle({ id, icon, vi, en, aside }: { id: string; icon: Re
   );
 }
 
-/** "AI ghép mảnh rời rạc": the same complaint heard by several people this week. */
-export function SynthesisCard({ s, kinVi, kinEn }: { s: Synthesis; kinVi: string; kinEn: string }) {
+/** "AI ghép mảnh rời rạc": the same complaint heard by several people this week.
+ *  `action`: the “Mình hỏi rồi” control of the matching suggestion (folded in here so the topic is not listed twice). */
+export function SynthesisCard({ s, kinVi, kinEn, action }: { s: Synthesis; kinVi: string; kinEn: string; action?: React.ReactNode }) {
   const range = `${shortDate(s.from_date)}–${shortDate(s.to_date)}`;
   return (
     <section aria-labelledby="syn-h" className="flex flex-col gap-3">
@@ -26,6 +27,7 @@ export function SynthesisCard({ s, kinVi, kinEn }: { s: Synthesis; kinVi: string
         <p className="text-[1.125rem] font-semibold leading-snug text-ink">
           <T vi={s.summary_vi} en={s.summary_en} />
         </p>
+        {action}
         {s.items.length > 0 && (
           <ul className="mt-4 flex flex-col gap-3">
             {s.items.map((it) => (
@@ -106,12 +108,12 @@ const ROLE_LABEL: Record<string, { vi: string; en: string }> = {
   clinician: { vi: "nhân viên y tế", en: "clinician" },
 };
 
-/** The elder can see who has been looking (from the access log). */
-export function AccessCard({ o, kinVi, kinEn }: { o: FamilyOverview; kinVi: string; kinEn: string }) {
-  const people = o.access.people.slice(0, 6);
+/** The elder can see who has been looking (per-person summary of the access log; on the Privacy page). */
+export function AccessCard({ access, kinVi, kinEn }: { access: FamilyOverview["access"]; kinVi: string; kinEn: string }) {
+  const people = access.people.slice(0, 6);
   return (
     <section aria-labelledby="acc-h" className="flex flex-col gap-3">
-      <SectionTitle id="acc-h" icon={<Lock size={16} aria-hidden />} vi={`Ai đã xem thông tin của ${kinVi} (${o.access.days} ngày)`} en={`Who looked at ${kinEn}'s information (${o.access.days} days)`} />
+      <SectionTitle id="acc-h" icon={<Lock size={16} aria-hidden />} vi={`Ai đã xem thông tin của ${kinVi} (${access.days} ngày)`} en={`Who looked at ${kinEn}'s information (${access.days} days)`} />
       {people.length === 0 ? (
         <p className="text-ink-2">
           <T vi="Chưa có ai xem." en="Nobody yet." />
@@ -123,7 +125,9 @@ export function AccessCard({ o, kinVi, kinEn }: { o: FamilyOverview; kinVi: stri
             return (
               <li key={p.actor} className="flex items-center justify-between gap-3 px-4 py-2.5">
                 <span className="min-w-0">
-                  <span className="block truncate font-semibold">{p.actor}</span>
+                  <span className="block truncate font-semibold">
+                    <T vi={p.label_vi ?? p.actor} en={p.label_en ?? p.label_vi ?? p.actor} />
+                  </span>
                   <span className="block text-sm text-ink-3">
                     <T vi={r.vi} en={r.en} />
                   </span>
@@ -147,8 +151,8 @@ export function AccessCard({ o, kinVi, kinEn }: { o: FamilyOverview; kinVi: stri
       )}
       <p className="text-sm text-ink-3">
         <T
-          vi={`${kinVi[0].toUpperCase()}${kinVi.slice(1)} cũng thấy danh sách này. Chi tiết đầy đủ ở mục Riêng tư.`}
-          en={`${kinEn} sees this list too. Full detail is under Privacy.`}
+          vi={`${kinVi[0].toUpperCase()}${kinVi.slice(1)} cũng thấy danh sách này. Từng lượt xem ở mục “Ai đã xem” phía trên.`}
+          en={`${kinEn} sees this list too. Each view is listed under “Who viewed” above.`}
         />
       </p>
     </section>

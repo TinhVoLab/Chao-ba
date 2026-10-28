@@ -225,7 +225,10 @@ counter (`count`, `last_ts`); writes always get their own row.
     you}]}`. Keys: `care:<topic>`, `hook:<text>`, `act:<activity>`, `fact:<normalised fact>`.
   - `POST /api/elders/{id}/family/suggestions/asked` `{topic_key}` → `{ok, topic_key, member_name, day, date}` (moves the topic to `already_asked`
     for everyone for 7 days).
-  - `GET /api/elders/{id}/family/access?days=7` → `{days, people:[{actor, role, views, writes, last_ts}], simulated}` (the elder sees who looked).
+  - `GET /api/elders/{id}/family/access?days=7` → `{days, people:[{actor, role, label_vi, label_en, views, writes, last_ts}], simulated}` (the elder sees who looked).
+    `label_*` is the display name: the member's name for family (a default `family:<role>` actor is mapped to that member
+    and merged with them); the elder's own reads (`elder_self`, e.g. actor `elder:hanh`)
+    are merged into one row labelled by kin ("Má (chính bà)" / "Mom (herself)").
 - **Family micro-interactions "Gửi yêu thương"** (`chaoba/server/kudos.py`; table `kudos`; family app Today + `/family`,
   elder screen `/screen`). Identity as for `/family` (care circle; a header can lower, never raise a role); `X-Role:
   elder_self` = the elder; `clinician` / `health_station` → **403** `family_only`. All cards are text only.

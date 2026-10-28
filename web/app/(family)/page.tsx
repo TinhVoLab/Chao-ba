@@ -11,7 +11,8 @@ import { StatusShape, lightText, lightTint } from "@/components/StatusShape";
 import { TodayActions } from "@/components/TodayActions";
 import { T } from "@/components/T";
 import { MemoryBookCard } from "@/components/memories/MemoryBookCard";
-import { KudosTray } from "@/components/kudos/KudosTray";
+import { KudosQuick } from "@/components/today/KudosQuick";
+import { ClampText } from "@/components/today/ClampText";
 
 export default function TodayPage({ searchParams }: PageProps<"/">) {
   return (
@@ -94,7 +95,7 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
             <span className="block font-semibold">
               <T vi={`${unread.length} cảnh báo chưa xem`} en={`${unread.length} unread alert${unread.length > 1 ? "s" : ""}`} />
             </span>
-            <span className="block truncate text-sm text-ink-3">
+            <span className="line-clamp-2 text-sm text-ink-3 wrap-anywhere">
               <T vi={unread[0].explanation_vi} en={unread[0].explanation_en} />
             </span>
           </span>
@@ -103,14 +104,20 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
       )}
 
       {/* The light */}
-      <section aria-labelledby="light-word" className={`fade-in rounded-[28px] ${lightTint(light)} p-5 sm:p-7`}>
-        <div className="flex items-center gap-5">
-          <StatusShape light={light} size={104} className="shrink-0 drop-shadow-sm" />
+      <section aria-labelledby="light-word" className={`fade-in rounded-[28px] ${lightTint(light)} p-4 min-[360px]:p-5 sm:p-7`}>
+        <div className="flex items-center gap-4 sm:gap-5">
+          <StatusShape light={light} size={104} className="size-[72px] shrink-0 drop-shadow-sm min-[360px]:size-[88px] sm:size-[104px]" />
           <div className="min-w-0">
-            <p className={`text-sm font-semibold ${lightText(light)}`}>
-              {p.display_name} · <T vi={date.vi} en={date.en} />
+            <p className={`text-sm font-semibold wrap-anywhere ${lightText(light)}`}>
+              {p.display_name}
+              {t.date && (
+                <>
+                  {" · "}
+                  <T vi={date.vi} en={date.en} />
+                </>
+              )}
             </p>
-            <h2 id="light-word" className={`text-[2.375rem] font-extrabold leading-[1.05] tracking-tight ${lightText(light)}`}>
+            <h2 id="light-word" className={`text-[1.875rem] font-extrabold leading-[1.05] tracking-tight wrap-break-word min-[360px]:text-[2.125rem] sm:text-[2.375rem] ${lightText(light)}`}>
               <T vi={word.vi} en={word.en} />
             </h2>
             <p className={`mt-1 text-[0.9375rem] font-medium ${lightText(light)} opacity-90`}>
@@ -118,23 +125,30 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
             </p>
           </div>
         </div>
-        <p className="mt-5 max-w-[60ch] text-[1.0625rem] leading-relaxed text-ink">
+        <p className="mt-5 max-w-[60ch] text-[1.0625rem] leading-relaxed text-ink wrap-anywhere">
           <T vi={t.explanation_vi} en={t.explanation_en} />
         </p>
       </section>
 
       {/* This morning's call */}
       <section aria-labelledby="call-h" className="flex flex-col gap-2">
-        <h2 id="call-h" className="flex flex-wrap items-center gap-2 text-sm font-bold uppercase tracking-wide text-ink-3">
+        <h2 id="call-h" className="flex min-w-0 flex-wrap items-center gap-2 text-sm font-bold uppercase tracking-wide text-ink-3">
           <MessageCircle size={16} aria-hidden />
           <T vi={callLabel.vi} en={callLabel.en} />
-          {t.simulated === false && (
+          {t.simulated === false && t.day != null && (
             <span className="rounded-full bg-accent-tint px-2 py-0.5 text-xs font-semibold normal-case tracking-normal text-accent">
               <T vi={`Cuộc gọi thật · ngày ${t.day}`} en={`Live call · day ${t.day}`} />
             </span>
           )}
         </h2>
-        {paused ? (
+        {!t.date ? (
+          <p className="text-lg font-medium" data-testid="no-call-yet">
+            <T
+              vi={`Út Thương chưa có cuộc gọi nào với ${k.vi}. Sau cuộc gọi đầu tiên, tóm tắt sẽ hiện ở đây.`}
+              en={`Út Thương hasn't had a call with ${k.en} yet. The summary will appear here after the first call.`}
+            />
+          </p>
+        ) : paused ? (
           <p className="text-lg font-medium">
             <T vi="Tóm tắt cuộc gọi đang ẩn vì chia sẻ đã tạm dừng." en="Call summaries are hidden while sharing is paused." />{" "}
             <Link href={`/privacy?elder=${id}`} className="font-semibold text-accent underline underline-offset-2">
@@ -143,19 +157,19 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
           </p>
         ) : t.answered ? (
           <>
-            <p className="text-lg leading-snug font-medium">
+            <ClampText lines={4} className="text-lg leading-snug font-medium">
               <T vi={t.summary_vi} en={t.summary_en} />
-            </p>
-            <dl className="flex flex-wrap gap-x-5 gap-y-1 text-[0.9375rem] text-ink-2">
+            </ClampText>
+            <dl className="flex min-w-0 flex-wrap gap-x-5 gap-y-1 text-[0.9375rem] text-ink-2">
               {t.mood != null && MOOD_WORD[t.mood] && (
                 <div className="flex gap-1.5">
                   <dt><T vi="Tâm trạng:" en="Mood:" /></dt>
                   <dd className="font-semibold text-ink"><T vi={MOOD_WORD[t.mood].vi} en={MOOD_WORD[t.mood].en} /></dd>
                 </div>
               )}
-              <div className="flex gap-1.5">
-                <dt><T vi="Tự kể:" en="Mentioned:" /></dt>
-                <dd className="font-semibold text-ink">
+              <div className="flex min-w-0 gap-1.5">
+                <dt className="shrink-0"><T vi="Tự kể:" en="Mentioned:" /></dt>
+                <dd className="min-w-0 font-semibold text-ink wrap-anywhere">
                   {symptoms.length ? (
                     <T vi={symptoms.map((s) => s.vi).join(", ")} en={symptoms.map((s) => s.en).join(", ")} />
                   ) : (
@@ -181,7 +195,7 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
           {medsToday.map((m) => (
             <p key={m.name} className="flex items-start gap-2">
               <Pill size={17} className="mt-0.5 shrink-0 text-ink-3" aria-hidden />
-              <span>
+              <span className="min-w-0 wrap-anywhere">
                 {m.status === "taken" ? (
                   <T
                     vi={`${k.vi[0].toUpperCase()}${k.vi.slice(1)} đã bấm “Đã uống thuốc” (${m.name}) lúc ${vnTime(m.answered_at ?? "")}.`}
@@ -225,16 +239,8 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
         todayDate={t.date}
         todayDay={t.day}
       >
-        {/* "Gửi yêu thương": right under "Gọi má", never instead of it */}
-        <KudosTray
-          key={`${id}-${viewer.memberId}`}
-          elderId={id}
-          kinVi={k.vi}
-          kinEn={k.en}
-          catalog={kudosCatalog.data}
-          initial={kudosSent.data}
-          compact
-        />
+        {/* "Gửi thương": a compact strip under "Gọi má", never instead of it; the full tray lives on the Family page */}
+        <KudosQuick key={`${id}-${viewer.memberId}`} elderId={id} kinVi={k.vi} kinEn={k.en} catalog={kudosCatalog.data} initial={kudosSent.data} />
       </TodayActions>
 
       {/* Last 14 days */}
@@ -249,12 +255,12 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
               <ArrowRight size={16} aria-hidden />
             </Link>
           </div>
-          <ol className="grid grid-cols-14 gap-1" style={{ gridTemplateColumns: `repeat(${lights.length}, minmax(0, 1fr))` }}>
+          <ol className="grid grid-cols-14 gap-0.5 min-[360px]:gap-1" style={{ gridTemplateColumns: `repeat(${lights.length}, minmax(0, 1fr))` }}>
             {lights.map((l) => {
               const w = LIGHT_WORD[l.light] ?? LIGHT_WORD.gray;
               return (
-                <li key={l.day} className="flex flex-col items-center gap-1" title={`${shortDate(l.date)}: ${w.vi} / ${w.en}`}>
-                  <StatusShape light={l.light} size={20} />
+                <li key={l.day} className="flex min-w-0 flex-col items-center gap-1" title={`${shortDate(l.date)}: ${w.vi} / ${w.en}`}>
+                  <StatusShape light={l.light} size={20} className="h-auto w-full max-w-5" />
                   <span className="sr-only">{`${shortDate(l.date)}: ${w.vi} / ${w.en}`}</span>
                 </li>
               );
@@ -273,16 +279,16 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
         href={`/call?elder=${id}`}
         className="flex min-h-14 items-center justify-between gap-3 rounded-2xl border border-line bg-surface px-4 py-3 transition-colors duration-150 hover:border-line-strong"
       >
-        <span className="flex items-center gap-3">
-          <span className="grid size-10 place-items-center rounded-full bg-accent-tint text-accent">
+        <span className="flex min-w-0 items-center gap-3">
+          <span className="grid size-10 shrink-0 place-items-center rounded-full bg-accent-tint text-accent">
             <Headphones size={20} aria-hidden />
           </span>
-          <span>
+          <span className="min-w-0">
             <span className="block font-semibold"><T vi="Thử một cuộc gọi web với Út Thương" en="Try a web call with Út Thương" /></span>
             <span className="block text-sm text-ink-3"><T vi="Nghe trợ lý giọng nói như người thân sẽ nghe" en="Hear the voice companion as your parent does" /></span>
           </span>
         </span>
-        <ArrowRight size={18} className="text-ink-3" aria-hidden />
+        <ArrowRight size={18} className="shrink-0 text-ink-3" aria-hidden />
       </Link>
 
       <Disclaimer />

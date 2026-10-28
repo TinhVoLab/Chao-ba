@@ -3,7 +3,8 @@
 // Út Thương in the morning call). Below the tray: what you (or the family) sent, with Đã gửi → Má đã xem → Má đã trả lời
 // and the reply inline. Micro-contacts are counted apart from calls; the tray never replaces "Gọi má".
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { BookHeart, Check, ChevronDown, HandHeart, Lightbulb, Loader2, PenLine, Send, Sprout } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, BookHeart, Check, ChevronDown, HandHeart, Lightbulb, Loader2, PenLine, Send, Sprout } from "lucide-react";
 import { fetchKudos, saveAdviceToMemory, sendKudos, type Kudos, type KudosCatalog, type KudosKind, type KudosList, type KudosTemplate } from "@/lib/kudos";
 import { useLang } from "@/lib/useLang";
 import { shortDate } from "@/lib/format";
@@ -24,6 +25,7 @@ export function KudosTray({
   initial,
   box = "sent",
   compact = false,
+  historyHref,
 }: {
   elderId: string;
   kinVi: string;
@@ -32,6 +34,8 @@ export function KudosTray({
   initial: KudosList | null;
   box?: "sent" | "family";
   compact?: boolean;
+  /** When set (the Family page), the history shows only the latest 3 and links here (the timeline) for the rest. */
+  historyHref?: string;
 }) {
   const lang = useLang();
   const [list, setList] = useState<Kudos[]>(initial?.items ?? []);
@@ -110,7 +114,9 @@ export function KudosTray({
     }
   }
 
-  const shown = showAll ? list : list.slice(0, compact ? 3 : 5);
+  const shown = historyHref ? list.slice(0, 3) : showAll ? list : list.slice(0, compact ? 3 : 5);
+  // Out of notes for today: the buttons go grey (not just faded) and one line says why, right above them.
+  const off = limitReached ? "grayscale" : "";
   const checkins = byKind.checkin ?? [];
   const loves = byKind.love ?? [];
 
@@ -118,7 +124,16 @@ export function KudosTray({
     <section aria-labelledby="kudos-h" className="flex flex-col gap-4 rounded-3xl border border-line bg-surface p-4 sm:p-5" data-testid="kudos-tray">
       <Header kinVi={kinVi} kinEn={kinEn} remaining={remaining} />
 
-      <div className="flex flex-col gap-2">
+      {limitReached && (
+        <p className="-mt-1 rounded-xl bg-surface-2 px-3 py-2 text-sm font-medium text-ink-2" data-testid="kudos-limit">
+          <T
+            vi={`Hôm nay bạn đã gửi đủ ${catalog.limit_per_day} lời thương. Mai gửi tiếp, hoặc gọi ${kinVi} một cuộc nha.`}
+            en={`You've sent ${catalog.limit_per_day} notes today. Send more tomorrow, or give ${kinEn} a call.`}
+          />
+        </p>
+      )}
+
+      <div className={`flex flex-col gap-2 ${off}`} aria-disabled={limitReached || undefined}>
         <h3 className="text-xs font-bold uppercase tracking-wide text-ink-3">
           <T vi="Hỏi thăm" en="Check in" />
         </h3>
@@ -130,7 +145,7 @@ export function KudosTray({
               disabled={limitReached || busy !== null}
               onClick={() => send("checkin", t.id, { kind: "checkin", template_id: t.id })}
               data-testid={`kudos-${t.id}`}
-              className="group flex min-h-[4.25rem] flex-col items-start gap-2 rounded-2xl border border-line bg-bg px-3 py-3 text-left transition-colors duration-150 hover:border-accent active:translate-y-px disabled:cursor-not-allowed disabled:opacity-55 sm:flex-row sm:items-center sm:gap-2.5"
+              className="group flex min-h-[4.25rem] flex-col items-start gap-2 rounded-2xl border border-line bg-bg px-3 py-3 text-left transition-colors duration-150 hover:border-accent active:translate-y-px disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:border-line disabled:active:translate-y-0 sm:flex-row sm:items-center sm:gap-2.5"
             >
               <span
                 className={`grid size-9 shrink-0 place-items-center rounded-full transition-colors duration-200 ${
@@ -153,7 +168,7 @@ export function KudosTray({
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className={`flex flex-col gap-2 ${off}`} aria-disabled={limitReached || undefined}>
         <h3 className="text-xs font-bold uppercase tracking-wide text-ink-3">
           <T vi="Gửi thương" en="Love" />
         </h3>
@@ -165,7 +180,7 @@ export function KudosTray({
               disabled={limitReached || busy !== null}
               onClick={() => send("love", t.id, { kind: "love", template_id: t.id })}
               data-testid={`kudos-${t.id}`}
-              className="flex min-h-[5.25rem] flex-col items-center justify-center gap-1.5 rounded-2xl bg-rose-tint px-1.5 py-2.5 text-center text-rose-ink transition-[transform,filter] duration-150 hover:brightness-[0.97] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-55"
+              className="flex min-h-[5.25rem] flex-col items-center justify-center gap-1.5 rounded-2xl bg-rose-tint px-1.5 py-2.5 text-center text-rose-ink transition-[transform,filter] duration-150 hover:brightness-[0.97] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:brightness-100 disabled:active:scale-100"
             >
               {busy === t.id ? (
                 <Loader2 size={22} className="animate-spin" aria-hidden />
@@ -182,7 +197,7 @@ export function KudosTray({
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-2" role="group" aria-label={lang === "en" ? "More" : "Thêm"}>
+      <div className={`grid grid-cols-3 gap-2 ${off}`} role="group" aria-label={lang === "en" ? "More" : "Thêm"}>
         {(
           [
             ["advice", Lightbulb, `Hỏi ý ${kinVi}`, `Ask ${kinEn}`],
@@ -195,13 +210,14 @@ export function KudosTray({
             type="button"
             aria-expanded={panel === k}
             aria-controls="kudos-panel"
+            disabled={limitReached}
             onClick={() => {
               setPanel((p) => (p === k ? null : k));
               setDraft("");
               setFlash(null);
             }}
             data-testid={`kudos-panel-${k}`}
-            className={`flex min-h-12 items-center justify-center gap-1 rounded-full border px-1.5 text-sm font-semibold sm:gap-1.5 sm:px-2 sm:text-[0.9375rem] transition-colors duration-150 ${
+            className={`flex min-h-12 items-center justify-center gap-1 rounded-full border px-1.5 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:border-line-strong sm:gap-1.5 sm:px-2 sm:text-[0.9375rem] transition-colors duration-150 ${
               panel === k ? "border-ink bg-ink text-bg" : "border-line-strong bg-bg text-ink hover:border-ink"
             }`}
           >
@@ -213,7 +229,7 @@ export function KudosTray({
         ))}
       </div>
 
-      {panel && (
+      {panel && !limitReached && (
         <FreePanel
           panel={panel}
           kinVi={kinVi}
@@ -243,14 +259,6 @@ export function KudosTray({
             <T vi={flash.vi} en={flash.en} />
           </p>
         )}
-        {limitReached && flash?.kind !== "refused" && (
-          <p className="rounded-xl bg-surface-2 px-3 py-2 text-sm text-ink-2">
-            <T
-              vi={`Hôm nay bạn đã gửi đủ ${catalog.limit_per_day} lời thương. Mai gửi tiếp, hoặc gọi ${kinVi} một cuộc nha.`}
-              en={`You've sent ${catalog.limit_per_day} notes today. Send more tomorrow, or give ${kinEn} a call.`}
-            />
-          </p>
-        )}
       </div>
 
       {shown.length > 0 && (
@@ -263,7 +271,17 @@ export function KudosTray({
               <KudosRow key={k.id} k={k} elderId={elderId} kinVi={kinVi} kinEn={kinEn} showSender={box === "family"} onChanged={refresh} />
             ))}
           </ul>
-          {!showAll && list.length > shown.length && (
+          {historyHref && list.length > shown.length && (
+            <Link
+              href={historyHref}
+              className="flex min-h-11 items-center gap-1 self-start rounded-full px-1 text-sm font-semibold text-accent"
+              data-testid="kudos-history-link"
+            >
+              <T vi={`Xem cả ${list.length} lời trong Nhật ký`} en={`See all ${list.length} in the Timeline`} />
+              <ArrowRight size={16} aria-hidden />
+            </Link>
+          )}
+          {!historyHref && !showAll && list.length > shown.length && (
             <button
               type="button"
               onClick={() => setShowAll(true)}
@@ -303,7 +321,10 @@ function Header({ kinVi, kinEn, remaining }: { kinVi: string; kinEn: string; rem
         </p>
       </div>
       {remaining !== null && (
-        <span className="mt-1 shrink-0 rounded-full bg-surface-2 px-2.5 py-1 text-xs font-semibold text-ink-2 tnum" data-testid="kudos-remaining">
+        <span
+          className={`mt-1 shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold tnum ${remaining <= 0 ? "bg-yellow-tint text-yellow-ink" : "bg-surface-2 text-ink-2"}`}
+          data-testid="kudos-remaining"
+        >
           <T vi={`Còn ${remaining} lượt`} en={`${remaining} left today`} />
         </span>
       )}
@@ -469,8 +490,8 @@ function KudosRow({
         <KudosIcon name={k.icon} size={17} />
       </span>
       <div className="min-w-0 flex-1">
-        <p className="flex items-baseline justify-between gap-2">
-          <span className={`min-w-0 font-semibold leading-snug ${k.redacted ? "italic text-ink-3" : ""}`}>
+        <p className="flex min-w-0 items-baseline justify-between gap-2">
+          <span className={`min-w-0 wrap-anywhere font-semibold leading-snug ${k.redacted ? "italic text-ink-3" : ""}`}>
             {showSender && <span className="font-bold">{k.sender_name}: </span>}
             {k.text_lang === "vi" ? <span lang="vi">“{k.text_vi}”</span> : <T vi={`“${k.text_vi}”`} en={`“${k.text_en}”`} />}
           </span>

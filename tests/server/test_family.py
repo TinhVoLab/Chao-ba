@@ -203,6 +203,22 @@ def test_elder_sees_who_is_viewing(client):
     people = {p["actor"]: p for p in acc["people"]}
     assert people["Minh"]["views"] >= 2 and people["Minh"]["role"] == "viewer"
     assert "Lan" in people and people["Lan"]["role"] == "primary"
+    assert people["Lan"]["label_vi"] == "Lan"
+
+
+def test_access_names_the_elder_by_kin_not_actor_id(client):
+    screen = {"X-Actor": "elder:hanh", "X-Role": "elder_self"}
+    client.get("/api/elders/hanh/family/timeline", headers=screen)
+    client.get("/api/elders/hanh/family", headers=ELDER)
+    acc = client.get("/api/elders/hanh/family/access", headers=MINH).json()
+    me = [p for p in acc["people"] if p["role"] == "elder_self"]
+    assert len(me) == 1   # "elder:hanh" and "Bà Hạnh" are the same person: one row
+    assert me[0]["label_vi"] == "Má (chính bà)" and me[0]["label_en"] == "Mom (herself)"
+    assert all("elder:" not in p["label_vi"] for p in acc["people"])
+    client.get("/api/elders/hanh/family", headers={"X-Actor": "family:primary", "X-Role": "primary"})
+    acc = client.get("/api/elders/hanh/family/access", headers=MINH).json()
+    assert [p["label_vi"] for p in acc["people"]].count("Lan") <= 1
+    assert all(not p["label_vi"].startswith("family:") for p in acc["people"])
 
 
 # ------------------------------------------------------------------ suggestions

@@ -22,6 +22,7 @@ const ROLE: Record<string, { vi: string; en: string }> = {
   secondary: { vi: "gia đình", en: "family" },
   clinician: { vi: "bác sĩ", en: "clinician" },
   system: { vi: "tự động", en: "automatic" },
+  elder_self: { vi: "tự xem", en: "own view" },
 };
 
 const ACTION: Record<string, { vi: string; en: string }> = {
@@ -93,12 +94,14 @@ function consentView(c: RawConsent, elderVi: string, elderEn: string) {
   };
 }
 
-function accessView(a: RawAccess, family: FamilyMember[]) {
+function accessView(a: RawAccess, family: FamilyMember[], elderName: string) {
   const actor = a.actor ?? a.who ?? "";
   const [kind, role] = actor.includes(":") ? actor.split(":") : [a.role ?? "", ""];
   const member = kind === "family" ? family.find((f) => f.role === role) : undefined;
-  const who = member?.name ?? (kind === "family" ? "Gia đình / Family" : kind === "system" ? "Hệ thống / System" : actor);
-  const roleLabel = ROLE[member ? role : kind] ?? (a.role ? ROLE[a.role] : undefined);
+  // The elder's own screen/call reads arrive as "elder:<id>": show the elder's name, never the raw id.
+  const self = kind === "elder" || a.role === "elder_self";
+  const who = member?.name ?? (self ? elderName : kind === "family" ? "Gia đình / Family" : kind === "system" ? "Hệ thống / System" : actor);
+  const roleLabel = self ? ROLE.elder_self : ROLE[member ? role : kind] ?? (a.role ? ROLE[a.role] : undefined);
   const act = ACTION[a.action] ?? { vi: String(a.action_vi ?? a.action), en: String(a.action_en ?? a.action) };
   return { who, roleLabel, act, at: a.last_ts ?? a.ts ?? a.at ?? "", n: typeof a.count === "number" ? a.count : 1 };
 }
@@ -174,7 +177,7 @@ export function PrivacyView({
   const extras = Object.entries(r).filter(([k, v]) => !["audio", "transcript_days"].includes(k) && typeof v === "string") as [string, string][];
   // Collapse repeated reads (same person, same action, same day) into one row with a count.
   const log = (() => {
-    const rows = [...(privacy.access_log ?? [])].map((a) => accessView(a, family)).sort((a, b) => b.at.localeCompare(a.at));
+    const rows = [...(privacy.access_log ?? [])].map((a) => accessView(a, family, elderVi)).sort((a, b) => b.at.localeCompare(a.at));
     // The API already collapses reads per actor/action/resource/day (with a count); merge across resources here.
     const out: (ReturnType<typeof accessView> & { count: number })[] = [];
     const seen = new Map<string, number>();

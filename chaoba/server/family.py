@@ -854,12 +854,23 @@ def access(svc: Service, elder_id: str, days: int = 7) -> dict:
                        "LIMIT 2000", (elder_id,))
     _, today = svc.current_day(elder_id)
     since = (Date.fromisoformat(today) - timedelta(days=max(1, days) - 1)).isoformat()
+    kk = kin(svc.store.elder(elder_id) or {})
+    hon = (svc.store.elder(elder_id) or {}).get("honorific") or ""
+    self_vi = f"{kk['K']} (chính {hon})" if hon else f"{kk['K']} (tự xem)"
+    self_en = f"{kk['ken']} ({'herself' if kk['him'] == 'her' else 'himself'})"
+    members = circle(svc.store, elder_id)
     people: dict[str, dict] = {}
     for r in rows:
         if (r["ts"] or "")[:10] < since and (r["last_ts"] or "")[:10] < since:
             continue
-        p = people.setdefault(r["actor"], {"actor": r["actor"], "role": r["role"], "views": 0, "writes": 0,
-                                           "last_ts": r["last_ts"] or r["ts"]})
+        me = r["role"] == "elder_self"   # the elder's own reads (actor "elder:<id>" from the screen/call): one row, by kin name
+        label = r["actor"]
+        if not me and label.startswith("family:"):   # default header "family:primary" = the circle member with that role
+            label = next((m["name"] for m in members if m["role"] == label.split(":", 1)[1]), label)
+        p = people.setdefault("elder_self" if me else label,
+                              {"actor": r["actor"], "role": r["role"], "views": 0, "writes": 0,
+                               "label_vi": self_vi if me else label, "label_en": self_en if me else label,
+                               "last_ts": r["last_ts"] or r["ts"]})
         if r["action"].startswith("read_"):
             p["views"] += int(r["n"] or 1)
         else:
