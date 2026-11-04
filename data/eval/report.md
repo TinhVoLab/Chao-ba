@@ -11,6 +11,7 @@ Held-out cohort (seed 2026): 400 simulated elders × 120 days; 124 with a clinic
 - **Speech/recall control chart alone**: sensitivity 56.5% (47.6–64.5), chance 13.7% (10.3–17.6), excess **42.7% (33.0–51.7)**.
 - **Median delay** (attributed detections): 24 days after onset (IQR 15–29).
 - **False alarms**: 0.19 (0.16–0.22) alarm episodes per person-month of stable monitoring (all rules), of which the control chart starts 0.10 (0.08–0.13); day-level specificity 97.2% (96.6–97.7); 57.7% (51.5–64.3) of stable elders never alerted in 99 monitored days.
+- **Stable 30-day periods with no yellow/red day**: 81.2% (77.5–84.6); **false-referral burden** (red alerts sent to qualified review for stable elders): 1.47 (0.67–2.40) per 100 person-months. Details below.
 - **Operational check, not clinical** (missed-calls declines flagged by the `unanswered` rule, which is close to circular): 71.4% (59.2–83.7), chance 6.5% (4.2–9.2).
 
 **Definition change.** An earlier version of this report counted *any* alarm from *any* rule that started on or after the onset day, with no time limit, and pooled missed-calls declines (detected by the unanswered-calls rule, which is nearly circular) into the headline. It reported 92.0 % sensitivity. A null test (stable elders given pseudo-onsets from the real onset distribution) showed that this definition scored about 46 % "detection" with no decline at all, and only 40 of 88 detections began with a control-chart rule. Corrected: a detection must be started by a rule matching the decline's channel within 45 days of onset, the chance rate from pseudo-onsets is reported next to it, missed-calls declines are reported separately as an operational check, the threshold is chosen on a development cohort and reported on a held-out cohort, and every number carries a bootstrap interval.
@@ -68,6 +69,24 @@ False-alarm column per type = stable elders plus that type's pre-onset days; cha
 | pstn | 248 | 74 | 78.4% (68.9–87.8) | 17.3% (12.3–22.4) | 61.1% (50.0–70.7) | 58.1% (45.9–68.9) | 22 | 0.20 (0.16–0.24) |
 | web | 152 | 50 | 82.0% (70.0–92.0) | 11.0% (5.6–16.8) | 71.0% (58.0–82.8) | 54.0% (40.0–68.0) | 24 | 0.16 (0.12–0.21) |
 
+## By age band (clinical declines)
+
+| Group | N | N clinical decline | Attributed sensitivity | Chance rate | Excess (chance-corrected) | Chart-only sensitivity | Median delay (d) | False alarms / person-month |
+|---|---|---|---|---|---|---|---|---|
+| 62-69 | 123 | 31 | 71.0% (54.8–87.1) | 19.7% (13.2–26.9) | 51.3% (32.8–67.9) | 54.8% (38.7–71.0) | 22 | 0.22 (0.16–0.28) |
+| 70-79 | 134 | 40 | 90.0% (80.0–97.5) | 12.9% (7.0–19.0) | 77.1% (67.0–86.5) | 65.0% (50.0–77.6) | 25 | 0.18 (0.13–0.23) |
+| 80-89 | 143 | 53 | 77.4% (66.0–88.7) | 11.8% (6.3–18.2) | 65.5% (52.0–77.6) | 50.9% (37.7–64.2) | 22 | 0.16 (0.12–0.20) |
+
+## By education (clinical declines)
+
+| Group | N | N clinical decline | Attributed sensitivity | Chance rate | Excess (chance-corrected) | Chart-only sensitivity | Median delay (d) | False alarms / person-month |
+|---|---|---|---|---|---|---|---|---|
+| low | 178 | 56 | 83.9% (75.0–92.9) | 15.2% (9.8–20.8) | 68.7% (58.4–80.0) | 55.4% (42.9–67.9) | 22 | 0.19 (0.15–0.24) |
+| mid | 166 | 51 | 82.4% (70.6–92.2) | 15.2% (9.1–21.0) | 67.2% (55.0–78.7) | 60.8% (47.1–74.5) | 24 | 0.17 (0.13–0.22) |
+| high | 56 | 17 | 58.8% (35.3–82.4) | 15.3% (5.7–28.2) | 43.5% (17.8–67.8) | 47.1% (23.5–70.6) | 22 | 0.21 (0.12–0.32) |
+
+Age is drawn as before (62–89); education (low = none/primary, mid = secondary, high = post-secondary; illustrative 45/40/15 % mix) comes from its own random stream, so adding it left every other number unchanged. In this cohort neither has any effect on the signals (no effect is assumed); see "Age and education with an assumed level effect" below for a version that adds one.
+
 Subgroup intervals are wide (few people per cell); differences between them are not significant.
 
 ## Personal baseline vs population norm
@@ -97,6 +116,68 @@ Stable elders shown yellow/red on more than half of their monitored days: person
 | `multi_symptom` | 7 | 5 |
 | `symptom_repeat` | 15 | 20 |
 | `unanswered` | 35 | 53 |
+
+## Specificity, completion and review burden (stable elders)
+
+Stable elders = the 227 with no injected decline; monitored = after the 21-day baseline. Brackets are 95 % bootstrap intervals over people.
+
+| Measure | Definition | Value |
+|---|---|---|
+| Specificity per 30-day period | complete 30-day blocks of monitoring (681 blocks) with no yellow or red day | 81.2% (77.5–84.6) |
+| Specificity per person | stable elders never alerted in 99 monitored days | 57.7% (51.5–64.3) |
+| Specificity per day | stable monitored days not yellow/red | 97.2% (96.6–97.7) |
+| False-referral burden | red-alert starts on stable elders per 100 person-months (11 red alerts; 11 of 227 stable elders had at least one) | 1.47 (0.67–2.40) |
+| Completion | scheduled daily calls answered (all 400 elders) | 95.3% (95.0–95.5) |
+| Valid calls | answered and long enough to measure | 90.7% (90.4–91.0) |
+
+Every red alert waits for a qualified person (clinician or health-station staff) to review it, so the false-referral burden is the review workload created by people whose signals did not really change. Whether a review becomes a referral is a human decision this simulation does not model. Completion and valid-call rates are set by the generator's assumed miss and short-call rates (about 1–6 % and 3–5 %); they check the bookkeeping, not real-world uptake. Time to clinical assessment cannot be measured on simulated data.
+
+| Group | N stable | Specificity / 30-day period | Red alerts / 100 p-m (stable) | Completion |
+|---|---|---|---|---|
+| 62-69 | 76 | 76.8% (70.2–82.5) | 1.99 (0.40–3.59) | 95.5% (95.0–95.9) |
+| 70-79 | 76 | 82.0% (76.3–87.3) | 1.59 (0.40–3.19) | 95.3% (94.8–95.7) |
+| 80-89 | 75 | 84.9% (79.6–90.2) | 0.81 (0.00–2.02) | 95.2% (94.7–95.6) |
+| low | 101 | 77.9% (72.6–82.8) | 2.10 (0.90–3.61) | 95.2% (94.7–95.6) |
+| mid | 96 | 84.4% (79.5–89.2) | 0.63 (0.00–1.58) | 95.3% (94.9–95.7) |
+| high | 30 | 82.2% (72.2–90.0) | 2.02 (0.00–5.05) | 95.6% (95.0–96.2) |
+| central | 64 | 82.8% (76.6–88.5) | 1.89 (0.47–3.79) | 95.3% (94.7–95.7) |
+| north | 61 | 80.3% (74.3–86.3) | 2.48 (0.50–4.97) | 95.1% (94.6–95.6) |
+| south | 102 | 80.7% (75.8–85.0) | 0.59 (0.00–1.49) | 95.4% (95.0–95.8) |
+| pstn | 142 | 79.1% (74.9–83.3) | 1.07 (0.21–1.92) | 95.2% (94.8–95.5) |
+| web | 85 | 84.7% (80.0–89.4) | 2.14 (0.71–3.92) | 95.5% (95.1–96.0) |
+
+## Test–retest reliability of the per-call signals (stable elders)
+
+ICC(2,1) (two-way random effects, absolute agreement, single measurement) between adjacent monitored weeks, averaged over 13 week pairs, 227 stable elders. *Weekly mean* = mean of the week's valid calls (≥ 3); *single call* = the first valid call of the week.
+
+| Signal | ICC, weekly mean | ICC, single call |
+|---|---|---|
+| Speech rate | 0.95 (0.94–0.96) | 0.81 (0.77–0.84) |
+| Pause ratio | 0.93 (0.91–0.94) | 0.74 (0.69–0.78) |
+| Filler rate | 0.89 (0.86–0.90) | 0.63 (0.57–0.68) |
+| Vocabulary variety (MATTR) | 0.92 (0.90–0.93) | 0.73 (0.69–0.77) |
+| Story recall (0–3) | 0.00 (-0.03–0.04) | -0.00 (-0.04–0.03) |
+
+These values mirror the generator's assumptions (between-person spread of usual levels versus assumed day-to-day noise), so they show what reliability those assumptions imply, not what real calls achieve. Story recall has no person-specific usual level in the generator (every simulated person recalls around the same 2.85 of 3), so its ICC is near zero by construction: its reliability cannot be judged from this simulation. Real test–retest reliability must be measured in the pilot.
+
+## Age and education with an assumed level effect
+
+Same held-out seed, regenerated with `generate_cohort(level_effects=True)`: usual vocabulary variety (MATTR) shifted by -0.02 (low), +0.00 (mid), +0.02 (high), and usual speech rate shifted by -0.02 syll/s per year of age above 75. These are **simulation assumptions** (sized below the between-person spread already in the generator), not measured effects; every random draw is identical to the main cohort. A level effect moves a person's usual level, which a personal baseline absorbs and a population norm does not.
+
+| Group | Baseline | N stable | Sensitivity | Excess | False alarms / p-m | Specificity / 30-day period | Red alerts / 100 p-m |
+|---|---|---|---|---|---|---|---|
+| low | personal | 101 | 83.9% (75.0–92.9) | 69.6% (59.1–80.3) | 0.19 (0.15–0.23) | 78.5% (73.6–83.2) | 2.10 (0.90–3.61) |
+| mid | personal | 96 | 82.4% (70.6–92.2) | 67.2% (55.0–78.7) | 0.17 (0.13–0.22) | 84.4% (79.5–89.2) | 0.63 (0.00–1.58) |
+| high | personal | 30 | 58.8% (35.3–82.4) | 43.5% (17.8–67.8) | 0.21 (0.12–0.32) | 82.2% (72.2–90.0) | 2.02 (0.00–5.05) |
+| low | population | 101 | 75.0% (62.5–85.7) | 41.6% (27.6–54.8) | 0.35 (0.28–0.42) | 55.2% (47.0–62.9) | 15.35 (9.16–22.52) |
+| mid | population | 96 | 68.6% (54.9–80.4) | 42.8% (27.2–57.7) | 0.30 (0.23–0.38) | 59.1% (50.3–66.9) | 18.75 (11.20–28.39) |
+| high | population | 30 | 70.6% (47.1–88.2) | 29.0% (-0.4–56.3) | 0.44 (0.28–0.60) | 55.8% (39.1–71.7) | 26.67 (10.83–45.00) |
+| 62-69 | personal | 76 | 71.0% (54.8–87.1) | 51.3% (32.8–67.9) | 0.22 (0.16–0.28) | 76.8% (70.2–82.5) | 1.99 (0.40–3.59) |
+| 70-79 | personal | 76 | 90.0% (80.0–97.5) | 78.2% (68.3–87.9) | 0.17 (0.13–0.23) | 82.9% (77.6–88.2) | 1.59 (0.40–3.19) |
+| 80-89 | personal | 75 | 77.4% (66.0–88.7) | 65.5% (52.0–77.6) | 0.16 (0.12–0.20) | 84.9% (79.6–90.2) | 0.81 (0.00–2.02) |
+| 62-69 | population | 76 | 67.7% (51.6–83.9) | 39.6% (20.5–57.8) | 0.32 (0.24–0.39) | 56.6% (46.4–65.8) | 20.07 (10.86–31.26) |
+| 70-79 | population | 76 | 77.5% (65.0–90.0) | 43.4% (27.2–58.9) | 0.34 (0.27–0.43) | 55.3% (45.7–64.1) | 14.80 (9.21–21.38) |
+| 80-89 | population | 75 | 69.8% (56.6–81.1) | 38.3% (21.5–53.9) | 0.36 (0.26–0.47) | 59.0% (49.3–68.7) | 20.00 (11.00–29.67) |
 
 ## Method
 

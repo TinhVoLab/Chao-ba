@@ -8,6 +8,7 @@ import { actorHeaders, stationHeaders } from "./viewer";
 import { serverViewerId } from "./viewer-server";
 import type {
   Alert,
+  BrainContext,
   Community,
   Connection,
   Dmaic,
@@ -64,6 +65,9 @@ export const getDmaic = (id: string) => get<Dmaic>(`/api/elders/${e(id)}/dmaic`,
 /** Weekly family connection; null offline (the card is then hidden). */
 export const getConnection = (id: string, weeks = 12) =>
   get<Connection | null>(`/api/elders/${e(id)}/connection?weeks=${weeks}`, () => null, id);
+/** Signals beside the light for the last 14 or 28 days (brain_context.py); null offline (the card is then hidden). */
+export const getBrainContext = (id: string, days: 14 | 28 = 14) =>
+  get<BrainContext | null>(`/api/elders/${e(id)}/brain_context?days=${days}`, () => null, id);
 export const getNotes = (id: string) => get<Note[]>(`/api/elders/${e(id)}/notes`, () => fixtureFor(id).notes, id);
 export const getPrivacy = (id: string) => get<Privacy>(`/api/elders/${e(id)}/privacy`, () => fixtureFor(id).privacy, id);
 

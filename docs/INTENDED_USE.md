@@ -10,6 +10,13 @@ Chào Bà is a **wellbeing and family-communication service** for older adults l
 - It tells the family, in plain words, when the parent's speech, recall, self-reported symptoms, mood or engagement has **changed against the parent's own usual**, and suggests an ordinary next step (call more often, bring the trend to the next routine check-up, contact the health station).
 - With the parent's consent, it lets a commune health station see who may need a visit and record what was done.
 
+**Brain health.** The submission answers the challenge statement "Agentic AI lab for Protecting Brain Health Earlier". In that frame Chào Bà does two things: it supports **prevention** (daily family contact works on social isolation, a modifiable dementia risk factor at population level) and it **identifies change** in everyday cognitive and functional signals (recall, speech rate, pauses, word variety; answering the call, medication taken, daily engagement) against the person's own baseline. That is **risk identification, not diagnosis**:
+
+- **Chào Bà is not a cognitive screening test**, and it is **not validated in any population yet**, Vietnamese, Emirati or other. All accuracy figures come from simulated data.
+- A **yellow** light means "watch and check again": the family keeps an eye, talks more often, and the daily chat repeats the measurement over the following days. It is not a result to act on medically by itself.
+- A **red** light, a rapid change or a high-risk statement goes to **qualified review** (health-station or clinical staff), who decide whether a referral to primary care, geriatrics, neurology or mental-health services is needed. The software never makes that referral decision.
+- Explanations describe a change against her own usual, never a cause, and the app labels simulated data and its accuracy limits (TECHNICAL_DOCUMENTATION §10, §15).
+
 **Intended users:** older adults (the person enrolled, who consents), their family care circle, and, only with the `clinician_sharing` consent, health-station or clinical staff.
 
 ## Not intended for
@@ -34,7 +41,8 @@ Only staff with the `clinician` or `health_station` role can record a review, an
 
 | We say | We do not say |
 |---|---|
-| "Changed against her own usual" | "Signs of dementia", "cognitive decline detected" |
+| "Changed against her own usual" | "Signs of dementia", "cognitive decline detected", "dementia risk score" |
+| "Risk identification; a person reviews it" | "Cognitive screening", "validated assessment" |
 | "Keep an eye", "Call today", "Bring this to the next check-up" | "At risk of …", "Diagnosis", "Screening result" |
 | Evaluation numbers on a **simulated** cohort, with confidence intervals | Clinical accuracy, sensitivity or specificity on real patients |
 

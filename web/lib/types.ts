@@ -178,8 +178,22 @@ export interface Alert {
   needs_review?: boolean;
 }
 
+/** Review outcomes accepted by care_review.py OUTCOMES (follow-up close to home, then referral). */
+export type ReviewOutcome =
+  | "no_action"
+  | "family_follow_up"
+  | "phone_check"
+  | "home_visit"
+  | "repeat_assessment"
+  | "gp_referral"
+  | "geriatrics"
+  | "neurology"
+  | "mental_health"
+  | "emergency";
+
 export interface AlertReview {
-  outcome: string;
+  /** A ReviewOutcome; kept as string so an older or newer server value still renders. */
+  outcome: ReviewOutcome | string;
   outcome_vi: string;
   outcome_en: string;
   note: string;
@@ -222,6 +236,51 @@ export interface Connection {
   note_en?: string;
   sharing_paused: boolean;
   simulated: boolean;
+}
+
+/** One signal beside the light (brain_context.py). Fields depend on `key`; `available: false` carries a `reason`. */
+export interface BrainContextItem {
+  key: "recall" | "speech_rate" | "sleep" | "mood" | "symptoms" | "medication" | "connection" | "games";
+  /** Whether a rule of the daily light already uses this signal (connection, games and medication taps never do). */
+  in_light: boolean;
+  available: boolean;
+  reason?: "no_baseline" | "no_calls" | "voice_metrics_off" | "no_medications" | "not_logged" | "no_data";
+  /** "baseline" = vs the person's own usual; "previous" = vs the period of the same length before. */
+  compare?: "baseline" | "previous";
+  flagged_days?: number;
+  free?: number;
+  asked?: number;
+  usual?: number | null;
+  mean?: number;
+  change_pct?: number | null;
+  direction?: "slower" | "faster";
+  calls?: number;
+  days?: number;
+  prev?: number | null;
+  low_days?: number;
+  checkins?: { happy: number; neutral: number; sad: number } | null;
+  top?: { symptom: string; days: number; label_vi: string; label_en: string }[];
+  concerns?: number;
+  taken_days?: number;
+  answered_days?: number;
+  prev_taken_days?: number | null;
+  days_in_touch?: number;
+  calls_visits?: number;
+  plays?: number;
+  days_played?: number;
+}
+export interface BrainContext {
+  days: 14 | 28;
+  from?: string;
+  to?: string;
+  light: { counts: Record<"green" | "yellow" | "red" | "gray", number>; latest: Light | null } | null;
+  items: BrainContextItem[];
+  sharing_paused: boolean;
+  simulated: boolean;
+  note_vi: string;
+  note_en: string;
+  future_vi: string;
+  future_en: string;
 }
 
 export type PhaseKey = "define" | "measure" | "analyze" | "improve" | "control";

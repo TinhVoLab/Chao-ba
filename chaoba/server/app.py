@@ -38,6 +38,7 @@ from . import kudos                     # "Gửi yêu thương": family micro-in
 from . import together                  # "Cả nhà ghé thăm": photo wall, who dropped by, family moment (together.py)
 from . import connection as connection_mod   # weekly family-connection series, never in the light (connection.py)
 from . import care_review               # clinician / health-station review of red alerts (care_review.py)
+from . import brain_context             # signals beside the light on Trends, never a score (brain_context.py)
 from chaoba.agent import gemini_live
 from . import voice as voice_mod        # optional Gemini Live voice engine: /ws/voice/{call_id} (voice.py)
 
@@ -312,6 +313,7 @@ def create_app(db_path: str | None = None, seed: bool = True) -> FastAPI:
     together.register(app)      # /api/elders/{id}/together, /photos* (together.py)
     care_review.register(app)   # /api/elders/{id}/alerts/{aid}/review (care_review.py)
     connection_mod.register(app)   # /api/elders/{id}/connection (connection.py)
+    brain_context.register(app)    # /api/elders/{id}/brain_context (brain_context.py)
     voice_mod.register(app)     # /api/voice/config, WebSocket /ws/voice/{call_id} (voice.py, gemini_live.py)
     return app
 

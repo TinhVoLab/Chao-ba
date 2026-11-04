@@ -20,6 +20,18 @@ Definitions (person = one simulated elder; monitored day = personal baseline rea
   (30 monitored days). Chart false alarms = chart rule events on stable person-days.
 * **Specificity** - person-level: share of stable elders with no alarm episode; day-level: share of
   stable monitored days that are not yellow/red.
+* **Period specificity** - share of stable elders' 30-day periods of monitoring (consecutive complete blocks of 30
+  monitored days, stable elders only) in which the light was never yellow or red.
+* **False-referral burden** - red-alert starts (the displayed light turns red from a non-red day) on monitored days of
+  stable elders, per 100 person-months (30 monitored days). Every red goes to qualified human review
+  (care_review.py), so this is the review workload created by people with no decline; whether a review becomes a
+  referral is a human decision the simulation cannot model.
+* **Completion** - share of scheduled daily calls (one per simulated day, all elders) that were answered; *valid* =
+  answered and long enough to measure. Both are set by the generator's assumed miss/short-call rates.
+* **Test-retest reliability** (``retest_reliability``) - ICC(2,1) (two-way random effects, absolute agreement, single
+  measurement; Shrout & Fleiss 1979) of each per-call metric between adjacent monitored weeks on stable elders: (a)
+  the weekly mean (>= 3 valid calls) and (b) a single call (the first valid call of the week); averaged over all
+  adjacent week pairs. In a simulation it mirrors the assumed between-person spread versus day-to-day noise.
 * **Uncertainty** - 95 % percentile intervals from a bootstrap over people (stratified: clinical decline,
   missed-calls decline and stable elders resampled separately; fixed RNG seed -> deterministic).
 * **Hold-out** - ``run_holdout`` chooses L_yellow on a development cohort (pre-stated rule
@@ -37,6 +49,7 @@ import numpy as np
 
 from .control_chart import DISCRETE, ControlConfig, _as_record, _robust, evaluate_series
 from .models import METRICS
+from .synth import age_band
 
 DISCLAIMER = "Simulated cohort - not clinical validation."
 METRIC_CODES = frozenset({"metric_trend", "metric_shift", "multi_metric"})
@@ -54,6 +67,8 @@ WINDOW_DAYS = 45
 L_GRID = (1.5, 2.0, 2.25, 2.5, 2.75, 3.0, 3.5, 4.0)
 RED_GAP = 1.0           # L_red = L_yellow + 1.0 along the operating curve (default config: 3.0 / 4.0)
 FA_BUDGET = 0.30        # selection constraint: all-rule false alarms per person-month on the dev cohort
+PERIOD_DAYS = 30        # specificity period and person-month length
+RELIABILITY_MIN_CALLS = 3   # valid calls needed for a weekly mean in the test-retest analysis
 
 
 # ---------------------------------------------------------------------------------------------
@@ -126,8 +141,18 @@ def _score(cohort, cfg, window=WINDOW_DAYS):
         stable_days = [l for l in mon if onset is None or l.day < onset]
         fa = [e for e in eps if (onset is None or e["start"] < onset) and e["start"] > cfg.baseline_days]
         chart_fa = [d for d in events["chart"] if d > cfg.baseline_days and (onset is None or d < onset)]
+        # red-alert starts on stable monitored days; complete 30-day blocks of stable monitoring with no yellow/red day
+        red_starts = [l.day for k, l in enumerate(lights) if l.light == "red" and l.baseline_ready
+                      and (k == 0 or lights[k - 1].light != "red") and (onset is None or l.day < onset)]
+        blocks = [stable_days[k:k + PERIOD_DAYS] for k in range(0, len(stable_days) - PERIOD_DAYS + 1, PERIOD_DAYS)]
         row = {
             "id": p["elder"]["id"], "dialect": p["elder"].get("dialect"), "channel": p["elder"].get("channel_pref"),
+            "age_band": age_band(p["elder"].get("age")), "education": p["elder"].get("education"),
+            "sched_days": len(recs), "answered_days": sum(1 for r in recs if r.answered),
+            "valid_days": sum(1 for r in recs if r.answered and r.valid),
+            "periods_total": len(blocks),
+            "periods_clear": sum(1 for b in blocks if not any(l.light in ("yellow", "red") for l in b)),
+            "red_alerts": len(red_starts),
             "type": truth.get("type", "stable"), "decline": bool(truth.get("decline")), "onset": onset,
             "last_day": last, "events": events,
             "stable_days": len(stable_days),
@@ -198,6 +223,13 @@ def _summ(rows, n_boot=1000, seed=0, window=WINDOW_DAYS, types=CLINICAL_TYPES):
     cfa = np.array([r["chart_false_alarms"] for r in all_rows], dtype=float)
     sad = np.array([r["stable_alarm_days"] for r in all_rows], dtype=float)
     s_fa0 = np.array([r["false_alarms"] == 0 for r in sta], dtype=float)
+    s_pt = np.array([r.get("periods_total", 0) for r in sta], dtype=float)
+    s_pc = np.array([r.get("periods_clear", 0) for r in sta], dtype=float)
+    s_red = np.array([r.get("red_alerts", 0) for r in sta], dtype=float)
+    s_sd = np.array([r["stable_days"] for r in sta], dtype=float)
+    sch = np.array([r.get("sched_days", 0) for r in all_rows], dtype=float)
+    ans = np.array([r.get("answered_days", 0) for r in all_rows], dtype=float)
+    val = np.array([r.get("valid_days", 0) for r in all_rows], dtype=float)
 
     def stats(di, si, ai):
         o = {}
@@ -212,6 +244,10 @@ def _summ(rows, n_boot=1000, seed=0, window=WINDOW_DAYS, types=CLINICAL_TYPES):
         o["fa_chart"] = cfa[ai].sum() / (days / 30.0) if days else None
         o["spec_day"] = 1 - sad[ai].sum() / days if days else None
         o["spec_person"] = s_fa0[si].mean() if ns else None
+        o["spec_period"] = s_pc[si].sum() / s_pt[si].sum() if ns and s_pt[si].sum() else None
+        o["red_100pm"] = 100 * s_red[si].sum() / (s_sd[si].sum() / PERIOD_DAYS) if ns and s_sd[si].sum() else None
+        o["completion"] = ans[ai].sum() / sch[ai].sum() if sch[ai].sum() else None
+        o["valid_share"] = val[ai].sum() / sch[ai].sum() if sch[ai].sum() else None
         return o
 
     di0, si0, ai0 = np.arange(nd), np.arange(ns), np.arange(len(all_rows))
@@ -235,7 +271,9 @@ def _summ(rows, n_boot=1000, seed=0, window=WINDOW_DAYS, types=CLINICAL_TYPES):
              "sensitivity_chart": "chart_sensitivity", "chance_chart": "chart_chance_rate",
              "excess_chart": "chart_excess_sensitivity", "fa": "false_alarms_per_person_month",
              "fa_chart": "chart_false_alarms_per_person_month", "spec_day": "specificity_day",
-             "spec_person": "specificity_person"}
+             "spec_person": "specificity_person", "spec_period": "specificity_period",
+             "red_100pm": "red_alerts_per_100_person_months", "completion": "completion_rate",
+             "valid_share": "valid_call_rate"}
     for k, name in names.items():
         out[name] = _r(point[k])
         out[name + "_ci"] = _ci(boots[k]) if n_boot and point[k] is not None else None
@@ -245,6 +283,116 @@ def _summ(rows, n_boot=1000, seed=0, window=WINDOW_DAYS, types=CLINICAL_TYPES):
     out["stable_mostly_flagged"] = sum(1 for r in sta if r["mostly_flagged"])
     out["stable_people_with_any_alarm_day"] = sum(1 for r in sta if r["stable_alarm_days"] > 0)
     out["stable_alarm_day_share"] = _r(sad.sum() / sd.sum(), 4) if sd.sum() else None
+    out["stable_periods"] = int(s_pt.sum())
+    out["stable_people_with_red"] = int(sum(1 for r in sta if r.get("red_alerts", 0) > 0))
+    out["stable_red_alerts"] = int(s_red.sum())
+    return out
+
+
+def _group_order(g):
+    from .synth import EDUCATION_LEVELS
+    return (0, EDUCATION_LEVELS.index(g), "") if g in EDUCATION_LEVELS else (1, 0, str(g))
+
+
+# ---------------------------------------------------------------------------------------------
+# test-retest reliability of the per-call metrics (stable elders, adjacent weeks)
+# ---------------------------------------------------------------------------------------------
+def icc_2_1(y: np.ndarray) -> float | None:
+    """ICC(2,1): two-way random effects, absolute agreement, single measurement (Shrout & Fleiss 1979).
+    ``y`` = n subjects x k occasions, no missing values. None if undefined (n < 3 or no variance)."""
+    y = np.asarray(y, dtype=float)
+    n, k = y.shape
+    if n < 3 or k < 2:
+        return None
+    gm = y.mean()
+    ssr = k * ((y.mean(axis=1) - gm) ** 2).sum()
+    ssc = n * ((y.mean(axis=0) - gm) ** 2).sum()
+    sse = ((y - gm) ** 2).sum() - ssr - ssc
+    msr, msc, mse = ssr / (n - 1), ssc / (k - 1), sse / ((n - 1) * (k - 1))
+    den = msr + (k - 1) * mse + k * (msc - mse) / n
+    return None if den <= 0 else float((msr - mse) / den)
+
+
+def _weekly(cohort, cfg):
+    """{metric: (mean[people, weeks], first[people, weeks])} for stable elders' monitored weeks (NaN = too few calls)."""
+    stable = [p for p in cohort if not (p.get("truth") or {}).get("decline")]
+    days = max((len(p["records"]) for p in stable), default=0)
+    n_weeks = max(0, (days - cfg.baseline_days) // 7)
+    out = {}
+    for m in cfg.metrics:
+        mean = np.full((len(stable), n_weeks), np.nan)
+        first = np.full((len(stable), n_weeks), np.nan)
+        for i, p in enumerate(stable):
+            for w in range(n_weeks):
+                lo = cfg.baseline_days + 1 + 7 * w
+                v = [float(r[m]) for r in p["records"] if lo <= r["day"] < lo + 7 and r.get("answered")
+                     and r.get("valid") and r.get(m) is not None]
+                if v:
+                    first[i, w] = v[0]
+                if len(v) >= RELIABILITY_MIN_CALLS:
+                    mean[i, w] = float(np.mean(v))
+        out[m] = (mean, first)
+    return out, len(stable), n_weeks
+
+
+def _mean_pair_icc(a: np.ndarray) -> float | None:
+    vals = []
+    for w in range(a.shape[1] - 1):
+        y = a[:, w:w + 2]
+        y = y[~np.isnan(y).any(axis=1)]
+        v = icc_2_1(y)
+        if v is not None:
+            vals.append(v)
+    return float(np.mean(vals)) if vals else None
+
+
+def retest_reliability(cohort, cfg: ControlConfig | None = None, n_boot: int = 1000, seed: int = 0) -> dict:
+    """Per-metric ICC(2,1) between adjacent monitored weeks on stable elders (weekly mean and single call), mean over
+    all adjacent week pairs, with a bootstrap over people. Simulated: reflects the generator's assumptions."""
+    cfg = cfg or ControlConfig()
+    weekly, n, n_weeks = _weekly(cohort, cfg)
+    out = {"n_stable": n, "weeks": n_weeks, "pairs": max(0, n_weeks - 1), "min_calls_per_week": RELIABILITY_MIN_CALLS,
+           "method": "ICC(2,1) between adjacent monitored weeks, stable elders, mean over week pairs", "metrics": {}}
+    rng = np.random.default_rng(seed)
+    idx = [rng.integers(0, n, n) for _ in range(n_boot)] if n and n_boot else []
+    for m, (mean, first) in weekly.items():
+        res = {}
+        for name, a in (("weekly_mean", mean), ("single_call", first)):
+            point = _mean_pair_icc(a) if n else None
+            boots = [_mean_pair_icc(a[ix]) for ix in idx] if point is not None else []
+            res[name] = _r(point)
+            res[name + "_ci"] = _ci([np.nan if b is None else b for b in boots]) if boots else None
+        out["metrics"][m] = res
+    return out
+
+
+# ---------------------------------------------------------------------------------------------
+# subgroups under an assumed level effect (education -> MATTR, age -> speech rate)
+# ---------------------------------------------------------------------------------------------
+LEVEL_KEYS = ("sensitivity", "excess_sensitivity", "false_alarms_per_person_month", "specificity_day",
+              "specificity_period", "red_alerts_per_100_person_months")
+
+
+def level_effect_check(cohort, cfg: ControlConfig | None = None, n_boot: int = 1000, seed: int = 0,
+                       window: int = WINDOW_DAYS) -> dict:
+    """Personal baseline vs population norm by education and age band on a cohort generated with
+    ``generate_cohort(level_effects=True)``. Only LEVEL_KEYS (with intervals) are kept."""
+    cfg = cfg or ControlConfig()
+    pop = population_baseline(cohort, cfg)
+    scored = {"personal": _score(cohort, cfg, window),
+              "population": _score(cohort, ControlConfig(**{**cfg.__dict__, "population_baseline": pop}), window)}
+    out = {}
+    for key, field in (("by_education", "education"), ("by_age_band", "age_band")):
+        out[key] = {}
+        for base, rows in scored.items():
+            groups = defaultdict(list)
+            for r in rows:
+                groups[r[field]].append(r)
+            out[key][base] = {}
+            for g, v in sorted(groups.items(), key=lambda kv: _group_order(kv[0])):
+                sm = _summ(v, n_boot=n_boot, seed=seed, window=window)
+                out[key][base][g] = {"n": sm["n"], "n_stable": sm["n_stable"],
+                                     **{k: sm[k] for k in LEVEL_KEYS}, **{k + "_ci": sm[k + "_ci"] for k in LEVEL_KEYS}}
     return out
 
 
@@ -271,11 +419,13 @@ def run_evaluation(cohort: list[dict], cfg=None, n_boot: int = 1000, seed: int =
     report["operational"] = S(rows, types=OPERATIONAL_TYPES)
     report["by_decline_type"] = {t: S([r for r in rows if r["type"] in (t, "stable")], types=(t,))
                                  for t in CLINICAL_TYPES + OPERATIONAL_TYPES}
-    for key, field in (("by_dialect", "dialect"), ("by_channel", "channel")):
+    for key, field in (("by_dialect", "dialect"), ("by_channel", "channel"), ("by_age_band", "age_band"),
+                       ("by_education", "education")):
         groups = defaultdict(list)
         for r in rows:
             groups[r[field]].append(r)
-        report[key] = {g: S(v) for g, v in sorted(groups.items())}
+        report[key] = {g: S(v) for g, v in sorted(groups.items(), key=lambda kv: _group_order(kv[0]))}
+    report["reliability"] = retest_reliability(cohort, cfg, n_boot=n_boot, seed=seed)
     det_codes, fa_codes = defaultdict(int), defaultdict(int)
     for r in rows:
         for c in r["det_codes"]:
@@ -507,6 +657,10 @@ def report_md(report: dict) -> str:
         f"monitoring (all rules), of which the control chart starts {_nci(o, 'chart_false_alarms_per_person_month')}; "
         f"day-level specificity {_pci(o, 'specificity_day')}; {_pci(o, 'specificity_person')} of stable elders "
         f"never alerted in {report['days'] - cfg['baseline_days']} monitored days.",
+        *([f"- **Stable 30-day periods with no yellow/red day**: {_pci(o, 'specificity_period')}; **false-referral "
+           f"burden** (red alerts sent to qualified review for stable elders): "
+           f"{_nci(o, 'red_alerts_per_100_person_months')} per 100 person-months. Details below."]
+          if o.get("specificity_period") is not None else []),
         *([f"- **At the shipped default L_yellow {ho['default_L_yellow']} / L_red {ho['default_L_red']}** (same held-out "
             f"cohort): sensitivity {_pci(ho['at_default'], 'sensitivity')}, chance {_pci(ho['at_default'], 'chance_rate')}, "
             f"excess {_pci(ho['at_default'], 'excess_sensitivity')}, chart-only excess "
@@ -562,6 +716,14 @@ def report_md(report: dict) -> str:
     lines += ["", "False-alarm column per type = stable elders plus that type's pre-onset days; chance rate per type uses that type's onsets and matching rules.", ""]
     lines += ["## By dialect (clinical declines)", "", HDR] + [_row(g, s) for g, s in report["by_dialect"].items()]
     lines += ["", "## By channel (clinical declines)", "", HDR] + [_row(g, s) for g, s in report["by_channel"].items()]
+    if report.get("by_age_band"):
+        lines += ["", "## By age band (clinical declines)", "", HDR] + [_row(g, s) for g, s in report["by_age_band"].items()]
+    if report.get("by_education"):
+        lines += ["", "## By education (clinical declines)", "", HDR] + [_row(g, s) for g, s in report["by_education"].items()]
+        lines += ["", "Age is drawn as before (62–89); education (low = none/primary, mid = secondary, high = post-secondary; "
+                  "illustrative 45/40/15 % mix) comes from its own random stream, so adding it left every other number "
+                  "unchanged. In this cohort neither has any effect on the signals (no effect is assumed); see "
+                  "\"Age and education with an assumed level effect\" below for a version that adds one."]
     ab = report["ablation"]
     p, q = ab["personal"], ab["population"]
     lines += [
@@ -599,6 +761,7 @@ def report_md(report: dict) -> str:
     codes = sorted(set(report["detection_rule_counts"]) | set(report["false_alarm_rule_counts"]))
     for c in codes:
         lines.append(f"| `{c}` | {report['detection_rule_counts'].get(c, 0)} | {report['false_alarm_rule_counts'].get(c, 0)} |")
+    lines += _safety_md(report)
     mr = report["matching_rules"]
     lines += [
         "", "## Method", "",
@@ -624,6 +787,91 @@ def report_md(report: dict) -> str:
         f"_{DISCLAIMER}_",
     ]
     return "\n".join(lines) + "\n"
+
+
+METRIC_LABEL = {"speech_rate_sps": "Speech rate", "pause_ratio": "Pause ratio", "filled_pause_rate": "Filler rate",
+                "mattr": "Vocabulary variety (MATTR)", "recall_score": "Story recall (0–3)"}
+
+
+def _ici(s, k):
+    v, ci = s.get(k), s.get(k + "_ci")
+    if v is None:
+        return "n/a"
+    return f"{v:.2f}" + (f" ({ci[0]:.2f}–{ci[1]:.2f})" if ci else "")
+
+
+def _safety_md(report: dict) -> list[str]:
+    """Specificity per period, completion, false-referral burden, test-retest reliability, level-effect check."""
+    o = report["overall"]
+    if o.get("specificity_period") is None:
+        return []
+    lines = [
+        "", "## Specificity, completion and review burden (stable elders)", "",
+        f"Stable elders = the {o['n_stable']} with no injected decline; monitored = after the {report['config']['baseline_days']}-day "
+        "baseline. Brackets are 95 % bootstrap intervals over people.", "",
+        "| Measure | Definition | Value |", "|---|---|---|",
+        f"| Specificity per 30-day period | complete 30-day blocks of monitoring ({o['stable_periods']} blocks) with no "
+        f"yellow or red day | {_pci(o, 'specificity_period')} |",
+        f"| Specificity per person | stable elders never alerted in {report['days'] - report['config']['baseline_days']} "
+        f"monitored days | {_pci(o, 'specificity_person')} |",
+        f"| Specificity per day | stable monitored days not yellow/red | {_pci(o, 'specificity_day')} |",
+        f"| False-referral burden | red-alert starts on stable elders per 100 person-months ({o['stable_red_alerts']} "
+        f"red alerts; {o['stable_people_with_red']} of {o['n_stable']} stable elders had at least one) | "
+        f"{_nci(o, 'red_alerts_per_100_person_months')} |",
+        f"| Completion | scheduled daily calls answered (all {o['n']} elders) | {_pci(o, 'completion_rate')} |",
+        f"| Valid calls | answered and long enough to measure | {_pci(o, 'valid_call_rate')} |",
+        "",
+        "Every red alert waits for a qualified person (clinician or health-station staff) to review it, so the "
+        "false-referral burden is the review workload created by people whose signals did not really change. Whether "
+        "a review becomes a referral is a human decision this simulation does not model. Completion and valid-call "
+        "rates are set by the generator's assumed miss and short-call rates (about 1–6 % and 3–5 %); they check the "
+        "bookkeeping, not real-world uptake. Time to clinical assessment cannot be measured on simulated data.",
+    ]
+    by = [(g, s) for key in ("by_age_band", "by_education", "by_dialect", "by_channel")
+          for g, s in (report.get(key) or {}).items()]
+    if by:
+        lines += ["", "| Group | N stable | Specificity / 30-day period | Red alerts / 100 p-m (stable) | Completion |",
+                  "|---|---|---|---|---|"]
+        lines += [f"| {g} | {s['n_stable']} | {_pci(s, 'specificity_period')} | "
+                  f"{_nci(s, 'red_alerts_per_100_person_months')} | {_pci(s, 'completion_rate')} |" for g, s in by]
+    rel = report.get("reliability")
+    if rel and rel.get("metrics"):
+        lines += [
+            "", "## Test–retest reliability of the per-call signals (stable elders)", "",
+            f"ICC(2,1) (two-way random effects, absolute agreement, single measurement) between adjacent monitored "
+            f"weeks, averaged over {rel['pairs']} week pairs, {rel['n_stable']} stable elders. *Weekly mean* = mean of "
+            f"the week's valid calls (≥ {rel['min_calls_per_week']}); *single call* = the first valid call of the week.",
+            "", "| Signal | ICC, weekly mean | ICC, single call |", "|---|---|---|",
+        ]
+        lines += [f"| {METRIC_LABEL.get(m, m)} | {_ici(v, 'weekly_mean')} | {_ici(v, 'single_call')} |"
+                  for m, v in rel["metrics"].items()]
+        lines += [
+            "",
+            "These values mirror the generator's assumptions (between-person spread of usual levels versus assumed "
+            "day-to-day noise), so they show what reliability those assumptions imply, not what real calls achieve. "
+            "Story recall has no person-specific usual level in the generator (every simulated person recalls around "
+            "the same 2.85 of 3), so its ICC is near zero by construction: its reliability cannot be judged from this "
+            "simulation. Real test–retest reliability must be measured in the pilot.",
+        ]
+    le = report.get("level_effect")
+    if le:
+        lines += [
+            "", "## Age and education with an assumed level effect", "",
+            f"Same held-out seed, regenerated with `generate_cohort(level_effects=True)`: usual vocabulary variety "
+            f"(MATTR) {le['assumption']['education']}, and usual speech rate {le['assumption']['age']}. "
+            "These are **simulation assumptions** (sized below the between-person spread already in the generator), "
+            "not measured effects; every random draw is identical to the main cohort. A level effect moves a person's "
+            "usual level, which a personal baseline absorbs and a population norm does not.", "",
+            "| Group | Baseline | N stable | Sensitivity | Excess | False alarms / p-m | Specificity / 30-day period | "
+            "Red alerts / 100 p-m |", "|---|---|---|---|---|---|---|---|",
+        ]
+        for key in ("by_education", "by_age_band"):
+            for base in ("personal", "population"):
+                for g, v in le[key][base].items():
+                    lines.append(f"| {g} | {base} | {v['n_stable']} | {_pci(v, 'sensitivity')} | "
+                                 f"{_pci(v, 'excess_sensitivity')} | {_nci(v, 'false_alarms_per_person_month')} | "
+                                 f"{_pci(v, 'specificity_period')} | {_nci(v, 'red_alerts_per_100_person_months')} |")
+    return lines
 
 
 def write_report(report: dict, json_path: str, md_path: str) -> None:

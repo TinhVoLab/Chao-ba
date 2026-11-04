@@ -7,8 +7,11 @@ light only says that something changed against the person's own usual; the revie
 * Only ``X-Role: clinician`` or ``health_station`` may review (anything else -> 403), and only while the elder's
   ``clinician_sharing`` consent is active (else 403). Each review is written to the access log, so the elder's
   privacy page shows who reviewed.
-* ``outcome`` is one of ``OUTCOMES`` (no further action, family keeps watching, station phoned, home visit, referred
-  to a doctor, sent to emergency care) plus an optional short note (<= 280 characters). A review can be corrected by
+* ``outcome`` is one of ``OUTCOMES`` (no further action, family keeps watching, station phoned, home visit, repeat
+  check in 2 weeks, referred to a doctor / geriatrics / neurology / mental-health services, sent to emergency care)
+  plus an optional short note (<= 280 characters). The specialty referrals are the reviewer's own decision; Chào Bà
+  never suggests one (the light does not know why a signal changed). The 2-week repeat interval is a placeholder to
+  be set with clinical partners. A review can be corrected by
   reviewing again; the latest one is kept.
 * The family sees the review on the alert ("Trạm y tế đã xem: hẹn khám bác sĩ"); the health-station board lists red
   alerts still waiting for review (pseudonymised, sharing elders only).
@@ -34,7 +37,11 @@ OUTCOMES = {
     "family_follow_up": ("Gia đình tiếp tục theo dõi", "Family keeps watching"),
     "phone_check": ("Trạm đã gọi hỏi thăm", "Station phoned to check in"),
     "home_visit": ("Đến nhà thăm", "Home visit"),
+    "repeat_assessment": ("Kiểm tra lại sau 2 tuần", "Repeat check in 2 weeks"),   # interval: set with clinical partners
     "gp_referral": ("Hẹn khám bác sĩ", "Referred to a doctor"),
+    "geriatrics": ("Chuyển khám lão khoa", "Referred to geriatrics"),
+    "neurology": ("Chuyển khám thần kinh", "Referred to neurology"),
+    "mental_health": ("Chuyển dịch vụ sức khỏe tâm thần", "Referred to mental-health services"),
     "emergency": ("Đã chuyển cấp cứu", "Sent to emergency care"),
 }
 COLUMNS = (("review_outcome", "TEXT"), ("review_note", "TEXT"), ("reviewed_by", "TEXT"), ("reviewed_role", "TEXT"),

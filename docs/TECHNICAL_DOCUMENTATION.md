@@ -1,6 +1,6 @@
 # Chào Bà: Technical Documentation
 
-**Future Health Digital Innovation Challenge 2026** (Future Health, a Global Initiative by Abu Dhabi, with Microsoft, Inception and MBZUAI). Prototype submission, version of 4 Nov 2026.
+**Future Health Digital Innovation Challenge 2026** (Future Health, a Global Initiative by Abu Dhabi, with Microsoft, Inception and MBZUAI). Challenge statement: **[Population Health] Agentic AI lab for Protecting Brain Health Earlier**. Prototype submission, version of 4 Nov 2026.
 
 > **What this is:** a working prototype of a daily voice check-in for older adults in Vietnam. It tracks
 > **change relative to the person's own baseline** and tells the family in plain words.
@@ -52,6 +52,14 @@ Many older adults live alone or with an elderly spouse. Their adult children oft
 - **Turning a signal into action.** A flag only helps if someone acts on it. Chào Bà ties every alert to a plain-language explanation and a suggested next step. It then tracks whether the action worked, using the DMAIC loop (§6).
 - **Engagement.** Older adults stop using monitoring tools that feel clinical. Chào Bà is a warm conversation in Southern Vietnamese: it asks about yesterday's story, life memories, and passes on a message from the daughter. Measurement happens passively inside that conversation.
 
+**Brain health: the statement we answer.** The chosen challenge statement asks how technology can protect brain health earlier by identifying meaningful changes in cognitive and functional health over time and turning them into culturally appropriate prevention and timely clinical care. Its problem description fits the gap above closely:
+
+- Cognitive and functional change is gradual and variable, and easy to put down to normal ageing until daily life is affected. Finding it earlier leaves room to address modifiable risks, look for reversible causes (for example medication side effects, poor sleep, low mood, hearing loss, acute illness) and plan care.
+- A one-off score can mislead: performance depends on language, education, culture, sensory impairment, mood and familiarity with digital tools. A test not validated for the local population can cause false positives, unnecessary anxiety or false reassurance.
+- Abu Dhabi has begun embedding cognitive-impairment screening in its programmes and is building a broader wellness model that brings together clinical, physical, metabolic, sleep, mental-wellbeing, lifestyle, functional, family-history, genomic and wearable information. These findings can stay fragmented, which makes change over time hard to see and can delay primary or specialist assessment.
+
+Chào Bà answers with the touchpoint it already has. **Prevention:** social isolation is one of 14 potentially modifiable risk factors in the 2024 Lancet Commission on dementia prevention (Livingston et al., ref. 13), which estimates that nearly half of dementia cases could in principle be prevented or delayed at population level if all 14 were removed (a population estimate that assumes causality, not a promise for any one person). The family's daily presence on the parent's screen (§8.4) works on that factor directly. **Measurement:** the same daily conversation is a repeated, culturally native measurement channel (no reading or typing, dialect-aware, by phone or screen). It yields longitudinal cognitive signals (recall, speech rate, pauses, word variety) and functional signals (answering the call, medication taken, daily engagement) that are compared with the person's own 21-day baseline, so she is never judged against a norm built for another language or education level. Chào Bà identifies change; it does not screen for, detect or diagnose dementia. Our setting is Vietnam; a UAE deployment would need Arabic (Emirati) conversation, local validation and UAE regulatory review (§13).
+
 **Clinical relevance (and its limits).** The signals we track are speech rate, pausing, filler words, vocabulary diversity, recall of a recent conversation, self-reported symptoms (dizziness, sleep, meals, falls, pain, mood, missed medication) and missed calls. The research literature has linked these to cognitive change, frailty, mood and acute illness, but **none of them has been validated for Vietnamese older adults on telephone audio** (§15). Chào Bà therefore reports only *a sustained change from this person's usual pattern*, and the recommended action is always human: call, visit, or see a doctor.
 
 ---
@@ -76,6 +84,19 @@ Hard design rules (from `CONTRACT.md`):
 2. **Runs with no API keys.** Every LLM call has a deterministic fallback. When `ANTHROPIC_API_KEY` is set, Claude is used.
 3. **Never diagnostic.** All wording describes change relative to the person's own baseline. Diagnostic labels are blocked in both agent output and family explanations.
 4. **Simulated data is always flagged** (`simulated: true`, "Dữ liệu mô phỏng / Simulated data").
+
+**Mapping to the brain-health statement's desired outcomes** (full table with evidence and gaps: [CHALLENGE_FIT §3](CHALLENGE_FIT.md#3-mapping-to-the-chosen-challenge-statement)):
+
+| Desired outcome | Where Chào Bà answers it | Status |
+|---|---|---|
+| Culturally valid and accessible assessment | Út Thương conversation (no reading or typing, Southern Vietnamese, phone or screen), standing screen with large captions (§7, Standing screen above) | designed; not tested with users |
+| Longitudinal change detection | personal baseline + EWMA control chart + light rules and thresholds (§4–§5) | built; simulated evaluation only (§10) |
+| Integrated risk context | self-reported sleep, mood, symptoms, medication; family connection series; brain-health context card (§8) | partial; no clinical, metabolic, wearable, family-history or genomic data yet |
+| Personalised prevention and timely care | family presence (§8.4), plain explanations, DMAIC loop (§6), red-alert review and referral outcomes (§8.5) | built as prototype; no real referral pathway |
+| Safety and human oversight | never-diagnostic wording, emergency spotter, guardrails, qualified review of every red (§7, §11, [INTENDED_USE](INTENDED_USE.md)) | built |
+| Validation and local population performance | simulated cohort with held-out split and subgroup tables (§10); staged pilot plan (§13) | simulated only; real validation planned |
+
+The **agentic AI** is three layers: the Út Thương conversation agent; the orchestrator with tools and safety layers around it (§7.2); and the DMAIC care loop that turns an alert into an action and checks it (§6). The optional Gemini Live voice engine had its first live run on 4 Nov 2026 and was judged no-go for now (§7.4).
 
 ---
 
@@ -278,6 +299,20 @@ A "metric-yellow day" is a valid day with chart statistic ≥ `L_yellow`. Runs c
 ### 5.4 Why the limits differ from the contract
 
 With five metric channels, the contract's 2.0 / 3.0 limits raise too many false alarms: on the held-out simulated cohort L_yellow = 2.0 gives 0.62 alarm episodes per person-month and a 52 % chance rate (§10). The shipped 3.0 / 4.0 were selected on a separate development cohort by a rule fixed in advance (highest chance-corrected sensitivity with ≤ 0.30 false alarms per person-month) and give 0.19 false alarms per person-month on the held-out cohort. `ControlConfig(L_yellow=2.0, L_red=3.0)` reproduces the contract values. The limits were chosen on simulated data and **must be re-tuned on real data** (§15).
+
+### 5.5 Decision thresholds: what each light asks people to do
+
+The table only restates rules that already exist (§5.3, `control_chart.py`), the next-step sentences already in `explain.py` (§8), and the human review of every red (`care_review.py`, §8.5). It adds no new rule. Chart limits are in EWMA-sigma units against the person's **own** baseline.
+
+| Light | Fires when (existing rules) | Next step for the family (`explain.py`) | Qualified review |
+|---|---|---|---|
+| **Green** | Baseline ready, valid call, no rule fired | Continue: daily call, nothing to do | No |
+| **Gray** | Baseline still building (first 21 days, ≥ 14 valid calls), or no valid call today and nothing held | Continue. 2 unanswered days in a row turn yellow; 3 turn red | No |
+| **Yellow** | One speech/recall signal ≥ **3.0** for ≥ **3** consecutive valid days (`metric_trend`); same symptom ≥ 2× in 7 days; 2 unanswered days; mood ≤ 2 on ≥ 3 of 7 days | Family follow-up: "call today or tomorrow". If only speech/recall changed: "call more often; if the change persists, bring this trend report to the next routine check-up" | No (family). A repeat check interval for a persisting yellow is **to be set with clinical partners** |
+| **Red** | One signal ≥ **4.0** for ≥ **5** valid days (`metric_shift`); ≥ 2 signals each ≥ 3.0 for ≥ 5 days (`multi_metric`); a fall today; ≥ 3 distinct symptoms in 7 days; 3 unanswered days; an emergency or a health concern in the call. The screen's Help button raises a red *alert* (not a light) with the same review | "Call now" (fall, unanswered: also ask someone nearby to check in person); otherwise "call and consider arranging a doctor's visit" | **Yes.** Every red waits for clinician / health-station review. Outcomes include repeat check, GP, geriatrics, neurology or mental-health referral (§8.5) |
+| **Stepping down** | Hysteresis: the light drops only after **3** consecutive better valid days, to the highest level seen in them | The `recovering` reason stays visible ("still watching") | A red stays in the review queue until reviewed |
+
+**Rapid change.** No rule looks at the *rate* of change. Fast shifts are caught by the same limits, because the EWMA (λ = 0.3) puts 30 % of its weight on the newest day. A tested example (`test_rapid_change_latency_of_existing_rules`): an overnight drop of about 20 % in speech rate turns yellow on its **3rd** valid day and red (`metric_shift`) on its **6th**. The 3- and 5-day run lengths set this minimum latency. Acute events (fall, emergency, health concern, ≥ 3 distinct symptoms; the Help button as an alert) are red **the same day**. Gaps, documented and not patched without tests: (1) a large abrupt change in the speech/recall signals cannot be red before 5 valid days; (2) a yellow that persists for weeks does not escalate to review by itself unless a red rule fires. Both need clinical input before any new rule is added.
 
 ---
 
@@ -624,7 +659,7 @@ The adult children of a Vietnamese older adult often work in another city or abr
 
 ### 8.5 Community dashboard (health station, B2G)
 
-**Human review of red alerts** (`chaoba/server/care_review.py`). Every red alert (red light, emergency or health concern raised in a call) is marked *waiting for review* until a person with the `clinician` or `health_station` role records an outcome: no further action, family keeps watching, station phoned, home visit, referred to a doctor, or sent to emergency care, plus an optional note of up to 280 characters (`POST /api/elders/{id}/alerts/{aid}/review`). A review needs the elder's active `clinician_sharing` consent. It is written to the access log and shown to the family on the alert. The board lists red alerts still waiting first. The seeded example is Bà Hạnh's red alert on day 43, reviewed on day 44 and referred to a doctor. Scope and claims: [INTENDED_USE.md](INTENDED_USE.md).
+**Human review of red alerts** (`chaoba/server/care_review.py`). Every red alert (red light, emergency or health concern raised in a call) is marked *waiting for review* until a person with the `clinician` or `health_station` role records an outcome, plus an optional note of up to 280 characters (`POST /api/elders/{id}/alerts/{aid}/review`). The station sees the outcomes in two rows. **Follow-up:** phoned to check in, home visit, **repeat check in 2 weeks** (`repeat_assessment`; the 2-week interval is a placeholder **to be set with clinical partners**), family keeps watching, no further action. **Referral:** a doctor (`gp_referral`), **geriatrics**, **neurology**, **mental-health services**, or emergency care. Chào Bà never suggests a specialty. The light does not know why a signal changed, and naming a specialty in family text would imply a condition (§8). The reviewer chooses, and the family sees that choice on the alert ("Trạm y tế đã xem: Chuyển khám lão khoa"). A review needs the elder's active `clinician_sharing` consent. It is written to the access log and shown to the family on the alert. The board lists red alerts still waiting first. The seeded example is Bà Hạnh's red alert on day 43, reviewed on day 44 and referred to a doctor. Scope and claims: [INTENDED_USE.md](INTENDED_USE.md).
 
 `chaoba/server/community.py`, family app `/community` (under "Thêm / More"), `GET /api/community/overview` with
 `X-Role: clinician | health_station` (anything else → 403). It shows a **simulated** ward, "Phường X, TP.HCM (mô
@@ -649,6 +684,42 @@ chart, plus the 3 demo personas, dated so the last day is yesterday.
 
 Tests: `tests/server/test_community.py` (role gate, ordering and tie-breaks, pseudonymisation, non-diagnostic labels,
 episode detection and censoring, consent withdrawal removes a persona, access log).
+Review outcomes: `tests/server/test_review_connection.py` (each new outcome is accepted with its label; the station's
+buttons in `ReviewQueue.tsx` and the `ReviewOutcome` type match the server's `OUTCOMES` exactly).
+
+### 8.6 Brain-health context beside the light (family app, Trends)
+
+The light says only that a cognitive or functional signal changed against the person's own baseline. The family (and a
+reviewer) also need the context around it. The **"Bối cảnh sức khỏe não bộ / Brain-health context"** card at the top
+of Trends (`web/components/BrainContextCard.tsx`, `GET /api/elders/{id}/brain_context?days=14|28`,
+`chaoba/server/brain_context.py`) shows the last 14 or 28 days of signals Chào Bà **already records**, next to that
+period's light counts (green / yellow / red / gray days):
+
+| Signal | Source | Compared with | Used by the light? |
+|---|---|---|---|
+| Story recall | call (`recall_score`) | own baseline: "9 of 12 calls with full recall, usually about 11" (counts, never %) | yes (chart) |
+| Speech rate | call metrics | own baseline: "% slower / faster", syll/s vs usual | yes (chart) |
+| Poor sleep mentioned | call (`insomnia` mentions; the call asks about sleep) | previous 14/28 days | yes (symptom rules) |
+| Sounded low or tired | call mood ≤ 2; screen mood check-ins listed apart | previous period | yes (`low_mood`) |
+| Symptoms mentioned | call symptom mentions (top 3) | previous period | yes (symptom rules) |
+| Medication | the elder's taps on the screen (`elder_med_log`, latest tap of the day) | previous period | no |
+| Family connection | `connection.py` (days someone was in touch) | previous period | no |
+| Memory games | screen game plays ("for fun, never scored") | previous period | no |
+
+- **No new rule, no score.** Nothing is combined into a risk number. A chart signal is called "outside the usual range"
+  only on days the light itself flagged it (a `metric_trend` / `metric_shift` / `multi_metric` reason for that
+  metric), so the card cannot disagree with the light. Each row shows whether the light uses it.
+- **Consent.** A `family_sharing` pause returns no items and no light (like timeline and connection). With
+  `voice_metrics` withdrawn, no new speech values exist and the row says so. Each read is in the access log
+  (`read_brain_context`, "Xem bối cảnh sức khỏe não bộ").
+- **Footer:** "Metabolic, genomic and wearable data: future consented connectors (not in this prototype)." The challenge
+  asks for these where authorized; the prototype has none, and the card says so rather than implying them.
+- Demo data are simulated, and the screen's medication and game tables start empty, so those rows show "no taps yet"
+  until the screen is used.
+
+Tests: `tests/server/test_brain_context.py` (all eight signals, baseline vs previous-period comparisons, recall
+flagged only where the light flagged it, screen taps counted, sharing pause hides everything, wording passes the
+diagnostic blocklist, access log).
 
 ## 9. Data model
 
@@ -685,7 +756,7 @@ REST API: see `CONTRACT.md` (including contacts, consent withdraw/grant, resume,
 > **Simulated cohort, not clinical validation.** These numbers show how the pipeline behaves on data we generated
 > ourselves, under assumptions we chose. They are **not** evidence of real-world sensitivity, specificity or clinical benefit.
 > Source: `data/eval/report.md`, `report.json`, `operating_curve.csv`, `operating_curve.svg`; reproducible with
-> `.venv/bin/python scripts/run_eval.py` (development seed 11, held-out seed 2026, bootstrap seed 0; ~20 s; output verified byte-identical across runs).
+> `.venv/bin/python scripts/run_eval.py` (development seed 11, held-out seed 2026, bootstrap seed 0; ~25 s; output verified byte-identical across runs).
 
 **Definition change (read first).** An earlier version of this section reported **92.0 % sensitivity**. That figure counted *any* alarm from *any* rule starting on or after the onset day, with no time limit, and it pooled missed-calls declines, which the unanswered-calls rule detects almost by construction. A null test (stable elders given pseudo-onsets drawn from the real onset distribution) scored about **46 % "detection" with no decline at all**, and only 40 of 88 detections began with a control-chart rule. The figure was inflated by chance and is withdrawn. The corrected evaluation below (1) only credits an alarm started by a rule matching the decline's channel within 45 days of onset, (2) reports the chance rate from pseudo-onsets and the chance-corrected (excess) sensitivity, (3) reports missed-calls declines separately as an operational check, (4) chooses the alert threshold on a development cohort and reports on a separate held-out cohort, and (5) gives 95 % bootstrap intervals over people.
 
@@ -698,6 +769,7 @@ REST API: see `CONTRACT.md` (including contacts, consent withdraw/grant, resume,
 - **Chance rate:** the same rule applied to every (stable elder, decline elder) pair, using the decline elder's onset day and type on the stable elder's lights. **Excess sensitivity** = attributed sensitivity − chance rate. **Chart-only** variants count only the speech/recall control-chart rules.
 - **False alarms:** alarm episodes (runs of yellow/red, any rule) starting on stable monitored person-days, per 30 days. **Specificity:** person-level = stable elders never alerted; day-level = stable monitored days not yellow/red.
 - **Intervals:** 95 % percentile bootstrap, 1,000 resamples, people resampled within clinical-decline / missed-calls / stable strata.
+- **Age and education.** Each simulated elder has an age (62–89, drawn as before) and an education level (low = none or primary 45 %, mid = secondary 40 %, high = post-secondary 15 %). The mix is illustrative, not a census figure. Education comes from its own random stream, so adding it changed **no** earlier number (`report.json` compared field by field). In the main cohort neither affects any signal. §10.12 adds an assumed effect as a sensitivity check.
 
 ### 10.2 Threshold choice and operating curve
 
@@ -731,6 +803,9 @@ The table shows why a raw sensitivity number misleads. Lowering the threshold to
 | Day-level specificity | 97.2 % (96.6–97.7) | n/a |
 | Stable elders never alerted in 99 days | 57.7 % (51.5–64.3) | n/a |
 | Operational: missed-calls declines flagged by `unanswered` | 71.4 % (59.2–83.7), chance 6.5 % | n/a |
+| Stable 30-day periods with no yellow/red day (§10.10) | **81.2 %** (77.5–84.6) | n/a |
+| False-referral burden: red alerts on stable elders per 100 person-months (§10.10) | **1.47** (0.67–2.40) | n/a |
+| Completion: scheduled daily calls answered (§10.10) | 95.3 % (95.0–95.5), set by the generator | n/a |
 
 **Read this candidly.** With no decline at all, a stable elder still shows a channel-matched alarm in a random 45-day window about 15 % of the time. Only the excess over that is attributable to the decline. The speech/recall control chart on its own picks up well under half of the injected declines beyond chance; symptom, fall and mood rules carry much of the rest. At 0.19 false alarms per person-month a typical stable family sees about **one yellow/red light every five months** that reflects no real change, and 42 % of stable elders see at least one in 99 days. That is acceptable only because the yellow action is "give her a call".
 
@@ -789,10 +864,78 @@ Recall (0–3 per call) is never shown as a percentage, because "37 % worse reca
 
 ### 10.9 Software verification
 
-- `.venv/bin/pytest -q` → **294 passed** on 4 Nov 2026 with Docker running (without Docker the 3 Postgres RLS checks in `tests/deploy`, which start a throwaway Postgres container, are skipped; the suite covers core metrics, control chart, explanations and blocklist, synthetic personas, DMAIC/evaluation, emergency spotter true/false positives including idioms and negation, orchestrator phases, consent/opt-out, scam/medication/diagnosis guardrails, Claude engine with a fake client, server API end-to-end including "no audio anywhere", family love notes and their relay in the call, and the optional Gemini Live voice engine against an offline fake session: tool-driven phases, hidden recall answer, streaming emergency interception, output correction, fallback, credentials, no audio persisted).
+- `.venv/bin/pytest -q` → **306 passed** on 4 Nov 2026 with Docker running (without Docker the 3 Postgres RLS checks in `tests/deploy`, which start a throwaway Postgres container, are skipped; the suite covers core metrics, control chart, explanations and blocklist, synthetic personas, DMAIC/evaluation, emergency spotter true/false positives including idioms and negation, orchestrator phases, consent/opt-out, scam/medication/diagnosis guardrails, Claude engine with a fake client, server API end-to-end including "no audio anywhere", family love notes and their relay in the call, and the optional Gemini Live voice engine against an offline fake session: tool-driven phases, hidden recall answer, streaming emergency interception, output correction, fallback, credentials, no audio persisted).
 - `web/scripts/voice-e2e.mjs` (muted Chromium, `?mute=1`, AudioContext blocked, API with `CHAOBA_GEMINI_FAKE=1`): `/screen` and `/call` full calls on Gemini Live reach the end and update the day, emergency path, WebSocket failure → browser voice on the same call (18 checks passed on 28 Oct 2026).
 - A full hands-free simulated web call was run in the browser (Playwright, headless Chromium): recall failed free and succeeded after the cue (score 1), 56 s voiced speech (valid), day 91 appended with today's date, light computed. A typed call was also run end to end (stored as live data; typed answers carry no speech timing, so it counts as a too-short call and its speech metrics are not shown).
 - Family app checked with Playwright on every route × 3 elders × VI/EN at 390×844 and 1280×800 (84 page loads, before and after the live calls): no console errors, no failed requests, no horizontal overflow. Offline (API stopped) the app falls back to the bundled fixtures.
+
+### 10.10 Specificity, review burden and completion (held-out, L_yellow 3.0)
+
+*Stable elders* are the 227 with no injected decline. *Monitored* means after the 21-day baseline (99 days each).
+
+| Measure | Definition | Value (95 % CI) |
+|---|---|---|
+| Specificity per 30-day period | complete 30-day blocks of monitoring (681 blocks) with no yellow or red day | **81.2 %** (77.5–84.6) |
+| Specificity per person | stable elders never alerted in 99 monitored days | 57.7 % (51.5–64.3) |
+| Specificity per day | stable monitored days not yellow/red | 97.2 % (96.6–97.7) |
+| **False-referral burden** | red-alert starts on stable elders per 100 person-months (11 red alerts; 11 of 227 people) | **1.47** (0.67–2.40) |
+| Completion | scheduled daily calls answered, all 400 elders | 95.3 % (95.0–95.5) |
+| Valid calls | answered and long enough to measure | 90.7 % (90.4–91.0) |
+
+Every red waits for qualified review (§5.5, §8.5), so the false-referral burden is the review workload from people whose signals did not really change. At 1.47 per 100 person-months, a health station following 1,000 stable elders would review about **15 such reds a month**. Whether a review becomes a referral is a human decision the simulation does not model. **Completion is set by the generator** (assumed 1–6 % missed and 3–5 % short calls), so it checks the bookkeeping, not real uptake. **Time to clinical assessment** cannot be measured on simulated data; it is a pilot outcome.
+
+| Group | N stable | Specificity / 30-day period | Red alerts / 100 p-m | Completion |
+|---|---|---|---|---|
+| age 62–69 | 76 | 76.8 % (70.2–82.5) | 1.99 (0.40–3.59) | 95.5 % |
+| age 70–79 | 76 | 82.0 % (76.3–87.3) | 1.59 (0.40–3.19) | 95.3 % |
+| age 80–89 | 75 | 84.9 % (79.6–90.2) | 0.81 (0.00–2.02) | 95.2 % |
+| education low | 101 | 77.9 % (72.6–82.8) | 2.10 (0.90–3.61) | 95.2 % |
+| education mid | 96 | 84.4 % (79.5–89.2) | 0.63 (0.00–1.58) | 95.3 % |
+| education high | 30 | 82.2 % (72.2–90.0) | 2.02 (0.00–5.05) | 95.6 % |
+| central / north / south | 64 / 61 / 102 | 82.8 % / 80.3 % / 80.7 % | 1.89 / 2.48 / 0.59 | 95.1–95.4 % |
+| PSTN / web | 142 / 85 | 79.1 % / 84.7 % | 1.07 / 2.14 | 95.2 % / 95.5 % |
+
+### 10.11 Test–retest reliability of the per-call signals (stable elders)
+
+ICC(2,1) (two-way random effects, absolute agreement, single measurement) between adjacent monitored weeks, averaged over 13 week pairs, 227 stable elders. *Weekly mean* is the mean of the week's valid calls (at least 3). *Single call* is the first valid call of the week.
+
+| Signal | ICC, weekly mean (95 % CI) | ICC, single call (95 % CI) |
+|---|---|---|
+| Speech rate | 0.95 (0.94–0.96) | 0.81 (0.77–0.84) |
+| Pause ratio | 0.93 (0.91–0.94) | 0.74 (0.69–0.78) |
+| Filler rate | 0.89 (0.86–0.90) | 0.63 (0.57–0.68) |
+| Vocabulary variety (MATTR) | 0.92 (0.90–0.93) | 0.73 (0.69–0.77) |
+| Story recall (0–3) | 0.00 (−0.03–0.04) | −0.00 (−0.04–0.03) |
+
+**Read with care.** In a simulation, the ICC only reflects the assumed between-person spread against the assumed day-to-day noise. It shows what those assumptions imply, not what real calls achieve. The pattern still matters for design: one call is much less reliable than a week of calls, which is why the chart smooths over days (EWMA) and needs 3–5 days in a row before it changes the light. **Story recall** has no person-specific usual level in the generator: every simulated person recalls around the same 2.85 of 3. Its ICC is therefore about zero by construction, and its reliability **cannot be judged from this simulation**. Real test–retest reliability for every signal, recall included, must be measured in the pilot.
+
+### 10.12 Age and education subgroups (held-out, L_yellow 3.0)
+
+**No effect assumed (main cohort).**
+
+| Group | N | Clinical declines | Sensitivity | Chance | Excess | False alarms / p-m |
+|---|---|---|---|---|---|---|
+| age 62–69 | 123 | 31 | 71.0 % (54.8–87.1) | 19.7 % | 51.3 % (32.8–67.9) | 0.22 |
+| age 70–79 | 134 | 40 | 90.0 % (80.0–97.5) | 12.9 % | 77.1 % (67.0–86.5) | 0.18 |
+| age 80–89 | 143 | 53 | 77.4 % (66.0–88.7) | 11.8 % | 65.5 % (52.0–77.6) | 0.16 |
+| education low | 178 | 56 | 83.9 % (75.0–92.9) | 15.2 % | 68.7 % (58.4–80.0) | 0.19 |
+| education mid | 166 | 51 | 82.4 % (70.6–92.2) | 15.2 % | 67.2 % (55.0–78.7) | 0.17 |
+| education high | 56 | 17 | 58.8 % (35.3–82.4) | 15.3 % | 43.5 % (17.8–67.8) | 0.21 |
+
+No age or education effect is simulated here, so these differences are **chance**. The intervals overlap widely, and the high-education cell has only 17 declines.
+
+**With an assumed level effect (sensitivity check).** The same held-out seed regenerated with `generate_cohort(level_effects=True)` uses identical random draws, except that usual MATTR shifts by −0.02 / 0 / +0.02 for low / mid / high education, and usual speech rate shifts by −0.02 syll/s per year of age above 75. These are **simulation assumptions**, sized below the between-person spread already in the generator (MATTR SD 0.04, speech-rate SD 0.5 syll/s), not measured effects. Specificity per 30-day period and red alerts per 100 person-months on stable elders:
+
+| Group | Personal baseline: spec. / 30 d | Personal: reds / 100 p-m | Population norm: spec. / 30 d | Population: reds / 100 p-m |
+|---|---|---|---|---|
+| education low | 78.5 % (73.6–83.2) | 2.10 | 55.2 % (47.0–62.9) | 15.35 |
+| education mid | 84.4 % (79.5–89.2) | 0.63 | 59.1 % (50.3–66.9) | 18.75 |
+| education high | 82.2 % (72.2–90.0) | 2.02 | 55.8 % (39.1–71.7) | 26.67 |
+| age 62–69 | 76.8 % (70.2–82.5) | 1.99 | 56.6 % (46.4–65.8) | 20.07 |
+| age 70–79 | 82.9 % (77.6–88.2) | 1.59 | 55.3 % (45.7–64.1) | 14.80 |
+| age 80–89 | 84.9 % (79.6–90.2) | 0.81 | 59.0 % (49.3–68.7) | 20.00 |
+
+With a personal baseline the level effect leaves every subgroup almost unchanged, because each person is compared with their own usual. A population norm keeps 40–45 % of stable 30-day periods in alarm and sends 15–27 reds per 100 person-months to review in every group. At these effect sizes we see no clear gradient by education or age, since the existing between-person spread already dominates. Full tables: `data/eval/report.md`. Real performance by language, age and education depends on vi-VN speech recognition and on real between-group differences, which we have not measured (§15).
 
 ---
 
@@ -993,8 +1136,9 @@ Read this as: the < 100k VND target is reachable on the web, and on the phone on
 
 1. **Now (prototype):** working web call, analytics, family app, simulated evaluation.
 2. **Usability pilot (about 10–20 families, 4–6 weeks):** web plus a first PSTN integration. Measure call completion, opt-out, call length, voiced seconds per call (validity rate), STT word error rate on consented samples, family response to alerts, and cost per call.
-3. **Validation study (50–100 older adults):** with a geriatrics department in Ho Chi Minh City, after ethics board approval. Reference standards: MoCA and clinician frailty assessment at baseline and follow-up. Outcomes: test–retest reliability of each metric, association of within-person change with change in the reference measures, alert agreement with clinician judgement, false-alarm rate in real use, and subgroup results by dialect, channel, sex, age and education. Report per **STARD** (diagnostic accuracy) and **TRIPOD** (prediction models). Re-tune limits on real data with a held-out set.
-4. **Service pilot:** one B2B (post-discharge) or B2G (commune health station) site with defined escalation pathways and a medical-device regulatory assessment.
+3. **Validation study (50–100 older adults):** with a geriatrics department in Ho Chi Minh City (partner **to be found**; no site has been approached), after ethics board approval. Reference standards: MoCA and clinician frailty assessment at baseline and follow-up, with neurology review of discordant cases (neurology partner also **to be found**). Outcomes, matching the statement's validation criteria: completion (calls answered, valid calls per week), test–retest reliability of each metric over stable weeks, sensitivity and specificity of the yellow/red thresholds for clinician-judged meaningful change, ability to identify change (within-person change vs change in the reference measures), false-referral burden (reviews and referrals that the clinician judged unnecessary, per 100 person-months), time from first yellow/red to clinical assessment, and subgroup results by language/dialect, channel, sex, age and education. Report per **STARD** (diagnostic accuracy) and **TRIPOD** (prediction models). Re-tune limits on real data with a held-out set.
+   - **Local-population performance.** Results from one population do not transfer to another. Each deployment population needs its own validation before any claim: Southern, Northern and Central Vietnamese speakers separately, and for the UAE track an Arabic (Emirati dialect) conversation agent validated with Emirati older adults and local clinicians, plus the UAE regulatory review.
+4. **Service pilot:** one B2B (post-discharge) or B2G (commune health station) site with defined escalation pathways (primary care, and referral to geriatrics, neurology or mental-health services through partners **to be found**) and a medical-device regulatory assessment. Outcomes: time to clinical assessment after a red, false-referral burden on the receiving services, and whether earlier, closer-to-home care reduces long trips to city hospitals (§8.4).
 
 ---
 
@@ -1059,7 +1203,7 @@ Read this as: the < 100k VND target is reachable on the web, and on the phone on
 
 ## 17. References
 
-Sources named in the concept document, plus the social-connection evidence cited in §8.4. Where we are not certain of a stable URL, the source is named without a link.
+Sources named in the concept document, the social-connection evidence cited in §8.4, and the brain-health sources cited in §1. Where we are not certain of a stable URL, the source is named without a link.
 
 1. General Statistics Office of Vietnam (GSO). Population statistics, 2024 (people aged 60+: 14.2 million). https://www.gso.gov.vn
 2. GSO and UNFPA Viet Nam. Population projection for Viet Nam 2024–2074 (20.9 million aged 60+ by 2034; aged society by 2034). https://vietnam.unfpa.org
@@ -1073,3 +1217,5 @@ Sources named in the concept document, plus the social-connection evidence cited
 10. Product references (public product descriptions; verify): ElliQ (Intuition Robotics), Winterlight Labs, Sonde Health.
 11. Holt-Lunstad J, Smith TB, Baker M, Harris T, Stephenson D. Loneliness and social isolation as risk factors for mortality: a meta-analytic review. *Perspectives on Psychological Science* 2015;10(2):227–237.
 12. WHO Commission on Social Connection. *From loneliness to social connection: charting a path to healthier societies.* World Health Organization, 2025.
+13. Livingston G, Huntley J, Liu KY, et al. Dementia prevention, intervention, and care: 2024 report of the Lancet standing Commission. *The Lancet* 2024 (published online 31 July 2024). doi:10.1016/S0140-6736(24)01296-0. Lists 14 potentially modifiable risk factors, including social isolation in later life.
+14. Future Health Digital Innovation Challenge 2026, challenge statement "[Population Health] Agentic AI lab for Protecting Brain Health Earlier" (problem description, objective and six desired outcomes; organisers' text, quoted in §1 and CHALLENGE_FIT §3).

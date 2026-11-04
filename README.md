@@ -1,7 +1,9 @@
 # Chào Bà
 
 **The family's daily touchpoint on Mom's screen, with a quiet health light underneath that tells the children when she is changing and what to do.**
-Prototype for the Future Health Digital Innovation Challenge 2026 (focus area: Wellbeing).
+Prototype for the Future Health Digital Innovation Challenge 2026, challenge statement **[Population Health] Agentic AI lab for Protecting Brain Health Earlier**.
+
+**Brain health, the gentle way:** the family's daily presence works on social isolation, one of 14 modifiable dementia risk factors (Lancet Commission 2024), and the daily voice chat yields cognitive and functional signals compared with her own usual, with clear thresholds and human review. Risk identification, never diagnosis ([how we map the statement](docs/CHALLENGE_FIT.md#3-mapping-to-the-chosen-challenge-statement)).
 
 Vietnam has 14.2 million people aged 60+ (2024), and many live far from children who work in another city or abroad. Loneliness is itself a health risk ([TECHNICAL_DOCUMENTATION §8.4](docs/TECHNICAL_DOCUMENTATION.md#84-family-together-on-the-big-screen-cả-nhà-ghé-thăm)), and slow decline goes unnoticed until a crisis.
 
@@ -107,5 +109,5 @@ All optional; the prototype runs with none of them.
 
 - [docs/TECHNICAL_DOCUMENTATION.md](docs/TECHNICAL_DOCUMENTATION.md): architecture, signal definitions, control-chart method, DMAIC example, evaluation, responsible AI and data governance, deployment (containers, RLS test), per-call cost model and unit economics, **Assumptions**, **Limitations**
 - [docs/DEMO_GUIDE.md](docs/DEMO_GUIDE.md): how to run it, plus a 3-minute demo script mapped to the judging criteria
-- [docs/CHALLENGE_FIT.md](docs/CHALLENGE_FIT.md): judging criteria → evidence; focus-area fit; checklist for mapping the chosen challenge statement
+- [docs/CHALLENGE_FIT.md](docs/CHALLENGE_FIT.md): judging criteria → evidence; focus-area fit; the six desired outcomes of the brain-health statement → evidence and gaps
 - [data/eval/report.md](data/eval/report.md): full simulated evaluation report

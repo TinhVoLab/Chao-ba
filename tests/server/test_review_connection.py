@@ -87,3 +87,27 @@ def test_help_button_raises_one_red_alert_for_review(client):
     assert a["severity"] == "red" and a["needs_review"] and "Cần giúp" in a["explanation_vi"]
     client.post(f"/api/elders/hanh/alerts/{a['id']}/ack", headers=FAMILY)
     assert not client.post("/api/elders/hanh/help", headers=ELDER).json()["duplicate"]   # seen -> a new press is new
+
+
+def test_repeat_check_and_specialty_referrals_are_review_outcomes(client):
+    from chaoba.server.care_review import OUTCOMES
+    aid = red_alerts(client)[0]["id"]
+    url = f"/api/elders/hanh/alerts/{aid}/review"
+    want = {"repeat_assessment": "Repeat check in 2 weeks", "geriatrics": "Referred to geriatrics",
+            "neurology": "Referred to neurology", "mental_health": "Referred to mental-health services"}
+    for key, en in want.items():
+        r = client.post(url, json={"outcome": key}, headers=STATION)
+        assert r.status_code == 200 and r.json()["review"]["outcome_en"] == en and r.json()["review"]["outcome_vi"]
+    assert set(want) <= set(OUTCOMES)
+
+
+def test_review_queue_buttons_match_server_outcomes():
+    """The station's buttons (ReviewQueue.tsx) and the TS union (types.ts) list exactly the server's outcomes."""
+    import re
+    from pathlib import Path
+    from chaoba.server.care_review import OUTCOMES
+    web = Path(__file__).resolve().parents[2] / "web"
+    ui = set(re.findall(r'key: "([a-z_]+)"', (web / "components/community/ReviewQueue.tsx").read_text()))
+    types = (web / "lib/types.ts").read_text()
+    union = set(re.findall(r'\| "([a-z_]+)"', types[types.index("export type ReviewOutcome"):types.index("export interface AlertReview")]))
+    assert ui == set(OUTCOMES) == union

@@ -101,3 +101,75 @@ def test_holdout_curve_and_selection_deterministic(tmp_path):
     write_curve_csv(a, str(tmp_path / "c.csv"))
     assert len((tmp_path / "c.csv").read_text().splitlines()) == 1 + 2 * 2 * 2
     assert curve_svg(a).startswith("<svg") and DISCLAIMER in curve_svg(a)
+
+
+def test_education_stream_and_level_effects_leave_other_draws_unchanged():
+    from chaoba.core.synth import AGE_BANDS, EDUCATION_LEVELS, age_band
+    a = generate_cohort(n=12, days=40, seed=9)
+    b = generate_cohort(n=12, days=40, seed=9, level_effects=True)
+    for p, q in zip(a, b):
+        assert p["elder"]["education"] in EDUCATION_LEVELS and p["elder"] == q["elder"] and p["truth"] == q["truth"]
+        assert age_band(p["elder"]["age"]) in {n for n, _, _ in AGE_BANDS}
+        for r, s in zip(p["records"], q["records"]):  # same random draws: only usual levels move
+            for k in ("answered", "valid", "mood", "recall_score", "symptoms", "pause_ratio", "filled_pause_rate"):
+                assert r[k] == s[k]
+    assert any(r["mattr"] != s["mattr"] for p, q in zip(a, b) for r, s in zip(p["records"], q["records"])
+               if r["mattr"] is not None and p["elder"]["education"] != "mid")
+
+
+def test_icc_2_1_known_values():
+    import numpy as np
+    from chaoba.core.evaluation import icc_2_1
+    y = np.array([[1.0, 1.0], [2.0, 2.0], [3.0, 3.0], [5.0, 5.0]])
+    assert abs(icc_2_1(y) - 1.0) < 1e-9
+    rng = np.random.default_rng(0)
+    assert abs(icc_2_1(rng.normal(size=(2000, 2)))) < 0.1          # pure noise -> ~0
+    lv = rng.normal(size=(2000, 1))
+    assert 0.75 < icc_2_1(lv + 0.5 * rng.normal(size=(2000, 2))) < 0.85   # var 1 / (1 + 0.25) = 0.8
+    assert icc_2_1(y[:2]) is None
+
+
+def test_period_specificity_red_burden_and_completion_are_scored():
+    from chaoba.core.control_chart import ControlConfig
+    from chaoba.core.evaluation import _score, _summ
+    from chaoba.core.models import to_dict
+    from core_helpers import series
+
+    def person(pid, recs):
+        return {"elder": {"id": pid, "age": 72, "education": "mid"}, "records": [to_dict(r) for r in recs],
+                "truth": {"decline": False, "onset_day": None, "type": "stable"}}
+    calm = series(100)
+    fall = series(100, {60: {"symptoms": {"fall": 1}}, 30: {"answered": False}})
+    rows = _score([person("a", calm), person("b", fall)], ControlConfig())
+    a, b = rows
+    assert (a["periods_total"], a["periods_clear"], a["red_alerts"]) == (2, 2, 0)
+    assert (b["periods_total"], b["periods_clear"], b["red_alerts"]) == (2, 1, 1)
+    assert a["age_band"] == "70-79" and a["education"] == "mid"
+    assert (b["sched_days"], b["answered_days"]) == (100, 99)
+    s = _summ(rows, n_boot=20)
+    assert s["specificity_period"] == 0.75 and s["stable_people_with_red"] == 1
+    assert abs(s["red_alerts_per_100_person_months"] - 100 * 1 / (sum(r["stable_days"] for r in rows) / 30)) < 1e-3
+    assert s["completion_rate"] == 0.995
+
+
+def test_evaluation_reports_reliability_and_new_subgroups():
+    rep = run_evaluation(generate_cohort(n=40, days=100, seed=5), n_boot=30)
+    o = rep["overall"]
+    for k in ("specificity_period", "red_alerts_per_100_person_months", "completion_rate", "valid_call_rate"):
+        assert o[k] is not None and o[k + "_ci"][0] <= o[k] <= o[k + "_ci"][1]
+    assert set(rep["by_education"]) <= {"low", "mid", "high"} and rep["by_age_band"]
+    rel = rep["reliability"]["metrics"]
+    assert set(rel) == {"speech_rate_sps", "pause_ratio", "filled_pause_rate", "mattr", "recall_score"}
+    assert rel["speech_rate_sps"]["weekly_mean"] > rel["speech_rate_sps"]["single_call"] > 0.3
+    assert abs(rel["recall_score"]["weekly_mean"]) < 0.3     # no person-level recall in the generator
+    md = rep["markdown"]
+    assert "Test–retest reliability" in md and "False-referral burden" in md and "## By education" in md
+
+
+def test_level_effect_check_shape():
+    from chaoba.core.evaluation import level_effect_check
+    out = level_effect_check(generate_cohort(n=30, days=90, seed=6, level_effects=True), n_boot=10)
+    assert set(out) == {"by_education", "by_age_band"}
+    assert set(out["by_education"]) == {"personal", "population"}
+    for v in out["by_age_band"]["personal"].values():
+        assert "specificity_period" in v and "red_alerts_per_100_person_months_ci" in v

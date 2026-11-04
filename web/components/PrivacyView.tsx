@@ -45,6 +45,7 @@ const ACTION: Record<string, { vi: string; en: string }> = {
   purge_transcripts: { vi: "Tự xoá lời nói quá hạn", en: "Auto-deleted expired transcripts" },
   read_together: { vi: "Xem ai đã ghé hôm nay", en: "Viewed who dropped by" },
   read_connection: { vi: "Xem kết nối gia đình", en: "Viewed family connection" },
+  read_brain_context: { vi: "Xem bối cảnh sức khỏe não bộ", en: "Viewed brain-health context" },
   read_activities: { vi: "Xem hoạt động phòng ngừa", en: "Viewed activities" },
   read_memories: { vi: "Xem sổ ký ức", en: "Viewed the memory book" },
   read_memories_export: { vi: "Tải sổ ký ức", en: "Exported the memory book" },

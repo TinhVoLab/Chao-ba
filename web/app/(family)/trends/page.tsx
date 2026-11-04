@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getConnection, getTimeline, loadElderContext } from "@/lib/api";
+import { getBrainContext, getConnection, getTimeline, loadElderContext } from "@/lib/api";
+import { BrainContextCard } from "@/components/BrainContextCard";
 import { ConnectionCard } from "@/components/ConnectionCard";
 import { PageHeader, Disclaimer } from "@/components/PageHeader";
 import { PageSkeleton } from "@/components/Skeletons";
@@ -20,7 +21,12 @@ export default function TrendsPage({ searchParams }: PageProps<"/trends">) {
 async function TrendsContent({ searchParams }: { searchParams: PageProps<"/trends">["searchParams"] }) {
   const sp = await searchParams;
   const ctx = await loadElderContext(sp.elder);
-  const [tl, conn] = await Promise.all([getTimeline(ctx.elder.id, 90), getConnection(ctx.elder.id)]);
+  const period = (Array.isArray(sp.window) ? sp.window[0] : sp.window) === "28" ? 28 : 14;
+  const [tl, conn, brain] = await Promise.all([
+    getTimeline(ctx.elder.id, 90),
+    getConnection(ctx.elder.id),
+    getBrainContext(ctx.elder.id, period),
+  ]);
   const simulated = tl.data.simulated ?? (tl.data.records ?? []).some((r) => r.simulated !== false);
   return (
     <div className="flex flex-col gap-6">
@@ -38,6 +44,7 @@ async function TrendsContent({ searchParams }: { searchParams: PageProps<"/trend
           en={`Each signal for ${ctx.elder.name_en} is compared with their own usual level, never with other people. The strip under each chart is the daily light.`}
         />
       </p>
+      {brain.data && <BrainContextCard c={brain.data} elderId={ctx.elder.id} />}
       {conn.data && <ConnectionCard c={conn.data} />}
       <TrendsView timeline={tl.data} />
       <Disclaimer />

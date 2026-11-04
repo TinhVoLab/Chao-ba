@@ -490,6 +490,28 @@ def family_contacts(key: str, profile: dict, days: int = 90, seed: int = 7) -> l
 # ---------------------------------------------------------------------------------------------
 DECLINE_TYPES = ("cognitive_drift", "frailty_symptom", "mood_withdrawal", "missed_calls")
 DIALECT_SPEECH = {"south": 4.6, "central": 4.3, "north": 4.9}  # syllables / s (assumed population means)
+# Education level of each simulated elder, drawn from its OWN RNG stream ([seed, i, EDU_STREAM]) so adding it left every
+# other draw - and every existing evaluation number - unchanged. The mix is an illustrative assumption, not a census
+# figure: low = no schooling / primary, mid = lower or upper secondary, high = post-secondary.
+EDUCATION_LEVELS = ("low", "mid", "high")
+EDUCATION_P = (0.45, 0.40, 0.15)
+EDU_STREAM = 7001
+AGE_BANDS = (("62-69", 62, 69), ("70-79", 70, 79), ("80-89", 80, 89))
+# Optional between-person LEVEL effects (generate_cohort(level_effects=True)); OFF by default, so the headline
+# evaluation has no education or age effect. Simulation assumptions sized below the existing between-person SD
+# (MATTR SD 0.04, speech-rate SD 0.5 syll/s), in the spirit of the dialect speech-rate means above; not literature
+# values. They shift a person's usual level only, not their day-to-day noise, and never their decline.
+EDU_MATTR_SHIFT = {"low": -0.02, "mid": 0.0, "high": 0.02}   # absolute MATTR
+AGE_SPEECH_SLOPE = -0.02                                       # syll/s per year of age above 75
+
+
+def age_band(age: int | None) -> str | None:
+    if age is None:
+        return None
+    for name, lo, hi in AGE_BANDS:
+        if lo <= age <= hi:
+            return name
+    return "90+" if age > 89 else "<62"
 FAMILY = ["Nguyễn", "Trần", "Lê", "Phạm", "Huỳnh", "Võ", "Phan", "Đặng"]
 GIVEN_F = ["Hoa", "Lan", "Mai", "Cúc", "Huệ", "Nga", "Thu", "Sáu", "Năm", "Tám"]
 GIVEN_M = ["Hùng", "Minh", "Tâm", "Bảy", "Ba", "Sơn", "Phúc", "Lộc", "Hải", "Chín"]
@@ -520,8 +542,13 @@ def _decline_eff(kind, onset, ramp, mag):
     return f
 
 
-def generate_cohort(n: int = 200, days: int = 120, seed: int = 11) -> list[dict]:
-    """n simulated elders (~40 % with an injected decline). Each item: elder, records, truth, simulated."""
+def generate_cohort(n: int = 200, days: int = 120, seed: int = 11, level_effects: bool = False) -> list[dict]:
+    """n simulated elders (~40 % with an injected decline). Each item: elder, records, truth, simulated.
+
+    Every elder carries ``age`` (main stream, as before) and ``education`` (own stream, see EDU_STREAM). With
+    ``level_effects=True`` the usual MATTR level depends on education and the usual speech rate on age
+    (EDU_MATTR_SHIFT, AGE_SPEECH_SLOPE; simulation assumptions); all random draws stay identical.
+    """
     rng = np.random.default_rng(seed)
     out = []
     for i in range(n):
@@ -554,7 +581,8 @@ def generate_cohort(n: int = 200, days: int = 120, seed: int = 11) -> list[dict]
                          mood_mean=float(rng.uniform(3.6, 4.4)), weekday=_weekday_effects(prng, noise))
         eff = _decline_eff(kind, onset, ramp, mag) if decline else (lambda d: {})
         eid = f"c{i + 1:03d}"
-        records = [person.day(eid, d, eff(d), START_DATE) for d in range(1, days + 1)]
+        education = str(np.random.default_rng([seed, i, EDU_STREAM]).choice(EDUCATION_LEVELS, p=EDUCATION_P))
+        # records use only the person's own stream (prng), so building them after the profile draws changes nothing
         given = str(rng.choice(GIVEN_F if female else GIVEN_M))
         hon = "bà" if female else "ông"
         profile = {
@@ -562,8 +590,13 @@ def generate_cohort(n: int = 200, days: int = 120, seed: int = 11) -> list[dict]
             "honorific": hon, "self_ref": "con", "age": int(rng.integers(62, 90)),
             "province": str(rng.choice(PROVINCES[dialect])), "dialect": dialect, "lives_alone": bool(rng.random() < 0.3),
             "channel_pref": channel, "conditions": [], "medications": [], "family": [], "goals": [], "memory_facts": [],
-            "noise_level": round(noise, 3),
+            "noise_level": round(noise, 3), "education": education,
         }
+        if level_effects:
+            level["mattr"] = float(np.clip(level["mattr"] + EDU_MATTR_SHIFT[education], 0.6, 0.85))
+            level["speech_rate_sps"] = float(max(3.0, level["speech_rate_sps"]
+                                                 + AGE_SPEECH_SLOPE * (profile["age"] - 75)))
+        records = [person.day(eid, d, eff(d), START_DATE) for d in range(1, days + 1)]
         out.append({
             "elder": profile,
             "records": [to_dict(r) for r in records],

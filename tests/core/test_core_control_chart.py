@@ -206,3 +206,18 @@ def test_health_concern_key_is_red_and_not_a_symptom():
     assert lb[35].light == "red" and r["symptom"] == "chest_pain"
     # the concern key does not count towards multi_symptom (only pain + insomnia = 2 distinct)
     assert "multi_symptom" not in codes(lb[37])
+
+
+def test_rapid_change_latency_of_existing_rules():
+    """Documents (TECHNICAL_DOCUMENTATION §5.5) how fast the existing rules escalate an abrupt change; there is no
+    separate rate-of-change rule. A ~20 % overnight drop in speech rate: yellow on its 3rd valid day (3 days over
+    L_yellow 3.0), red `metric_shift` on its 6th (5 days over L_red 4.0). Acute events are red the same day."""
+    step = series(60, {d: {"speech_rate_sps": 3.6} for d in range(30, 61)})
+    lights = {l.day: l for l in evaluate_series(step)}
+    assert all(lights[d].light == "green" for d in range(22, 32))
+    first_yellow = min(d for d, l in lights.items() if l.light in ("yellow", "red"))
+    first_red = min(d for d, l in lights.items() if l.light == "red")
+    assert (first_yellow, first_red) == (32, 35)
+    assert any(r["code"] == "metric_shift" for r in lights[first_red].reasons)
+    fall = {l.day: l for l in evaluate_series(series(40, {33: {"symptoms": {"fall": 1}}}))}
+    assert fall[33].light == "red" and fall[32].light == "green"

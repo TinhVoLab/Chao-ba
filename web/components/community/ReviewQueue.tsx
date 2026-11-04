@@ -1,20 +1,41 @@
 "use client";
 import { useState } from "react";
 import { Check, Stethoscope } from "lucide-react";
-import type { Alert, ReviewRow } from "@/lib/types";
+import type { Alert, ReviewOutcome, ReviewRow } from "@/lib/types";
 import { API_BASE } from "@/lib/config";
 import { longDate } from "@/lib/format";
 import { stationHeaders } from "@/lib/viewer";
 import { T } from "../T";
 
-// Outcomes accepted by POST /api/elders/{id}/alerts/{aid}/review (care_review.py OUTCOMES).
-const OUTCOMES: { key: string; vi: string; en: string }[] = [
-  { key: "phone_check", vi: "Đã gọi hỏi thăm", en: "Phoned to check in" },
-  { key: "home_visit", vi: "Đến nhà thăm", en: "Home visit" },
-  { key: "gp_referral", vi: "Hẹn khám bác sĩ", en: "Refer to a doctor" },
-  { key: "family_follow_up", vi: "Gia đình theo dõi", en: "Family keeps watching" },
-  { key: "no_action", vi: "Không cần thêm", en: "No further action" },
-  { key: "emergency", vi: "Chuyển cấp cứu", en: "Emergency care" },
+// Outcomes accepted by POST /api/elders/{id}/alerts/{aid}/review (care_review.py OUTCOMES), in two rows:
+// follow-up close to home, then referral. A specialty referral is the reviewer's decision, never suggested by the app.
+// The 2-week repeat interval is a placeholder to be set with clinical partners (TECHNICAL_DOCUMENTATION §8.5).
+type Outcome = { key: ReviewOutcome; vi: string; en: string };
+const OUTCOME_GROUPS: { id: string; vi: string; en: string; items: Outcome[] }[] = [
+  {
+    id: "follow",
+    vi: "Theo dõi",
+    en: "Follow-up",
+    items: [
+      { key: "phone_check", vi: "Đã gọi hỏi thăm", en: "Phoned to check in" },
+      { key: "home_visit", vi: "Đến nhà thăm", en: "Home visit" },
+      { key: "repeat_assessment", vi: "Kiểm tra lại sau 2 tuần", en: "Repeat check in 2 weeks" },
+      { key: "family_follow_up", vi: "Gia đình theo dõi", en: "Family keeps watching" },
+      { key: "no_action", vi: "Không cần thêm", en: "No further action" },
+    ],
+  },
+  {
+    id: "refer",
+    vi: "Chuyển khám",
+    en: "Referral",
+    items: [
+      { key: "gp_referral", vi: "Hẹn khám bác sĩ", en: "Refer to a doctor" },
+      { key: "geriatrics", vi: "Lão khoa", en: "Geriatrics" },
+      { key: "neurology", vi: "Thần kinh", en: "Neurology" },
+      { key: "mental_health", vi: "Sức khỏe tâm thần", en: "Mental-health services" },
+      { key: "emergency", vi: "Chuyển cấp cứu", en: "Emergency care" },
+    ],
+  },
 ];
 
 /** Red alerts waiting for a person with a clinical role. The light only flags a change; the decision is human. */
@@ -26,7 +47,7 @@ export function ReviewQueue({ initial }: { initial: ReviewRow[] }) {
   const [error, setError] = useState<string | null>(null);
   const waiting = rows.filter((r) => r.needs_review).length;
 
-  async function review(r: ReviewRow, outcome: string) {
+  async function review(r: ReviewRow, outcome: ReviewOutcome) {
     setBusy(true);
     setError(null);
     try {
@@ -96,19 +117,26 @@ export function ReviewQueue({ initial }: { initial: ReviewRow[] }) {
                       className="min-h-11 rounded-xl border border-line bg-bg px-3 text-base text-ink"
                     />
                   </label>
-                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                    {OUTCOMES.map((o) => (
-                      <button
-                        key={o.key}
-                        type="button"
-                        disabled={busy}
-                        onClick={() => review(r, o.key)}
-                        className="min-h-11 rounded-xl border border-line-strong bg-surface px-3 text-[0.9375rem] font-semibold disabled:opacity-50"
-                      >
-                        <T vi={o.vi} en={o.en} />
-                      </button>
-                    ))}
-                  </div>
+                  {OUTCOME_GROUPS.map((g) => (
+                    <fieldset key={g.id} className="flex flex-col gap-1.5" data-testid={`outcomes-${g.id}`}>
+                      <legend className="mb-1.5 text-sm font-semibold text-ink-3">
+                        <T vi={g.vi} en={g.en} />
+                      </legend>
+                      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+                        {g.items.map((o) => (
+                          <button
+                            key={o.key}
+                            type="button"
+                            disabled={busy}
+                            onClick={() => review(r, o.key)}
+                            className="min-h-11 rounded-xl border border-line-strong bg-surface px-3 py-1.5 text-[0.9375rem] font-semibold leading-snug disabled:opacity-50"
+                          >
+                            <T vi={o.vi} en={o.en} />
+                          </button>
+                        ))}
+                      </div>
+                    </fieldset>
+                  ))}
                   {error && (
                     <p role="alert" className="text-sm text-red-ink">
                       {error}
