@@ -1,11 +1,11 @@
 "use client";
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { Check, Droplets, MessageCircleHeart, Mic, Phone, Pill, Puzzle, Smile } from "lucide-react";
+import { Check, Droplets, Heart, MessageCircleHeart, Mic, Phone, Pill, Puzzle, Smile } from "lucide-react";
 import type { ElderProfile, FamilyMember } from "@/lib/types";
 import { Avatar } from "./Avatar";
 import { Face } from "./Faces";
 import { MaiScene, Portrait } from "./Portrait";
-import type { MedToday, Mood, ScreenMessage } from "./data";
+import type { MedToday, Mood, ScreenMessage, Together } from "./data";
 import { addressElder, cap, elderCalls, messageBody, relationLabel, useT } from "./util";
 import s from "./classes";
 
@@ -40,6 +40,9 @@ export interface IdleProps {
   mood: Mood | null;
   callee: FamilyMember | null;
   toast: string | null;
+  together: Together | null;
+  onPhotoHeart: (id: number) => void;
+  onFamilyHeart: () => void;
   onMed: (m: MedToday, status: "taken" | "not_yet") => void;
   onTalk: () => void;
   onVideo: () => void;
@@ -51,8 +54,17 @@ export function IdleView(p: IdleProps) {
   const t = useT();
   const clock = useClock();
   const fam = p.profile.family ?? [];
-  const slides = fam.length + 1;
+  // The children's photos of their day when there are any (together.py); otherwise placeholder portraits.
+  const photos = p.together?.photos ?? [];
+  const slides = photos.length || fam.length + 1;
   const [slide, setSlide] = useState(0);
+  // A new photo from the children comes straight to the front (photos are newest first).
+  const newest = photos[0]?.id;
+  const [shown, setShown] = useState(newest);
+  if (newest !== shown) {
+    setShown(newest);
+    setSlide(0);
+  }
   useEffect(() => {
     const id = setInterval(() => setSlide((x) => (x + 1) % slides), 8000);
     return () => clearInterval(id);
@@ -73,6 +85,9 @@ export function IdleView(p: IdleProps) {
     return nowMin >= a * 60 + b - 30;
   };
   const member = slide < fam.length ? fam[slide] : null;
+  const photo = photos.length ? photos[slide % photos.length] : null;
+  const tg = p.together;
+  const showMoment = !!tg?.all_here && !tg.moment.hearted;
 
   return (
     <div className={s.idle}>
@@ -90,18 +105,64 @@ export function IdleView(p: IdleProps) {
       </header>
       <p className={s.greet}>{greet}</p>
 
+      {tg && tg.total > 0 && (
+        <section className={s.visitors} aria-label={t("Hôm nay ai ghé thăm", "Who dropped by today")} data-testid="visitors">
+          <ul>
+            {tg.members.map((m) => (
+              <li key={m.member_id} data-on={m.visited} title={m.name}>
+                <span aria-hidden>{m.name.slice(0, 1)}</span>
+                {m.visited && <Check className={s.visitorTick} aria-hidden />}
+              </li>
+            ))}
+          </ul>
+          <p>
+            {t(tg.screen_vi, tg.screen_en)}
+            {tg.moment.hearted && <Heart className={s.visitorHeart} aria-label={t("đã gửi thương cả nhà", "love sent")} />}
+          </p>
+        </section>
+      )}
+
       <figure className={s.photo} aria-label={t("Ảnh gia đình", "Family photos")}>
-        {fam.map((f, i) => (
-          <div key={f.id} className={s.slide} data-on={slide === i}>
-            <Portrait member={f} id={`pf-${f.id}`} />
-          </div>
-        ))}
-        <div className={s.slide} data-on={slide === fam.length}>
-          <MaiScene />
-        </div>
+        {photos.length > 0 ? (
+          photos.map((x, i) => (
+            <div key={x.id} className={s.slide} data-on={slide === i}>
+              {/* eslint-disable-next-line @next/next/no-img-element -- data-URL photos from the family */}
+              <img src={x.image} alt={x.caption || t(`Ảnh ${x.sender_name} gửi`, `Photo from ${x.sender_name}`)} />
+            </div>
+          ))
+        ) : (
+          <>
+            {fam.map((f, i) => (
+              <div key={f.id} className={s.slide} data-on={slide === i}>
+                <Portrait member={f} id={`pf-${f.id}`} />
+              </div>
+            ))}
+            <div className={s.slide} data-on={slide === fam.length}>
+              <MaiScene />
+            </div>
+          </>
+        )}
+        {photo && (
+          <button
+            type="button"
+            className={s.photoHeart}
+            data-on={photo.hearted}
+            disabled={photo.hearted}
+            onClick={() => p.onPhotoHeart(photo.id)}
+            aria-label={photo.hearted ? t("Đã thả tim", "Hearted") : t(`Thả tim cho ${photo.sender_name}`, `Send ${photo.sender_name} a heart`)}
+            data-testid="photo-heart"
+          >
+            <Heart aria-hidden />
+          </button>
+        )}
         <figcaption>
           <span>
-            {member
+            {photo ? (
+              <>
+                <b className={s.photoFrom}>{t(`${photo.sender_name} gửi`, `From ${photo.sender_name}`)}</b>
+                {photo.caption && <span className={s.photoCaption}>{photo.caption}</span>}
+              </>
+            ) : member
               ? member.relation === "son" || member.relation === "daughter"
                 ? t(`${relationLabel(member, false)} ${member.name}`, `${relationLabel(member, true)} ${member.name}`)
                 : member.name
@@ -115,7 +176,25 @@ export function IdleView(p: IdleProps) {
         </figcaption>
       </figure>
 
-      {msg && (
+      {showMoment && tg ? (
+        <section className={s.moment} aria-label={t(tg.moment.title_vi, tg.moment.title_en)} data-testid="family-moment">
+          <div>
+            <p className={s.momentTitle}>{t(tg.moment.title_vi, tg.moment.title_en)}</p>
+            <p className={s.momentBody}>{t("Chạm trái tim để gửi thương lại cả nhà", "Tap the heart to send love to everyone")}</p>
+          </div>
+          <button type="button" className={s.momentBtn} onClick={p.onFamilyHeart} aria-label={t("Gửi thương cả nhà", "Send love to everyone")} data-testid="btn-family-heart">
+            <Heart aria-hidden />
+          </button>
+        </section>
+      ) : tg?.companion ? (
+        <section className={s.message} aria-label="Út Thương" data-testid="companion">
+          <MessageCircleHeart className={s.ico} aria-hidden />
+          <div>
+            <p className={s.msgFrom}>Út Thương</p>
+            <p className={s.msgText}>{t(tg.companion.line_vi, tg.companion.line_en)}</p>
+          </div>
+        </section>
+      ) : msg && (
         <section className={s.message} aria-label={t("Lời nhắn của gia đình", "Family message")} data-testid="family-message">
           <MessageCircleHeart className={s.ico} aria-hidden />
           <div>

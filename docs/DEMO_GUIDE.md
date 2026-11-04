@@ -24,7 +24,7 @@ Check:
 
 ```bash
 curl -s localhost:8000/api/health      # {"ok":true,"llm":"fallback","voice":"browser"}  (or "claude" with a key)
-.venv/bin/pytest -q                     # 281 passed (the 3 Postgres RLS tests also run when Docker is available)
+.venv/bin/pytest -q                     # 287 passed (the 3 Postgres RLS tests also run when Docker is available)
 ```
 
 On first start the server seeds three simulated elders (90 days each, plus a simulated family call/visit log) into `data/runtime/chaoba.db`:

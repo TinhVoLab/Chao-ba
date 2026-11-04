@@ -12,6 +12,7 @@ import { TodayActions } from "@/components/TodayActions";
 import { T } from "@/components/T";
 import { MemoryBookCard } from "@/components/memories/MemoryBookCard";
 import { KudosQuick } from "@/components/today/KudosQuick";
+import { TogetherCard } from "@/components/today/TogetherCard";
 import { ClampText } from "@/components/today/ClampText";
 
 export default function TodayPage({ searchParams }: PageProps<"/">) {
@@ -239,6 +240,8 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
         todayDate={t.date}
         todayDay={t.day}
       >
+        {/* "Cả nhà ghé thăm": who dropped by today + send a photo to the big screen (together.py) */}
+        <TogetherCard key={`tg-${id}-${viewer.memberId}`} elderId={id} memberId={viewer.memberId} kinVi={k.vi} kinEn={k.en} />
         {/* "Gửi thương": a compact strip under "Gọi má", never instead of it; the full tray lives on the Family page */}
         <KudosQuick key={`${id}-${viewer.memberId}`} elderId={id} kinVi={k.vi} kinEn={k.en} catalog={kudosCatalog.data} initial={kudosSent.data} />
       </TodayActions>

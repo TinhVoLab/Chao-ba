@@ -14,6 +14,7 @@ import { KudosCard, type KudosAnswer } from "./elder/KudosCard";
 import {
   fetchKudosInbox,
   fetchScreen,
+  fetchTogether,
   flushElderOutbox,
   localDay,
   postElder,
@@ -22,6 +23,7 @@ import {
   type Mood,
   type ScreenBundle,
   type ScreenMessage,
+  type Together,
 } from "./elder/data";
 import { LangCtx, addressElder, agentCalls, callTarget, cap, elderCalls, type ScreenLang } from "./elder/util";
 import s from "./elder/classes";
@@ -85,10 +87,23 @@ export function StandingScreen({
   const seenRef = useRef<Set<number>>(new Set());
   const queue = inbox.filter((k) => !handled.includes(k.id));
   const card = mode === "idle" && emergency === null ? queue[0] ?? null : null;
+  // The card on screen stays until the elder is done with it, even once a refresh no longer lists it (answered,
+  // then "Lưu vào Sổ ký ức?" can take longer than one poll).
+  const shownRef = useRef<number | null>(null);
+  useEffect(() => {
+    shownRef.current = card?.id ?? null;
+  }, [card]);
 
+  // "Cả nhà ghé thăm": today's visitors, the family photo wall and the family moment, refreshed with the inbox.
+  const [together, setTogether] = useState<Together | null>(null);
   const loadInbox = useCallback(async () => {
-    const items = await fetchKudosInbox(apiBase, elderId);
-    if (items) setInbox(items);
+    const [items, tg] = await Promise.all([fetchKudosInbox(apiBase, elderId), fetchTogether(apiBase, elderId)]);
+    if (items)
+      setInbox((prev) => {
+        const keep = prev.find((k) => k.id === shownRef.current && !items.some((i) => i.id === k.id));
+        return keep ? [keep, ...items] : items;
+      });
+    if (tg) setTogether(tg);
   }, [apiBase, elderId]);
 
   useEffect(() => {
@@ -233,6 +248,16 @@ export function StandingScreen({
             mood={mood}
             callee={callee}
             toast={toast}
+            together={together}
+            onPhotoHeart={(id) => {
+              setTogether((t) => (t ? { ...t, photos: t.photos.map((x) => (x.id === id ? { ...x, hearted: true } : x)) } : t));
+              void postElder(apiBase, elderId, `photos/${id}/heart`, {});
+            }}
+            onFamilyHeart={() => {
+              setTogether((t) => (t ? { ...t, moment: { ...t.moment, hearted: true } } : t));
+              setToast(L("Đã gửi thương tới cả nhà", "Love sent to the whole family"));
+              void postElder(apiBase, elderId, "together/heart", {});
+            }}
             onMed={onMed}
             onTalk={() => setMode("talk")}
             onVideo={() => setMode("video")}

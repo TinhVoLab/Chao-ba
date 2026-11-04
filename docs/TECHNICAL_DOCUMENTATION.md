@@ -1,6 +1,6 @@
 # Chào Bà: Technical Documentation
 
-**Future Health Digital Innovation Challenge 2026** (Future Health, a Global Initiative by Abu Dhabi, with Microsoft, Inception and MBZUAI). Prototype submission, version of 27 Oct 2026.
+**Future Health Digital Innovation Challenge 2026** (Future Health, a Global Initiative by Abu Dhabi, with Microsoft, Inception and MBZUAI). Prototype submission, version of 4 Nov 2026.
 
 > **What this is:** a working prototype of a daily voice check-in for older adults in Vietnam. It tracks
 > **change relative to the person's own baseline** and tells the family in plain words.
@@ -596,7 +596,18 @@ vs calls, DMAIC series, memory-book consent, relay in a simulated call with ≥ 
 directive). Browser check (muted, `tts=0`, speech synthesis stubbed): `node web/scripts/kudos-e2e.mjs`
 (screenshots `docs/screenshots/kudos-*.png`).
 
-### 8.4 Community dashboard (health station, B2G)
+### 8.4 Family together on the big screen ("Cả nhà ghé thăm")
+
+The adult children of a Vietnamese older adult often work in another city or abroad. Chào Bà gives them a ten-second daily touchpoint on the parent's standing screen (`/screen`), and the parent only has to look:
+
+- **Photo wall.** Each child sends a photo of their day with a short caption: lunch, a grandchild's drawing, the street where they work. The screen shows the last week's photos as a large, slow slideshow. The elder may tap one heart, and the sender sees it. Captions pass the same free-text checks as love cards (no diagnoses, no medication advice). Images are JPEG/PNG/WebP data URLs resized in the browser. SVG is refused. Each sender can send 3 photos a day.
+- **Who dropped by today.** A strip of faces for the care circle, lit when the member has been in touch today (love card, photo, call or visit). The family app shows the same strip and gently nudges a member who has not dropped by.
+- **Family moment.** When every child has dropped by on the same day, the screen shows "Cả nhà nhớ má" (the whole family misses you, Mom), and the elder can send one heart back to everyone.
+- **In the morning call.** Út Thương mentions today's new photos ("Chị Lan gửi hình lên màn hình cho bà nè…") once, and they are then marked as relayed.
+
+**Why it belongs in a health product.** Social isolation and loneliness are established risk factors for mortality, cardiovascular disease and dementia (Holt-Lunstad et al. 2015; WHO Commission on Social Connection 2025). The touchpoint also keeps the elder engaged with the screen every day, and that daily engagement is what keeps the background health signals (§4–§5) flowing. Photos and presence are *micro-contacts*: they never count as a call or visit (the "nobody called for 3 days" nudge ignores them), and they never feed the light. Seeded photos are simulated drawings, not photos of real people. Code: `chaoba/server/together.py`, `web/components/today/TogetherCard.tsx`, `web/components/elder/IdleView.tsx`. Tests: `tests/server/test_together.py`.
+
+### 8.5 Community dashboard (health station, B2G)
 
 `chaoba/server/community.py`, family app `/community` (under "Thêm / More"), `GET /api/community/overview` with
 `X-Role: clinician | health_station` (anything else → 403). It shows a **simulated** ward, "Phường X, TP.HCM (mô
@@ -761,7 +772,7 @@ Recall (0–3 per call) is never shown as a percentage, because "37 % worse reca
 
 ### 10.9 Software verification
 
-- `.venv/bin/pytest -q` → **281 passed** on 28 Oct 2026 with Docker running (without Docker the 3 Postgres RLS checks in `tests/deploy`, which start a throwaway Postgres container, are skipped; the suite covers core metrics, control chart, explanations and blocklist, synthetic personas, DMAIC/evaluation, emergency spotter true/false positives including idioms and negation, orchestrator phases, consent/opt-out, scam/medication/diagnosis guardrails, Claude engine with a fake client, server API end-to-end including "no audio anywhere", family love notes and their relay in the call, and the optional Gemini Live voice engine against an offline fake session: tool-driven phases, hidden recall answer, streaming emergency interception, output correction, fallback, credentials, no audio persisted).
+- `.venv/bin/pytest -q` → **287 passed** on 4 Nov 2026 with Docker running (without Docker the 3 Postgres RLS checks in `tests/deploy`, which start a throwaway Postgres container, are skipped; the suite covers core metrics, control chart, explanations and blocklist, synthetic personas, DMAIC/evaluation, emergency spotter true/false positives including idioms and negation, orchestrator phases, consent/opt-out, scam/medication/diagnosis guardrails, Claude engine with a fake client, server API end-to-end including "no audio anywhere", family love notes and their relay in the call, and the optional Gemini Live voice engine against an offline fake session: tool-driven phases, hidden recall answer, streaming emergency interception, output correction, fallback, credentials, no audio persisted).
 - `web/scripts/voice-e2e.mjs` (muted Chromium, `?mute=1`, AudioContext blocked, API with `CHAOBA_GEMINI_FAKE=1`): `/screen` and `/call` full calls on Gemini Live reach the end and update the day, emergency path, WebSocket failure → browser voice on the same call (18 checks passed on 28 Oct 2026).
 - A full hands-free simulated web call was run in the browser (Playwright, headless Chromium): recall failed free and succeeded after the cue (score 1), 56 s voiced speech (valid), day 91 appended with today's date, light computed. A typed call was also run end to end (stored as live data; typed answers carry no speech timing, so it counts as a too-short call and its speech metrics are not shown).
 - Family app checked with Playwright on every route × 3 elders × VI/EN at 390×844 and 1280×800 (84 page loads, before and after the live calls): no console errors, no failed requests, no horizontal overflow. Offline (API stopped) the app falls back to the bundled fixtures.
@@ -1006,7 +1017,7 @@ Read this as: the < 100k VND target is reachable on the web, and on the phone on
 - **LiveKit/SIP adapter is untested.** `livekit-agents` is not installed and no SIP trunk or STT/TTS credentials exist. PSTN is the intended main channel but is not demonstrated.
 - **The Gemini Live voice engine (§7.4) is not verified against the live API.** It is tested only against an offline fake session (pytest) and in a muted browser; latency, Vietnamese tool-calling compliance, Southern-speech transcription, the voice's accent, echo behaviour and cost must be measured with `scripts/voice_bench.py` and human listeners before any use with elders. When it is on, call audio goes to Google (§11.5).
 - **Claude mode is not verified against the live API** in this environment. It is unit-tested with a fake client only, and API errors silently fall back to Haiku, then to the scripted engine. Check the `engine` field of the call record to know which engine actually answered.
-- **No authentication in the prototype.** Roles come from unauthenticated `X-Actor` / `X-Role` headers (the app's "Viewing as" switcher). Only the family endpoints (§8.2), the love-note cards (§8.3) and the community dashboard (§8.4) act on the role; the original read endpoints (today, timeline, alerts…) still return the same data to any family caller. RLS exists only in the production schema and has not been tested against a live Supabase instance.
+- **No authentication in the prototype.** Roles come from unauthenticated `X-Actor` / `X-Role` headers (the app's "Viewing as" switcher). Only the family endpoints (§8.2), the love-note cards (§8.3) and the community dashboard (§8.5) act on the role; the original read endpoints (today, timeline, alerts…) still return the same data to any family caller. RLS exists only in the production schema and has not been tested against a live Supabase instance.
 - Active call state is in memory (single process); a server restart drops calls in progress.
 - **Family coordination and the community dashboard are prototype-only.** Their tables are not yet in the Postgres schema / RLS; the "viewer" restriction is enforced by the API from an unauthenticated header (it can lower but not raise a stored role). The weekly synthesis covers only symptom words in the lexicon. The ward is simulated (60 generated elders + 3 personas), interventions in it are assigned at random, and its recovery table shows association, never effect.
 - Retention gaps: `call_analysis` keeps verbatim symptom quotes, and `memory_fact` keeps elder sentences, beyond the 7-day transcript window. Emergency and scam alerts quote the elder verbatim to the family. These need an explicit retention rule.
@@ -1029,7 +1040,7 @@ Read this as: the < 100k VND target is reachable on the web, and on the phone on
 
 ## 17. References
 
-Only sources named in the concept document are listed. Where we are not certain of a stable URL, the source is named without a link.
+Sources named in the concept document, plus the social-connection evidence cited in §8.4. Where we are not certain of a stable URL, the source is named without a link.
 
 1. General Statistics Office of Vietnam (GSO). Population statistics, 2024 (people aged 60+: 14.2 million). https://www.gso.gov.vn
 2. GSO and UNFPA Viet Nam. Population projection for Viet Nam 2024–2074 (20.9 million aged 60+ by 2034; aged society by 2034). https://vietnam.unfpa.org
@@ -1041,3 +1052,5 @@ Only sources named in the concept document are listed. Where we are not certain 
 8. Montreal Cognitive Assessment (MoCA). https://mocacognition.com
 9. Future Health Digital Innovation Challenge 2026 (Future Health, a Global Initiative by Abu Dhabi; with Microsoft, Inception, MBZUAI), hosted on Hack2skill.
 10. Product references (public product descriptions; verify): ElliQ (Intuition Robotics), Winterlight Labs, Sonde Health.
+11. Holt-Lunstad J, Smith TB, Baker M, Harris T, Stephenson D. Loneliness and social isolation as risk factors for mortality: a meta-analytic review. *Perspectives on Psychological Science* 2015;10(2):227–237.
+12. WHO Commission on Social Connection. *From loneliness to social connection: charting a path to healthier societies.* World Health Organization, 2025.

@@ -1,7 +1,19 @@
 # Chào Bà
 
-**A 4-minute morning call that notices when an older adult is changing, and tells the family in plain words.**
-Prototype for the Future Health Digital Innovation Challenge 2026.
+**The family's daily touchpoint on Mom's screen, with a quiet health light underneath that tells the children when she is changing and what to do.**
+Prototype for the Future Health Digital Innovation Challenge 2026 (focus area: Wellbeing).
+
+Vietnam has 14.2 million people aged 60+ (2024), and many live far from children who work in another city or abroad. Loneliness is itself a health risk ([TECHNICAL_DOCUMENTATION §8.4](docs/TECHNICAL_DOCUMENTATION.md#84-family-together-on-the-big-screen-cả-nhà-ghé-thăm)), and slow decline goes unnoticed until a crisis.
+
+| Mom's standing screen | The children's app |
+|---|---|
+| <img src="docs/screenshots/app-screen-en.png" width="300" alt="Elder's standing screen: big clock, family photos, one-tap call and talk buttons"> | <img src="docs/screenshots/app-today-tu-yellow-en-dark.png" width="300" alt="Family app: yellow 'Keep an eye' light with a plain-English explanation"> |
+
+- **Together, with no effort for her.** Each child drops by in ten seconds a day: a photo of their lunch, a love card, a question asking for her advice. Mom only looks, or taps once. When everyone has dropped by, the screen says "Cả nhà nhớ má" (the whole family misses you).
+- **A short daily chat that notices change.** Út Thương, a warm AI companion, chats with her each morning. From text and pause timings only (no audio is stored), it compares her speech, recall, symptoms and mood with **her own usual**. It shows a green / yellow / red light with a plain explanation and a next step for the family. It does not diagnose.
+- **Action, then follow-up.** A shared family plan (who calls, who takes her to the doctor), a DMAIC care loop that checks whether the action worked, and a board for the commune health station.
+
+### How the health light works
 
 Út Thương, a warm Southern-Vietnamese AI companion, calls an older adult each morning over the web (prototype) or an ordinary phone (production path). From the conversation's **text and pause timings only (no audio is stored)** it tracks speech rate, pauses, filler words, vocabulary diversity, recall of yesterday's story, and self-reported symptoms and mood. After a 21-day **personal baseline**, an EWMA control chart turns these into a daily **green / yellow / red** light with a plain explanation for the adult children. A DMAIC care loop then checks whether the family's or doctor's action worked. Chào Bà reports **change relative to the person's own baseline**. It does not diagnose.
 

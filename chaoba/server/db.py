@@ -488,3 +488,20 @@ CREATE INDEX IF NOT EXISTS ix_kudos_elder ON kudos(elder_id, date);
 """
 DDL += KUDOS_DDL
 ELDER_TABLES += ("kudos",)
+
+
+# ---------------------------------------------------------------- family together on the big screen (additive)
+# "Cả nhà ghé thăm": photos the adult children send to the elder's standing screen, and the elder's one-tap heart back
+# to the whole family on a day every child has dropped by. Logic: chaoba/server/together.py. The image is stored as a
+# small data URL (resized in the browser before upload); like kudos, a photo is a micro-contact, never a call.
+TOGETHER_DDL = """
+CREATE TABLE IF NOT EXISTS family_photo (
+  id INTEGER PRIMARY KEY AUTOINCREMENT, elder_id TEXT NOT NULL, day INTEGER, date TEXT NOT NULL,
+  sender_id TEXT, sender_name TEXT NOT NULL, caption TEXT, image TEXT NOT NULL, heart_at TEXT,
+  relayed_at TEXT, simulated INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS ix_photo_elder ON family_photo(elder_id, date);
+CREATE TABLE IF NOT EXISTS family_moment (
+  elder_id TEXT NOT NULL, date TEXT NOT NULL, heart_at TEXT, PRIMARY KEY (elder_id, date));
+"""
+DDL += TOGETHER_DDL
+ELDER_TABLES += ("family_photo", "family_moment")

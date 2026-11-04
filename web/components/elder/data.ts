@@ -146,3 +146,49 @@ export async function fetchKudosInbox(apiBase: string, elderId: string): Promise
     return null;
   }
 }
+
+/** "Cả nhà ghé thăm" (together.py): who dropped by today, the family photo wall, the family moment. */
+export interface TogetherMember {
+  member_id: string;
+  name: string;
+  relation: string;
+  visited: boolean;
+  via: string[];
+  first_time: string | null;
+}
+export interface FamilyPhoto {
+  id: number;
+  sender_id: string | null;
+  sender_name: string;
+  caption: string;
+  image: string;
+  hearted: boolean;
+  created_at: string;
+}
+export interface Together {
+  date: string;
+  members: TogetherMember[];
+  visited_count: number;
+  total: number;
+  all_here: boolean;
+  line_vi: string;
+  line_en: string;
+  screen_vi: string;
+  screen_en: string;
+  moment: { hearted: boolean; title_vi: string; title_en: string; body_vi: string; body_en: string };
+  companion: { line_vi: string; line_en: string } | null;
+  photos: FamilyPhoto[];
+}
+
+export async function fetchTogether(apiBase: string, elderId: string): Promise<Together | null> {
+  try {
+    const r = await fetch(`${apiBase}/api/elders/${encodeURIComponent(elderId)}/together`, {
+      headers: elderHeaders(elderId),
+      cache: "no-store",
+      signal: AbortSignal.timeout(3500),
+    });
+    return r.ok ? ((await r.json()) as Together) : null;
+  } catch {
+    return null;
+  }
+}
