@@ -272,9 +272,12 @@ export function EmergencyView({
   familyAgent,
   onClose,
   title,
+  familyName,
 }: {
   reply: string;
   familyAgent: string | null;
+  /** Plain name for the English line ("Lan has been alerted", not "Chị Lan"). */
+  familyName?: string;
   onClose: () => void;
   /** Overrides the "family alerted" title (e.g. the Help button while sending or offline). */
   title?: string;
@@ -283,7 +286,7 @@ export function EmergencyView({
   return (
     <div className={s.emergency} role="alertdialog" aria-labelledby="em-title" data-testid="emergency">
       <p id="em-title" className={s.emTitle}>
-        {title ?? (familyAgent ? t(`Đã báo cho ${familyAgent}`, `${cap(familyAgent)} has been alerted`) : t("Đã báo cho gia đình", "Family alerted"))}
+        {title ?? (familyAgent ? t(`Đã báo cho ${familyAgent}`, `${familyName ?? cap(familyAgent)} has been alerted`) : t("Đã báo cho gia đình", "Family alerted"))}
       </p>
       <p className={s.emBody}>{t("Nếu thấy nguy cấp, hãy gọi 115 ngay.", "If this is urgent, call 115 now.")}</p>
       <a className={s.btn115} href="tel:115" data-testid="call-115">

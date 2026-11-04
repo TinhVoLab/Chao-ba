@@ -43,6 +43,32 @@ const ACTION: Record<string, { vi: string; en: string }> = {
   withdraw_consent: { vi: "Rút lại một đồng ý", en: "Withdrew a consent" },
   grant_consent: { vi: "Bật lại một đồng ý", en: "Re-enabled a consent" },
   purge_transcripts: { vi: "Tự xoá lời nói quá hạn", en: "Auto-deleted expired transcripts" },
+  read_together: { vi: "Xem ai đã ghé hôm nay", en: "Viewed who dropped by" },
+  read_connection: { vi: "Xem kết nối gia đình", en: "Viewed family connection" },
+  read_activities: { vi: "Xem hoạt động phòng ngừa", en: "Viewed activities" },
+  read_memories: { vi: "Xem sổ ký ức", en: "Viewed the memory book" },
+  read_memories_export: { vi: "Tải sổ ký ức", en: "Exported the memory book" },
+  read_family: { vi: "Xem trang gia đình", en: "Viewed the family page" },
+  read_family_timeline: { vi: "Xem dòng thời gian gia đình", en: "Viewed the family timeline" },
+  read_family_synthesis: { vi: "Xem tóm tắt tuần", en: "Viewed the weekly summary" },
+  read_access_summary: { vi: "Xem ai đã xem", en: "Viewed who looked" },
+  read_rota: { vi: "Xem lịch gọi", en: "Viewed the call rota" },
+  read_tasks: { vi: "Xem việc chăm sóc", en: "Viewed care tasks" },
+  read_suggestions: { vi: "Xem gợi ý", en: "Viewed suggestions" },
+  read_kudos_catalog: { vi: "Mở thiệp yêu thương", en: "Opened love cards" },
+  read_screen: { vi: "Màn hình của má cập nhật", en: "Mom's screen refreshed" },
+  read_medication: { vi: "Xem lịch uống thuốc", en: "Viewed medication log" },
+  read_mood_checkin: { vi: "Xem tâm trạng tự chọn", en: "Viewed mood check-ins" },
+  read_game_plays: { vi: "Xem trò chơi", en: "Viewed games played" },
+  read_community: { vi: "Trạm y tế xem bảng phường", en: "Health station viewed the ward board" },
+  review_alert: { vi: "Trạm y tế xem xét cảnh báo đỏ", en: "Health station reviewed a red alert" },
+  help_button: { vi: "Bấm nút Cần giúp", en: "Pressed the Help button" },
+  send_kudos: { vi: "Gửi thiệp yêu thương", en: "Sent a love card" },
+  send_photo: { vi: "Gửi ảnh lên màn hình", en: "Sent a photo to the screen" },
+  share_memory: { vi: "Chia sẻ một trang ký ức", en: "Shared a memory page" },
+  log_medication: { vi: "Ghi đã uống thuốc", en: "Logged medication" },
+  mood_checkin: { vi: "Chọn tâm trạng", en: "Picked a mood" },
+  game_play: { vi: "Chơi trò chơi", en: "Played a game" },
 };
 
 const RETENTION_TEXT: Record<string, { vi: string; en: string }> = {
@@ -102,7 +128,9 @@ function accessView(a: RawAccess, family: FamilyMember[], elderName: string) {
   const self = kind === "elder" || a.role === "elder_self";
   const who = member?.name ?? (self ? elderName : kind === "family" ? "Gia đình / Family" : kind === "system" ? "Hệ thống / System" : actor);
   const roleLabel = self ? ROLE.elder_self : ROLE[member ? role : kind] ?? (a.role ? ROLE[a.role] : undefined);
-  const act = ACTION[a.action] ?? { vi: String(a.action_vi ?? a.action), en: String(a.action_en ?? a.action) };
+  // Unknown actions: never show a raw code ("read_x") to a family.
+  const raw = String(a.action ?? "").replace(/_/g, " ");
+  const act = ACTION[a.action] ?? { vi: String(a.action_vi ?? raw), en: String(a.action_en ?? raw) };
   return { who, roleLabel, act, at: a.last_ts ?? a.ts ?? a.at ?? "", n: typeof a.count === "number" ? a.count : 1 };
 }
 

@@ -380,6 +380,7 @@ export function StandingScreen({
             reply={emergency.trim()}
             title={emergencyTitle}
             familyAgent={callee ? agentCalls(callee) : null}
+            familyName={callee?.name}
             onClose={() => {
               setEmergency(null);
               setEmergencyTitle(undefined);
