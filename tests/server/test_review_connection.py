@@ -75,3 +75,15 @@ def test_connection_respects_sharing_pause(client):
     client.post("/api/elders/hanh/consents/family_sharing/withdraw", json={"confirmed_by_elder_or_proxy": True})
     c = client.get("/api/elders/hanh/connection", headers=FAMILY).json()
     assert c["sharing_paused"] and c["weeks"] == []
+
+
+def test_help_button_raises_one_red_alert_for_review(client):
+    ELDER = {"X-Role": "elder_self", "X-Actor": "elder:hanh"}
+    r = client.post("/api/elders/hanh/help", json={}, headers=ELDER)
+    assert r.status_code == 200 and not r.json()["duplicate"]
+    again = client.post("/api/elders/hanh/help", json={"pressed_at": "not a date"}, headers=ELDER).json()
+    assert again["duplicate"] and again["alert_id"] == r.json()["alert_id"]
+    a = next(x for x in client.get("/api/elders/hanh/alerts", headers=FAMILY).json() if x["type"] == "help_button")
+    assert a["severity"] == "red" and a["needs_review"] and "Cần giúp" in a["explanation_vi"]
+    client.post(f"/api/elders/hanh/alerts/{a['id']}/ack", headers=FAMILY)
+    assert not client.post("/api/elders/hanh/help", headers=ELDER).json()["duplicate"]   # seen -> a new press is new

@@ -271,16 +271,19 @@ export function EmergencyView({
   reply,
   familyAgent,
   onClose,
+  title,
 }: {
   reply: string;
   familyAgent: string | null;
   onClose: () => void;
+  /** Overrides the "family alerted" title (e.g. the Help button while sending or offline). */
+  title?: string;
 }) {
   const t = useT();
   return (
     <div className={s.emergency} role="alertdialog" aria-labelledby="em-title" data-testid="emergency">
       <p id="em-title" className={s.emTitle}>
-        {familyAgent ? t(`Đã báo cho ${familyAgent}`, `${cap(familyAgent)} has been alerted`) : t("Đã báo cho gia đình", "Family alerted")}
+        {title ?? (familyAgent ? t(`Đã báo cho ${familyAgent}`, `${cap(familyAgent)} has been alerted`) : t("Đã báo cho gia đình", "Family alerted"))}
       </p>
       <p className={s.emBody}>{t("Nếu thấy nguy cấp, hãy gọi 115 ngay.", "If this is urgent, call 115 now.")}</p>
       <a className={s.btn115} href="tel:115" data-testid="call-115">
@@ -294,6 +297,48 @@ export function EmergencyView({
       )}
       <button type="button" className={s.btnEmClose} onClick={onClose}>
         {t("Đóng", "Close")}
+      </button>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ help button: confirm with a countdown */
+export const HELP_COUNTDOWN = 10;
+
+/** "Cần giúp": sends on its own after the countdown, so a person who cannot tap again is still heard;
+ * one tap on "bấm nhầm" cancels a stray press. */
+export function HelpConfirmView({ elderLabel, onSend, onCancel }: { elderLabel: string; onSend: () => void; onCancel: () => void }) {
+  const t = useT();
+  const [left, setLeft] = useState(HELP_COUNTDOWN);
+  const sent = useRef(false);
+  useEffect(() => {
+    const id = setInterval(() => setLeft((n) => Math.max(0, n - 1)), 1000);
+    return () => clearInterval(id);
+  }, []);
+  useEffect(() => {
+    if (left === 0 && !sent.current) {
+      sent.current = true;
+      onSend();
+    }
+  }, [left, onSend]);
+  const send = () => {
+    if (sent.current) return;
+    sent.current = true;
+    onSend();
+  };
+  return (
+    <div className={s.emergency} role="alertdialog" aria-labelledby="help-title" aria-describedby="help-body" data-testid="help-confirm">
+      <p id="help-title" className={s.emTitle}>
+        {t(`${cap(elderLabel)} cần giúp phải không?`, "Do you need help?")}
+      </p>
+      <p id="help-body" className={s.emBody} aria-live="polite">
+        {t(`Út Thương sẽ báo cả nhà sau ${left} giây.`, `Út Thương will alert the family in ${left} seconds.`)}
+      </p>
+      <button type="button" className={s.btn115} onClick={send} data-testid="help-send">
+        {t("Báo cả nhà ngay", "Alert the family now")}
+      </button>
+      <button type="button" className={s.btnEmClose} onClick={onCancel} data-testid="help-cancel">
+        {t("Không, bấm nhầm", "No, pressed by mistake")}
       </button>
     </div>
   );

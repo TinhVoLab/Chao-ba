@@ -11,6 +11,12 @@ screen); nothing here is scored, diagnostic, or fed into the control chart.
   GET  /api/elders/{id}/mood_checkin?days=14
   POST /api/elders/{id}/game_plays      {game: "ca_dao"|"family_names", item_id, correct, choice?}
   GET  /api/elders/{id}/game_plays?days=14
+  POST /api/elders/{id}/help            {pressed_at?}  the "Cần giúp / Help" button: a red alert for the family
+
+The Help button is the one exception to "nothing here is scored": it raises a red ``help_button`` alert (needs a
+human review like every red alert, care_review.py). The screen asks for confirmation with a 10-second countdown that
+sends unless the elder taps "bấm nhầm", so a person who cannot tap again is still heard. Presses within
+``HELP_DEDUP_MIN`` minutes of an open help alert return that alert instead of raising another.
 
 The tables live in this module (created on first use, same SQLite file) so the shared schema in db.py is untouched.
 POST /api/demo/reset also clears them (a middleware below), so a demo reset leaves no screen rows behind.
@@ -50,6 +56,13 @@ class MedLogIn(BaseModel):
     status: Literal["taken", "not_yet"]
     medication: str | None = Field(default=None, max_length=120)
     time: str | None = Field(default=None, max_length=20)   # the scheduled time from the profile, e.g. "07:00"
+
+
+HELP_DEDUP_MIN = 10
+
+
+class HelpIn(BaseModel):
+    pressed_at: str | None = Field(default=None, max_length=40)   # client time (an offline press is sent later)
 
 
 class MoodIn(BaseModel):
@@ -207,6 +220,33 @@ def register(app: FastAPI) -> None:
                 "note_en": "Self-report from the elder's screen; not a clinical measure.",
                 "note_vi": "Người cao tuổi tự chọn trên màn hình; không phải đánh giá y khoa.",
                 "simulated": s.is_simulated(elder_id)}
+
+    @app.post("/api/elders/{elder_id}/help")
+    def press_help(request: Request, elder_id: str, body: HelpIn | None = None):
+        from datetime import datetime, timedelta, timezone
+        s = guard(request, elder_id, "help_button")
+        prof = s.elder_or_none(elder_id)
+        day, date = s.current_day(elder_id)
+        now = datetime.now(timezone.utc)
+        try:
+            pressed = datetime.fromisoformat((body.pressed_at if body else None) or "")
+            pressed = pressed if pressed.tzinfo and pressed <= now + timedelta(minutes=1) else now
+        except ValueError:
+            pressed = now
+        since = (now - timedelta(minutes=HELP_DEDUP_MIN)).isoformat(timespec="seconds")
+        dup = s.store.one("SELECT id FROM alert WHERE elder_id=? AND type='help_button' AND created_at>=? "
+                          "AND acknowledged=0 ORDER BY id DESC LIMIT 1", (elder_id, since))
+        if dup:
+            return {"ok": True, "alert_id": dup["id"], "duplicate": True}
+        hm = pressed.astimezone().strftime("%H:%M")
+        name = prof.get("display_name", "")
+        h = prof.get("honorific", "bà")
+        vi = (f"{name[:1].upper() + name[1:]} bấm nút “Cần giúp” trên màn hình lúc {hm}. Xin gia đình gọi cho {h} "
+              f"ngay. Nếu không ai liên lạc được, nhờ hàng xóm hoặc gọi 115.")
+        en = (f"{prof.get('name_en', name)} pressed the Help button on the screen at {hm}. Please call now. If nobody "
+              f"can reach them, ask a neighbour or call 115.")
+        aid = s.store.add_alert(elder_id, day, date, "help_button", "red", vi, en)
+        return {"ok": True, "alert_id": aid, "duplicate": False}
 
     @app.post("/api/elders/{elder_id}/game_plays")
     def add_play(request: Request, elder_id: str, body: GamePlayIn):

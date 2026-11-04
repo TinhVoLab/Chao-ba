@@ -26,6 +26,8 @@ const TYPE: Record<string, { vi: string; en: string }> = {
   light_red: { vi: "Đèn chuyển đỏ", en: "Light turned red" },
   light_yellow: { vi: "Đèn chuyển vàng", en: "Light turned yellow" },
   emergency: { vi: "Có thể khẩn cấp", en: "Possible emergency" },
+  help_button: { vi: "Bấm nút Cần giúp", en: "Pressed the Help button" },
+  health_concern: { vi: "Kể chuyện sức khoẻ cần hỏi thăm", en: "Health concern to check on" },
   opt_out: { vi: "Người thân muốn tạm dừng", en: "Paused by your parent" },
   scam_topic: { vi: "Nhắc chuyện tiền, mã OTP", en: "Mentioned money or OTP codes" },
 };

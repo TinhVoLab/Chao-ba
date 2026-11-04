@@ -9,7 +9,7 @@ import type { TurnReply } from "@/lib/voice/callSession";
 import { stopSpeech } from "@/lib/voice/speech";
 import { IdleView } from "./elder/IdleView";
 import { TalkView, type TalkEnd } from "./elder/TalkView";
-import { EmergencyView, GameView, MoodView, NoticeView, VideoCallView } from "./elder/Panels";
+import { EmergencyView, GameView, HelpConfirmView, MoodView, NoticeView, VideoCallView } from "./elder/Panels";
 import { KudosCard, type KudosAnswer } from "./elder/KudosCard";
 import {
   fetchKudosInbox,
@@ -38,7 +38,7 @@ export interface ScreenFlags {
   mute?: boolean; // ?mute=1 tests: no sound at all
 }
 
-type Mode = "idle" | "talk" | "video" | "mood" | "game" | "notice";
+type Mode = "idle" | "talk" | "video" | "mood" | "game" | "notice" | "help";
 
 function medsFromProfile(p: ElderProfile, local: Record<string, MedToday["status"]> | null): MedToday[] {
   return (p.medications ?? []).map((m) => ({
@@ -78,6 +78,7 @@ export function StandingScreen({
   const [meds, setMeds] = useState<MedToday[]>(() => medsFromProfile(profile, null));
   const [mood, setMood] = useState<Mood | null>(null);
   const [emergency, setEmergency] = useState<string | null>(null);
+  const [emergencyTitle, setEmergencyTitle] = useState<string | undefined>(undefined);
   const [notice, setNotice] = useState<{ title: string; body?: string } | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [gameSeed, setGameSeed] = useState(0);
@@ -215,6 +216,24 @@ export function StandingScreen({
     await postElder(apiBase, elderId, "mood_checkin", { mood: m });
   }
 
+  async function onHelpSend() {
+    setMode("idle");
+    setEmergencyTitle(L("Đang báo cả nhà…", "Alerting the family…"));
+    setEmergency(" ");
+    const r = await postElder(apiBase, elderId, "help", { pressed_at: new Date().toISOString() });
+    if (r === "saved") {
+      setEmergencyTitle(undefined);
+      setEmergency(L(`Út Thương đã báo cả nhà rồi. ${cap(elderLabel)} ngồi yên chờ nha, sẽ có người gọi liền.`, "The family has been alerted. Stay where you are; someone will call soon."));
+    } else {
+      setEmergencyTitle(L("Chưa báo được cả nhà", "Could not alert the family"));
+      setEmergency(
+        r === "queued"
+          ? L("Đang mất mạng; Út Thương sẽ tự gửi khi có mạng lại. Hãy gọi 115 hoặc nhờ hàng xóm.", "No connection; it will send when the connection is back. Call 115 or ask a neighbour.")
+          : L("Hãy gọi 115 hoặc nhờ hàng xóm.", "Call 115 or ask a neighbour."),
+      );
+    }
+  }
+
   function onReply(r: TurnReply) {
     if (r.emergency || r.tier === "acute") setEmergency(r.reply_text || " ");
   }
@@ -282,6 +301,7 @@ export function StandingScreen({
             onTalk={() => setMode("talk")}
             onVideo={() => setMode("video")}
             onMood={() => setMode("mood")}
+            onHelp={() => setMode("help")}
             onGame={() => {
               setGameSeed((x) => x + 1 + new Date().getDate());
               setMode("game");
@@ -353,9 +373,18 @@ export function StandingScreen({
             onHome={home}
           />
         )}
+        {mode === "help" && <HelpConfirmView elderLabel={elderLabel} onSend={onHelpSend} onCancel={home} />}
         {mode === "notice" && notice && <NoticeView title={notice.title} body={notice.body} onHome={home} auto={20_000} />}
         {emergency !== null && (
-          <EmergencyView reply={emergency.trim()} familyAgent={callee ? agentCalls(callee) : null} onClose={() => setEmergency(null)} />
+          <EmergencyView
+            reply={emergency.trim()}
+            title={emergencyTitle}
+            familyAgent={callee ? agentCalls(callee) : null}
+            onClose={() => {
+              setEmergency(null);
+              setEmergencyTitle(undefined);
+            }}
+          />
         )}
         <p className={s.footer}>
           {L("Dữ liệu mô phỏng", "Simulated data")} · {L("Không lưu ghi âm", "No audio stored")}

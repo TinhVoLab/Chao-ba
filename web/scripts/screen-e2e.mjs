@@ -188,6 +188,13 @@ await fetch(`${API}/api/demo/reset?elder=hanh`, { method: "POST" });
   const c = await api("/api/elders/hanh/contacts");
   check(c.last && c.last.member_id === "lan" && c.last.date === today, "video: family contact logged (Lan, today)");
 
+  // ---------------------------------------------------------------- 4b. help button: a stray press is cancelled
+  await page.click('[data-testid="btn-help"]');
+  await page.waitForSelector('[data-testid="help-confirm"]', { timeout: 5000 });
+  await page.click('[data-testid="help-cancel"]');
+  const helpAlerts = (await api("/api/elders/hanh/alerts")).filter((a) => a.type === "help_button");
+  check(await page.isVisible('[data-testid="btn-help"]') && helpAlerts.length === 0, "help: cancel returns home and sends nothing");
+
   // ---------------------------------------------------------------- 5. medication
   // The Yes / Not yet buttons appear only from 30 minutes before the dose; earlier the row just says "Chưa tới giờ".
   if (await page.isVisible("text=Đã uống thuốc")) {

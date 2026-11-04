@@ -321,6 +321,37 @@
   font-weight: 700;
   color: var(--marigold);
 }
+.es-topSide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(28 * var(--k));
+  flex-shrink: 0;
+}
+/* "Cần giúp": always visible, solid red (white text ≈ 5:1), far from Talk / Call at the bottom. */
+.es-btnHelp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(14 * var(--k));
+  min-height: calc(112 * var(--k));
+  min-width: calc(200 * var(--k));
+  padding: 0 calc(30 * var(--k));
+  border-radius: calc(56 * var(--k));
+  border: none;
+  background: var(--end);
+  color: var(--end-ink);
+  font-size: calc(44 * var(--k));
+  font-weight: 800;
+  white-space: nowrap;
+}
+.es-btnHelp svg {
+  width: calc(48 * var(--k));
+  height: calc(48 * var(--k));
+}
+.es-btnHelp:active {
+  background: var(--em-bg);
+}
 .es-avatarBtn {
   display: flex;
   flex-direction: column;

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { Check, Heart, MessageCircleHeart, Mic, Phone, Pill, Puzzle, Smile } from "lucide-react";
+import { Check, Heart, LifeBuoy, MessageCircleHeart, Mic, Phone, Pill, Puzzle, Smile } from "lucide-react";
 import type { ElderProfile, FamilyMember } from "@/lib/types";
 import { Avatar } from "./Avatar";
 import { Face } from "./Faces";
@@ -48,6 +48,7 @@ export interface IdleProps {
   onVideo: () => void;
   onMood: () => void;
   onGame: () => void;
+  onHelp: () => void;
 }
 
 export function IdleView(p: IdleProps) {
@@ -99,10 +100,17 @@ export function IdleView(p: IdleProps) {
           </p>
           <p className={s.date}>{date}</p>
         </div>
-        <button type="button" className={s.avatarBtn} onClick={p.onTalk} aria-label={t("Nói chuyện với Út Thương", "Talk to Út Thương")}>
-          <Avatar state="idle" />
-          <span>Út Thương</span>
-        </button>
+        <div className={s.topSide}>
+          <button type="button" className={s.avatarBtn} onClick={p.onTalk} aria-label={t("Nói chuyện với Út Thương", "Talk to Út Thương")}>
+            <Avatar state="idle" />
+            <span>Út Thương</span>
+          </button>
+          {/* Always visible, away from the everyday buttons at the bottom; a confirmation with a countdown follows. */}
+          <button type="button" className={s.btnHelp} onClick={p.onHelp} data-testid="btn-help">
+            <LifeBuoy aria-hidden />
+            <span>{t("Cần giúp", "Help")}</span>
+          </button>
+        </div>
       </header>
       <p className={s.greet}>{greet}</p>
 

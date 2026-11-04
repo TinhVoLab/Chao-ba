@@ -16,7 +16,7 @@ Chào Bà is a **wellbeing and family-communication service** for older adults l
 
 - **Diagnosis.** Chào Bà does not diagnose, screen for or rule out any disease, including dementia, depression, stroke or heart disease. A green light does not mean "healthy". A red light does not mean "ill".
 - **Treatment or medication advice.** The AI companion refuses to change, stop or dose medication and says to ask a doctor or pharmacist (`chaoba/agent/guardrails.py`). Family free text is checked for diagnoses and medication advice.
-- **Emergency monitoring.** Chào Bà is not an alarm system and does not watch the person continuously. If the parent mentions an emergency during a chat, the companion tells them to call **115** and raises a red alert for the family (`chaoba/agent/emergency.py`). That is a best-effort safety net, not a response service.
+- **Emergency monitoring.** Chào Bà is not an alarm system and does not watch the person continuously. If the parent mentions an emergency during a chat, the companion tells them to call **115** and raises a red alert for the family (`chaoba/agent/emergency.py`). The standing screen also has an always-visible **"Cần giúp / Help"** button: a confirmation screen counts down 10 seconds and then alerts the family unless the parent taps "Không, bấm nhầm" (pressed by mistake), and shows a **Gọi 115** button. These are best-effort safety nets, not a response service: nobody is guaranteed to be on duty, and an offline screen sends the alert only when the connection returns.
 - **Replacing contact with people.** The service exists to bring family and the health station closer, not to stand in for them.
 
 ## Who decides
