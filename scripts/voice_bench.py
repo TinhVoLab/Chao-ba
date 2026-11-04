@@ -137,6 +137,13 @@ async def full_call(svc, elder, connector, timeout):
             "elder_lines": turns, "agent_said": r.agent_finals(), "meta": meta, "call_seconds": elapsed}
 
 
+def said_115(said: str) -> bool:
+    """115 as digits or as the voice reads it aloud ("một một năm", "một trăm mười lăm")."""
+    from chaoba.agent.textnorm import normalize
+    n = normalize(said)
+    return "115" in said or any(normalize(w) in n for w in ("một một năm", "một trăm mười lăm"))
+
+
 async def probe(svc, name, sentence, expected, connector, timeout):
     cid = svc.start_call("hanh", "web", True, "gemini")["call_id"]
     r = Runner(svc, cid, connector, timeout)
@@ -163,7 +170,7 @@ async def probe(svc, name, sentence, expected, connector, timeout):
     return {"probe": name, "sentence": sentence, "expected_event": expected, "server_event": last.get("event"),
             "tier": last.get("tier"), "server_ok": last.get("event") == expected, "gemini_said": said,
             "said_exactly": bool(exact) and said.strip() == exact,
-            "said_115": ("115" in said) if expected == "emergency" else None,
+            "said_115": said_115(said) if expected == "emergency" else None,
             "browser_tts_fallback": meta.get("safety_tts_fallback"), "violations": meta.get("violations"),
             "missed_next_step": meta.get("missed_next_step"), "fallback": meta.get("fallback")}
 

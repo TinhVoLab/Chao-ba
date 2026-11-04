@@ -78,7 +78,7 @@ All optional; the prototype runs with none of them.
 | `CHAOBA_GEMINI_FAKE` | – | `1` = offline fake Gemini session (tests, muted demo); `fail` = always fails (fallback demo) |
 | `NEXT_PUBLIC_API_BASE`, `CHAOBA_API_INTERNAL` | `http://localhost:8000` | API address for the browser (build time) and for the Next server |
 
-**Optional Gemini Live voice engine** (`?engine=gemini` on `/call` and `/screen`): full-duplex Gemini voice through a server-side WebSocket proxy, with our orchestrator and safety checks still in charge; call audio then goes through our server to Google and is never stored. Tested only against an offline fake; see [docs/DEMO_GUIDE.md](docs/DEMO_GUIDE.md) and TECHNICAL_DOCUMENTATION.md §7.4. Go/no-go benchmark: `scripts/voice_bench.py`.
+**Optional Gemini Live voice engine** (`?engine=gemini` on `/call` and `/screen`): full-duplex Gemini voice through a server-side WebSocket proxy, with our orchestrator and safety checks still in charge; call audio then goes through our server to Google and is never stored. First live run on 4 Nov 2026 (`scripts/voice_bench.py`): the server caught 8 of 9 safety probes and Gemini told the elder to call 115 in 3 of 3 acute probes, but p90 latency was 13 s and the model skipped its control tool on 6 of 14 turns, so it is **no-go for now** and the browser voice stays the default (TECHNICAL_DOCUMENTATION.md §7.4).
 
 ## Tests and data
 
