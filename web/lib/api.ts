@@ -9,6 +9,7 @@ import { serverViewerId } from "./viewer-server";
 import type {
   Alert,
   Community,
+  Connection,
   Dmaic,
   ElderProfile,
   ElderSummary,
@@ -60,6 +61,9 @@ export const getAlerts = async (id: string): Promise<Loaded<Alert[]>> => {
   return { ...r, data: normAlerts(r.data) };
 };
 export const getDmaic = (id: string) => get<Dmaic>(`/api/elders/${e(id)}/dmaic`, () => fixtureFor(id).dmaic, id);
+/** Weekly family connection; null offline (the card is then hidden). */
+export const getConnection = (id: string, weeks = 12) =>
+  get<Connection | null>(`/api/elders/${e(id)}/connection?weeks=${weeks}`, () => null, id);
 export const getNotes = (id: string) => get<Note[]>(`/api/elders/${e(id)}/notes`, () => fixtureFor(id).notes, id);
 export const getPrivacy = (id: string) => get<Privacy>(`/api/elders/${e(id)}/privacy`, () => fixtureFor(id).privacy, id);
 

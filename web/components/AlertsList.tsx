@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Check, CheckCheck, Info, OctagonAlert, TriangleAlert } from "lucide-react";
+import { Check, CheckCheck, Hourglass, Info, OctagonAlert, Stethoscope, TriangleAlert } from "lucide-react";
 import type { Alert } from "@/lib/types";
 import { SENT_EVENT, postWrite, useOutbox, type PendingWrite } from "@/lib/outbox";
 import { NotSaved, SaveRefused } from "./SaveState";
@@ -124,6 +124,7 @@ export function AlertsList({ elderId, initial }: { elderId: string; initial: Ale
               <p className={`mt-2 max-w-[65ch] ${a.acknowledged ? "text-ink-2" : "text-ink"}`}>
                 <T vi={a.explanation_vi} en={a.explanation_en} />
               </p>
+              <ReviewLine a={a} />
               <div className="mt-3">
                 {!a.acknowledged && queued.has(String(a.id)) ? (
                   <NotSaved />
@@ -149,5 +150,37 @@ export function AlertsList({ elderId, initial }: { elderId: string; initial: Ale
         })}
       </ol>
     </div>
+  );
+}
+
+/** Red alerts: a person with a clinical role reviews them (care_review.py). The app never decides on care by itself. */
+function ReviewLine({ a }: { a: Alert }) {
+  if (a.review) {
+    const d = longDate(a.review.at?.slice(0, 10) ?? "");
+    return (
+      <div className="mt-3 flex items-start gap-2 rounded-xl bg-surface-2 px-3 py-2.5 text-[0.9375rem]" data-testid="alert-review">
+        <Stethoscope size={18} aria-hidden className="mt-0.5 shrink-0 text-ink-2" />
+        <p>
+          <span className="font-semibold">
+            <T vi={`${a.review.by} đã xem: ${a.review.outcome_vi}`} en={`Reviewed by ${a.review.by}: ${a.review.outcome_en}`} />
+          </span>
+          <span className="text-ink-3 tnum">
+            {" · "}
+            <T vi={d.vi} en={d.en} />
+          </span>
+          {a.review.note && <span className="block text-ink-2">“{a.review.note}”</span>}
+        </p>
+      </div>
+    );
+  }
+  if (!a.needs_review) return null;
+  return (
+    <p className="mt-3 flex items-center gap-2 text-[0.9375rem] text-ink-2" data-testid="alert-review-pending">
+      <Hourglass size={17} aria-hidden className="shrink-0" />
+      <T
+        vi="Đang chờ trạm y tế / nhân viên y tế xem (nếu người thân đã đồng ý chia sẻ). Khẩn cấp: gọi 115."
+        en="Waiting for the health station / clinical staff to look (if your parent agreed to share). Emergency: call 115."
+      />
+    </p>
   );
 }

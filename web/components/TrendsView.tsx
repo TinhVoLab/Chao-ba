@@ -304,7 +304,7 @@ function Legend() {
       </li>
       <li className="flex items-center gap-1.5">
         <span className="inline-block h-3 w-5 rounded-sm" style={{ background: "var(--band)" }} aria-hidden />
-        <T vi="Khoảng thường ngày (nền ± 1 độ lệch)" en="Usual range (baseline ± 1 SD)" />
+        <T vi="Khoảng thường ngày của chính người thân" en="Their own usual range" />
       </li>
       <li className="flex items-center gap-1.5">
         <span className="inline-flex h-3 w-5 overflow-hidden rounded-sm" aria-hidden>

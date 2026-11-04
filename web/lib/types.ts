@@ -173,6 +173,55 @@ export interface Alert {
   explanation_vi: string;
   explanation_en: string;
   acknowledged: boolean;
+  /** Red alerts wait for a clinician / health-station review (care_review.py); null until reviewed. */
+  review?: AlertReview | null;
+  needs_review?: boolean;
+}
+
+export interface AlertReview {
+  outcome: string;
+  outcome_vi: string;
+  outcome_en: string;
+  note: string;
+  by: string;
+  role: string;
+  at: string;
+  day: number | null;
+}
+
+export interface ReviewRow {
+  elder_ref: string;
+  label: string;
+  alert_id: number;
+  day: number;
+  date: string;
+  type: string;
+  needs_review: boolean;
+  review: AlertReview | null;
+}
+
+/** Weekly family-connection series (connection.py). Never part of the light. */
+export interface ConnectionWeek {
+  from: string;
+  to: string;
+  calls_visits: number;
+  micro: number;
+  members: number;
+  days_in_touch: number;
+  elder_replies: number;
+}
+export interface Connection {
+  weeks: ConnectionWeek[];
+  summary: {
+    last_14_days: Omit<ConnectionWeek, "from" | "to" | "members">;
+    previous_14_days: Omit<ConnectionWeek, "from" | "to" | "members"> | null;
+    circle_size: number;
+  } | null;
+  in_light?: false;
+  note_vi?: string;
+  note_en?: string;
+  sharing_paused: boolean;
+  simulated: boolean;
 }
 
 export type PhaseKey = "define" | "measure" | "analyze" | "improve" | "control";
@@ -495,6 +544,8 @@ export interface Community {
   lives_alone: number;
   missed_contact: number;
   visit_list: VisitRow[];
+  /** Red alerts of sharing elders: waiting for review first (older snapshots lack it). */
+  review_queue?: ReviewRow[];
   trend: ({ date: string } & Record<Light, number>)[];
   interventions: InterventionRow[];
   method: {

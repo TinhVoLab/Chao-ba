@@ -104,7 +104,7 @@ export function TalkView({
   return (
     <div className={s.talk}>
       <header className={s.talkTop}>
-        <p className={s.talkTitle}>{t("Trò chuyện với Út Thương", "Talking with Út Thương")}</p>
+        <p className={s.talkTitle}>{t("Trò chuyện với Út\u00a0Thương", "Talking with Út\u00a0Thương")}</p>
         <span className={s.talkChips}>
           {flags.sim && <span className={s.chip}>{t("Diễn tập · giả lập", "Rehearsal · simulated")}</span>}
           <span className={s.chip} data-engine={engine.engine} data-state={engine.state} data-testid="engine-badge" title={engine.model}>

@@ -11,7 +11,7 @@ Vietnam has 14.2 million people aged 60+ (2024), and many live far from children
 
 - **Together, with no effort for her.** Each child drops by in ten seconds a day: a photo of their lunch, a love card, a question asking for her advice. Mom only looks, or taps once. When everyone has dropped by, the screen says "Cả nhà nhớ má" (the whole family misses you).
 - **A short daily chat that notices change.** Út Thương, a warm AI companion, chats with her each morning. From text and pause timings only (no audio is stored), it compares her speech, recall, symptoms and mood with **her own usual**. It shows a green / yellow / red light with a plain explanation and a next step for the family. It does not diagnose.
-- **Action, then follow-up.** A shared family plan (who calls, who takes her to the doctor), a DMAIC care loop that checks whether the action worked, and a board for the commune health station.
+- **Action, then follow-up.** A shared family plan (who calls, who takes her to the doctor), a DMAIC care loop that checks whether the action worked, and a board where the commune health station reviews every red alert. A person decides on care, never the software ([intended use](docs/INTENDED_USE.md)).
 
 ### How the health light works
 

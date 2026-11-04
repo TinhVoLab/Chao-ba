@@ -175,6 +175,24 @@ export function StandingScreen({
     void refresh();
   }, [refresh]);
 
+  // A panel left open (game, mood) slips back to the clock and family photos after 3 quiet minutes. Conversations,
+  // calls, love cards and the emergency screen are never cut off this way.
+  const screenRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (mode !== "mood" && mode !== "game") return;
+    const el = screenRef.current;
+    let id = setTimeout(home, 180_000);
+    const poke = () => {
+      clearTimeout(id);
+      id = setTimeout(home, 180_000);
+    };
+    el?.addEventListener("pointerdown", poke);
+    return () => {
+      clearTimeout(id);
+      el?.removeEventListener("pointerdown", poke);
+    };
+  }, [mode, home]);
+
   const saved = (r: "saved" | "queued" | "refused") =>
     r === "queued" ? L(" (lưu trên máy, sẽ gửi khi có mạng)", " (kept on this device; will send when online)") : "";
 
@@ -239,7 +257,7 @@ export function StandingScreen({
 
   return (
     <LangCtx.Provider value={flags.lang}>
-      <div className={s.screen} lang={flags.lang} data-mode={mode} data-online={online} data-testid="elder-screen">
+      <div ref={screenRef} className={s.screen} lang={flags.lang} data-mode={mode} data-online={online} data-testid="elder-screen">
         {mode === "idle" && (
           <IdleView
             profile={profile}
@@ -250,6 +268,8 @@ export function StandingScreen({
             toast={toast}
             together={together}
             onPhotoHeart={(id) => {
+              const from = together?.photos.find((x) => x.id === id)?.sender_name;
+              if (from) setToast(L(`Đã gửi thương cho ${from}`, `Love sent to ${from}`));
               setTogether((t) => (t ? { ...t, photos: t.photos.map((x) => (x.id === id ? { ...x, hearted: true } : x)) } : t));
               void postElder(apiBase, elderId, `photos/${id}/heart`, {});
             }}

@@ -334,8 +334,8 @@
   color: var(--ink-2) !important;
 }
 .es-avatarBtn .es-avatar {
-  width: calc(230 * var(--k));
-  height: calc(230 * var(--k));
+  width: calc(200 * var(--k));
+  height: calc(200 * var(--k));
 }
 
 .es-photo {
@@ -363,8 +363,10 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: calc(20 * var(--k));
-  padding: calc(80 * var(--k)) calc(36 * var(--k)) calc(26 * var(--k));
-  background: linear-gradient(to top, oklch(0.18 0.02 55 / 0.82), transparent);
+  padding: calc(110 * var(--k)) calc(36 * var(--k)) calc(26 * var(--k));
+  /* the caption sits on a near-solid band so marigold/cream text stays ≥ 7:1 even on a white photo */
+  background: linear-gradient(to top, oklch(0.16 0.02 55 / 0.94), oklch(0.16 0.02 55 / 0.86) 62%, transparent);
+  text-shadow: 0 calc(2 * var(--k)) calc(10 * var(--k)) oklch(0.12 0.02 55 / 0.8);
   font-size: calc(46 * var(--k));
   font-weight: 700;
   color: var(--ink);
@@ -459,7 +461,7 @@
 .es-medBtns {
   display: grid;
   grid-template-columns: 1.6fr 1fr;
-  gap: calc(20 * var(--k));
+  gap: calc(32 * var(--k));
 }
 
 .es-tiles {
@@ -896,7 +898,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, oklch(0.14 0.015 55 / 0.7), transparent 30%, transparent 60%, oklch(0.14 0.015 55 / 0.85));
+  background: linear-gradient(to bottom, oklch(0.14 0.015 55 / 0.85), oklch(0.14 0.015 55 / 0.55) 22%, transparent 36%, transparent 60%, oklch(0.14 0.015 55 / 0.85));
 }
 .es-videoTop {
   position: relative;
@@ -1170,6 +1172,29 @@
   .es-avHalo {
     transition: none;
   }
+  .es-toast,
+  .es-cap,
+  .es-emergency {
+    animation: none;
+  }
+}
+
+/* Vietnamese headings and button labels break into even lines ("Hôm nay / thấy sao?", not a lone "sao?"). */
+.es-greet,
+.es-talkTitle,
+.es-panelTitle,
+.es-panelBody,
+.es-emTitle,
+.es-emBody,
+.es-kText,
+.es-kAsk,
+.es-kDone,
+.es-msgText,
+.es-tile > span,
+.es-mainBtns span,
+.es-choice,
+.es-kChoice {
+  text-wrap: balance;
 }
 
 /* ------------------------------------------------------------------ family love notes ("Gửi yêu thương") */
@@ -1627,14 +1652,17 @@
   z-index: 2; /* above the caption gradient, which comes later in the figure */
   top: calc(26 * var(--k));
   right: calc(26 * var(--k));
-  display: grid;
-  place-items: center;
-  width: calc(124 * var(--k));
-  height: calc(124 * var(--k));
+  display: inline-flex;
+  align-items: center;
+  gap: calc(14 * var(--k));
+  min-height: calc(124 * var(--k));
+  padding: 0 calc(36 * var(--k)) 0 calc(30 * var(--k));
   border: 0;
-  border-radius: 50%;
-  background: oklch(0.18 0.02 55 / 0.55);
+  border-radius: 999px;
+  background: oklch(0.18 0.02 55 / 0.78);
   color: var(--ink);
+  font-size: calc(40 * var(--k));
+  font-weight: 800;
   transition: transform 300ms var(--ease), background 300ms var(--ease);
 }
 .es-photoHeart svg {
@@ -1684,7 +1712,7 @@
   border-radius: 50%;
   background: var(--marigold);
   color: var(--marigold-ink);
-  animation: es-heartbeat 2.4s var(--ease) infinite;
+  animation: es-heartbeat 2.4s var(--ease) 1s 6;
 }
 .es-momentBtn svg {
   width: calc(78 * var(--k));

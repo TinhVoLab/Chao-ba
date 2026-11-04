@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { Check, Droplets, Heart, MessageCircleHeart, Mic, Phone, Pill, Puzzle, Smile } from "lucide-react";
+import { Check, Heart, MessageCircleHeart, Mic, Phone, Pill, Puzzle, Smile } from "lucide-react";
 import type { ElderProfile, FamilyMember } from "@/lib/types";
 import { Avatar } from "./Avatar";
 import { Face } from "./Faces";
@@ -66,7 +66,8 @@ export function IdleView(p: IdleProps) {
     setSlide(0);
   }
   useEffect(() => {
-    const id = setInterval(() => setSlide((x) => (x + 1) % slides), 8000);
+    // Slow enough to read a two-line caption from the armchair.
+    const id = setInterval(() => setSlide((x) => (x + 1) % slides), 12_000);
     return () => clearInterval(id);
   }, [slides]);
 
@@ -149,10 +150,11 @@ export function IdleView(p: IdleProps) {
             data-on={photo.hearted}
             disabled={photo.hearted}
             onClick={() => p.onPhotoHeart(photo.id)}
-            aria-label={photo.hearted ? t("Đã thả tim", "Hearted") : t(`Thả tim cho ${photo.sender_name}`, `Send ${photo.sender_name} a heart`)}
+            aria-label={photo.hearted ? t("Đã thương", "Loved") : t(`Thương: gửi tim cho ${photo.sender_name}`, `Love: send ${photo.sender_name} a heart`)}
             data-testid="photo-heart"
           >
             <Heart aria-hidden />
+            <span>{photo.hearted ? t("Đã thương", "Loved") : t("Thương", "Love")}</span>
           </button>
         )}
         <figcaption>
@@ -222,7 +224,8 @@ export function IdleView(p: IdleProps) {
                 ) : null}
               </p>
             </div>
-            {x.status !== "taken" && (
+            {/* Answer buttons only from 30 min before the dose: no big "I took it" to tap by mistake hours early. */}
+            {x.status !== "taken" && (x.status === "not_yet" || due(x)) && (
               <div className={s.medBtns}>
                 <button type="button" className={s.btnYes} onClick={() => p.onMed(x, "taken")}>
                   {t("Đã uống thuốc", "I took it")} <Check aria-hidden />
@@ -242,10 +245,6 @@ export function IdleView(p: IdleProps) {
             <p>{t(`Thuốc khi cần: ${x.name.replace(/\s*\(.*\)/, "")}`, `When needed: ${x.name.replace(/\s*\(.*\)/, "")}`)}</p>
           </div>
         ))}
-        <div className={s.line}>
-          <Droplets className={s.ico} aria-hidden />
-          <p>{t("Nhớ uống một ly nước mỗi 2 tiếng", "A glass of water every 2 hours")}</p>
-        </div>
       </section>
 
       <div className={s.tiles}>

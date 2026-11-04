@@ -11,7 +11,7 @@ export function LangToggle() {
           type="button"
           data-lang-opt={l}
           onClick={() => setLang(l)}
-          className="min-h-9 min-w-11 rounded-full px-2.5 text-ink-2 transition-colors duration-150"
+          className="min-h-11 min-w-11 rounded-full px-2.5 text-ink-2 transition-colors duration-150"
         >
           {l.toUpperCase()}
         </button>
@@ -35,7 +35,7 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={toggle}
-      className="grid size-10 place-items-center rounded-full border border-line-strong text-ink-2 transition-colors duration-150 hover:text-ink"
+      className="grid size-11 place-items-center rounded-full border border-line-strong text-ink-2 transition-colors duration-150 hover:text-ink"
     >
       <span className="only-light" aria-hidden>
         <Moon size={18} />

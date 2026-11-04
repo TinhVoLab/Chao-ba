@@ -69,6 +69,18 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
     : { vi: t.label_vi || `Cuộc gọi gần nhất với Út Thương · ${date.vi}`, en: t.label_en || `Latest call with Út Thương · ${date.en}` };
   const symptoms = Object.entries(rec?.symptoms ?? {}).filter(([, v]) => v > 0).map(([s]) => SYMPTOM_WORD[s] ?? { vi: s, en: s });
 
+  // Togetherness is the hero on an ordinary day: the family strip sits right under a compact light. When the light
+  // changes (or an alert is unread) the light card and the call / note actions come first and the strip follows them.
+  const calm = !paused && (light === "green" || light === "gray") && unread.length === 0;
+  const together = (
+    <>
+      {/* "Cả nhà ghé thăm": who dropped by today + send a photo to the big screen (together.py) */}
+      <TogetherCard key={`tg-${id}-${viewer.memberId}`} elderId={id} memberId={viewer.memberId} kinVi={k.vi} kinEn={k.en} />
+      {/* "Gửi thương": one-tap love cards; the full tray lives on the Family page */}
+      <KudosQuick key={`${id}-${viewer.memberId}`} elderId={id} kinVi={k.vi} kinEn={k.en} catalog={kudosCatalog.data} initial={kudosSent.data} />
+    </>
+  );
+
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
@@ -104,10 +116,14 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
         </Link>
       )}
 
-      {/* The light */}
-      <section aria-labelledby="light-word" className={`fade-in rounded-[28px] ${lightTint(light)} p-4 min-[360px]:p-5 sm:p-7`}>
-        <div className="flex items-center gap-4 sm:gap-5">
-          <StatusShape light={light} size={104} className="size-[72px] shrink-0 drop-shadow-sm min-[360px]:size-[88px] sm:size-[104px]" />
+      {/* The light: a calm one-glance strip on ordinary days, the full card only when something changed */}
+      <section aria-labelledby="light-word" className={`fade-in rounded-[28px] ${lightTint(light)} ${calm ? "p-4" : "p-4 min-[360px]:p-5 sm:p-7"}`}>
+        <div className={`flex items-center ${calm ? "gap-3" : "gap-4 sm:gap-5"}`}>
+          <StatusShape
+            light={light}
+            size={calm ? 56 : 104}
+            className={calm ? "size-14 shrink-0" : "size-[72px] shrink-0 drop-shadow-sm min-[360px]:size-[88px] sm:size-[104px]"}
+          />
           <div className="min-w-0">
             <p className={`text-sm font-semibold wrap-anywhere ${lightText(light)}`}>
               {p.display_name}
@@ -118,7 +134,10 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
                 </>
               )}
             </p>
-            <h2 id="light-word" className={`text-[1.875rem] font-extrabold leading-[1.05] tracking-tight wrap-break-word min-[360px]:text-[2.125rem] sm:text-[2.375rem] ${lightText(light)}`}>
+            <h2
+              id="light-word"
+              className={`font-extrabold leading-[1.05] tracking-tight wrap-break-word ${calm ? "text-[1.625rem]" : "text-[1.875rem] min-[360px]:text-[2.125rem] sm:text-[2.375rem]"} ${lightText(light)}`}
+            >
               <T vi={word.vi} en={word.en} />
             </h2>
             <p className={`mt-1 text-[0.9375rem] font-medium ${lightText(light)} opacity-90`}>
@@ -126,10 +145,12 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
             </p>
           </div>
         </div>
-        <p className="mt-5 max-w-[60ch] text-[1.0625rem] leading-relaxed text-ink wrap-anywhere">
+        <p className={`${calm ? "mt-3 text-base" : "mt-5 text-[1.0625rem]"} max-w-[60ch] leading-relaxed text-ink wrap-anywhere`}>
           <T vi={t.explanation_vi} en={t.explanation_en} />
         </p>
       </section>
+
+      {calm && together}
 
       {/* This morning's call */}
       <section aria-labelledby="call-h" className="flex flex-col gap-2">
@@ -240,10 +261,7 @@ async function TodayContent({ searchParams }: { searchParams: PageProps<"/">["se
         todayDate={t.date}
         todayDay={t.day}
       >
-        {/* "Cả nhà ghé thăm": who dropped by today + send a photo to the big screen (together.py) */}
-        <TogetherCard key={`tg-${id}-${viewer.memberId}`} elderId={id} memberId={viewer.memberId} kinVi={k.vi} kinEn={k.en} />
-        {/* "Gửi thương": a compact strip under "Gọi má", never instead of it; the full tray lives on the Family page */}
-        <KudosQuick key={`${id}-${viewer.memberId}`} elderId={id} kinVi={k.vi} kinEn={k.en} catalog={kudosCatalog.data} initial={kudosSent.data} />
+        {!calm && together}
       </TodayActions>
 
       {/* Last 14 days */}

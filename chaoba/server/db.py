@@ -108,6 +108,8 @@ class Store:
             for col, ddl in (("n", "INTEGER NOT NULL DEFAULT 1"), ("last_ts", "TEXT")):  # older demo databases
                 if col not in cols:
                     self.conn.execute(f"ALTER TABLE access_log ADD COLUMN {col} {ddl}")
+            from .care_review import migrate as migrate_review   # clinician review of red alerts
+            migrate_review(self.conn)
             self.conn.commit()
 
     # ---------------------------------------------------------------- low level
@@ -198,11 +200,16 @@ class Store:
                       (elder_id, day, date, type_, severity, vi, en, call_id, now_iso()))
 
     def alerts(self, elder_id: str) -> list[dict]:
-        return [{"id": r["id"], "day": r["day"], "date": r["date"], "type": r["type"], "severity": r["severity"],
-                 "severity_level": SEVERITY_LEVEL.get(r["severity"], "info"),
-                 "explanation_vi": r["explanation_vi"], "explanation_en": r["explanation_en"],
-                 "acknowledged": bool(r["acknowledged"])}
-                for r in self.q("SELECT * FROM alert WHERE elder_id=? ORDER BY day DESC, id DESC", (elder_id,))]
+        from .care_review import review_of
+        out = []
+        for r in self.q("SELECT * FROM alert WHERE elder_id=? ORDER BY day DESC, id DESC", (elder_id,)):
+            review = review_of(r)
+            out.append({"id": r["id"], "day": r["day"], "date": r["date"], "type": r["type"],
+                        "severity": r["severity"], "severity_level": SEVERITY_LEVEL.get(r["severity"], "info"),
+                        "explanation_vi": r["explanation_vi"], "explanation_en": r["explanation_en"],
+                        "acknowledged": bool(r["acknowledged"]), "review": review,
+                        "needs_review": r["severity"] == "red" and review is None})
+        return out
 
     def ack_alert(self, elder_id: str, alert_id: int, by: str) -> bool:
         r = self.one("SELECT id FROM alert WHERE elder_id=? AND id=?", (elder_id, alert_id))

@@ -82,7 +82,7 @@ export function ElderSwitcher({ elders, current, path }: { elders: ElderSummary[
         <button
           type="button"
           onClick={() => nudge(-1)}
-          className="absolute left-1 top-1/2 grid size-9 -translate-y-1/2 place-items-center rounded-full border border-line bg-surface text-ink-2 shadow-soft"
+          className="absolute left-1 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-line bg-surface text-ink-2 shadow-soft"
         >
           <ChevronLeft size={18} aria-hidden />
           <span className="sr-only">Người trước / Previous</span>
@@ -92,7 +92,7 @@ export function ElderSwitcher({ elders, current, path }: { elders: ElderSummary[
         <button
           type="button"
           onClick={() => nudge(1)}
-          className="absolute right-1 top-1/2 grid size-9 -translate-y-1/2 place-items-center rounded-full border border-line bg-surface text-ink-2 shadow-soft"
+          className="absolute right-1 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-line bg-surface text-ink-2 shadow-soft"
         >
           <ChevronRight size={18} aria-hidden />
           <span className="sr-only">Xem thêm người thân / More family members</span>

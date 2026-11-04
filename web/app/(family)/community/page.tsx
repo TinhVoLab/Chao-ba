@@ -8,6 +8,7 @@ import { DataBadges } from "@/components/Badges";
 import { PageSkeleton } from "@/components/Skeletons";
 import { StatusShape, lightText } from "@/components/StatusShape";
 import { WardTrend } from "@/components/community/WardTrend";
+import { ReviewQueue } from "@/components/community/ReviewQueue";
 import { T } from "@/components/T";
 import { STATION_ACTOR } from "@/lib/viewer";
 
@@ -83,6 +84,8 @@ async function CommunityContent() {
           />
         </p>
       </section>
+
+      {r.live && c.review_queue && <ReviewQueue initial={c.review_queue} />}
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:items-start">
         {/* Visit list */}

@@ -112,7 +112,7 @@ export function KudosQuick({
               className="flex min-h-[4.5rem] min-w-0 flex-col items-center justify-center gap-1 rounded-2xl bg-rose-tint px-1 py-2 text-center text-rose-ink transition-[transform,filter] duration-150 hover:brightness-[0.97] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-55"
             >
               {done === t.id ? <Check size={20} aria-hidden /> : <KudosIcon name={t.icon} size={20} />}
-              <span className="w-full text-[0.8125rem] font-semibold leading-tight wrap-break-word">
+              <span className="w-full text-sm font-semibold leading-tight wrap-break-word">
                 <T vi={t.label_vi} en={t.label_en} />
               </span>
             </button>

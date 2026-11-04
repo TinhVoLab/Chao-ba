@@ -248,6 +248,26 @@ def associations(elders: list[dict]) -> list[dict]:
     return out
 
 
+def review_queue(svc: Service, recent_days: int = 60) -> list[dict]:
+    """Red alerts of sharing personas: waiting for review first, then reviewed in the last ``recent_days`` days.
+    Pseudonymised like the visit list; ``elder_ref`` is the opaque id the review endpoint takes."""
+    out = []
+    for eid in svc.store.elder_ids():
+        if not svc.store.consent_granted(eid, "clinician_sharing"):
+            continue
+        p = svc.store.elder(eid) or {}
+        meta = PERSONA_META.get(eid, {"full": p.get("display_name", eid), "area": AREAS[0]})
+        recs = svc.store.records(eid)
+        last = recs[-1]["day"] if recs else 0
+        for a in svc.store.alerts(eid):
+            if a["severity"] != "red" or (not a["needs_review"] and (a["day"] or 0) < last - recent_days):
+                continue
+            out.append({"elder_ref": eid, "label": f"{_initials(meta['full'])} · {int(p.get('age') or 0)} · "
+                        f"{meta['area']}", "alert_id": a["id"], "day": a["day"], "date": a["date"],
+                        "type": a["type"], "needs_review": a["needs_review"], "review": a["review"]})
+    return sorted(out, key=lambda r: (not r["needs_review"], -(r["day"] or 0)))
+
+
 def overview(svc: Service) -> dict:
     end = seed_end_date()
     elders = _personas(svc, end) + _cohort(end)
@@ -268,7 +288,7 @@ def overview(svc: Service) -> dict:
             "as_of": last.isoformat(), "counts": counts,
             "lives_alone": sum(1 for r in rows if r["lives_alone"]),
             "missed_contact": sum(1 for r in rows if r["missed_contact"]),
-            "visit_list": visit_list(rows), "trend": trend, "interventions": associations(shared),
+            "visit_list": visit_list(rows), "review_queue": review_queue(svc), "trend": trend, "interventions": associations(shared),
             "method": {"recovery_days": RECOVERY_DAYS, "missed_contact_days": MISSED_CONTACT_DAYS,
                        "checkin_no_contact_days": CHECKIN_NO_CONTACT_DAYS, "trend_days": TREND_DAYS,
                        "cohort": {"n": COHORT_N, "days": COHORT_DAYS, "seed": COHORT_SEED}},

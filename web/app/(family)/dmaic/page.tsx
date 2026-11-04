@@ -8,7 +8,7 @@ import { T } from "@/components/T";
 import { getActivities } from "@/lib/memories";
 import { PreventionActivities } from "@/components/memories/PreventionActivities";
 
-export const metadata: Metadata = { title: "DMAIC" };
+export const metadata: Metadata = { title: "Care cycle" };
 
 export default function DmaicPage({ searchParams }: PageProps<"/dmaic">) {
   return (
@@ -37,8 +37,8 @@ async function DmaicContent({ searchParams }: { searchParams: PageProps<"/dmaic"
       />
       <p className="max-w-[65ch] text-ink-2">
         <T
-          vi="DMAIC là vòng cải tiến 5 bước: Xác định, Đo lường, Phân tích, Cải thiện, Kiểm soát. Mỗi thay đổi kéo dài được xử lý như một vòng, có ngày tháng và kết quả đo được."
-          en="DMAIC is a five-step improvement loop: Define, Measure, Analyze, Improve, Control. Each lasting change is handled as one loop, with dates and a measured result."
+          vi="Khi đèn đổi màu nhiều ngày, cả nhà đi qua 5 bước: thấy thay đổi, đo kỹ hơn, tìm lý do, cùng làm một việc nhỏ, rồi theo dõi xem có tốt lên không. (Giới y tế gọi là vòng DMAIC.)"
+          en="When the light stays changed for days, the family goes through five steps: notice the change, look closer, find the likely reason, try one small thing together, then check it helped. (Quality teams call this loop DMAIC.)"
         />
       </p>
       <DmaicView

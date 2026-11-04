@@ -26,7 +26,7 @@ const PRIMARY: Item[] = [
   { href: "/", vi: "Hôm nay", en: "Today", Icon: Sunrise },
   { href: "/trends", vi: "Xu hướng", en: "Trends", Icon: ChartLine },
   { href: "/family", vi: "Gia đình", en: "Family", Icon: UsersRound },
-  { href: "/dmaic", vi: "DMAIC", en: "DMAIC", Icon: RefreshCw },
+  { href: "/dmaic", vi: "Chăm sóc", en: "Care", Icon: RefreshCw },
 ];
 const MORE: Item[] = [
   { href: "/alerts", vi: "Cảnh báo", en: "Alerts", Icon: Bell, descVi: "Những lần đèn đổi màu, cần gọi hỏi thăm", descEn: "When the light changed and a call is due" },

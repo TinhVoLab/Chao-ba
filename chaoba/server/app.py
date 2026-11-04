@@ -36,6 +36,8 @@ from .service import Service, llm_enabled, demo_enabled
 from . import memories as memory_book   # Sổ ký ức + prevention activities (memories.py)
 from . import kudos                     # "Gửi yêu thương": family micro-interactions (kudos.py)
 from . import together                  # "Cả nhà ghé thăm": photo wall, who dropped by, family moment (together.py)
+from . import connection as connection_mod   # weekly family-connection series, never in the light (connection.py)
+from . import care_review               # clinician / health-station review of red alerts (care_review.py)
 from chaoba.agent import gemini_live
 from . import voice as voice_mod        # optional Gemini Live voice engine: /ws/voice/{call_id} (voice.py)
 
@@ -102,6 +104,7 @@ def create_app(db_path: str | None = None, seed: bool = True) -> FastAPI:
             memory_book.seed_all(svc)   # simulated stories + activity log
             kudos.seed_all(svc)         # simulated family cards + replies (one advice answer saved as "Lời má dạy")
             together.seed_all(svc)      # simulated photo wall (drawings, not real photos)
+            care_review.seed_all(svc)   # simulated station review of Bà Hạnh's red alert
         app.state.svc = svc
         yield
         store.close()
@@ -257,6 +260,7 @@ def create_app(db_path: str | None = None, seed: bool = True) -> FastAPI:
         memory_book.seed_all(s)
         kudos.seed_all(s)
         together.seed_all(s)
+        care_review.seed_all(s)
         return out
 
     @app.get("/api/evaluation")
@@ -306,6 +310,8 @@ def create_app(db_path: str | None = None, seed: bool = True) -> FastAPI:
     memory_book.register(app)   # /api/elders/{id}/memories*, /activities (memories.py)
     kudos.register(app)         # /api/elders/{id}/kudos* (kudos.py)
     together.register(app)      # /api/elders/{id}/together, /photos* (together.py)
+    care_review.register(app)   # /api/elders/{id}/alerts/{aid}/review (care_review.py)
+    connection_mod.register(app)   # /api/elders/{id}/connection (connection.py)
     voice_mod.register(app)     # /api/voice/config, WebSocket /ws/voice/{call_id} (voice.py, gemini_live.py)
     return app
 

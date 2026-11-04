@@ -122,7 +122,10 @@ export function TogetherCard({ elderId, memberId, kinVi, kinEn }: { elderId: str
               title={m.name}
               className={`relative grid size-10 place-items-center rounded-full border-2 border-surface text-sm font-extrabold ${i ? "-ml-2" : ""} ${m.visited ? "bg-green-tint text-green-ink" : "bg-surface-2 text-ink-3"}`}
             >
-              {m.name.slice(0, 1)}
+              <span aria-hidden>{m.name.slice(0, 1)}</span>
+              <span className="sr-only">
+                <T vi={`${m.name}: ${m.visited ? "đã ghé hôm nay" : "chưa ghé"}`} en={`${m.name}: ${m.visited ? "dropped by today" : "not yet"}`} />
+              </span>
               {m.visited && <Check size={12} strokeWidth={3.5} className="absolute -bottom-0.5 -right-0.5 rounded-full bg-green-ink p-0.5 text-surface" aria-hidden />}
             </li>
           ))}
@@ -139,7 +142,7 @@ export function TogetherCard({ elderId, memberId, kinVi, kinEn }: { elderId: str
       </div>
 
       {tg.me && !tg.me.visited && (
-        <p className="rounded-xl bg-yellow-tint px-3 py-2 text-sm font-medium text-yellow-ink" data-testid="together-nudge">
+        <p className="rounded-xl bg-yellow-tint px-3 py-2 text-[0.9375rem] font-medium text-yellow-ink" data-testid="together-nudge">
           <T
             vi={tg.members.filter((m) => m.visited).length === tg.members.length - 1 ? `Chỉ còn bạn nữa là cả nhà đã ghé thăm ${kinVi} hôm nay.` : `Hôm nay bạn chưa ghé thăm ${kinVi}. Một tấm ảnh hay một lời thương là đủ.`}
             en={tg.members.filter((m) => m.visited).length === tg.members.length - 1 ? `You're the last one: then the whole family has dropped by ${kinEn} today.` : `You haven't dropped by ${kinEn} today. A photo or a love note is enough.`}
@@ -175,7 +178,7 @@ export function TogetherCard({ elderId, memberId, kinVi, kinEn }: { elderId: str
         <button
           type="button"
           onClick={() => fileRef.current?.click()}
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-accent px-4 font-bold text-accent-ink shadow-soft hover:bg-accent-hover"
+          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-accent px-4 font-bold text-accent-ink shadow-soft hover:bg-accent-hover"
           data-testid="together-photo"
         >
           <Camera size={18} aria-hidden />

@@ -189,12 +189,17 @@ await fetch(`${API}/api/demo/reset?elder=hanh`, { method: "POST" });
   check(c.last && c.last.member_id === "lan" && c.last.date === today, "video: family contact logged (Lan, today)");
 
   // ---------------------------------------------------------------- 5. medication
-  await page.click("text=Đã uống thuốc");
-  await page.waitForSelector('[data-testid="med-done"]', { timeout: 5000 });
-  const med = await api("/api/elders/hanh/medication_log");
-  check(med.today[0].status === "taken" && med.entries.at(-1).source === "elder_screen", "medication: stored as taken by the elder screen");
-  await page.waitForTimeout(400);
-  await shot(page, "idle-med-taken");
+  // The Yes / Not yet buttons appear only from 30 minutes before the dose; earlier the row just says "Chưa tới giờ".
+  if (await page.isVisible("text=Đã uống thuốc")) {
+    await page.click("text=Đã uống thuốc");
+    await page.waitForSelector('[data-testid="med-done"]', { timeout: 5000 });
+    const med = await api("/api/elders/hanh/medication_log");
+    check(med.today[0].status === "taken" && med.entries.at(-1).source === "elder_screen", "medication: stored as taken by the elder screen");
+    await page.waitForTimeout(400);
+    await shot(page, "idle-med-taken");
+  } else {
+    check(await page.isVisible("text=Chưa tới giờ"), "medication: no answer buttons before the dose window");
+  }
 
   // ---------------------------------------------------------------- 6. mood
   await page.click('[data-testid="tile-mood"]');

@@ -519,7 +519,7 @@ function KudosRow({
           </p>
         )}
         {(k.reply?.text?.length ?? 0) > 140 && (
-          <button type="button" onClick={() => setOpenReply((o) => !o)} aria-expanded={openReply} className="mt-1 min-h-9 text-sm font-semibold text-accent">
+          <button type="button" onClick={() => setOpenReply((o) => !o)} aria-expanded={openReply} className="mt-1 min-h-11 text-sm font-semibold text-accent">
             {openReply ? <T vi="Thu gọn" en="Show less" /> : <T vi="Xem hết câu trả lời" en="Read the whole answer" />}
           </button>
         )}
